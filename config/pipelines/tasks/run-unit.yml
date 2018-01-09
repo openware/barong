@@ -1,0 +1,7 @@
+---
+platform: linux
+
+run:
+  path: sh
+  args: ["-exc", "cd /app && npm test"]
+
