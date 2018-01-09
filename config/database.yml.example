@@ -1,0 +1,21 @@
+default: &default
+  adapter:  mysql2
+  encoding: utf8
+  pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: root
+  password: root
+  host:     localhost
+
+development:
+  <<: *default
+  database: barong_development
+
+test:
+  <<: *default
+  database: barong_test
+
+production:
+  <<: *default
+  database: barong_production
+  username: barong
+  password: <%= ENV['BARONG_DATABASE_PASSWORD'] %>
