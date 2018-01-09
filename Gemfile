@@ -13,6 +13,7 @@ end
 
 group :test do
   gem 'rspec-rails',         '~> 3.7'
+  gem 'factory_bot',         '~> 4.8'
   gem 'capybara',            '~> 2.17'
   gem 'selenium-webdriver',  '~> 3.8'
   gem 'chromedriver-helper', '~> 1.1'
