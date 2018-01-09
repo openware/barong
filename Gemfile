@@ -6,6 +6,8 @@ gem 'puma',        '~> 3.7'
 gem 'sassc-rails', '~> 1.3'
 gem 'uglifier',    '~> 4'
 
+gem 'devise',      '~> 4.4'
+
 group :development, :test do
   gem 'listen',     '~> 3.1'
   gem 'pry-byebug', '~> 3.5'
