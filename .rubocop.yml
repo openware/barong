@@ -1,0 +1,106 @@
+AllCops:
+  Exclude:
+    - db/schema.rb
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Metrics/LineLength:
+  Enabled: false
+  Max: 110
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+  IndentOneStep: true
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - db/migrate/**/*
+
+Layout/ExtraSpacing:
+  Enabled:                 false
+  AllowForAlignment:       true
+  ForceEqualSignAlignment: true
+
+Style/PercentLiteralDelimiters:
+ PreferredDelimiters:
+   default: '[]'
+   '%i':    '[]'
+   '%':     '[]'
+
+Layout/AlignParameters:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: single_quotes
+
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/CaseEquality:
+  Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - spec/**/*
+    - test/**/*
+    - db/**/*
+    - app/controllers/**/*
+    - app/helpers/**/*
+    - config/application.rb
+
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: false
+
+Layout/SpaceInsideBrackets:
+  Enabled: false
+
+Performance/TimesMap:
+  Exclude:
+    - db/**/*
+
+Metrics/AbcSize:
+  Max: 30
+  Exclude:
+    - db/**/*
+
+Layout/TrailingWhitespace:
+  Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
+
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/*.rb
+
+Layout/MultilineArrayBraceLayout:
+  Enabled: false
