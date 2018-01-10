@@ -8,7 +8,6 @@ gem 'puma',         '~> 3.7'
 gem 'sassc-rails',  '~> 1.3'
 gem 'uglifier',     '~> 4'
 gem 'devise',       '~> 4.4'
-gem 'coffee-rails', '~> 4.2'
 gem 'mini_racer',   '~> 0.1', require: false
 
 group :development, :test do
