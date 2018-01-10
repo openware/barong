@@ -12,6 +12,7 @@ gem 'devise',      '~> 4.4'
 group :development, :test do
   gem 'listen',     '~> 3.1'
   gem 'pry-byebug', '~> 3.5'
+  gem 'annotate',   '~> 2.7'
 end
 
 group :test do
