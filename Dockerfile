@@ -9,6 +9,7 @@ FROM ruby:2.5.0
 #
 ARG RAILS_ENV=production
 ENV RAILS_ENV ${RAILS_ENV}
+ENV DEVICE_SECRET_KEY='changeme'
 
 ENV APP_HOME=/home/app
 
