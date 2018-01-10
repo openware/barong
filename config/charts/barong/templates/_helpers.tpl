@@ -77,3 +77,5 @@ Environment for barong container
       name: {{ template "fullname" . }}
       key: cookiesSecretKey
 {{- end -}}
+- name: PORT
+  value: {{ .Values.service.internalPort | quote }}
