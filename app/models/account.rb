@@ -8,7 +8,7 @@ class Account < ApplicationRecord
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable
+         :confirmable, :lockable
 
   def role
     super.inquiry
