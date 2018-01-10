@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'pathname'
 require 'fileutils'
+
+# rubocop:disable Style/MixinUsage
 include FileUtils
+# rubocop:enable Style/MixinUsage
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
@@ -20,7 +25,6 @@ chdir APP_ROOT do
 
   # Install JavaScript dependencies if using Yarn
   # system('bin/yarn')
-
 
   # puts "\n== Copying sample files =="
   # unless File.exist?('config/database.yml')

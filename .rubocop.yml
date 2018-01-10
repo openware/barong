@@ -69,6 +69,7 @@ Style/Documentation:
     - db/**/*
     - app/controllers/**/*
     - app/helpers/**/*
+    - app/mailers/**/*
     - config/application.rb
 
 Layout/SpaceInsidePercentLiteralDelimiters:
@@ -100,7 +101,11 @@ Layout/SpaceInLambdaLiteral:
 
 Metrics/BlockLength:
   Exclude:
-    - config/environments/*.rb
+    - config/environments/**/*.rb
+    - lib/tasks/auto_annotate_models.rake
 
 Layout/MultilineArrayBraceLayout:
   Enabled: false
+
+Style/EmptyMethod:
+  EnforcedStyle: expanded

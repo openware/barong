@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 screen_size = [1280, 800]
 
 if ENV.key?('SELENIUM_HOST')
