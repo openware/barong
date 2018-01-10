@@ -1,0 +1,40 @@
+body.devise {
+  background-image: image-url($devise-background-image);
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: 1000px 1000px 1000px rgba(black, .4) inset;
+
+  .card {
+    border: 0;
+    border-top: 5px solid $devise-form-color;
+    .title {
+      padding: 20px 20px 0 20px;
+    }
+    .card-footer {
+      margin-top: $grid-gutter-width / 2;
+      border-top: 0;
+      background: $devise-form-color;
+      a {
+        color: white;
+      }
+    }
+    .btn {
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  }
+
+  #error_explanation {
+    @extend .alert;
+    @extend .alert-danger;
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style-position: inside;
+    }
+  }
+}
