@@ -25,4 +25,4 @@ ci:
 	@fly -t ci unpause-pipeline -p $(SERVICE)
 
 deploy:
-	@helm install ./config/charts/$(SERVICE) --set "image.tag=$(VERSION)"
+	./bin/helm/app_up.sh
