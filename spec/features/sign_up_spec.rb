@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'Sign up' do
   it 'allows to sign up with email, password and password confirmation' do
     visit index_path
