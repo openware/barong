@@ -1,0 +1,9 @@
+<% if account_signed_in? %>
+  Signed in as <%= current_account.email %>.
+  <br/>
+  <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+<% else %>
+  You are not signed in.
+  <br/>
+  <%= link_to 'Sign in', new_account_session_path %> or <%= link_to 'sign up', new_account_registration_path %>.
+<% end %>
