@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Barong</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Barong Admin</title>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag    'admin', media: 'all' %>
     <%= javascript_include_tag 'admin' %>
   </head>
   <body>
+    <%= render 'admin/shared/navigation' %>
     <%= yield %>
   </body>
 </html>
