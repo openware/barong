@@ -2,14 +2,16 @@
 
 source 'https://rubygems.org'
 
-gem 'rails',       '~> 5.1.4'
-gem 'mysql2',      '~> 0.4'
-gem 'puma',        '~> 3.7'
-gem 'sassc-rails', '~> 1.3'
-gem 'uglifier',    '~> 4'
-gem 'devise',      '~> 4.4'
-gem 'mini_racer',  '~> 0.1', require: false
-gem 'cancancan',   '~> 2.0'
+gem 'rails',        '~> 5.1.4'
+gem 'mysql2',       '~> 0.4'
+gem 'puma',         '~> 3.7'
+gem 'sassc-rails',  '~> 1.3'
+gem 'uglifier',     '~> 4'
+gem 'devise',       '~> 4.4'
+gem 'mini_racer',   '~> 0.1', require: false
+gem 'cancancan',    '~> 2.0'
+gem 'bootstrap',    '~> 4.0.0.beta3'
+gem 'jquery-rails', '~> 4.3'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

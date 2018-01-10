@@ -1,0 +1,19 @@
+<div class="bg-dark">
+  <div class="wrapper no-padding">
+    <nav class="navbar navbar-expand navbar-dark">
+      <%= link_to 'Barong Admin', admin_dashboard_path, class: 'navbar-brand' %>
+
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item <%= 'active' if params[:controller].match?(/dashboard/) %>">
+            <%= link_to 'Dashboard', admin_dashboard_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item <%= 'active' if params[:controller].match?(/accounts/) %>">
+            <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</div>
+
