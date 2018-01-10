@@ -2,17 +2,17 @@ default: &default
   adapter:  mysql2
   encoding: utf8
   pool:     <%= ENV.fetch('RAILS_MAX_THREADS', 5) %>
-  username: <%= ENV['DATABASE_USER'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  username: <%= ENV.fetch('DATABASE_USER', 'root') %>
+  password: <%= ENV.fetch('DATABASE_PASSWORD', 'root') %>
 
 development:
   <<: *default
-  database: barong_development
+  database: <%= ENV.fetch('DATABASE_NAME', 'barong_development') %>
 
 test:
   <<: *default
-  database: barong_test
+  database: <%= ENV.fetch('DATABASE_NAME', 'barong_test') %>
 
 production:
   <<: *default
-  database: barong_production
+  database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
