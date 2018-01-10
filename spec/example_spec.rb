@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'Barong unit testing' do
   it 'works' do
     expect(true).to be_truthy
