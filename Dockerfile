@@ -9,7 +9,11 @@ FROM ruby:2.5.0
 #
 ARG RAILS_ENV=production
 ENV RAILS_ENV ${RAILS_ENV}
-ENV DEVICE_SECRET_KEY='changeme'
+
+# Devise requires secret key to be set during image build or it raises an error
+# preventing from running any scripts.
+# Users should override this variable by passing environment variable on container start.
+ENV DEVISE_SECRET_KEY='changeme'
 
 ENV APP_HOME=/home/app
 
