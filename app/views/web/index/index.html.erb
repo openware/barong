@@ -1,9 +1,25 @@
-<% if account_signed_in? %>
-  Signed in as <%= current_account.email %>.
-  <br/>
-  <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
-<% else %>
-  You are not signed in.
-  <br/>
-  <%= link_to 'Sign in', new_account_session_path %> or <%= link_to 'Sign up', new_account_registration_path %>
-<% end %>
+<div class="row justify-content-center">
+
+  <div class="col-xs-12 col-sm-10 col-md-6 col-lg-4">
+    <div class="main-logo">
+      <%= image_tag("logo-black.png") %>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-xs-12 col-sm-11 col-md-6 mt-5">
+    <div class="text-center">
+      <% if account_signed_in? %>
+        <h2>Signed in as <%= current_account.email %>.</h2>
+        <br/>
+        <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+      <% else %>
+        <h2>You are not signed in.</h2>
+        <br/>
+        <%= link_to 'Sign in', new_account_session_path %> or <%= link_to 'Sign up', new_account_registration_path %>
+      <% end %>
+    </div>
+  </div>
+
+</div>

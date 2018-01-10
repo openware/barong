@@ -6,8 +6,8 @@ describe 'Sign in' do
   it 'allows to sign in with email and password' do
     visit index_path
     click_on 'Sign in'
-    fill_in 'Email', with: account.email
-    fill_in 'Password', with: account.password
+    fill_in 'account_email', with: account.email
+    fill_in 'account_password', with: account.password
     click_on 'Submit'
     expect(page).to have_content("Signed in as #{account.email}.")
   end
@@ -22,7 +22,6 @@ describe 'Sign in' do
         click_on 'Submit'
       end
     }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    expect(page).to_not have_content(/account is locked/) # Devise paranoid mode.
     expect(account.reload.locked_at?).to be_truthy
   end
 

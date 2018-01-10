@@ -8,8 +8,10 @@
     <%= javascript_include_tag 'web' %>
   </head>
   <body>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    <%= yield %>
+    <p class="notice text-center"><%= notice %></p>
+    <p class="alert text-center"><%= alert %></p>
+    <div class="container-fluid">
+      <%= yield %>
+    </div>
   </body>
 </html>
