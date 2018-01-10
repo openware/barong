@@ -9,16 +9,21 @@ class Account < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
+
+  def role
+    super.inquiry
+  end
 end
 
 # == Schema Information
-# Schema version: 20180109194005
+# Schema version: 20180110115114
 #
 # Table name: accounts
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
+#  role                   :string(30)       default("member"), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
