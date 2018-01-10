@@ -34,12 +34,14 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
   value: {{ .Values.db.host }}
 - name: DATABASE_USER
   value: {{ default "root" .Values.db.user }}
-- name: COOKIES_SECRET_KEY
-  value: ""
+- name: DATABASE_NAME
+  value: {{ default "barong_production" .Values.db.name }}
 {{- if .Values.db.password }}
 - name: DATABASE_PASSWORD
   value: {{ .Values.db.password }}
 {{- end }}
+- name: SECRET_KEY_BASE
+  value: ""
 {{- end -}}
 
 {{/*
@@ -60,11 +62,8 @@ Environment for barong container
   value: {{ .Values.db.host }}
 - name: DATABASE_USER
   value: {{ default "root" .Values.db.user }}
-- name: SECRET_KEY_BASE
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "fullname" . }}
-      key: cookiesSecretKey
+- name: DATABASE_NAME
+  value: {{ default "barong_production" .Values.db.name }}
 {{- if .Values.db.password }}
 - name: DATABASE_PASSWORD
   valueFrom:
@@ -72,11 +71,11 @@ Environment for barong container
       name: {{ template "fullname" . }}
       key: dbPassword
 {{- end }}
-{{- if .Values.db.name }}
-- name: DATABASE_NAME
+- name: SECRET_KEY_BASE
   valueFrom:
     secretKeyRef:
       name: {{ template "fullname" . }}
-      key: dbName
-{{- end }}
+      key: cookiesSecretKey
 {{- end -}}
+- name: PORT
+  value: {{ .Values.service.internalPort | quote }}
