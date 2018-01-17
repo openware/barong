@@ -11,6 +11,7 @@ class Account < ApplicationRecord
          :confirmable, :lockable
 
   has_one :profile, dependent: :destroy
+  has_many :phones, dependent: :destroy
 
   def role
     super.inquiry
@@ -18,7 +19,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180110115114
+# Schema version: 20180117114716
 #
 # Table name: accounts
 #

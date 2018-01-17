@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
   scope module: :web do
     # Define public routes here.
+    resources :phones
+    post  'phones/verification', to: 'phones#verify'
   end
 
   namespace :admin do
