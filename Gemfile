@@ -13,6 +13,7 @@ gem 'cancancan',    '~> 2.0'
 gem 'bootstrap',    '~> 4.0.0.beta3'
 gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
+gem 'doorkeeper'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

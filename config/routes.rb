@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :accounts
   root to: 'web/index#index', as: :index
 
