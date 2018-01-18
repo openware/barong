@@ -12,7 +12,7 @@ gem 'mini_racer',   '~> 0.1', require: false
 gem 'cancancan',    '~> 2.0'
 gem 'bootstrap',    '~> 4.0.0.beta3'
 gem 'jquery-rails', '~> 4.3'
-gem 'kaminari'
+gem 'kaminari',     '~> 1.1.1'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

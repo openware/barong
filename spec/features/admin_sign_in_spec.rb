@@ -26,10 +26,9 @@ describe 'Admin sign in' do
     expect(page).to have_content("#{member.email}")
 
     page.first('.btn-info').click
-    fill_in 'account_role', with: ''
     fill_in 'account_role', with: 'admin'
     click_on 'Update'
-    p member.role
+    expect(page).not_to have_content("member")
   end
 
   it 'allows to delete accounts' do
