@@ -5,8 +5,8 @@
   <table class="table table-bordered table-sm text-center">
     <thead>
       <tr>
-        <th>Id</th>
-        <th>Email</th>
+        <th>ID</th>
+        <th>E-mail</th>
         <th>Role</th>
         <th>Last sign in</th>
         <th colspan=3></th>
@@ -17,10 +17,10 @@
         <tr class=<%= 'table-danger' if account.unlock_token? %>>
           <td><%= account.id %></td>
           <td><%= account.email %></td>
-          <td><span class="<%= account.role.admin? ? 'badge badge-primary' : 'badge badge-info' %>"> <%= account.role %> </span></td>
-          <td><%= account.last_sign_in_at.strftime("%B %d, %Y") if account.last_sign_in_at %></td>
-          <td><%= link_to "Delete", admin_account_path(account.id), method: :delete, class: "btn btn-danger btn-sm", data: {confirm: "Are you sure?"} %></td>
-          <td><%= link_to "Edit", edit_admin_account_path(account.id), class: "btn btn-info btn-sm" %></td>
+          <td><span class=" badge <%= account.role.admin? ? 'badge-primary' : 'badge-info' %>"> <%= account.role %> </span></td>
+          <td><%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %></td>
+          <td><%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %></td>
+          <td><%= link_to 'Edit', edit_admin_account_path(account.id), class: 'btn btn-info btn-sm' %></td>
         </tr>
       <% end %>
     </tbody>
