@@ -14,4 +14,8 @@ Rails.application.routes.draw do
     get '/', to: 'dashboard#index', as: :dashboard
     resources :accounts
   end
+
+  namespace :api do
+    resources :accounts
+  end
 end
