@@ -16,6 +16,6 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    resources :accounts, to: 'accounts#show'
+    resources :account, to: 'accounts#show'
   end
 end

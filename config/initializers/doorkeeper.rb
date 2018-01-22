@@ -3,15 +3,12 @@ Doorkeeper.configure do
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
-  resource_owner_authenticator do
+  resource_owner_authenticator do |routes|
     # Put your resource owner authentication logic here.
     # If you want to use named routes from your app you need
     # to call them on routes object eg.
     # routes.new_user_session_path
-  end
-
-  resource_owner_from_credentials do |_routes|
-    Account.authenticate(params[:email], params[:password])
+    current_account || warden.authenticate!(:scope => :account)
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -102,11 +99,7 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  grant_flows %w(password)
-
-  skip_authorization do
-    true
-  end
+  # grant_flows %w(authorization_code client_credentials)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
