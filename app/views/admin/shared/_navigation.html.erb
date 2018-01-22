@@ -10,6 +10,7 @@
           <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
         </li>
       </ul>
+      <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
     </div>
   </div>
 </nav>
