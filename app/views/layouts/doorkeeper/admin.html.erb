@@ -21,6 +21,9 @@
       <%= content_tag :li do %>
         <%= link_to t('doorkeeper.layouts.admin.nav.home'), index_path %>
       <% end %>
+      <%= content_tag :li do %>
+        <%= link_to "Admin Panel", admin_dashboard_path %>
+      <% end %>
     </ul>
   </div>
 </div>
