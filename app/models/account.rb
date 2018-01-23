@@ -13,13 +13,6 @@ class Account < ApplicationRecord
   def role
     super.inquiry
   end
-
-  class << self
-    def authenticate(email, password)
-      account = Account.find_for_authentication(email: email)
-      account.try(:valid_password?, password) ? account : nil
-    end
-  end
 end
 
 # == Schema Information
