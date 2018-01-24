@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :websites
+  end
   devise_for :accounts
   root to: 'web/index#index', as: :index
 

@@ -17,6 +17,7 @@ module Barong
     config.generators.assets = false
     config.generators.helper = false
     config.generators.tests  = false
+    config.generators.test_framework :rspec
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
