@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180110115114) do
+ActiveRecord::Schema.define(version: 20180124190951) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -37,6 +37,31 @@ ActiveRecord::Schema.define(version: 20180110115114) do
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
+  end
+
+  create_table "customers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "address"
+    t.string "postcode"
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "customer_id"
+    t.string "upload_id"
+    t.string "upload_filename"
+    t.string "upload_content_size"
+    t.string "upload_content_type"
+    t.string "doc_type"
+    t.string "doc_number"
+    t.date "doc_expire"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
