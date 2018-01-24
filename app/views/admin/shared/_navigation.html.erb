@@ -9,6 +9,9 @@
         <li class="nav-item <%= 'active' if params[:controller].match?(/accounts/) %>">
           <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
         </li>
+        <li class="nav-item <%= 'active' if params[:controller].match?(/website/) %>">
+          <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>
+        </li>
       </ul>
       <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
     </div>

@@ -1,40 +1,21 @@
-require 'rails_helper'
+require 'spec_helper'
 
-RSpec.describe "admin/websites/index", type: :view do
-  before(:each) do
-    assign(:websites, [
-      Website.create!(
-        :domain => "Domain",
-        :title => "Title",
-        :logo => "Logo",
-        :stylesheet => "Stylesheet",
-        :header => "MyText",
-        :footer => "MyText",
-        :redirect_url => "Redirect Url",
-        :state => "State"
-      ),
-      Website.create!(
-        :domain => "Domain",
-        :title => "Title",
-        :logo => "Logo",
-        :stylesheet => "Stylesheet",
-        :header => "MyText",
-        :footer => "MyText",
-        :redirect_url => "Redirect Url",
-        :state => "State"
-      )
-    ])
-  end
+describe "admin/websites/index", type: :feature do
+  let!(:website) { create :website, id: 1 }
+  let!(:another_website) { create :website, id: 2 }
+  let!(:account) { create :account }
 
   it "renders a list of admin/websites" do
-    render
-    assert_select "tr>td", :text => "Domain".to_s, :count => 2
-    assert_select "tr>td", :text => "Title".to_s, :count => 2
-    assert_select "tr>td", :text => "Logo".to_s, :count => 2
-    assert_select "tr>td", :text => "Stylesheet".to_s, :count => 2
-    assert_select "tr>td", :text => "MyText".to_s, :count => 2
-    assert_select "tr>td", :text => "MyText".to_s, :count => 2
-    assert_select "tr>td", :text => "Redirect Url".to_s, :count => 2
-    assert_select "tr>td", :text => "State".to_s, :count => 2
+    account.update(role: :admin)
+    visit index_path
+    click_on 'Sign in'
+    fill_in 'account_email', with: account.email
+    fill_in 'account_password', with: account.password
+    click_on 'Submit'
+    visit admin_websites_path
+    expect(page).to have_content("#{website.domain}")
+                    have_content("#{website.title}")
+                    have_content("#{another_website.domain}")
+                    have_content("#{another_website.title}")
   end
 end

@@ -1,39 +1,23 @@
-require 'rails_helper'
+require 'spec_helper'
 
-RSpec.describe "admin/websites/new", type: :view do
-  before(:each) do
-    assign(:admin_website, Website.new(
-      :domain => "MyString",
-      :title => "MyString",
-      :logo => "MyString",
-      :stylesheet => "MyString",
-      :header => "MyText",
-      :footer => "MyText",
-      :redirect_url => "MyString",
-      :state => "MyString"
-    ))
-  end
+describe "admin/websites/new", type: :feature do
+  let!(:account) { create :account }
 
   it "renders new admin_website form" do
-    render
-
-    assert_select "form[action=?][method=?]", websites_path, "post" do
-
-      assert_select "input[name=?]", "admin_website[domain]"
-
-      assert_select "input[name=?]", "admin_website[title]"
-
-      assert_select "input[name=?]", "admin_website[logo]"
-
-      assert_select "input[name=?]", "admin_website[stylesheet]"
-
-      assert_select "textarea[name=?]", "admin_website[header]"
-
-      assert_select "textarea[name=?]", "admin_website[footer]"
-
-      assert_select "input[name=?]", "admin_website[redirect_url]"
-
-      assert_select "input[name=?]", "admin_website[state]"
-    end
+    account.update(role: :admin)
+    visit index_path
+    click_on 'Sign in'
+    fill_in 'account_email', with: account.email
+    fill_in 'account_password', with: account.password
+    click_on 'Submit'
+    visit new_admin_website_path
+    expect(page).to have_field 'Domain'
+                    have_field 'Title'
+                    have_field 'Logo'
+                    have_field 'Stylesheet'
+                    have_field 'Header'
+                    have_field 'Footer'
+                    have_field 'Redirect url'
+                    have_field 'State'
   end
 end
