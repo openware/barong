@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   scope module: :web do
     # Define public routes here.
+    resources :accounts
   end
 
   namespace :admin do

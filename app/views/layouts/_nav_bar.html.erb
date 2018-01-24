@@ -1,0 +1,10 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark mb-4">
+  <div class="container">
+    <%= link_to 'Barong', index_path, class: 'navbar-brand' %>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+      </ul>
+      <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+    </div>
+  </div>
+</nav>

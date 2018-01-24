@@ -9,14 +9,21 @@ class Account < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
+  mount_uploader :doc_photo, AvatarUploader
+  mount_uploader :residence_photo, AvatarUploader
+  validates :real_name, :document_type, :document_number, :residence_proof, presence: true, if: :check_status?
 
   def role
     super.inquiry
   end
+
+  def check_status?
+    status == true
+  end
 end
 
 # == Schema Information
-# Schema version: 20180110115114
+# Schema version: 20180124073519
 #
 # Table name: accounts
 #
@@ -41,6 +48,19 @@ end
 #  locked_at              :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  real_name              :string(255)
+#  birth_date             :datetime
+#  address                :string(255)
+#  city                   :string(255)
+#  country                :string(255)
+#  zipcode                :string(255)
+#  document_type          :string(255)
+#  document_number        :string(255)
+#  doc_photo              :string(255)
+#  residence_proof        :string(255)
+#  residence_photo        :string(255)
+#  verified               :boolean          default(FALSE)
+#  status                 :boolean          default(FALSE)
 #
 # Indexes
 #

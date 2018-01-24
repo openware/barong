@@ -8,9 +8,10 @@
     <%= javascript_include_tag 'web' %>
   </head>
   <body>
-    <p class="notice text-center"><%= notice %></p>
-    <p class="alert text-center"><%= alert %></p>
+    <%= render 'layouts/nav_bar' %>
     <div class="container-fluid">
+      <p class="notice text-center"><%= notice %></p>
+      <p class="alert text-center"><%= alert %></p>
       <%= yield %>
     </div>
   </body>
