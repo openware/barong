@@ -1,0 +1,57 @@
+<%= form_with(model: website, local: true) do |form| %>
+  <% if website.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(website.errors.count, "error") %> prohibited this website from being saved:</h2>
+
+      <ul>
+      <% website.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :domain %>
+    <%= form.text_field :domain, id: :website_domain %>
+  </div>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, id: :website_title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :logo %>
+    <%= form.text_field :logo, id: :website_logo %>
+  </div>
+
+  <div class="field">
+    <%= form.label :stylesheet %>
+    <%= form.text_field :stylesheet, id: :website_stylesheet %>
+  </div>
+
+  <div class="field">
+    <%= form.label :header %>
+    <%= form.text_area :header, id: :website_header %>
+  </div>
+
+  <div class="field">
+    <%= form.label :footer %>
+    <%= form.text_area :footer, id: :website_footer %>
+  </div>
+
+  <div class="field">
+    <%= form.label :redirect_url %>
+    <%= form.text_field :redirect_url, id: :website_redirect_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :state %>
+    <%= form.text_field :state, id: :website_state %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

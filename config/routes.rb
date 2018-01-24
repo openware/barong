@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
 
   use_doorkeeper
+
   devise_for :accounts
   root to: 'web/index#index', as: :index
 
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/', to: 'dashboard#index', as: :dashboard
     resources :accounts
+    resources :websites
   end
 
   namespace :api do

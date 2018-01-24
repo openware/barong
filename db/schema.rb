@@ -107,6 +107,20 @@ ActiveRecord::Schema.define(version: 20180125231014) do
     t.index ["account_id"], name: "index_profiles_on_account_id"
   end
 
+  create_table "websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "domain"
+    t.string "title"
+    t.string "logo"
+    t.string "stylesheet"
+    t.text "header"
+    t.text "footer"
+    t.string "redirect_url"
+    t.string "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_websites_on_domain", unique: true
+  end
+
   add_foreign_key "documents", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
