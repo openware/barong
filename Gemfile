@@ -14,8 +14,6 @@ gem 'bootstrap',    '~> 4.0.0.beta3'
 gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
 gem 'doorkeeper',   '~> 4.2.6'
-gem 'omniauth',     '~> 1.8.1'
-gem 'omniauth-oauth2', '~> 1.5.0'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
