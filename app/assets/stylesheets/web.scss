@@ -3,6 +3,29 @@
 @import "bootstrap";
 @import "web/devise";
 @import "web/general";
+@import "bootstrap-datepicker";
 
 .real-name{border-right: 1px solid #ddd;}
-.state{padding:30px;}
+.state form{padding:35px;}
+.left-mrgn{margin-left: 12px;}
+
+.state h1{
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 41px;
+}
+.btn.btn-default.btn_cancel {
+  float: right;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  max-width: 108px;
+  width: 100%;
+}
+.btn.btn-primary.btn_update {
+  float: right;
+  background: #357caf;
+  max-width: 200px;
+  width: 100%;
+  border-radius: 3px;
+  margin-left: 10px;
+}

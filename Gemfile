@@ -15,7 +15,7 @@ gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
 gem 'simple_form'
 gem 'carrierwave', '~> 1.0'
-gem 'rein'
+gem 'bootstrap-datepicker-rails'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

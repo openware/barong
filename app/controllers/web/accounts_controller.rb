@@ -5,7 +5,8 @@ module Web
   before_action :load_account, only: [:show, :edit, :update]
 
   def update
-    @account.update!(account_params)
+    @account.update(account_params)
+    redirect_to account_path(current_account)
   end
 
   private
