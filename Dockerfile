@@ -14,6 +14,7 @@ ENV RAILS_ENV ${RAILS_ENV}
 # preventing from running any scripts.
 # Users should override this variable by passing environment variable on container start.
 ENV DEVISE_SECRET_KEY='changeme'
+ENV SECRET_KEY_BASE='changeme'
 
 ENV APP_HOME=/home/app
 
