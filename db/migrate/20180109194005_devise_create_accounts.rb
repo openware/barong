@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DeviseCreateAccounts < ActiveRecord::Migration[5.0] # because with 5.1 Column `account_id` has a type of `bigint(20)`
+class DeviseCreateAccounts < ActiveRecord::Migration[5.1]
   def change
     create_table :accounts do |t|
       ## Database authenticatable
