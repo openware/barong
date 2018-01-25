@@ -40,19 +40,20 @@ ActiveRecord::Schema.define(version: 20180124190951) do
   end
 
   create_table "customers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
     t.string "address"
     t.string "postcode"
     t.string "city"
     t.string "country"
+    t.date "dob"
+    t.bigint "account_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_customers_on_account_id"
   end
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "customer_id"
     t.string "upload_id"
     t.string "upload_filename"
     t.string "upload_content_size"
@@ -60,8 +61,12 @@ ActiveRecord::Schema.define(version: 20180124190951) do
     t.string "doc_type"
     t.string "doc_number"
     t.date "doc_expire"
+    t.bigint "customer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_documents_on_customer_id"
   end
 
+  add_foreign_key "customers", "accounts"
+  add_foreign_key "documents", "customers"
 end
