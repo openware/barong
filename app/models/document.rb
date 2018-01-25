@@ -1,4 +1,5 @@
 class Document < ApplicationRecord
+  attachment :upload
 end
 
 # == Schema Information

@@ -17,28 +17,8 @@
   </div>
 
   <div class="field">
-    <%= form.label :upload_id %>
-    <%= form.text_field :upload_id, id: :document_upload_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :upload_filename %>
-    <%= form.text_field :upload_filename, id: :document_upload_filename %>
-  </div>
-
-  <div class="field">
-    <%= form.label :upload_content_size %>
-    <%= form.text_field :upload_content_size, id: :document_upload_content_size %>
-  </div>
-
-  <div class="field">
-    <%= form.label :upload_content_type %>
-    <%= form.text_field :upload_content_type, id: :document_upload_content_type %>
-  </div>
-
-  <div class="field">
     <%= form.label :doc_type %>
-    <%= form.text_field :doc_type, id: :document_doc_type %>
+    <%= form.select :doc_type, ['passport', 'identity card', 'driver license', 'utility bill'], id: :document_doc_type %>
   </div>
 
   <div class="field">
@@ -49,6 +29,16 @@
   <div class="field">
     <%= form.label :doc_expire %>
     <%= form.date_select :doc_expire, id: :document_doc_expire %>
+  </div>
+
+
+  <div class="field">
+    <%= form.label :upload %>
+    <%= form.attachment_field :upload %>
+
+    <% if @document.upload_id? %>
+      <%= image_tag attachment_url(@document, :upload, :fill, 100, 100, format: "jpg") %>
+    <% end %>
   </div>
 
   <div class="actions">
