@@ -10,6 +10,8 @@ class Account < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
 
+  has_one :profile, dependent: :destroy
+
   def role
     super.inquiry
   end

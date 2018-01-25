@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180122161524) do
+ActiveRecord::Schema.define(version: 20180125231014) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -37,6 +37,20 @@ ActiveRecord::Schema.define(version: 20180122161524) do
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
+  end
+
+  create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "profile_id"
+    t.string "upload_id"
+    t.string "upload_filename"
+    t.string "upload_content_size"
+    t.string "upload_content_type"
+    t.string "doc_type"
+    t.string "doc_number"
+    t.date "doc_expire"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_documents_on_profile_id"
   end
 
   create_table "oauth_access_grants", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -79,6 +93,22 @@ ActiveRecord::Schema.define(version: 20180122161524) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "account_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.date "dob"
+    t.string "address"
+    t.string "postcode"
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_profiles_on_account_id"
+  end
+
+  add_foreign_key "documents", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "profiles", "accounts"
 end
