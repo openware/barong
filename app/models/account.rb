@@ -1,22 +1,26 @@
-# frozen_string_literal: true
-
-#
-# Class Account
-#
 class Account < ApplicationRecord
+
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :lockable
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable,
+         :confirmable,
+         :lockable
+
+  has_one :customer, dependent: :destroy
 
   def role
     super.inquiry
   end
+
 end
 
 # == Schema Information
-# Schema version: 20180110115114
+# Schema version: 20180124190951
 #
 # Table name: accounts
 #
