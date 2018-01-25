@@ -1,0 +1,53 @@
+<div class='container'>
+  <p id="notice"><%= notice %></p>
+
+  <p>
+    <strong>Customer:</strong>
+    <%= @document.customer_id %>
+  </p>
+
+  <p>
+    <strong>Upload:</strong>
+    <%= @document.upload_id %>
+  </p>
+
+  <p>
+    <strong>Upload filename:</strong>
+    <%= @document.upload_filename %>
+  </p>
+
+  <p>
+    <strong>Upload content size:</strong>
+    <%= @document.upload_content_size %>
+  </p>
+
+  <p>
+    <strong>Upload content type:</strong>
+    <%= @document.upload_content_type %>
+  </p>
+
+  <% if @document.upload_id? %>
+    <p>
+      <strong>Photo:</strong>
+      <%= image_tag attachment_url(@document, :upload, :fill, 100, 100, format: "jpg") %>
+    </p>
+  <% end %>
+
+  <p>
+    <strong>Doc type:</strong>
+    <%= @document.doc_type %>
+  </p>
+
+  <p>
+    <strong>Doc number:</strong>
+    <%= @document.doc_number %>
+  </p>
+
+  <p>
+    <strong>Doc expire:</strong>
+    <%= @document.doc_expire %>
+  </p>
+
+  <%= link_to 'Edit', edit_document_path(@document) %> |
+  <%= link_to 'Back', documents_path %>
+</div>

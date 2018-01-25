@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :documents
-  resources :customers
   devise_for :accounts
   root to: 'web/index#index', as: :index
 
   scope module: :web do
-    # Define public routes here.
+    resources :documents
+    resources :customers
   end
 
   namespace :admin do

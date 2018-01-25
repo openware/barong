@@ -13,6 +13,10 @@ gem 'cancancan',    '~> 2.0'
 gem 'bootstrap',    '~> 4.0.0.beta3'
 gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
+gem 'sinatra', github: 'sinatra' #require master to get the rack >= 2.0
+# remove version on gem dependency to use sinatra master branch
+gem 'refile', require: 'refile/rails', github: 'pgericson/refile', branch: 'stupid-hack-sinatra-version'
+gem 'refile-mini_magick'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
