@@ -46,6 +46,7 @@ describe 'Phone verification' do
     visit new_phone_path
     fill_in 'number', with: '+380955555555'
     click_on 'Get code'
+    sleep 1 #FIXME we need to wait for html event
     fill_in 'code', with: FakeSMS.messages.last.body
     click_on 'Add'
     expect(page).to have_content("UA")
