@@ -1,0 +1,7 @@
+@function set-text-color($color, $percent: 65) {
+  @if (lightness($color) > $percent) {
+    @return #000000;
+  } @else {
+    @return #ffffff;
+  }
+}

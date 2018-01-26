@@ -1,5 +1,7 @@
 # README
 
+* Icon font library: https://github.com/railslove/fontello_rails_converter
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
