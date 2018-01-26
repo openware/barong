@@ -1,0 +1,42 @@
+// -----------------------------------------
+// Underlined form controls
+// -----------------------------------------
+
+.form-control.underlined {
+
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid $divider;
+
+  .has-error &:focus, .has-warning &:focus, .has-success &:focus, &:focus {
+    border: none;
+    box-shadow: none;
+    border-bottom: 1px solid $primary;
+  }
+
+  .has-error & {
+    box-shadow: none;
+    border-color: $danger;
+  }
+
+  .has-warning & {
+    box-shadow: none;
+    border-color: $warning;
+  }
+
+  .has-success & {
+    box-shadow: none;
+    border-color: $success;
+  }
+}
+
+.form-control.boxed {
+    border-radius: 0;
+    box-shadow: none;
+
+    &:focus {
+      border: 1px solid $primary;
+    }
+}
+
