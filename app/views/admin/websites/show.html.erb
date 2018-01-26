@@ -1,0 +1,46 @@
+<div class="container">
+  <p id="notice"><%= notice %></p>
+
+  <p>
+    <strong>Domain:</strong>
+    <%= @website.domain %>
+  </p>
+
+  <p>
+    <strong>Title:</strong>
+    <%= @website.title %>
+  </p>
+
+  <p>
+    <strong>Logo:</strong>
+    <%= @website.logo %>
+  </p>
+
+  <p>
+    <strong>Stylesheet:</strong>
+    <%= @website.stylesheet %>
+  </p>
+
+  <p>
+    <strong>Header:</strong>
+    <%= @website.header %>
+  </p>
+
+  <p>
+    <strong>Footer:</strong>
+    <%= @website.footer %>
+  </p>
+
+  <p>
+    <strong>Redirect Url:</strong>
+    <%= @website.redirect_url %>
+  </p>
+
+  <p>
+    <strong>State:</strong>
+    <%= @website.state %>
+  </p>
+
+  <%= link_to 'Edit', edit_admin_website_path(@website) %> |
+  <%= link_to 'Back', admin_websites_path %>
+</div>

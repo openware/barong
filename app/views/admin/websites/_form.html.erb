@@ -1,0 +1,89 @@
+<%= form_with(model: [:admin, @website], local: true) do |form| %>
+  <% if website.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(website.errors.count, "error") %> prohibited this website from being saved:</h2>
+
+      <ul>
+      <% website.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :domain %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :domain, id: :website_domain %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :title %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :title, id: :website_title %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :logo %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :logo, id: :website_logo %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :stylesheet %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :stylesheet, id: :website_stylesheet %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :header %>
+    </div>
+    <div class="col-4">
+      <%= form.text_area :header, id: :website_header %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :footer %>
+    </div>
+    <div class="col-4">
+      <%= form.text_area :footer, id: :website_footer %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :redirect_url %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :redirect_url, id: :website_redirect_url %>
+    </div>
+  </div>
+
+  <div class="field row">
+    <div class="col-4">
+      <%= form.label :state %>
+    </div>
+    <div class="col-4">
+      <%= form.text_field :state, id: :website_state %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit class: 'btn btn-primary' %>
+  </div>
+<% end %>
