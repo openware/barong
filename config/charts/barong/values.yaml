@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: gcr.io/helios-stage/barong
+  repository: gcr.io/helios-public/barong
   tag: latest
   pullPolicy: Always
 service:
@@ -29,11 +29,14 @@ twilioPhoneNumber: changeme
 app:
   vars: {}
 
-db:
-  host: barong-db-mysql
-  password: changeme
+# Set to override default database values.
+db: {}
+#  host:
+#  user:
+#  name:
+#  password:
 
-# Set to override default values in _helpers.tpl
+# Set to override default smtp values.
 smtp: {}
 #  address:
 #  port:
