@@ -8,10 +8,7 @@ RSpec.describe "documents/edit", type: :view do
 
     @document = assign(:document, Document.create!(
       :profile => profile,
-      :upload_id => "MyString",
-      :upload_filename => "MyString",
-      :upload_content_size => "MyString",
-      :upload_content_type => "MyString",
+      :upload => "MyString",
       :doc_type => "MyString",
       :doc_number => "MyString"
     ))
