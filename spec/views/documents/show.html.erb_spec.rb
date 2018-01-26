@@ -2,8 +2,12 @@ require 'spec_helper'
 
 RSpec.describe "documents/show", type: :view do
   before(:each) do
+    account = assign(:account, Account.create!(email: 'myemail@mail.com', password: 'MyString'))
+
+    profile = assign(:profile, Profile.create!(account: account))
+
     @document = assign(:document, Document.create!(
-      :profile => nil,
+      :profile => profile,
       :upload_id => "Upload",
       :upload_filename => "Upload Filename",
       :upload_content_size => "Upload Content Size",

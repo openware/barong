@@ -2,8 +2,10 @@ require 'spec_helper'
 
 RSpec.describe "profiles/edit", type: :view do
   before(:each) do
+    account = assign(:account, Account.create!(email: 'myemail@mail.com', password: 'MyString'))
+
     @profile = assign(:profile, Profile.create!(
-      :account => nil,
+      :account => account,
       :first_name => "MyString",
       :last_name => "MyString",
       :address => "MyString",

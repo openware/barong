@@ -21,6 +21,9 @@
 # JetBrains IDE configs.
 /.idea
 
+# Ruby Bersion Manager.
+.rvmrc
+
 /config/database.yml
 
 .DS_Store

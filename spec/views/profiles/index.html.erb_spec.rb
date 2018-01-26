@@ -2,9 +2,11 @@ require 'spec_helper'
 
 RSpec.describe "profiles/index", type: :view do
   before(:each) do
+    account = assign(:account, Account.create!(email: 'myemail@mail.com', password: 'MyString'))
+
     assign(:profiles, [
       Profile.create!(
-        :account => nil,
+        :account => account,
         :first_name => "First Name",
         :last_name => "Last Name",
         :address => "Address",
@@ -13,7 +15,7 @@ RSpec.describe "profiles/index", type: :view do
         :country => "Country"
       ),
       Profile.create!(
-        :account => nil,
+        :account => account,
         :first_name => "First Name",
         :last_name => "Last Name",
         :address => "Address",
