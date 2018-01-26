@@ -19,13 +19,14 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180125231014
+# Schema version: 20180126130155
 #
 # Table name: accounts
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
+#  role                   :string(30)       default("member"), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -41,8 +42,6 @@ end
 #  failed_attempts        :integer          default(0), not null
 #  unlock_token           :string(255)
 #  locked_at              :datetime
-#  role                   :string(255)      default("member"), not null
-#  level                  :integer          default(0), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
