@@ -9,10 +9,7 @@ RSpec.describe "documents/index", type: :view do
     assign(:documents, [
       Document.create!(
         :profile => profile,
-        :upload_id => "Upload",
-        :upload_filename => "Upload Filename",
-        :upload_content_size => "Upload Content Size",
-        :upload_content_type => "Upload Content Type",
+        :upload => "Upload",
         :doc_type => "Doc Type",
         :doc_number => "Doc Number"
       ),
@@ -32,9 +29,6 @@ RSpec.describe "documents/index", type: :view do
     render
     assert_select "tr>td", :text => nil.to_s, :count => 2
     assert_select "tr>td", :text => "Upload".to_s, :count => 2
-    assert_select "tr>td", :text => "Upload Filename".to_s, :count => 2
-    assert_select "tr>td", :text => "Upload Content Size".to_s, :count => 2
-    assert_select "tr>td", :text => "Upload Content Type".to_s, :count => 2
     assert_select "tr>td", :text => "Doc Type".to_s, :count => 2
     assert_select "tr>td", :text => "Doc Number".to_s, :count => 2
   end
