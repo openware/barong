@@ -5,7 +5,7 @@ class Profile < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180125231014
+# Schema version: 20180126130155
 #
 # Table name: profiles
 #
@@ -18,6 +18,7 @@ end
 #  postcode   :string(255)
 #  city       :string(255)
 #  country    :string(255)
+#  state      :string(255)      default("pending"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

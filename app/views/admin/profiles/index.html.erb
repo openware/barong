@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+    Profiles
+  </div>
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th><%= link_to('State', admin_profiles_path(params[:filter] == 'state_desc' ? {filter: :state_asc} : {filter: :state_desc})) %></th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Country</th>
+        <th colspan=3></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @profiles.each do |profile| %>
+        <% case profile.state %>
+          <% when 'created' %>
+            <% badge = 'primary' %>
+          <% when 'pending' %>
+            <% badge = 'warning' %>
+          <% when 'approved' %>
+            <% badge = 'success' %>
+          <% when 'rejected' %>
+            <% badge = 'danger' %>
+        <% end %>
+        <tr>
+          <td><%= profile.id %></td>
+          <td><span class="badge badge-<%=badge%>"><%= profile.state %></span></td>
+          <td><%= profile.first_name %></td>
+          <td><%= profile.last_name %></td>
+          <td><%= profile.country %></td>
+          <td><%= link_to 'Show', admin_profile_path(profile), class: 'btn btn-primary btn-sm' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @profiles %>
+</div>

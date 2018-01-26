@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 20180126130155) do
     t.string "postcode"
     t.string "city"
     t.string "country"
+    t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_profiles_on_account_id"
