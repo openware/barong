@@ -10,12 +10,12 @@ module Admin
     end
 
     def show
-      @profile    = Profile.find(params[:id])
-      @documents  = @profile.documents
+      @profile = Profile.find(params[:id])
+      @documents = @profile.documents
     end
 
     def change_state
-      @profile  = Profile.find(params[:id])
+      @profile = Profile.find(params[:id])
 
       return if @profile.state == params[:state]
 
