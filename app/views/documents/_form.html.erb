@@ -38,7 +38,7 @@
 
   <div class="field">
     <%= form.label :doc_type %>
-    <%= form.text_field :doc_type, id: :document_doc_type %>
+    <%= form.select :doc_type,['passport', 'identity card', 'driver license', 'utility bill'], id: :document_doc_type %>
   </div>
 
   <div class="field">
