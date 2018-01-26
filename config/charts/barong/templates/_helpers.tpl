@@ -46,6 +46,10 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
   value: {{ default "changeme" .Values.deviseSecretKey | quote }}
 {{- end -}}
 
+
+ ENV['SMTP_ADDRESS'],
+      port:                 ENV['SMTP_PORT'],
+      domain:               ENV['SMTP_DOMAIN'],
 {{/*
 Environment for barong container
 */}}
@@ -64,6 +68,12 @@ Environment for barong container
   value: {{ default "root" .Values.db.user }}
 - name: DATABASE_NAME
   value: {{ default "barong_production" .Values.db.name }}
+- name: SMTP_ADDRESS
+  value: {{ default "smtp-relay.kube-services" .Values.smtp.address }}
+- name: SMTP_PORT
+  value: {{ default "25" .Values.smtp.port }}
+- name: SMTP_DOMAIN
+  value: {{ default "helioscloud.com" .Values.smtp.domain }}
 {{- range $key, $value := .Values.app.vars }}
 - name: {{ $key }}
   value: {{ $value | quote }}

@@ -22,6 +22,10 @@ ingress:
     enabled: true
 resources: {}
 
+twilioAccountSid: changeme
+twilioAuthToken: changeme
+twilioPhoneNumber: changeme
+
 app:
   vars: {}
 
@@ -29,6 +33,8 @@ db:
   host: barong-db-mysql
   password: changeme
 
-twilioAccountSid: changeme
-twilioAuthToken: changeme
-twilioPhoneNumber: changeme
+# Set to override default values in _helpers.tpl
+smtp: {}
+#  address:
+#  port:
+#  domain:
