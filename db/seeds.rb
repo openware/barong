@@ -7,17 +7,8 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-admin_email = ENV.fetch('ADMIN_USER', 'admin@peatio.tech')
-admin = Account.create(email: admin_email, password: 'P@ssword', role: 'admin', confirmed_at: Time.now)
-p "ADMIN email: #{admin.email} pass: #{admin.password}"
+admin_email = ENV.fetch('ADMIN_USER', 'admin@barong.io')
 
-if Rails.env != 'production'
-  secret = 'ZVBLXPBPtwa7YCK5pa2MqkBKXXZQ3HLDuc2hDtWVNWDpbd4qYUMdReNEND6sbHUg'
-  id = Doorkeeper::Application.last ? Doorkeeper::Application.last.id : 1
-  Doorkeeper::Application.create( id:           id,
-                                  name:         'TestClient',
-                                  uid:          1,
-                                  secret:       secret,
-                                  redirect_uri: 'http://localhost:3000/oauth/callback')
-end
+admin = Account.create(email: admin_email, password: SecureRandom.hex(20), level: 1, role: 'admin', confirmed_at: Time.now)
 
+puts 'Admin credentials: %s' % [admin.password]
