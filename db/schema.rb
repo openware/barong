@@ -42,10 +42,7 @@ ActiveRecord::Schema.define(version: 20180126130155) do
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "profile_id"
-    t.string "upload_id"
-    t.string "upload_filename"
-    t.string "upload_content_size"
-    t.string "upload_content_type"
+    t.string "upload"
     t.string "doc_type"
     t.string "doc_number"
     t.date "doc_expire"
