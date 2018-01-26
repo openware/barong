@@ -24,7 +24,7 @@ class ProfilesController < ApplicationController
     @profile = Profile.new(profile_params)
 
     if @profile.save
-      redirect_to @profile, notice: 'Profile was successfully created.'
+      redirect_to new_document_path
     else
       render :new
     end
