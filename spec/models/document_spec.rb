@@ -1,5 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe Document, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  ## Test of relationships
+  it { should belong_to(:profile) }
+
 end
