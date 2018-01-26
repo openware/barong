@@ -1,23 +1,28 @@
 require 'spec_helper'
 
-describe "admin/websites/show", type: :feature do
-  let!(:account) { create :account }
-  let!(:website) { create :website }
+RSpec.describe 'admin/websites/show', type: :view do
+  before(:each) do
+    @website = assign(:admin_website, Website.create!(
+                                              domain: 'Domain',
+                                              title: 'Title',
+                                              logo: 'Logo',
+                                              stylesheet: 'Stylesheet',
+                                              header: 'MyText',
+                                              footer: 'MyText',
+                                              redirect_url: 'Redirect Url',
+                                              state: 'State'
+    ))
+  end
 
-  it "renders attributes in <p>" do
-    account.update(role: :admin)
-    visit index_path
-    click_on 'Sign in'
-    fill_in 'account_email', with: account.email
-    fill_in 'account_password', with: account.password
-    click_on 'Submit'
-    visit admin_website_path(website)
-    expect(page).to have_content("#{website.domain}")
-                    have_content("#{website.title}")
-                    have_content("#{website.logo}")
-                    have_content("#{website.stylesheet}")
-                    have_content("#{website.header}")
-                    have_content("#{website.footer}")
-                    have_content("#{website.redirect_url}")
+  it 'renders attributes in <p>' do
+    render
+    expect(rendered).to match(/Domain/)
+    expect(rendered).to match(/Title/)
+    expect(rendered).to match(/Logo/)
+    expect(rendered).to match(/Stylesheet/)
+    expect(rendered).to match(/MyText/)
+    expect(rendered).to match(/MyText/)
+    expect(rendered).to match(/Redirect Url/)
+    expect(rendered).to match(/State/)
   end
 end

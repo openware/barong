@@ -1,24 +1,38 @@
 require 'spec_helper'
 
-describe "admin/websites/edit", type: :feature do
-  let!(:website) { create :website }
-  let!(:account) { create :account }
+RSpec.describe 'admin/websites/edit', type: :view do
+  before(:each) do
+    @website = assign(:admin_website, Website.create!(
+                                              domain: 'MyString',
+                                              title: 'MyString',
+                                              logo: 'MyString',
+                                              stylesheet: 'MyString',
+                                              header: 'MyText',
+                                              footer: 'MyText',
+                                              redirect_url: 'MyString',
+                                              state: 'MyString'
+    ))
+  end
 
-  it "renders the edit admin_website form" do
-    account.update(role: :admin)
-    visit index_path
-    click_on 'Sign in'
-    fill_in 'account_email', with: account.email
-    fill_in 'account_password', with: account.password
-    click_on 'Submit'
-    visit edit_admin_website_path(website)
-    expect(page).to have_field 'Domain'
-                    have_field 'Title'
-                    have_field 'Logo'
-                    have_field 'Stylesheet'
-                    have_field 'Header'
-                    have_field 'Footer'
-                    have_field 'Redirect url'
-                    have_field 'State'
+  it 'renders the edit admin_website form' do
+    render
+
+    assert_select 'form[action=?][method=?]', admin_website_path(@website.id), 'post' do
+      assert_select 'input[name=?]', 'website[domain]'
+
+      assert_select 'input[name=?]', 'website[title]'
+
+      assert_select 'input[name=?]', 'website[logo]'
+
+      assert_select 'input[name=?]', 'website[stylesheet]'
+
+      assert_select 'textarea[name=?]', 'website[header]'
+
+      assert_select 'textarea[name=?]', 'website[footer]'
+
+      assert_select 'input[name=?]', 'website[redirect_url]'
+
+      assert_select 'input[name=?]', 'website[state]'
+    end
   end
 end
