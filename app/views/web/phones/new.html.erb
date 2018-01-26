@@ -1,0 +1,26 @@
+
+<div class="container">
+  <h2>Add phone</h2>
+  <%= form_tag('/phones') do %>
+    <ul class="list-group">
+      <li class="list-group-item">
+      <div class="form-group">
+        <%= label_tag :number %><br />
+        <%= text_field_tag :number %>
+      </div>
+      <div id="error"></div>
+      <input type="button" class="btn btn-primary" id="send-code-btn" value="Get code" onclick="sendVerificationCode()">
+      </li>
+      <li class="list-group-item">
+      <div class="form-group">
+         <%= label_tag :code %><br />
+         <%= text_field_tag :code %>
+      </div>
+
+      <div class="actions">
+         <%= submit_tag 'Add', class: "btn btn-primary", disabled: true, id: "create-phone" %>
+      </div>
+      </li>
+  </ul>
+  <% end %>
+</div>
