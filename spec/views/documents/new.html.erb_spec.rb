@@ -24,17 +24,15 @@ RSpec.describe "documents/new", type: :view do
 
       assert_select "input[name=?]", "document[profile_id]"
 
-      assert_select "input[name=?]", "document[upload_id]"
-
-      assert_select "input[name=?]", "document[upload_filename]"
-
-      assert_select "input[name=?]", "document[upload_content_size]"
-
-      assert_select "input[name=?]", "document[upload_content_type]"
-
-      assert_select "input[name=?]", "document[doc_type]"
+      assert_select "select[name=?]", "document[doc_type]"
 
       assert_select "input[name=?]", "document[doc_number]"
+
+      assert_select "select[name=?]", "document[doc_expire(1i)]"
+
+      assert_select "select[name=?]", "document[doc_expire(2i)]"
+
+      assert_select "select[name=?]", "document[doc_expire(3i)]"
     end
   end
 end
