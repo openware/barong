@@ -5,7 +5,7 @@
 
 
 function sendVerificationCode() {
-  number = $("#number").val();
+  number = '+' + $("#country_code").val() + $("#number").val();
    $.ajax({
      headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') },
      method:  'POST',
@@ -15,7 +15,8 @@ function sendVerificationCode() {
         if (result.success){
           $("#error").text('');
           $("#create-phone").prop('disabled', false);
-          $("#send-code-btn").prop('value', 'Resend');
+          $("#send-code-btn").fadeTo( 1000, 0 );
+          $("#send-code-btn").prop('disabled', true);
         } else {
           $("#error").text('Phone number is invalid');
         };

@@ -30,13 +30,3 @@
     border-color: $success;
   }
 }
-
-.form-control.boxed {
-    border-radius: 0;
-    box-shadow: none;
-
-    &:focus {
-      border: 1px solid $primary;
-    }
-}
-

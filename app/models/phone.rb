@@ -40,7 +40,7 @@ class Phone < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180123155346
+# Schema version: 20180126130155
 #
 # Table name: phones
 #

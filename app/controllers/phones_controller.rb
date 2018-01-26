@@ -13,7 +13,7 @@ class PhonesController < ApplicationController
   def create
     begin
       code = phone_params[:code]
-      number = phone_params[:number]
+      number = '+' + phone_params[:country_code] + phone_params[:number]
 
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
@@ -24,7 +24,7 @@ class PhonesController < ApplicationController
       return redirect_to new_phone_url, notice: 'Phone verification failed'
     end
 
-    redirect_to phones_path
+    redirect_to new_profile_path
   end
 
   def verify
@@ -47,7 +47,7 @@ class PhonesController < ApplicationController
   private
 
   def phone_params
-    params.permit(:number, :code)
+    params.permit(:country_code, :number, :code)
   end
 
 end

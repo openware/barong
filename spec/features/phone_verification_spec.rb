@@ -10,7 +10,7 @@ describe 'Phone verification' do
     fill_in 'account_password', with: account.password
     click_on 'Submit'
     visit new_phone_path
-    expect(page).to have_content("Add phone")
+    expect(page).to have_content('Add mobile phone')
   end
 
   it 'verifies phone number' do
@@ -21,8 +21,8 @@ describe 'Phone verification' do
     click_on 'Submit'
     visit new_phone_path
     fill_in 'number', with: 'qwerty'
-    click_on 'Get code'
-    expect(page).to have_content("invalid")
+    click_on 'Get verification code'
+    expect(page).to have_content('invalid')
   end
 
   it 'verifies phone number' do
@@ -33,8 +33,8 @@ describe 'Phone verification' do
     click_on 'Submit'
     visit new_phone_path
     fill_in 'number', with: '+380955555555'
-    click_on 'Get code'
-    expect(page).not_to have_content("invalid")
+    click_on 'Get verification code'
+    expect(page).not_to have_content('invalid')
   end
 
   it 'creates phone' do
@@ -45,10 +45,10 @@ describe 'Phone verification' do
     click_on 'Submit'
     visit new_phone_path
     fill_in 'number', with: '+380955555555'
-    click_on 'Get code'
+    click_on 'Get verification code'
     sleep 1 #FIXME we need to wait for html event
     fill_in 'code', with: FakeSMS.messages.last.body
-    click_on 'Add'
-    expect(page).to have_content("UA")
+    click_on 'Next'
+    expect(page).to have_content('Complete your profile')
   end
 end
