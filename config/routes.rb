@@ -5,16 +5,13 @@ Rails.application.routes.draw do
   use_doorkeeper
 
   devise_for :accounts
-  root to: 'web/index#index', as: :index
+  root to: 'index#index', as: :index
 
-  resources :documents
+  post  'phones/verification', to: 'phones#verify'
+
+  resources :phones
   resources :profiles
-
-  scope module: :web do
-    # Define public routes here.
-    resources :phones
-    post  'phones/verification', to: 'phones#verify'
-  end
+  resources :documents
 
   namespace :admin do
     get '/', to: 'dashboard#index', as: :dashboard

@@ -7,6 +7,36 @@ class Phone < ApplicationRecord
   belongs_to :account
 
   validates :number, phone: true
+
+  before_validation :parse_country
+
+  def validate_code!(original, confirm)
+    if original != confirm
+      errors.add(:code, "Invalid code.")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
+
+  def send_sms(content)
+    sid = Rails.application.secrets.twilio_account_sid
+    token = Rails.application.secrets.twilio_auth_token
+    client = Twilio::REST::Client.new(sid, token)
+    client.messages.create(
+      from: Rails.application.secrets.twilio_phone_number,
+      to:   number,
+      body: content
+    )
+  end
+
+  def generate_code
+    rand.to_s[2..6]
+  end
+
+  def parse_country
+    data = Phonelib.parse(number)
+    self.country = data.country
+  end
+
 end
 
 # == Schema Information
