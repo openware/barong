@@ -10,10 +10,10 @@ namespace :db do
                                role: 'admin',
                                confirmed_at: Faker::Time.between(2.days.ago, Date.today))
 
-      Profile.create(account: account,
-                     first_name: Faker::Name.first_name,
-                     last_name: Faker::Name.last_name,
-                     country: Faker::Address.country)
+      Profile.create(account:     account,
+                     first_name:  Faker::Name.first_name,
+                     last_name:   Faker::Name.last_name,
+                     country:     Faker::Address.country)
 
       ## Creating accounts with profiles and with documents
       [*1..100].each do |count|
@@ -21,22 +21,13 @@ namespace :db do
                                  password:      Faker::Internet.password,
                                  confirmed_at:  Faker::Time.between(2.days.ago, Date.today))
 
-        case Faker::Number.between(0, 3)
-          when 0
-            state = 'created'
-          when 1
-            state = 'pending'
-          when 2
-            state = 'approved'
-          when 3
-            state = 'rejected'
-        end
+        states = ['created', 'pending', 'approved', 'rejected']
 
         profile = Profile.create(account:     account,
                                  first_name:  Faker::Name.first_name,
                                  last_name:   Faker::Name.last_name,
                                  country:     Faker::Address.country,
-                                 state:       state)
+                                 state:       states.sample)
 
         [*0..Faker::Number.between(0, 5)].each do |count|
           profile.documents.create(upload_id:           Faker::Number.number(3),
