@@ -4,8 +4,8 @@
 replicaCount: 1
 image:
   repository: gcr.io/helios-stage/barong
-  tag: 0.1.0
-  pullPolicy: IfNotPresent
+  tag: latest
+  pullPolicy: Always
 service:
   name: barong
   type: ClusterIP
@@ -14,16 +14,21 @@ service:
 ingress:
   enabled: true
   hosts:
-    - barong.local
+    - barong.kayen.io
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   tls:
     enabled: true
-
 resources: {}
 
-barong:
-  env: {}
+app:
+  vars: {}
 
-db: {}
+db:
+  host: barong-db-mysql
+  password: changeme
+
+twilioAccountSid: changeme
+twilioAuthToken: changeme
+twilioPhoneNumber: changeme

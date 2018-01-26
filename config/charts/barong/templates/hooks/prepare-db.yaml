@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-prepare-db-{{ randNumeric 5 }}"
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "barong.fullname" . }}
     component: barong
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
@@ -13,13 +13,13 @@ spec:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "barong.fullname" . }}
         component: barong
     spec:
       restartPolicy: OnFailure
       containers:
         - name: prepare-db
-          image: {{ template "image" . }}
+          image: {{ template "barong.image" . }}
           command: ["rake", "db:create", "db:migrate"]
           env:
-{{ include "prepare-db-env" . | indent 12 }}
+{{ include "barong.hook-env" . | indent 12 }}

@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+.git
+.gitignore
+LICENSE.md
+Makefile
+README.md
+.travis.yml
+VERSION

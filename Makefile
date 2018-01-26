@@ -18,11 +18,12 @@ push: build
 
 run:
 	@echo '> Starting "$(SERVICE)" container...'
-	@docker run -d $(IMAGE)
+	@docker run -d --name=database -e MYSQL_ALLOW_EMPTY_PASSWORD=true -p 13306:13306 mysql
+	@docker run --link=database -e DATABASE_HOST=database -p 3000:3000 -d $(IMAGE)
 
 ci:
 	@fly -t ci set-pipeline -p $(SERVICE) -c config/pipelines/review.yml -n
 	@fly -t ci unpause-pipeline -p $(SERVICE)
 
 deploy:
-	./bin/helm/app_up.sh
+	@helm install --name $(SERVICE) config/charts/barong --set="image.tag=$(VERSION)"
