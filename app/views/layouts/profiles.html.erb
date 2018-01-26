@@ -5,7 +5,7 @@
   <title>Barong</title>
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag    'web', media: 'all' %>
-  <%= stylesheet_link_tag @styles unless @styles.nil? %>
+  <%= domain_stylesheet_tag(@stylesheet_url) %>
   <%= javascript_include_tag 'web' %>
 </head>
 <body>

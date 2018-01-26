@@ -5,8 +5,9 @@ class ApplicationController < ActionController::Base
   before_action :domain_stylesheet
 
   def domain_stylesheet
+    return unless  @stylesheet_url.nil?
     website = Website.find_by_domain(request.domain)
-    @styles = website.nil? || website.stylesheet.empty? ? nil : website.stylesheet
+    @stylesheet_url = website.nil? || website.stylesheet.empty? ? nil : website.stylesheet
   end
 
   def doorkeeper_unauthorized_render_options(error: nil)
