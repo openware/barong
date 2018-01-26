@@ -1,7 +1,7 @@
 VERSION ?= $(shell cat VERSION)
 ENV     ?= staging
 SERVICE := barong
-IMAGE   := gcr.io/helios-stage/barong:$(VERSION)
+IMAGE   := gcr.io/helios-public/barong:$(VERSION)
 CURRENT_CONTEXT := $(shell kubectl config current-context)
 
 .PHONY: default build push run ci deploy

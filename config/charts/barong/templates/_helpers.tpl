@@ -64,6 +64,12 @@ Environment for barong container
   value: {{ default "root" .Values.db.user }}
 - name: DATABASE_NAME
   value: {{ default "barong_production" .Values.db.name }}
+- name: SMTP_ADDRESS
+  value: {{ default "smtp-relay.kube-services" .Values.smtp.address }}
+- name: SMTP_PORT
+  value: {{ default "25" .Values.smtp.port | quote }}
+- name: SMTP_DOMAIN
+  value: {{ default "helioscloud.com" .Values.smtp.domain }}
 {{- range $key, $value := .Values.app.vars }}
 - name: {{ $key }}
   value: {{ $value | quote }}

@@ -44,7 +44,7 @@ resources:
   - name: barong-image
     type: docker-image
     source:
-      repository: gcr.io/helios-stage/barong
+      repository: gcr.io/helios-public/barong
       username: _json_key
       password: ((barong_gcr_password))
 
