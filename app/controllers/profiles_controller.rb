@@ -13,6 +13,7 @@ class ProfilesController < ApplicationController
   # POST /profiles
   def create
     @profile = Profile.new(profile_params)
+    @profile.update!(account_id: current_account.id)
 
     if @profile.save
       current_account.increase_level

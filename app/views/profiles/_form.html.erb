@@ -12,47 +12,41 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :account_id %>
-    <%= form.text_field :account_id, id: :profile_account_id, class: "form-control underlined" %>
-  </div>
-  <div class="row form-group">
-    <div class="col-6">
-      <%= form.text_field :first_name, id: :profile_first_name, class: "form-control underlined", placeholder: 'First name' %>
-    </div>
-
-    <div class="col-6">
-      <%= form.text_field :last_name, id: :profile_last_name, class: "form-control underlined", placeholder: 'Last name' %>
-    </div>
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, id: :profile_first_name %>
   </div>
 
-  <div class="field form-group">
+  <div class="field">
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, id: :profile_last_name %>
+  </div>
+
+  <div class="field">
     <%= form.label :dob %>
     <%= form.date_select :dob, id: :profile_dob %>
   </div>
 
-  <div class="row form-group">
-    <div class="col-6">
-      <%= form.text_field :address, id: :profile_address, class: "form-control underlined", placeholder: 'Address' %>
-    </div>
-
-    <div class="col-6">
-      <%= form.text_field :postcode, id: :profile_postcode, class: "form-control underlined", placeholder: 'Postcode' %>
-    </div>
+  <div class="field">
+    <%= form.label :address %>
+    <%= form.text_field :address, id: :profile_address %>
   </div>
 
-  <div class="row form-group">
-    <div class="col-6">
-      <%= form.text_field :city, id: :profile_city, class: "form-control underlined", placeholder: 'City' %>
-    </div>
-
-    <div class="col-6">
-      <%= form.text_field :country, id: :profile_country, class: "form-control underlined", placeholder: 'Country' %>
-    </div>
+  <div class="field">
+    <%= form.label :postcode %>
+    <%= form.text_field :postcode, id: :profile_postcode %>
   </div>
 
-  <div class="container">
-    <div class="d-flex justify-content-center">
-      <%= form.submit "Next", class: "btn btn-primary btn-block mb-4" %>
-    </div>
+  <div class="field">
+    <%= form.label :city %>
+    <%= form.text_field :city, id: :profile_city %>
+  </div>
+
+  <div class="field">
+    <%= form.label :country %>
+    <%= form.text_field :country, id: :profile_country %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
   </div>
 <% end %>
