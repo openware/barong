@@ -11,6 +11,8 @@
         </li>
         <li class="nav-item" >
           <%= link_to 'Applications', oauth_applications_path, class: 'nav-link' %>
+        <li class="nav-item <%= 'active' if params[:controller].match?(/website/) %>">
+          <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>
         </li>
       </ul>
       <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>

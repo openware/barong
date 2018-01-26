@@ -1,4 +1,4 @@
-require "rails_helper"
+require "spec_helper"
 
 RSpec.describe Admin::WebsitesController, type: :routing do
   describe "routing" do

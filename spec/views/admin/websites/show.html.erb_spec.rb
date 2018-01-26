@@ -1,20 +1,20 @@
-require 'rails_helper'
+require 'spec_helper'
 
-RSpec.describe "admin/websites/show", type: :view do
+RSpec.describe 'admin/websites/show', type: :view do
   before(:each) do
-    @admin_website = assign(:admin_website, Website.create!(
-      :domain => "Domain",
-      :title => "Title",
-      :logo => "Logo",
-      :stylesheet => "Stylesheet",
-      :header => "MyText",
-      :footer => "MyText",
-      :redirect_url => "Redirect Url",
-      :state => "State"
+    @website = assign(:admin_website, Website.create!(
+                                              domain: 'Domain',
+                                              title: 'Title',
+                                              logo: 'Logo',
+                                              stylesheet: 'Stylesheet',
+                                              header: 'MyText',
+                                              footer: 'MyText',
+                                              redirect_url: 'Redirect Url',
+                                              state: 'State'
     ))
   end
 
-  it "renders attributes in <p>" do
+  it 'renders attributes in <p>' do
     render
     expect(rendered).to match(/Domain/)
     expect(rendered).to match(/Title/)
