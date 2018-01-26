@@ -1,0 +1,4 @@
+<% environment.context_class.instance_eval { include ApplicationHelper } %>
+<% if !inject_css.empty? %>
+  @import url("<%= inject_css %>");
+<% end %>
