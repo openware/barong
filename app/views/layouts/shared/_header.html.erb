@@ -4,10 +4,10 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item <%= 'active' if params[:controller].match?(/phones/) %>">
-          <%= link_to 'Phones', new_phone_path, class: 'nav-link' %>
+          <%= link_to 'Phone', new_phone_path, class: 'nav-link' %>
         </li>
-        <li class="nav-item <%= 'active' if params[:controller].match?(/phones/) %>">
-          <%= link_to 'Profiles', profiles_path, class: 'nav-link' %>
+        <li class="nav-item <%= 'active' if params[:controller].match?(/profiles/) %>">
+          <%= link_to 'Profile', new_profile_path, class: 'nav-link' %>
         </li>
       </ul>
       <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>

@@ -2,10 +2,6 @@
 
 class PhonesController < ApplicationController
 
-  def index
-    @phones = current_account.phones
-  end
-
   def new
     @phone = Phone.new
   end
