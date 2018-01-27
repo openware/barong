@@ -17,7 +17,7 @@
   </p>
 
   <p>
-    <%= image_tag(@document.upload.url, alt: 'Doc photo')%>
+    <%= @document.upload.present? ? image_tag(@document.upload.url, alt: 'Doc photo') : ''%>
   </p>
 
   <%= link_to 'Edit', edit_document_path(@document) %>
