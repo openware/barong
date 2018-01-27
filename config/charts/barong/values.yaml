@@ -22,9 +22,10 @@ ingress:
     enabled: true
 resources: {}
 
-twilioAccountSid: changeme
-twilioAuthToken: changeme
-twilioPhoneNumber: changeme
+twilio:
+  accountSid: changeme
+  authToken: changeme
+  phoneNumber: changeme
 
 app:
   vars: {}
@@ -41,3 +42,4 @@ smtp: {}
 #  address:
 #  port:
 #  domain:
+
