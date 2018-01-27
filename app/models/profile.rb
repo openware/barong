@@ -2,12 +2,6 @@ class Profile < ApplicationRecord
   belongs_to :account
 
   has_many :documents, dependent: :destroy
-
-  validate :state_not_changed, unless: 'self.state_changed?'
-
-  def state_not_changed
-    errors.add(:state, 'value has not changed')
-  end
 end
 
 # == Schema Information
