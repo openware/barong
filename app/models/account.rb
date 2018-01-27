@@ -16,6 +16,10 @@ class Account < ApplicationRecord
   def role
     super.inquiry
   end
+
+  def increase_level
+    self.level += 1
+  end
 end
 
 # == Schema Information
