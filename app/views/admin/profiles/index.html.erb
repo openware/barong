@@ -2,11 +2,24 @@
   <div class="row">
     Profiles
   </div>
+  <li class="list-group-item">
+    <b> Filter by state: </b>
+    <div class="dropdown show">
+      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <%= params[:filter]&.upcase_first || 'Select' %>
+      </a>
+      <div class="dropdown-menu">
+        <% @states.each do |state|%>
+            <%= link_to(state.upcase_first, admin_profiles_path(filter: state), class: 'dropdown-item') unless params[:filter] == state%>
+        <% end %>
+      </div>
+    </div>
+  </li>
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>
         <th>ID</th>
-        <th><%= link_to('State', admin_profiles_path(params[:filter] == 'state_desc' ? {filter: :state_asc} : {filter: :state_desc})) %></th>
+        <th>State</th>
         <th>First name</th>
         <th>Last name</th>
         <th>Country</th>
@@ -15,19 +28,9 @@
     </thead>
     <tbody>
       <% @profiles.each do |profile| %>
-        <% case profile.state %>
-          <% when 'created' %>
-            <% badge = 'primary' %>
-          <% when 'pending' %>
-            <% badge = 'warning' %>
-          <% when 'approved' %>
-            <% badge = 'success' %>
-          <% when 'rejected' %>
-            <% badge = 'danger' %>
-        <% end %>
         <tr>
           <td><%= profile.id %></td>
-          <td><span class="badge badge-<%=badge%>"><%= profile.state %></span></td>
+          <td><span class="badge badge-<%=badge_by_state(profile.state)%>"><%= profile.state %></span></td>
           <td><%= profile.first_name %></td>
           <td><%= profile.last_name %></td>
           <td><%= profile.country %></td>

@@ -34,18 +34,16 @@
 
       <li class="list-group-item">
         <b> State: </b>
-
         <div class="dropdown show">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= @profile.state %>
+            <%= @profile.state.upcase_first %>
           </a>
             <div class="dropdown-menu">
-              <% ['created', 'pending', 'approved', 'rejected'].each do |state|%>
-                <%= link_to(state, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @profile.state == state%>
+              <% @states.each do |state|%>
+                <%= link_to(state.upcase_first, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @profile.state == state%>
               <% end %>
             </div>
         </div>
-
       </li>
     </ul>
   </div>
