@@ -5,7 +5,7 @@
   <%= csrf_meta_tags %>
 
   <%= stylesheet_link_tag    'web', media: 'all' %>
-  <%= domain_stylesheet_tag(domain_stylesheet()) %>
+  <%= domain_stylesheet_tag(domain_asset :stylesheet) %>
   <%= javascript_include_tag 'web' %>
 </head>
 <body class="devise">
@@ -15,7 +15,7 @@
     <div class="row justify-content-center">
       <div class="col-xs-12 col-sm-10 col-md-6 col-lg-4">
         <div class="main-logo">
-          <%= link_to image_tag("logo-white.png"), index_path %>
+          <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
         </div>
       </div>
     </div>
@@ -23,12 +23,14 @@
     <div class="row justify-content-center">
       <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 mt-5">
         <div class="card">
+          <%= domain_html_tag(domain_asset :header) %>
 
           <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
           <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
           <%= yield %>
 
+          <%= domain_html_tag(domain_asset :footer) %>
         </div>
       </div>
     </div>
