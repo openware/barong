@@ -8,7 +8,7 @@ RSpec.describe "documents/show", type: :view do
 
     @document = assign(:document, Document.create!(
       :profile => profile,
-      :upload => "Upload",
+      :upload => File.open('app/assets/images/logo-black.png'),
       :doc_type => "Doc Type",
       :doc_number => "Doc Number"
     ))
@@ -17,7 +17,6 @@ RSpec.describe "documents/show", type: :view do
   it "renders attributes in <p>" do
     render
     expect(rendered).to match(//)
-    expect(rendered).to match(/Upload/)
     expect(rendered).to match(/Doc Type/)
     expect(rendered).to match(/Doc Number/)
   end

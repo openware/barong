@@ -56,10 +56,7 @@
       <thead>
       <tr>
         <th>ID</th>
-        <th>Upload ID</th>
-        <th>Upload File Name</th>
-        <th>Upload Content Size</th>
-        <th>Upload Content Type</th>
+        <th>Document</th>
         <th>Doc Type</th>
         <th>Doc Number</th>
         <th>Doc Expire</th>
@@ -69,10 +66,7 @@
       <% @documents.each do |document| %>
         <tr>
           <td><%= document.id %></td>
-          <td><%= document.upload_id %></td>
-          <td><%= document.upload_filename %></td>
-          <td><%= document.upload_content_size %></td>
-          <td><%= document.upload_content_type %></td>
+          <td><%= link_to(document.upload&.file&.filename, asset_path(document.upload), target: '_blank') %></td>
           <td><%= document.doc_type %></td>
           <td><%= document.doc_number %></td>
           <td><%= document.doc_expire %></td>
