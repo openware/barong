@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     get '/', to: 'dashboard#index', as: :dashboard
     resources :accounts
     resources :websites
+    resources :profiles do
+      put :change_state,    on: :member
+    end
   end
 
   namespace :api do

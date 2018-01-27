@@ -9,6 +9,7 @@ class CreateProfiles < ActiveRecord::Migration[5.1]
       t.string :postcode
       t.string :city
       t.string :country
+      t.string :state, null: false, default: 'pending'
 
       t.timestamps
     end
