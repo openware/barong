@@ -19,7 +19,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180125231014
+# Schema version: 20180126130155
 #
 # Table name: accounts
 #
