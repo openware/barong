@@ -3,16 +3,11 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  helper_method :domain_stylesheet
+  helper_method :domain_asset
 
-  def domain_stylesheet
-    if @stylesheet_url.nil?
-      website = Website.find_by_domain(request.domain)
-      unless website.nil? || website.stylesheet.empty?
-        @stylesheet_url = website.stylesheet
-      end
-    end
-    return @stylesheet_url
+  def domain_asset(item)
+    @website ||= Website.find_by_domain(request.domain)
+    @website[item] unless @website.nil? || @website[item].nil?
   end
 
   def doorkeeper_unauthorized_render_options(error: nil)
