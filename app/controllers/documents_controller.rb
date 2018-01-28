@@ -24,7 +24,6 @@ class DocumentsController < ApplicationController
     @document = Document.new(document_params)
 
     if @document.save
-      current_account.increase_level
       redirect_to @document, notice: 'Document was successfully created.'
     else
       render :new

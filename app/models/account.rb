@@ -18,7 +18,9 @@ class Account < ApplicationRecord
   end
 
   def increase_level
-    self.level += 1
+    if self.level > 3
+      self.level += 1
+    end
   end
 end
 
