@@ -20,6 +20,7 @@ class PhonesController < ApplicationController
       return redirect_to new_phone_url, notice: 'Phone verification failed'
     end
 
+    current_account.increase_level
     redirect_to new_profile_path
   end
 
