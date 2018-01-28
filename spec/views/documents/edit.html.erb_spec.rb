@@ -8,10 +8,7 @@ RSpec.describe "documents/edit", type: :view do
 
     @document = assign(:document, Document.create!(
       :profile => profile,
-      :upload_id => "MyString",
-      :upload_filename => "MyString",
-      :upload_content_size => "MyString",
-      :upload_content_type => "MyString",
+      :upload => "MyString",
       :doc_type => "MyString",
       :doc_number => "MyString"
     ))
@@ -21,8 +18,6 @@ RSpec.describe "documents/edit", type: :view do
     render
 
     assert_select "form[action=?][method=?]", document_path(@document), "post" do
-
-      assert_select "input[name=?]", "document[profile_id]"
 
       assert_select "select[name=?]", "document[doc_type]"
 

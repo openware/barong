@@ -12,7 +12,7 @@ namespace :db do
         states = %w[created pending approved rejected]
         profile = Profile.create(account: account, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, state: states.sample)
         [*0..Faker::Number.between(0, 5)].each do |count|
-          profile.documents.create(upload_id: Faker::Number.number(3), upload_filename: Faker::File.file_name, upload_content_size: Faker::Number.number(5) + ' bytes', upload_content_type: Faker::File.mime_type, doc_type: Faker::File.extension, doc_number: Faker::Number.number(4), doc_expire: Date.today + count.days)
+          profile.documents.create(doc_type: Faker::File.extension, doc_number: Faker::Number.number(4), doc_expire: Date.today + count.days)
         end
       end
       secret = 'ZVBLXPBPtwa7YCK5pa2MqkBKXXZQ3HLDuc2hDtWVNWDpbd4qYUMdReNEND6sbHUg'
