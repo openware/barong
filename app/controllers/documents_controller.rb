@@ -25,6 +25,7 @@ class DocumentsController < ApplicationController
 
     if @document.save
       current_account.increase_level
+      @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
       redirect_to @document, notice: 'Document was successfully created.'
     else
       render :new
