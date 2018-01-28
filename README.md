@@ -1,26 +1,35 @@
-# README
+[travis]: https://travis-ci.org/rubykube/barong
+[codeclimate]: https://codeclimate.com/github/rubykube/barong/maintainability
 
-* Icon font library: https://github.com/railslove/fontello_rails_converter
+# Barong
+[![Build Status](https://travis-ci.org/rubykube/barong.svg?branch=master)][travis]
+[![Maintainability](https://api.codeclimate.com/v1/badges/a53414f061e69f6f531a/maintainability)][codeclimate]
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Overview
 
-Things you may want to cover:
+Barong is oAuth server for [paetio.tech](https://www.peatio.tech) stack.
 
-* Ruby version
+# Development
 
-* System dependencies
+Prerequisites:
+- Ruby version: `2.5.0`
+- Bundler preinstalled
+- MySQL preinstalled
 
-* Configuration
+1. Install RubyGems dependencies
+```
+bundle install
+```
 
-* Database creation
+2. Create database and run migrations
+```
+bundle exec rake db:create db:migrate
+```
 
-* Database initialization
+3. Start local server
+```
+bundle exec rails server
+```
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# License
+Barong is released under the terms of the [GPL-3.0 license](./LICENSE.md).
