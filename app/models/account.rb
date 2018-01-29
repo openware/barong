@@ -17,6 +17,10 @@ class Account < ApplicationRecord
     super.inquiry
   end
 
+  def after_confirmation
+    self.set_level(:mail)
+  end
+
   def set_level(step)
     case (step)
       when :mail

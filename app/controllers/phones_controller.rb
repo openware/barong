@@ -3,7 +3,11 @@
 class PhonesController < ApplicationController
 
   def new
-    @phone = Phone.new
+    unless current_account.level == 1
+      redirect_to index_path
+    else
+      @phone = Phone.new
+    end
   end
 
   def create

@@ -3,7 +3,11 @@ class DocumentsController < ApplicationController
 
   # GET /documents
   def index
-    @documents = Document.all
+    unless current_account.level == 2
+      redirect_to new_phone_path
+    else
+      @documents = Document.all
+    end
   end
 
   # GET /documents/1

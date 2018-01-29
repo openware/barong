@@ -3,7 +3,11 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/new
   def new
-    @profile = Profile.new
+    unless current_account.level == 2
+      redirect_to new_phone_path
+    else
+      @profile = Profile.new
+    end
   end
 
   # GET /profiles/1/edit
