@@ -4,9 +4,12 @@
 # Class Account
 #
 class Account < ApplicationRecord
+  devise :two_factor_authenticatable,
+         :otp_secret_encryption_key => ENV['ENCRYPTION_KEY']
+
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
 
@@ -14,6 +17,8 @@ class Account < ApplicationRecord
   has_many :phones, dependent: :destroy
 
   validates :email, uniqueness: true
+
+  attribute :otp_secret
 
   def role
     super.inquiry
@@ -40,32 +45,37 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180129150051
 #
 # Table name: accounts
 #
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  unconfirmed_email      :string(255)
-#  failed_attempts        :integer          default(0), not null
-#  unlock_token           :string(255)
-#  locked_at              :datetime
-#  role                   :string(255)      default("member"), not null
-#  level                  :integer          default(0), not null
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  id                        :integer          not null, primary key
+#  email                     :string(255)      default(""), not null
+#  encrypted_password        :string(255)      default(""), not null
+#  reset_password_token      :string(255)
+#  reset_password_sent_at    :datetime
+#  remember_created_at       :datetime
+#  sign_in_count             :integer          default(0), not null
+#  current_sign_in_at        :datetime
+#  last_sign_in_at           :datetime
+#  current_sign_in_ip        :string(255)
+#  last_sign_in_ip           :string(255)
+#  confirmation_token        :string(255)
+#  confirmed_at              :datetime
+#  confirmation_sent_at      :datetime
+#  unconfirmed_email         :string(255)
+#  failed_attempts           :integer          default(0), not null
+#  unlock_token              :string(255)
+#  locked_at                 :datetime
+#  role                      :string(255)      default("member"), not null
+#  level                     :integer          default(0), not null
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  encrypted_otp_secret      :string(255)
+#  encrypted_otp_secret_iv   :string(255)
+#  encrypted_otp_secret_salt :string(255)
+#  consumed_timestep         :integer
+#  otp_required_for_login    :boolean
 #
 # Indexes
 #

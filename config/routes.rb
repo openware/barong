@@ -9,6 +9,9 @@ Rails.application.routes.draw do
 
   post  'phones/verification', to: 'phones#verify'
 
+  post 'accounts/enable_otp'
+  post 'accounts/disable_otp'
+
   resources :phones
   resources :profiles
   resources :documents

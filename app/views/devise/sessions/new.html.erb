@@ -11,6 +11,10 @@
       <%= f.password_field :password, autocomplete: 'off', class: 'form-control', placeholder: 'Password' %>
     </div>
 
+    <div>
+      <%= f.text_field :otp_attempt, autocomplete: 'off', class: "form-control", placeholder: "OTP"  %>
+    </div>
+
     <% if devise_mapping.rememberable? -%>
       <div class="form-group">
         <%= f.label :remember_me do %>

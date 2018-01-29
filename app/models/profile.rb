@@ -8,7 +8,7 @@ class Profile < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180129150051
 #
 # Table name: profiles
 #

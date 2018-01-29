@@ -20,6 +20,8 @@ gem 'carrierwave',  '~> 0.10.0'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
+gem 'devise-two-factor'
+gem 'rqrcode'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
