@@ -12,11 +12,6 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :profile_id %>
-    <%= form.text_field :profile_id, id: :document_profile_id %>
-  </div>
-
-  <div class="field">
     <%= form.label :doc_type %>
     <%= form.select :doc_type,['passport', 'identity card', 'driver license', 'utility bill'], id: :document_doc_type %>
   </div>
@@ -29,6 +24,11 @@
   <div class="field">
     <%= form.label :doc_expire %>
     <%= form.date_select :doc_expire, id: :document_doc_expire %>
+  </div>
+
+  <div>
+    <%= form.label :upload%>
+    <%= form.file_field :upload %>
   </div>
 
   <div class="actions">

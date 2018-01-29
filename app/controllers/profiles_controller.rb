@@ -16,6 +16,7 @@ class ProfilesController < ApplicationController
 
     if @profile.save
       current_account.increase_level
+      @profile.update!(account_id: current_account.id)
       redirect_to new_document_path
     else
       render :new

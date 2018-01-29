@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [:show, :edit, :update, :destroy]
+  before_action :set_document, only: %i[show edit update destroy]
 
   # GET /documents
   def index
@@ -25,6 +27,7 @@ class DocumentsController < ApplicationController
 
     if @document.save
       current_account.increase_level
+      @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
       redirect_to @document, notice: 'Document was successfully created.'
     else
       render :new
@@ -46,14 +49,13 @@ class DocumentsController < ApplicationController
     redirect_to documents_url, notice: 'Document was successfully destroyed.'
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_document
-      @document = Document.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_document
+    @document = Document.find(params[:id])
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def document_params
-      params.require(:document).permit(:profile_id, :upload_id, :upload_filename, :upload_content_size, :upload_content_type, :doc_type, :doc_number, :doc_expire)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def document_params
+    params.require(:document).permit(:profile_id, :doc_type, :doc_number, :doc_expire, :upload)
+  end
 end
