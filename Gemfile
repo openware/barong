@@ -16,7 +16,9 @@ gem 'kaminari',     '~> 1.1.1'
 gem 'doorkeeper',   '~> 4.2.6'
 gem 'phonelib',     '~> 0.3.6'
 gem 'twilio-ruby',  '~> 5.6.0'
+
 gem 'fontello_rails_converter'
+gem 'bootstrap-datepicker-rails'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
