@@ -18,11 +18,11 @@ class Account < ApplicationRecord
   end
 
   def after_confirmation
-    self.set_level(:mail)
+    level_set(:mail)
   end
 
-  def set_level(step)
-    case (step)
+  def level_set(step)
+    case step
       when :mail
         self.level = 1
       when :phone
@@ -33,7 +33,7 @@ class Account < ApplicationRecord
         self.level = 4
     end
 
-    self.save
+    save
   end
 end
 

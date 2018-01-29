@@ -3,7 +3,7 @@
 class PhonesController < ApplicationController
 
   def new
-    unless current_account.level == 1
+    if current_account.level != 1
       redirect_to index_path
     else
       @phone = Phone.new
@@ -18,7 +18,7 @@ class PhonesController < ApplicationController
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       phone.validate_code!(code, session[:verif_code])
-      current_account.set_level(:phone)
+      current_account.level_set(:phone)
       phone.save!
 
     rescue ActiveRecord::RecordInvalid => invalid
