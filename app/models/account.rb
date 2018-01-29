@@ -18,7 +18,7 @@ class Account < ApplicationRecord
   end
 
   def set_level(step)
-    case(step)
+    case (step)
       when :mail
         self.level = 1
       when :phone
@@ -28,6 +28,8 @@ class Account < ApplicationRecord
       when :address
         self.level = 4
     end
+
+    self.save
   end
 end
 

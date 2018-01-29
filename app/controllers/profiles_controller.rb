@@ -15,7 +15,6 @@ class ProfilesController < ApplicationController
     @profile = Profile.new(profile_params)
 
     if @profile.save
-      current_account.increase_level
       redirect_to new_document_path
     else
       render :new
