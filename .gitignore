@@ -24,6 +24,9 @@
 # Ruby Bersion Manager.
 .rvmrc
 
+# Public zone
+/public
+
 /config/database.yml
 
 .DS_Store

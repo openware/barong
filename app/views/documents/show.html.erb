@@ -2,31 +2,6 @@
   <p id="notice"><%= notice %></p>
 
   <p>
-    <strong>Profile:</strong>
-    <%= @document.profile %>
-  </p>
-
-  <p>
-    <strong>Upload:</strong>
-    <%= @document.upload_id %>
-  </p>
-
-  <p>
-    <strong>Upload filename:</strong>
-    <%= @document.upload_filename %>
-  </p>
-
-  <p>
-    <strong>Upload content size:</strong>
-    <%= @document.upload_content_size %>
-  </p>
-
-  <p>
-    <strong>Upload content type:</strong>
-    <%= @document.upload_content_type %>
-  </p>
-
-  <p>
     <strong>Doc type:</strong>
     <%= @document.doc_type %>
   </p>
@@ -41,4 +16,10 @@
     <%= @document.doc_expire %>
   </p>
 
+  <p>
+    <%= @document.upload.present? ? image_tag(@document.upload.url, alt: 'Doc photo') : ''%>
+  </p>
+
+  <%= link_to 'Edit', edit_document_path(@document) %>
+  <%= link_to 'Back', documents_path %>
 </div>
