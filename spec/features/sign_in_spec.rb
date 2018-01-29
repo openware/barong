@@ -5,7 +5,6 @@ describe 'Sign in' do
 
   it 'allows to sign in with email and password' do
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
@@ -14,7 +13,6 @@ describe 'Sign in' do
 
   it 'blocks account when system detects too many sign in attempts' do
     visit index_path
-    click_on 'Sign in'
     expect {
       Devise.maximum_attempts.times do
         fill_in 'Email', with: account.email

@@ -7,7 +7,7 @@ module ApplicationHelper
   end
 
   def domain_logo_tag(url)
-    if url.nil?
+    if url.blank?
       image_tag('logo-white.png')
     else
       image_tag(url)
