@@ -6,7 +6,6 @@ describe 'Phone verification' do
   it 'can access page' do
     account.update(level: 1)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
@@ -17,7 +16,6 @@ describe 'Phone verification' do
   it 'verifies phone number' do
     account.update(level: 1)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
@@ -30,7 +28,6 @@ describe 'Phone verification' do
   it 'verifies phone number' do
     account.update(level: 1)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
@@ -43,7 +40,6 @@ describe 'Phone verification' do
   it 'creates phone' do
     account.update(level: 1)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'

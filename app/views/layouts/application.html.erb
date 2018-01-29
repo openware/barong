@@ -1,45 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Barong</title>
-  <%= csrf_meta_tags %>
+  <head>
+    <title>Barong</title>
+    <%= csrf_meta_tags %>
 
-  <%= stylesheet_link_tag    'web', media: 'all' %>
-  <%= domain_stylesheet_tag(domain_asset :stylesheet) %>
-  <%= javascript_include_tag 'web' %>
-  <%= favicon_link_tag asset_path('favicon.png'), :rel => 'icon', :type =>  'image/png' %>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body class="devise">
+    <%= stylesheet_link_tag    'web', media: 'all' %>
+    <%= domain_stylesheet_tag(domain_asset :stylesheet) %>
+    <%= javascript_include_tag 'web' %>
+    <%= favicon_link_tag asset_path('favicon.png'), :rel => 'icon', :type =>  'image/png' %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body class="devise">
+    <%= domain_html_tag(domain_asset :header) %>
+    <div class="container-fluid">
 
-  <div class="container-fluid">
-
-    <div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-10 col-md-5 col-lg-4">
-        <div class="main-logo">
-          <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
+      <div class="row justify-content-center">
+        <div class="col-xs-12 col-sm-10 col-md-5 col-lg-4">
+          <div class="main-logo">
+            <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-10 col-md-7 col-lg-6 col-xl-5 mt-5 mb-5">
-        <div class="card">
-          <%= domain_html_tag(domain_asset :header) %>
+      <div class="row justify-content-center">
+        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-6 col-xl-5 mt-5 mb-5">
+          <div class="card">
 
-          <%= render 'layouts/shared/header' if account_signed_in? %>
 
-          <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
-          <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
+            <%= render 'layouts/shared/header' if account_signed_in? %>
 
-          <%= yield %>
+            <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
+            <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
-          <%= domain_html_tag(domain_asset :footer) %>
+            <%= yield %>
+
+          </div>
         </div>
       </div>
+
     </div>
-
-  </div>
-
-</body>
+    <%= domain_html_tag(domain_asset :footer) %>
+  </body>
 </html>

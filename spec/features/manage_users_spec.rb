@@ -7,7 +7,6 @@ describe 'Admin can' do
   it 'edit roles' do
     account.update(role: :admin)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
@@ -23,7 +22,6 @@ describe 'Admin can' do
   it 'delete accounts' do
     account.update(role: :admin)
     visit index_path
-    click_on 'Sign in'
     fill_in 'account_email', with: account.email
     fill_in 'account_password', with: account.password
     click_on 'Submit'
