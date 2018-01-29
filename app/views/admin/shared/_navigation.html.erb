@@ -12,7 +12,7 @@
         <li class="nav-item <%= 'active' if params[:controller].match?(/profiles/) %>">
           <%= link_to 'Profiles', admin_profiles_path, class: 'nav-link' %>
         </li>
-        <li class="nav-item" >
+        <li class="nav-item <%= 'active' if params[:controller].match?(/application/) %>" >
           <%= link_to 'Applications', oauth_applications_path, class: 'nav-link' %>
         <li class="nav-item <%= 'active' if params[:controller].match?(/website/) %>">
           <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>

@@ -11,27 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="field form-group">
     <%= form.label :profile_id %>
-    <%= form.text_field :profile_id, id: :document_profile_id %>
+    <%= form.text_field :profile_id, id: :document_profile_id, class: 'form-control underlined' %>
   </div>
 
   <div class="field">
     <%= form.label :doc_type %>
-    <%= form.select :doc_type,['passport', 'identity card', 'driver license', 'utility bill'], id: :document_doc_type %>
+    <%= form.select(:doc_type, ['passport', 'identity card', 'driver license', 'utility bill'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
   </div>
 
-  <div class="field">
+  <div class="field form-group">
     <%= form.label :doc_number %>
-    <%= form.text_field :doc_number, id: :document_doc_number %>
+    <%= form.text_field :doc_number, id: :document_doc_number, class: 'form-control underlined' %>
   </div>
 
-  <div class="field">
+  <div class="field form-group">
     <%= form.label :doc_expire %>
-    <%= form.date_select :doc_expire, id: :document_doc_expire %>
-  </div>
+    <%= form.date_select :doc_expire, id: :document_doc_expire, class: 'form-control underlined' %>
+  </div><br/>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit 'Submit', class: 'btn btn-sm btn-success' %>
   </div>
+  <hr>
 <% end %>

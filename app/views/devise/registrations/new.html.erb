@@ -5,7 +5,7 @@
     <%= devise_error_messages! %>
 
     <div class="form-group">
-      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: "form-control", placeholder: "Email" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control', placeholder: 'Email' %>
     </div>
 
     <div class="form-group">
@@ -15,13 +15,18 @@
     </div>
 
     <div class="form-group">
-      <%= f.password_field :password_confirmation, autocomplete: 'off', class: "form-control", placeholder: "Password confirmation" %>
+      <%= f.password_field :password_confirmation, autocomplete: 'off', class: 'form-control', placeholder: 'Password confirmation' %>
     </div>
 
     <div class="actions">
-      <%= f.submit 'Submit', class: "btn btn-block btn-success" %>
+      <%= f.submit 'Submit', class: 'btn btn-block btn-success' %>
     </div>
-  <% end %>
+  <% end %><br/>
+
+
+  <div class="text-center">
+    <h6>Already have an account? <%= link_to 'Sign in', new_session_path(resource_name) %></h6>
+  </div>
 </div>
 
 <div class="card-footer text-center">

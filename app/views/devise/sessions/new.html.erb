@@ -4,25 +4,26 @@
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <%= devise_error_messages! %>
     <div class="form-group">
-      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: "form-control", placeholder: "Email" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'form-control', placeholder: 'Email' %>
     </div>
 
     <div class="form-group">
-      <%= f.password_field :password, autocomplete: 'off', class: "form-control", placeholder: "Password" %>
+      <%= f.password_field :password, autocomplete: 'off', class: 'form-control', placeholder: 'Password' %>
     </div>
 
     <% if devise_mapping.rememberable? -%>
       <div class="form-group">
         <%= f.label :remember_me do %>
-          <%= f.check_box :remember_me, class: "checkbox" %>
+          <%= f.check_box :remember_me, class: 'checkbox' %>
           Remember me
         <% end %>
       </div>
     <% end -%>
 
     <div class="actions">
-      <%= f.submit 'Submit', class: "btn btn-block btn-success" %>
+      <%= f.submit 'Submit', class: 'btn btn-block btn-success' %>
     </div>
+
   <% end %>
 </div>
 
