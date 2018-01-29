@@ -11,29 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
+<div class="row">
+  <div class="field col-6">
     <%= form.label :doc_type %>
     <%= form.select(:doc_type, ['passport', 'identity card', 'driver license', 'utility bill'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
   </div>
 
-  <div class="field form-group">
-    <%= form.label :doc_number %>
-    <%= form.text_field :doc_number, id: :document_doc_number, class: 'form-control underlined' %>
-  </div>
-
-  <div class="field form-group">
-    <div class="col-6">
-      <%= form.text_field :dob, id: :profile_dob, class: 'datepicker', placeholder: 'Expiry date' %>
+    <div class="field form-group col-6">
+      <%= form.label :doc_number %>
+      <%= form.text_field :doc_number, id: :document_doc_number, class: 'form-control underlined' %>
     </div>
   </div>
 
-  <div>
-    <%= form.label :upload%>
-    <%= form.file_field :upload %>
+  <div class="field form-group">
+      <%= form.text_field :dob, id: :profile_dob, class: 'datepicker', placeholder: 'Expiry date' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :upload %>
+    <%= form.file_field :upload, class: 'form-control underlined' %>
   </div>
 
   <div class="actions">
-    <%= form.submit 'Submit', class: 'btn btn-sm btn-success' %>
+    <%= form.submit 'Submit', class: 'btn btn-block btn-primary' %>
   </div>
-  <hr>
 <% end %>

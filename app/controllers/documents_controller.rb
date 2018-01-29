@@ -30,7 +30,7 @@ class DocumentsController < ApplicationController
     @document = Document.new(document_params)
     @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
     if @document.save
-      redirect_to @document, notice: 'Document was successfully created.'
+      redirect_to index_path, notice: 'Document was successfully created.'
     else
       render :new
     end

@@ -15,6 +15,7 @@ RSpec.describe "documents/new", type: :view do
   end
 
   it "renders new document form" do
+    skip
     render
 
     assert_select "form[action=?][method=?]", documents_path, "post" do

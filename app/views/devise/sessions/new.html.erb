@@ -24,7 +24,10 @@
       <%= f.submit 'Submit', class: 'btn btn-block btn-success' %>
     </div>
 
-  <% end %>
+  <% end %><br/>
+  <div class="text-center">
+    <h6>Don't have an account? <%= link_to 'Sign up', new_registration_path(resource_name) %></h6>
+  </div>
 </div>
 
 <div class="card-footer text-center">
