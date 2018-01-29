@@ -3,7 +3,7 @@
 class PhonesController < ApplicationController
 
   def new
-    if current_account.level != 1
+    if current_account.level < 1
       redirect_to index_path
     else
       @phone = Phone.new
