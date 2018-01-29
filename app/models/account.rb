@@ -17,10 +17,17 @@ class Account < ApplicationRecord
     super.inquiry
   end
 
-  def increase_level
-    return unless level < 3
-
-    self.level += 1
+  def set_level(step)
+    case(step)
+      when :mail
+        self.level = 1
+      when :phone
+        self.level = 2
+      when :identity
+        self.level = 3
+      when :address
+        self.level = 4
+    end
   end
 end
 
