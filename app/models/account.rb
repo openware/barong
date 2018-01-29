@@ -13,6 +13,8 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
 
+  validates :email, uniqueness: true
+
   def role
     super.inquiry
   end
