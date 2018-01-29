@@ -3,7 +3,11 @@
 class PhonesController < ApplicationController
 
   def new
-    @phone = Phone.new
+    if current_account.level < 1
+      redirect_to index_path
+    else
+      @phone = Phone.new
+    end
   end
 
   def create
@@ -14,13 +18,13 @@ class PhonesController < ApplicationController
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       phone.validate_code!(code, session[:verif_code])
+      current_account.level_set(:phone)
       phone.save!
 
     rescue ActiveRecord::RecordInvalid => invalid
       return redirect_to new_phone_url, notice: 'Phone verification failed'
     end
 
-    current_account.increase_level
     redirect_to new_profile_path
   end
 

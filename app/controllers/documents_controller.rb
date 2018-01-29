@@ -3,7 +3,11 @@ class DocumentsController < ApplicationController
 
   # GET /documents
   def index
-    @documents = Document.all
+    if current_account.level < 2
+      redirect_to new_phone_path
+    else
+      @documents = Document.all
+    end
   end
 
   # GET /documents/1
@@ -24,7 +28,6 @@ class DocumentsController < ApplicationController
     @document = Document.new(document_params)
 
     if @document.save
-      current_account.increase_level
       redirect_to @document, notice: 'Document was successfully created.'
     else
       render :new
