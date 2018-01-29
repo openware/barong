@@ -26,8 +26,9 @@
   </div>
 
   <div class="field form-group">
-    <%= form.label :dob %>
-    <%= form.date_select :dob, id: :profile_dob %>
+    <div class="col-6">
+      <%= form.text_field :dob, id: :profile_dob, class: 'datepicker', placeholder: 'Date of birth' %>
+    </div>
   </div>
 
   <div class="row form-group">

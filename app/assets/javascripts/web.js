@@ -2,7 +2,7 @@
 //= require jquery3
 //= require popper
 //= require bootstrap-sprockets
-
+//= require bootstrap-datepicker
 
 function sendVerificationCode() {
   number = '+' + $("#country_code").val() + $("#number").val();
@@ -22,3 +22,7 @@ function sendVerificationCode() {
         };
     }});
 };
+
+$(document).ready(function(){
+    $('.datepicker').datepicker();
+  });

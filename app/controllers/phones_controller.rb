@@ -36,7 +36,8 @@ class PhonesController < ApplicationController
       session[:verif_code] = phone.generate_code
       Rails.logger.info("Sending SMS to %s with code %s" %
                         [phone.number, session[:verif_code]])
-      phone.send_sms(session[:verif_code])
+      app_name = ENV.fetch('APP_NAME', 'Barong')
+      phone.send_sms("Your verification code for #{app_name}: #{session[:verif_code]}")
 
     rescue ActiveRecord::RecordInvalid => invalid
       return render json: { error: 'Phone is invalid' }

@@ -27,12 +27,6 @@ RSpec.describe "documents/edit", type: :view do
       assert_select "select[name=?]", "document[doc_type]"
 
       assert_select "input[name=?]", "document[doc_number]"
-
-      assert_select "select[name=?]", "document[doc_expire(1i)]"
-
-      assert_select "select[name=?]", "document[doc_expire(2i)]"
-
-      assert_select "select[name=?]", "document[doc_expire(3i)]"
     end
   end
 end
