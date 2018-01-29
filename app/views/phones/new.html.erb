@@ -18,11 +18,9 @@
       Identity
     </div>
   </div>
-</div>
 
 <hr>
 
-<div class="container">
   <%= form_tag('/phones') do %>
 
     <div class="form-group">
@@ -32,7 +30,7 @@
           <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
         </div>
         <div class="col-8">
-          <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 00 00 00 00" %>
+          <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
         </div>
       </div>
     </div>
@@ -49,7 +47,7 @@
     </div>
 
     <div class="text-center mt-3 small">
-      Didn't received SMS?
+      Didn't receive SMS?
       <a href="javascript:void(0)"onclick="sendVerificationCode()"> Resend a code now</a>
     </div>
 
@@ -62,4 +60,3 @@
     </div>
   <% end %>
 </div>
-
