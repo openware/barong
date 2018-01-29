@@ -1,23 +1,22 @@
 class Document < ApplicationRecord
+  mount_uploader :upload, UploadUploader
+
   belongs_to :profile
 end
 
 # == Schema Information
-# Schema version: 20180125231014
+# Schema version: 20180126130155
 #
 # Table name: documents
 #
-#  id                  :integer          not null, primary key
-#  profile_id          :integer
-#  upload_id           :string(255)
-#  upload_filename     :string(255)
-#  upload_content_size :string(255)
-#  upload_content_type :string(255)
-#  doc_type            :string(255)
-#  doc_number          :string(255)
-#  doc_expire          :date
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
+#  id         :integer          not null, primary key
+#  profile_id :integer
+#  upload     :string(255)
+#  doc_type   :string(255)
+#  doc_number :string(255)
+#  doc_expire :date
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #

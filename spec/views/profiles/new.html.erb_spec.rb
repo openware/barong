@@ -18,8 +18,6 @@ RSpec.describe "profiles/new", type: :view do
 
     assert_select "form[action=?][method=?]", profiles_path, "post" do
 
-      assert_select "input[name=?]", "profile[account_id]"
-
       assert_select "input[name=?]", "profile[first_name]"
 
       assert_select "input[name=?]", "profile[last_name]"

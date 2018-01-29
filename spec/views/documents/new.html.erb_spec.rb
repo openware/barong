@@ -7,13 +7,10 @@ RSpec.describe "documents/new", type: :view do
     profile = assign(:profile, Profile.create!(account: account))
 
     assign(:document, Document.new(
-      :profile => profile,
-      :upload_id => "MyString",
-      :upload_filename => "MyString",
-      :upload_content_size => "MyString",
-      :upload_content_type => "MyString",
-      :doc_type => "MyString",
-      :doc_number => "MyString"
+        :profile => profile,
+        :upload => File.open('app/assets/images/logo-black.png'),
+        :doc_type => "MyString",
+        :doc_number => "MyString"
     ))
   end
 
@@ -21,8 +18,6 @@ RSpec.describe "documents/new", type: :view do
     render
 
     assert_select "form[action=?][method=?]", documents_path, "post" do
-
-      assert_select "input[name=?]", "document[profile_id]"
 
       assert_select "select[name=?]", "document[doc_type]"
 

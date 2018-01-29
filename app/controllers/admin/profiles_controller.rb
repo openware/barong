@@ -7,13 +7,13 @@ module Admin
       @profiles = Profile.all
       @profiles = @profiles.where(state: params[:filter]) if params[:filter].present?
       @profiles = @profiles.page(params[:page])
-      @states = Profile.group('state').pluck(:state)
+      @states = %w[created pending approved rejected]
     end
 
     def show
       @profile = Profile.find(params[:id])
       @documents = @profile.documents
-      @states = Profile.group('state').pluck(:state)
+      @states = %w[created pending approved rejected]
     end
 
     def change_state
