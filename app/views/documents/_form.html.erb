@@ -27,9 +27,10 @@
   </div>
 
   <div class="field form-group">
-    <%= form.label :doc_expire %>
-    <%= form.date_select :doc_expire, id: :document_doc_expire, class: 'form-control underlined' %>
-  </div><br/>
+    <div class="col-6">
+      <%= form.text_field :dob, id: :profile_dob, class: 'datepicker', placeholder: 'Expiry date' %>
+    </div>
+  </div>
 
   <div class="actions">
     <%= form.submit 'Submit', class: 'btn btn-sm btn-success' %>
