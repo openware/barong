@@ -4,6 +4,7 @@ describe 'Phone verification' do
   let!(:account) { create :account }
 
   it 'can access page' do
+    account.update(level: 1)
     visit index_path
     click_on 'Sign in'
     fill_in 'account_email', with: account.email
@@ -14,6 +15,7 @@ describe 'Phone verification' do
   end
 
   it 'verifies phone number' do
+    account.update(level: 1)
     visit index_path
     click_on 'Sign in'
     fill_in 'account_email', with: account.email
@@ -26,6 +28,7 @@ describe 'Phone verification' do
   end
 
   it 'verifies phone number' do
+    account.update(level: 1)
     visit index_path
     click_on 'Sign in'
     fill_in 'account_email', with: account.email
@@ -38,6 +41,7 @@ describe 'Phone verification' do
   end
 
   it 'creates phone' do
+    account.update(level: 1)
     visit index_path
     click_on 'Sign in'
     fill_in 'account_email', with: account.email
