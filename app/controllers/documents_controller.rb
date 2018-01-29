@@ -24,9 +24,10 @@ class DocumentsController < ApplicationController
   # POST /documents
   def create
     @document = Document.new(document_params)
-    @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
+
     if @document.save
       current_account.increase_level
+      @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
       redirect_to @document, notice: 'Document was successfully created.'
     else
       render :new
