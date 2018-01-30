@@ -23,6 +23,10 @@ function sendVerificationCode() {
     }});
 };
 
-$(document).ready(function(){
+$(document).ready(function() {
     $('.datepicker').datepicker();
-  });
+    $('#qr-code-btn').on('click', function() {
+        $('.qr-code').removeAttr('hidden');
+        $('#qr-code-btn').hide();
+    });
+});

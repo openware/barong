@@ -40,7 +40,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180129150051
 #
 # Table name: accounts
 #
@@ -66,6 +66,8 @@ end
 #  level                  :integer          default(0), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  otp_required_for_login :boolean
+#  otp_secret             :string(255)
 #
 # Indexes
 #
