@@ -31,6 +31,23 @@
 
             <%= yield %>
 
+            <center>
+              <div class="qr-code">
+                <% if current_account %>
+                    <% if !current_account.otp_required_for_login %>
+                        <%= button_to "Enable 2FA", accounts_enable_otp_path, :method => :post %>
+                    <% end %>
+
+                    <% if current_account.otp_required_for_login %>
+                        <%= button_to "Disable 2FA", accounts_disable_otp_path, :method => :post %>
+                        <%= raw generate_qr_code(current_account) %>
+                    <% end %>
+
+                <% end %>
+              </div>
+            </center>
+
+
           <% if account_signed_in? %>
             <hr>
             <div class="text-center">
@@ -40,7 +57,6 @@
           <br/>
         </div>
       </div>
-
     </div>
     <%= domain_html_tag(domain_asset :footer) %>
   </body>
