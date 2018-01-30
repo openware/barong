@@ -13,7 +13,6 @@ Rails.application.routes.draw do
   resources :accounts, only: [:show] do
     collection do
       get 'edit'
-      get 'settings'
       post 'enable_otp'
       post 'disable_otp'
       patch 'update'
