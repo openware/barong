@@ -13,7 +13,6 @@
   <body class="devise">
     <%= domain_html_tag(domain_asset :header) %>
     <div class="container-fluid">
-
       <div class="row justify-content-center">
         <div class="col-xs-12 col-sm-10 col-md-5 col-lg-4">
           <div class="main-logo">
@@ -34,13 +33,17 @@
           <% if account_signed_in? %>
             <hr>
             <div class="text-center">
+              <%= link_to 'Settings', edit_accounts_path, method: :get %>
+              <br>
               <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
             </div>
           <% end %>
-          <br/>
+
+            <br/>
+
+          </div>
         </div>
       </div>
-
     </div>
     <%= domain_html_tag(domain_asset :footer) %>
   </body>
