@@ -2,6 +2,7 @@
 
 class ProfilesController < ApplicationController
   before_action :set_profile, only: %i[edit update destroy]
+  before_action :authenticate_account!
 
   # GET /profiles/new
   def new
@@ -19,14 +20,14 @@ class ProfilesController < ApplicationController
 
   # POST /profiles
   def create
-    @profile = Profile.new(profile_params)
-    @profile.update!(account_id: current_account.id)
-
-    if @profile.save
-      redirect_to new_document_path
-    else
-      render :new
+    begin
+      @profile = Profile.new(profile_params)
+      @profile.update!(account_id: current_account.id)
+    rescue ActiveRecord::RecordInvalid
+      return redirect_to new_profile_url, notice: 'Some fields are empty or invalid'
     end
+
+    redirect_to new_document_path
   end
 
   # PATCH/PUT /profiles/1

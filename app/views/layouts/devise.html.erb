@@ -11,6 +11,7 @@
   <%= favicon_link_tag asset_path('favicon.png'), :rel => 'icon', :type =>  'image/png' %>
 </head>
 <body class="devise">
+  <%= domain_html_tag(domain_asset :header) %>
 
   <div class="container-fluid">
 
@@ -25,19 +26,17 @@
     <div class="row justify-content-center">
       <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 mt-5">
         <div class="card">
-          <%= domain_html_tag(domain_asset :header) %>
 
           <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
           <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
           <%= yield %>
 
-          <%= domain_html_tag(domain_asset :footer) %>
         </div>
       </div>
     </div>
 
   </div>
-
+  <%= domain_html_tag(domain_asset :footer) %>
 </body>
 </html>

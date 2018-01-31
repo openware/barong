@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PhonesController < ApplicationController
+  before_action :authenticate_account!
 
   def new
     if current_account.level < 1
@@ -21,8 +22,8 @@ class PhonesController < ApplicationController
       current_account.level_set(:phone)
       phone.save!
 
-    rescue ActiveRecord::RecordInvalid => invalid
-      return redirect_to new_phone_url, notice: 'Phone verification failed'
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      return redirect_to new_phone_url, notice: 'Phone verification failed. Number is invalid or was already verified'
     end
 
     redirect_to new_profile_path
@@ -39,7 +40,7 @@ class PhonesController < ApplicationController
       app_name = ENV.fetch('APP_NAME', 'Barong')
       phone.send_sms("Your verification code for #{app_name}: #{session[:verif_code]}")
 
-    rescue ActiveRecord::RecordInvalid => invalid
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
       return render json: { error: 'Phone is invalid' }
     end
 

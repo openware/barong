@@ -6,23 +6,25 @@ RSpec.describe "profiles/index", type: :view do
 
     assign(:profiles, [
       Profile.create!(
-        :account => account,
-        :first_name => "First Name",
-        :last_name => "Last Name",
-        :address => "Address",
-        :postcode => "Postcode",
-        :city => "City",
-        :country => "Country"
+      :account => account,
+      :first_name => "MyString",
+      :last_name => "MyString",
+      :address => "MyString",
+      :postcode => "MyString",
+      :city => "MyString",
+      :country => "MyString",
+      :dob => "01-01-2001"
       ),
       Profile.create!(
-        :account => account,
-        :first_name => "First Name",
-        :last_name => "Last Name",
-        :address => "Address",
-        :postcode => "Postcode",
-        :city => "City",
-        :country => "Country"
-      )
+      :account => account,
+      :first_name => "MyString",
+      :last_name => "MyString",
+      :address => "MyString",
+      :postcode => "MyString",
+      :city => "MyString",
+      :country => "MyString",
+      :dob => "01-01-2001"
+    )
     ])
   end
 

@@ -22,7 +22,3 @@ function sendVerificationCode() {
         };
     }});
 };
-
-$(document).ready(function(){
-    $('.datepicker').datepicker();
-  });
