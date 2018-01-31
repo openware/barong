@@ -30,6 +30,8 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
 {{- define "barong.hook-env" -}}
 - name: RAILS_ENV
   value: production
+- name: RAILS_LOG_TO_STDOUT
+  value: "true"
 - name: DATABASE_HOST
   value: {{ .Values.db.host }}
 - name: DATABASE_USER
@@ -54,6 +56,8 @@ Environment for barong container
   value: {{ .Values.service.internalPort | quote }}
 - name: RAILS_ENV
   value: {{ default "production" .Values.app.env }}
+- name: RAILS_LOG_TO_STDOUT
+  value: "true"
 - name: URL_HOST
   value: {{ .Values.ingress.hosts | first }}
 - name: URL_SCHEME
