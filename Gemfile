@@ -21,6 +21,8 @@ gem 'fog',          '~> 1.42.0'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
+gem 'rqrcode'
+gem 'rotp'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
