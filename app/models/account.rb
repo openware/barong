@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rotp'
+
 #
 # Class Account
 #
@@ -14,6 +16,13 @@ class Account < ApplicationRecord
   has_many :phones, dependent: :destroy
 
   validates :email, uniqueness: true
+  validates :seed, uniqueness: true
+
+  before_validation :init_seed
+
+  def init_seed
+    self.seed = ROTP::Base32.random_base32
+  end
 
   def role
     super.inquiry
@@ -40,7 +49,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180129150051
 #
 # Table name: accounts
 #
@@ -66,6 +75,7 @@ end
 #  level                  :integer          default(0), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  seed                   :string(255)      default("")
 #
 # Indexes
 #

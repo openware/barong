@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   post  'phones/verification', to: 'phones#verify'
 
+  resources :account, only: [:index]
   resources :phones
   resources :profiles
   resources :documents
