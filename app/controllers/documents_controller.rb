@@ -2,13 +2,14 @@
 
 class DocumentsController < ApplicationController
   before_action :set_document, only: %i[show edit update destroy]
+  before_action :authenticate_account!
 
   # GET /documents
   def index
     if current_account.level < 2
       redirect_to new_phone_path
     else
-      @documents = Document.all
+      @documents = current_account.profile.documents
     end
   end
 
@@ -28,11 +29,10 @@ class DocumentsController < ApplicationController
   # POST /documents
   def create
     @document = Document.new(document_params)
-    @document.update!(profile_id: Profile.find_by_account_id(current_account.id).id)
-    if @document.save
+    if @document.update(profile_id: current_account.profile.id)
       redirect_to index_path, notice: 'Document was successfully created.'
     else
-      render :new
+      redirect_to new_document_url, notice: 'Some fields are empty or invalid'
     end
   end
 

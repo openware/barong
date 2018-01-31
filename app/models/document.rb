@@ -2,6 +2,7 @@ class Document < ApplicationRecord
   mount_uploader :upload, UploadUploader
 
   belongs_to :profile
+  validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
 end
 
 # == Schema Information
