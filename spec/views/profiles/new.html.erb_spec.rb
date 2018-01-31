@@ -9,7 +9,8 @@ RSpec.describe "profiles/new", type: :view do
       :address => "MyString",
       :postcode => "MyString",
       :city => "MyString",
-      :country => "MyString"
+      :country => "MyString",
+      :dob => "01-01-2001"
     ))
   end
 
