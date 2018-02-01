@@ -17,6 +17,7 @@ gem 'doorkeeper',   '~> 4.2.6'
 gem 'phonelib',     '~> 0.3.6'
 gem 'twilio-ruby',  '~> 5.6.0'
 gem 'carrierwave',  '~> 0.10.0'
+gem 'fog',          '~> 1.42.0'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
