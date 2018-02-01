@@ -23,7 +23,7 @@ module ApplicationHelper
     account = current_account
     totp = ROTP::TOTP.new(account.seed, issuer: 'Barong')
     url = totp.provisioning_uri(account.email)
-    RQRCode::QRCode.new(url, size: 4, level: :l).as_html
+    RQRCode::QRCode.new(url, size: 5, level: :l).as_html
   end
 
   def domain_html_tag(text)

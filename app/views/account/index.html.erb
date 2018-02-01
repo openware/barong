@@ -1,12 +1,12 @@
- <div>
-   <div class="p-2">
-     <strong>Seed:</strong>
-     <%= current_account.seed %>
-   </div>
-
-   <div class="justify-content-md-center">
+ <div class="container justify-content-center">
+   <div class="d-flex justify-content-center ">
      <div class="qr-code mw-4">
        <%= raw generate_qr_code %>
      </div>
+   </div>
+   <div class="justify-content-center text-center">
+     <strong>Seed:</strong>
+     <%= current_account.seed %><br/>
+     <%= link_to 'Back', index_path %>
    </div>
  </div>

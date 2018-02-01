@@ -20,6 +20,7 @@
           <% end %>
         </div>
         <h2>Signed in as <%= current_account.email %></h2><br/>
+        <h5><%= link_to 'Enable 2F authentication', account_index_path %></h5>
       <% else %>
         <h2>You are not signed in.</h2>
         <br/>
