@@ -25,7 +25,7 @@ spec:
   {{- if .Values.ingress.tls }}
   tls:
     {{- range $host := .Values.ingress.hosts }}
-    - secretName: {{ $host | replace "." "-" }}-barong-tls
+    - secretName: {{ $host | include "barong.utils.tls" }}
       hosts:
         - {{ $host }}
     {{- end -}}

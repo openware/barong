@@ -29,23 +29,29 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
 */}}
 {{- define "barong.hook-env" -}}
 - name: RAILS_ENV
-  value: production
+  value: "production"
 - name: RAILS_LOG_TO_STDOUT
   value: "true"
 - name: DATABASE_HOST
-  value: {{ .Values.db.host }}
+  value: {{ .Values.db.host | quote }}
 - name: DATABASE_USER
-  value: {{ default "root" .Values.db.user }}
+  value: {{ default "root" .Values.db.user | quote }}
 - name: DATABASE_NAME
-  value: {{ default "barong_production" .Values.db.name }}
+  value: {{ default "barong_production" .Values.db.name | quote }}
 {{- if .Values.db.password }}
 - name: DATABASE_PASSWORD
-  value: {{ .Values.db.password }}
+  value: {{ .Values.db.password | quote }}
 {{- end }}
 - name: SECRET_KEY_BASE
   value: {{ default "changeme" .Values.secretKeyBase | quote }}
 - name: DEVISE_SECRET_KEY
   value: {{ default "changeme" .Values.deviseSecretKey | quote }}
+- name: GCS_BUCKET
+  value: {{ default "barong-images" .Values.gcs.bucket }}
+- name: GCS_ACCESS_KEY_ID
+  value: {{ .Values.gcs.accessKeyId }}
+- name: GCS_SECRET_ACCESS_KEY
+  value: {{ .Values.gcs.secretAccessKey }}
 {{- end -}}
 
 {{/*
@@ -74,6 +80,8 @@ Environment for barong container
   value: {{ default "25" .Values.smtp.port | quote }}
 - name: SMTP_DOMAIN
   value: {{ default "helioscloud.com" .Values.smtp.domain }}
+- name: GCS_BUCKET
+  value: {{ default "barong-images" .Values.gcs.bucket }}
 {{- range $key, $value := .Values.app.vars }}
 - name: {{ $key }}
   value: {{ $value | quote }}
@@ -108,8 +116,17 @@ Environment for barong container
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: twilioPhoneNumber
+- name: GCS_ACCESS_KEY_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "barong.fullname" . }}
+      key: gcsAccessKeyId
+- name: GCS_SECRET_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "barong.fullname" . }}
+      key: gcsSecretAccessKey
 {{- end -}}
-
 
 {{/*
 labels.standard prints the standard Helm labels.
@@ -128,4 +145,18 @@ It does minimal escaping for use in Kubernetes labels.
 */}}
 {{- define "barong.chartref" -}}
   {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
-{{- end -}}S
+{{- end -}}
+
+{{/*
+Templates in barong.utils namespace are help functions.
+*/}}
+
+{{/*
+barong.utils.tls functions makes host-tls from host name
+usage: {{ "www.example.com" | barong.utils.tls }}
+output: www-example-com-tls
+*/}}
+{{- define "barong.utils.tls" -}}
+{{- $host := index . | replace "." "-" -}}
+{{- printf "%s-tls" $host -}}
+{{- end -}}

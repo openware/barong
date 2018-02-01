@@ -44,3 +44,9 @@ smtp: {}
 #  port:
 #  domain:
 
+# Google Cloud Storage credentials
+# Defulat bucket name: 'barong-images'
+gcs:
+# bucket:
+  accessKeyId: changeme
+  secretAccessKey: changeme
