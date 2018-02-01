@@ -32,4 +32,4 @@ bundle exec rails server
 ```
 
 # License
-Barong is released under the terms of the [GPL-3.0 license](./LICENSE.md).
+Barong is released under the terms of the [Apache License 2.0](./LICENSE.md).
