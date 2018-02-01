@@ -32,6 +32,7 @@ class PhonesController < ApplicationController
   def verify
     begin
       number = phone_params[:number]
+      return render json: { error: 'Phone already been used' } if Phone.exists?(number: number)
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       session[:verif_code] = phone.generate_code
