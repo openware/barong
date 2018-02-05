@@ -23,6 +23,7 @@ gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
 gem 'rqrcode'
 gem 'rotp'
+gem 'vault', '~> 0.1'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
