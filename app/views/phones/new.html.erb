@@ -1,4 +1,7 @@
 <div class="container">
+
+  <br>
+
   <div class="text-center">
     <h2><span class="text-muted">Verification > </span>Add mobile phone</h2>
   </div>
@@ -20,35 +23,29 @@
 
 <hr>
 
-  <%= form_tag('/phones') do %>
+  <div class="d-flex justify-content-center">
+    <%= form_tag('/phones') do %>
 
-    <div class="form-group">
-        <%= label_tag :phone_number %>
-      <div class="row">
-        <div class="col-4">
-          <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
-        </div>
-        <div class="col-4">
-          <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
-        </div>
-        <div class="col-4">
-          <!--<input type="button" class="btn btn-primary" id="send-code-btn" value="Get verification code">-->
-          <%=link_to "Send Code", id: "send-code-btn" %>
+      <div class="form-group">
+          <%= label_tag :phone_number %>
+        <div class="row">
+          <div class="col-4">
+            <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
+          </div>
+          <div class="col-8">
+            <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <%= label_tag "SMS confirmation code" %>
-      <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "Enter code" %>
-    </div>
-
-    <div class="d-flex justify-content-center mt-4" id="error"></div>
-
-    <div class="container">
-      <div class="d-flex justify-content-center">
-        <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success" %>
+      <div class="form-group">
+        <%= label_tag "SMS confirmation code" %>
+        <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "Enter code" %>
       </div>
-    </div>
-  <% end %>
+
+      <div class="d-flex justify-content-center mt-4" id="error"></div>
+
+      <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone" %>
+    <% end %>
+  </div>
 </div>
