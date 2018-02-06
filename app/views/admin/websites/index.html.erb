@@ -3,12 +3,13 @@
 
   <h1>Websites</h1>
 
-  <table class="table table-bordered table-sm text-center">
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>
-        <th>Domain</th>
-        <th>Title</th>
-        <th>Logo</th>
+        <th>ID</th>
+        <!--<th>Domain</th>-->
+        <!--<th>Title</th>-->
+        <!--<th>Logo</th>-->
         <th>Stylesheet</th>
         <th>Header</th>
         <th>Footer</th>
@@ -21,9 +22,10 @@
     <tbody>
       <% @websites.each do |website| %>
         <tr>
-          <td><%= website.domain %></td>
-          <td><%= website.title %></td>
-          <td><%= website.logo %></td>
+          <td><%= website.id %></td>
+          <!--<td><%= website.domain %></td>-->
+          <!--<td><%= website.title %></td>-->
+          <!--<td><%= website.logo %></td>-->
           <td><%= website.stylesheet %></td>
           <td><%= website.header %></td>
           <td><%= website.footer %></td>
@@ -39,5 +41,5 @@
 
   <br>
 
-  <%= link_to 'New Website', new_admin_website_path %>
+  <%= link_to 'New Website', new_admin_website_path, class: 'btn btn-primary' %>
 </div>

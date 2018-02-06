@@ -4,6 +4,7 @@ module Admin
   class ProfilesController < ModuleController
 
     def index
+      params[:filter] = params[:filter] || 'pending'
       @profiles = Profile.all
       @profiles = @profiles.where(state: params[:filter]) if params[:filter].present?
       @profiles = @profiles.page(params[:page])
