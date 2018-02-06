@@ -1,9 +1,10 @@
 .steps {
   position: relative;
+  width: 70%;
   &::before {
     content: "";
     border-top: 1px solid $divider;
-    width: 92%;
+    width: 80%;
     position: absolute;
     top: 40px;
   }
@@ -11,7 +12,7 @@
     width: 30px;
     height: 30px;
     margin: 0 auto 15px;
-    border: 1px solid $divider;
+    border: 2px solid $divider;
     background: white;
     border-radius: 100%;
     &.completed::before, &.current::before {
@@ -21,15 +22,15 @@
       line-height: 30px;
     }
     &.completed {
-      background: $primary;
+      background: white;
       border-color: $primary;
       &::before {
-        color: set-text-color($primary);
+        color: $primary;
         content: "\e800";
       }
     }
     &.current {
-      background: white;
+      background: $primary;
       border-color: white;
       box-shadow: 0 4px 10px rgba($divider, .9);
       &::before {
