@@ -34,7 +34,7 @@ Doorkeeper.configure do
 
   # Use a custom class for generating the access token.
   # https://github.com/doorkeeper-gem/doorkeeper#custom-access-token-generator
-  # access_token_generator '::Doorkeeper::JWT'
+  access_token_generator 'Doorkeeper::JWT'
 
   # The controller Doorkeeper::ApplicationController inherits from.
   # Defaults to ActionController::Base.
@@ -112,4 +112,26 @@ Doorkeeper.configure do
 
   # WWW-Authenticate Realm (default "Doorkeeper").
   # realm "Doorkeeper"
+end
+
+Doorkeeper::JWT.configure do
+  # Set the payload for the JWT token. This should contain unique information
+  # about the account.
+  token_payload do |opts|
+    account = Account.find(opts[:resource_owner_id])
+
+    {
+      email: account.email,
+      profile: account.as_json(only: %i[email role level]),
+      exp: 4.hours.from_now.to_i
+    }
+  end
+
+  # Set the encryption secret. This would be shared with any other applications
+  # that should be able to read the payload of the token.
+  secret_key Base64.urlsafe_decode64(Rails.application.secrets.jwt_shared_secret_key)
+
+  # Specify encryption type. Supports any algorithim in
+  # https://github.com/progrium/ruby-jwt
+  encryption_method 'RS256'
 end
