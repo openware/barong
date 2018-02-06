@@ -3,9 +3,10 @@
 
   <h1>Websites</h1>
 
-  <table class="table table-bordered table-sm text-center">
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Domain</th>
         <th>Title</th>
         <th>Logo</th>
@@ -21,6 +22,7 @@
     <tbody>
       <% @websites.each do |website| %>
         <tr>
+          <td><%= website.id %></td>
           <td><%= website.domain %></td>
           <td><%= website.title %></td>
           <td><%= website.logo %></td>
@@ -39,5 +41,5 @@
 
   <br>
 
-  <%= link_to 'New Website', new_admin_website_path %>
+  <%= link_to 'New Website', new_admin_website_path, class: 'btn btn-primary' %>
 </div>
