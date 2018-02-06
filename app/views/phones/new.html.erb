@@ -1,7 +1,6 @@
 <div class="container">
   <div class="text-center">
     <h2><span class="text-muted">Verification > </span>Add mobile phone</h2>
-    <p class="text-muted"><small>Some text to explain what to do comes here</small></p>
   </div>
 
   <div class="d-flex justify-content-center">
@@ -31,15 +30,18 @@
         <div class="col-3">
           <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
+        </div>
+        <div class="col-4">
+          <!--<input type="button" class="btn btn-primary" id="send-code-btn" value="Send code" onclick="sendVerificationCode()">-->
+          <%=link_to "Send Code", id: "send-code-btn" %>
         </div>
       </div>
     </div>
 
     <div class="form-group">
-      <%= label_tag "SMS confirmation code" %>
-      <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "Enter code" %>
+      <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "SMS confirmation code" %>
     </div>
 
     <div class="d-flex justify-content-center mt-4" id="error"></div>
