@@ -14,9 +14,6 @@ body.devise {
       margin-top: $grid-gutter-width / 2;
       border-top: 0;
       background: $devise-form-color;
-      a {
-        color: white;
-      }
     }
     .btn {
       text-transform: uppercase;
@@ -27,7 +24,6 @@ body.devise {
   #error_explanation {
     @extend .alert;
     @extend .alert-danger;
-    border-radius: 10px;
     h2 {
       font-size: 1rem;
       font-weight: 600;

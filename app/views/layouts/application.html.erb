@@ -14,7 +14,7 @@
     <%= domain_html_tag(domain_asset :header) %>
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="col-xs-12 col-sm-10 col-md-5 col-lg-4">
+        <div class="col-xs-10 col-sm-8 col-md-6 col-lg-2">
           <div class="main-logo">
             <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
           </div>
@@ -22,18 +22,36 @@
       </div>
 
       <div class="row justify-content-center">
-        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-6 col-xl-5 mt-5 mb-5">
-          <div class="card"><br/>
+        <div class="mt-5 mb-5 mx-4 main-card">
+          <div class="card pt-2">
 
             <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
             <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
             <%= yield %>
 
-            <% if account_signed_in? %>
-              <hr>
-              <div class="text-center">
-                <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+          <% if account_signed_in? %>
+              <div class="card-footer py-3 px-5">
+                <div class="row">
+                  <div class="col text-left">
+                    <div class="btn-group">
+                      <a class="dropdown-toggle text-white" data-toggle="dropdown">
+                        Settings
+                      </a>
+                      <div class="dropdown-menu text-dark">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Separated link</a>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col text-right">
+                    <%= link_to 'Sign out', destroy_account_session_path, method: :delete, class: "text-white" %>
+                  </div>
+                </div>
               </div>
             <% end %>
             <br/>
