@@ -18,8 +18,7 @@ window.onload = function () {
          if (result.success){
            $("#error").text('');
            $("#create-phone").prop('disabled', false);
-           $("#send-code-btn").fadeTo( 1000, 0 );
-           $("#send-code-btn").prop('disabled', true);
+           $("#send-code-btn").text('Resend code');
          } else {
            $("#error").text(result.error);
          }
