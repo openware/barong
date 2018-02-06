@@ -32,8 +32,10 @@
             <%= yield %>
           <hr/>
           <% if account_signed_in? %>
-              <div class="card-footer text-center">
-                <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+              <div class="card-footer">
+                <div class="text-right">
+                  <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+                </div>
               </div>
           <% end %>
         </div>

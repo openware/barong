@@ -27,15 +27,19 @@
 
   <div class="d-flex justify-content-center">
     <%= form_tag('/phones') do %>
-
       <div class="form-group">
           <%= label_tag :phone_number %>
         <div class="row">
-          <div class="col-4">
+          <div class="col-3">
             <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
           </div>
-          <div class="col-8">
+          <div class="col-6">
             <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
+          </div>
+          <div class="col-3">
+            <div class="send_code">
+              <a href="javascript:void(0)" id="send-code-btn">Send code</a>
+            </div>
           </div>
         </div>
       </div>
@@ -47,7 +51,7 @@
 
       <div class="d-flex justify-content-center mt-4" id="error"></div>
 
-      <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone" %>
+      <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone col-4" %>
     <% end %>
   </div>
 </div>
