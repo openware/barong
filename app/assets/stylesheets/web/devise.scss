@@ -7,6 +7,10 @@ body.devise {
   .card {
     border: 0;
     border-top: 5px solid $devise-form-color;
+    padding: 10px;
+    h2 {
+      font-weight: 700;
+    }
     .title {
       padding: 20px 20px 0 20px;
     }
@@ -21,6 +25,14 @@ body.devise {
     .btn {
       text-transform: uppercase;
       font-weight: 600;
+    }
+    .btn-phone {
+      border-radius: 3px;
+    }
+    .text-right {
+      font-size: 18px;
+      font-weight: 600;
+      font-style: normal;
     }
   }
 

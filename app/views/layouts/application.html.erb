@@ -15,7 +15,7 @@
     <div class="container-fluid">
 
       <div class="row justify-content-center">
-        <div class="col-xs-12 col-sm-10 col-md-5 col-lg-4">
+        <div class="col-xs-10 col-sm-8 col-md-6 col-lg-2">
           <div class="main-logo">
             <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
           </div>
@@ -23,21 +23,21 @@
       </div>
 
       <div class="row justify-content-center">
-        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-6 col-xl-5 mt-5 mb-5">
+        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-4 col-xl-4 mt-5 mb-5">
           <div class="card"><br/>
 
             <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
             <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
             <%= yield %>
-
+          <hr/>
           <% if account_signed_in? %>
-            <hr>
-            <div class="text-center">
-              <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
-            </div>
+              <div class="card-footer">
+                <div class="text-right">
+                  <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+                </div>
+              </div>
           <% end %>
-          <br/>
         </div>
       </div>
 
