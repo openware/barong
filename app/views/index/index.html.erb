@@ -2,7 +2,7 @@
 
   <div class="col-xs-12 col-sm-10 col-md-6 col-lg-4">
     <div class="main-logo">
-      <%= image_tag("logo-black.png") %>
+      <%= image_tag('logo-black.png') %>
     </div>
   </div>
 </div>
@@ -13,13 +13,14 @@
       <% if account_signed_in? %>
         <div class="d-flex justify-content-center">
           <% if current_account.level == 1 %>
-            <%= link_to 'Verify your phone', new_phone_path, class: "btn btn-primary btn-block mb-4"  %>
+            <%= link_to 'Verify your phone', new_phone_path, class: 'btn btn-primary btn-block mb-4' %>
           <% end %>
           <% if current_account.level == 2 %>
-            <%= link_to 'Verify your identity', new_profile_path, class: "btn btn-primary btn-block mb-4"  %>
+            <%= link_to 'Verify your identity', new_profile_path, class: 'btn btn-primary btn-block mb-4' %>
           <% end %>
         </div>
         <h2>Signed in as <%= current_account.email %></h2><br/>
+        <h5><%= link_to 'Enable 2F authentication', account_index_path %></h5>
       <% else %>
         <h2>You are not signed in.</h2>
         <br/>
