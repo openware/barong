@@ -1,7 +1,9 @@
 <div class="container">
+
+  <br>
+
   <div class="text-center">
     <h2><span class="text-muted">Verification > </span>Add mobile phone</h2>
-    <p class="text-muted"><small>Some text to explain what to do comes here</small></p>
   </div>
 
   <div class="steps d-flex justify-content-center py-4">
@@ -21,42 +23,33 @@
 
 <hr>
 
-  <%= form_tag('/phones') do %>
-
-    <div class="form-group">
-        <%= label_tag :number %>
-      <div class="row">
-        <div class="col-4">
-          <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
-        </div>
-        <div class="col-8">
-          <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
+  <div class="d-flex justify-content-center">
+    <%= form_tag('/phones') do %>
+      <div class="form-group">
+          <%= label_tag :phone_number %>
+        <div class="row">
+          <div class="col-3">
+            <%= number_field_tag :country_code, nil, class: "form-control underlined", placeholder: "+380" %>
+          </div>
+          <div class="col-6">
+            <%= number_field_tag :number, nil, class: "form-control underlined", placeholder: "00 000 00 00" %>
+          </div>
+          <div class="col-3">
+            <div class="send_code">
+              <a href="javascript:void(0)" id="send-code-btn">Send code</a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <%= label_tag "SMS confirmation code" %>
-      <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "Enter code" %>
-    </div>
-
-    <div class="d-flex justify-content-center mt-4" id="error"></div>
-
-    <div class="d-flex justify-content-center mt-4">
-       <input type="button" class="btn btn-primary" id="send-code-btn" value="Get verification code">
-    </div>
-
-    <div class="text-center mt-3 small">
-      Didn't receive SMS?
-      <a href="javascript:void(0)"> Resend a code now</a>
-    </div>
-
-    <hr class="mb-4 mt-5">
-
-    <div class="container">
-      <div class="d-flex justify-content-center">
-        <%= submit_tag  "Next", class: "btn btn-primary btn-block mb-4" %>
+      <div class="form-group">
+        <%= label_tag "SMS confirmation code" %>
+        <%= number_field_tag :code, nil, class: "form-control underlined", placeholder: "Enter code" %>
       </div>
-    </div>
-  <% end %>
+
+      <div class="d-flex justify-content-center mt-4" id="error"></div>
+
+      <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone col-4" %>
+    <% end %>
+  </div>
 </div>
