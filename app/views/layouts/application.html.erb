@@ -30,14 +30,14 @@
             <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
 
             <%= yield %>
-
+          <hr/>
           <% if account_signed_in? %>
-            <hr>
-            <div class="text-center">
-              <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+            <div class="card-footer">
+              <div class="text-right">
+                <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
+              </div>
             </div>
           <% end %>
-          <br/>
         </div>
       </div>
 
