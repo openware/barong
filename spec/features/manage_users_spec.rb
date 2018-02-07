@@ -27,9 +27,11 @@ describe 'Admin can' do
     click_on 'Submit'
     visit admin_accounts_path
 
-    accept_alert do
-      page.first(".btn-danger").click
+    click_link 'Delete'
+    within('div.modal') do
+      click_button 'Confirm'
     end
+
     visit admin_accounts_path
     expect(page).not_to have_content("#{member.email}")
   end
