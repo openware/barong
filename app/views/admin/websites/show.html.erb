@@ -1,51 +1,48 @@
 <div class="container">
   <p id="notice"><%= notice %></p>
-  <div class="col-md-12">
-    <h4 class="text-center"> Website info </h4>
-    <ul class="list-group">
-      <li class="list-group-item">
-        <b> Domain: </b>
-        <%= @website.domain%>
-      </li>
+  <h1>Website</h1>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <b> Domain: </b>
+      <%= @website.domain%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Title: </b>
-        <%= @website.title%>
-      </li>
+    <li class="list-group-item">
+      <b> Title: </b>
+      <%= @website.title%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Logo: </b>
-        <%= @website.logo%>
-      </li>
+    <li class="list-group-item">
+      <b> Logo: </b>
+      <%= @website.logo%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Stylesheet: </b>
-        <%= @website.stylesheet%>
-      </li>
+    <li class="list-group-item">
+      <b> Stylesheet: </b>
+      <%= @website.stylesheet%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Header: </b>
-        <%= @website.header%>
-      </li>
+    <li class="list-group-item">
+      <b> Header: </b>
+      <%= @website.header%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Footer: </b>
-        <%= @website.footer%>
-      </li>
+    <li class="list-group-item">
+      <b> Footer: </b>
+      <%= @website.footer%>
+    </li>
 
-      <li class="list-group-item">
-        <b> Redirect Url: </b>
-        <%= @website.redirect_url%>
-      </li>
+    <li class="list-group-item">
+      <b> Redirect Url: </b>
+      <%= @website.redirect_url%>
+    </li>
 
-      <li class="list-group-item">
-        <b> State: </b>
-        <%= @website.state%>
-      </li>
-      <li class="list-group-item">
-        <%= link_to 'Edit', edit_admin_website_path(@website), class: 'btn btn-primary' %>
-        <%= link_to 'Cancel', admin_websites_path, class: 'btn btn-default' %>
-      </li>
-    </ul>
-  </div>
+    <li class="list-group-item">
+      <b> State: </b>
+      <%= @website.state%>
+    </li>
+  </ul>
+  <br>
+  <%= link_to 'Edit', edit_admin_website_path(@website), class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', admin_websites_path, class: 'btn btn-default' %>
 </div>
