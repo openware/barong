@@ -3,6 +3,8 @@
 
   <%= render 'form', website: @website %>
 
-  <%= link_to 'Show', admin_website_path(@website) %> |
-  <%= link_to 'Back', admin_websites_path %>
+  <div class="actions col-sm-offset-2 col-sm-10">
+    <%= link_to 'Show', admin_website_path(@website), class: 'btn btn-info' %>
+  </div>
+  <br>
 </div>

@@ -33,8 +33,8 @@
           <td><%= website.footer %></td>
           <td><%= website.redirect_url %></td>
           <td><%= website.state %></td>
-          <td><%= link_to 'Show', admin_website_path(website), class: 'btn btn-primary btn-sm' %></td>
-          <td><%= link_to 'Edit', edit_admin_website_path(website), class: 'btn btn-info btn-sm' %></td>
+          <td><%= link_to 'Show', admin_website_path(website), class: 'btn btn-info btn-sm' %></td>
+          <td><%= link_to 'Edit', edit_admin_website_path(website), class: 'btn btn-primary btn-sm' %></td>
           <td><%= link_to 'Delete', admin_website_path(website), class: 'btn btn-danger btn-sm', method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>
       <% end %>

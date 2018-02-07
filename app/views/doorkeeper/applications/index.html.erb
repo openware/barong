@@ -18,7 +18,7 @@
     <tr id="application_<%= application.id %>">
       <td><%= link_to application.name, oauth_application_path(application) %></td>
       <td><%= application.redirect_uri %></td>
-      <td><%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(application), class: 'btn btn-info btn-sm' %></td>
+      <td><%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(application), class: 'btn btn-primary btn-sm' %></td>
       <td><%= render 'delete_form', application: application %></td>
     </tr>
   <% end %>
