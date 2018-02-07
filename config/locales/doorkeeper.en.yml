@@ -20,7 +20,7 @@ en:
         destroy: 'Are you sure?'
       buttons:
         edit: 'Edit'
-        destroy: 'Destroy'
+        destroy: 'Delete'
         submit: 'Submit'
         cancel: 'Cancel'
         authorize: 'Authorize'
