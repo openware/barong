@@ -11,79 +11,57 @@
     </div>
   <% end %>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :domain %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :domain, id: :website_domain %>
-    </div>
+  <%= form.label :domain, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :domain, id: :website_domain , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :title %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :title, id: :website_title %>
-    </div>
+  <%= form.label :title, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :title, id: :website_title , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :logo %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :logo, id: :website_logo %>
-    </div>
+  <%= form.label :logo, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :logo, id: :website_logo , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :stylesheet %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :stylesheet, id: :website_stylesheet %>
-    </div>
+  <%= form.label :stylesheet, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :stylesheet, id: :website_stylesheet , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :header %>
-    </div>
-    <div class="col-4">
-      <%= form.text_area :header, id: :website_header %>
-    </div>
+  <%= form.label :header, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_area :header, id: :website_header , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :footer %>
-    </div>
-    <div class="col-4">
-      <%= form.text_area :footer, id: :website_footer %>
-    </div>
+  <%= form.label :footer, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_area :footer, id: :website_footer , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :redirect_url %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :redirect_url, id: :website_redirect_url %>
-    </div>
+  <%= form.label :redirect_url, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :redirect_url, id: :website_redirect_url , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="field row">
-    <div class="col-4">
-      <%= form.label :state %>
-    </div>
-    <div class="col-4">
-      <%= form.text_field :state, id: :website_state %>
-    </div>
+  <%= form.label :state, class: 'col-sm-2 control-label'%>
+  <div class="col-sm-10">
+    <%= form.text_field :state, id: :website_state , class: 'form-control'%>
   </div>
+  <br>
 
-  <div class="actions">
+  <div class="actions col-sm-offset-2 col-sm-10">
     <%= form.submit class: 'btn btn-primary' %>
+    <%= link_to t('doorkeeper.applications.buttons.cancel'), admin_websites_path,  class: 'btn btn-default' %>
   </div>
+  <br>
 <% end %>
