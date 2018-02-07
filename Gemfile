@@ -21,6 +21,7 @@ gem 'fog',          '~> 1.42.0'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
+gem 'data-confirm-modal'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
