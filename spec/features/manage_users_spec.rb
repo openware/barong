@@ -13,7 +13,7 @@ describe 'Admin can' do
     visit admin_accounts_path
     expect(page).to have_content("#{account.email}")
 
-    page.first('.btn-info').click
+    click_link 'Edit'
     fill_in 'account_role', with: 'admin'
     click_on 'Update'
     expect(page).not_to have_content("member")
