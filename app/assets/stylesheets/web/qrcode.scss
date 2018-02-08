@@ -1,0 +1,28 @@
+.qr-code {
+  table {
+    border-width: 0;
+    border-style: none;
+    border-color: #0000ff;
+    border-collapse: collapse;
+  }
+
+  td {
+    border-left: solid 10px #000;
+    padding: 0;
+    margin: 0;
+    width: 0px;
+    height: 10px;
+  }
+
+  .black {
+    border-color: #000;
+  }
+
+  .white {
+    border-color: #fff;
+  }
+
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}

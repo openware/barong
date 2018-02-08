@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'vault'
+
 #
 # Class Account
 #
@@ -14,6 +16,23 @@ class Account < ApplicationRecord
   has_many :phones, dependent: :destroy
 
   validates :email, uniqueness: true
+
+  # Generates new url
+  def url_otp
+    path = "totp/keys/user#{id}"
+    res = Vault.logical.write(path, generate: true, issuer: 'Barong', account_name: email)
+    res.data[:url]
+  rescue Vault::VaultError
+    raise 'Error. OTP service is not available'
+  end
+
+  # Verifies otp
+  def verify_otp(otp)
+    res = Vault.logical.write(code: otp)
+    res.data[:valid]
+  rescue Vault::VaultError
+    raise 'Error. OTP service is not available'
+  end
 
   def role
     super.inquiry
