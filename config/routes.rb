@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   root to: 'index#index', as: :index
 
   post  'phones/verification', to: 'phones#verify'
+  get   'security',     to: 'security#enable'
 
-  resources :account, only: [:index]
   resources :phones
   resources :profiles
   resources :documents

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rotp'
+require 'vault'
 
 #
 # Class Account
@@ -16,12 +16,22 @@ class Account < ApplicationRecord
   has_many :phones, dependent: :destroy
 
   validates :email, uniqueness: true
-  validates :seed, uniqueness: true
 
-  before_validation :init_seed
+  # Generates new url
+  def url_otp
+    path = "totp/keys/user#{id}"
+    res = Vault.logical.write(path, generate: true, issuer: 'Barong', account_name: email)
+    res.data[:url]
+  rescue Vault::VaultError
+    raise 'Error. OTP service is not available'
+  end
 
-  def init_seed
-    self.seed = ROTP::Base32.random_base32
+  # Verifies otp
+  def verify_otp(otp)
+    res = Vault.logical.write(code: otp)
+    res.data[:valid]
+  rescue Vault::VaultError
+    raise 'Error. OTP service is not available'
   end
 
   def role
@@ -49,7 +59,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180129150051
+# Schema version: 20180126130155
 #
 # Table name: accounts
 #
@@ -75,7 +85,6 @@ end
 #  level                  :integer          default(0), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  seed                   :string(255)      default("")
 #
 # Indexes
 #

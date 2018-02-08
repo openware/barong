@@ -2,15 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+
 image:
   repository: gcr.io/helios-public/barong
   tag: latest
   pullPolicy: Always
+
 service:
   name: barong
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
+
 ingress:
   enabled: true
   hosts:
@@ -21,6 +24,7 @@ ingress:
     kubernetes.io/tls-acme: "true"
   tls:
     enabled: true
+
 resources: {}
 
 twilio:
@@ -50,3 +54,9 @@ gcs:
 # bucket:
   accessKeyId: changeme
   secretAccessKey: changeme
+
+# Set vault host and token
+vault: {}
+#  adress:
+#  token:
+

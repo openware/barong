@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rqrcode'
-require 'rotp'
 
 #
 # ApplicationHelper
@@ -20,10 +19,10 @@ module ApplicationHelper
   end
 
   def generate_qr_code
-    account = current_account
-    totp = ROTP::TOTP.new(account.seed, issuer: 'Barong')
-    url = totp.provisioning_uri(account.email)
-    RQRCode::QRCode.new(url, size: 5, level: :l).as_html
+    url = current_account.url_otp
+    RQRCode::QRCode.new(url, size: 8, level: :l).as_html
+  rescue StandardError => e
+    e.message
   end
 
   def domain_html_tag(text)
