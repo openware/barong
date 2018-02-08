@@ -14,7 +14,7 @@ describe 'Admin can' do
     expect(page).to have_content("#{account.email}")
 
     click_link 'Edit'
-    fill_in 'account_role', with: 'admin'
+    select 'admin', from: 'account_role'
     click_on 'Submit'
     expect(page).not_to have_content("member")
   end

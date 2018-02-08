@@ -5,7 +5,7 @@
   <%= form_for([:admin, @account], method: :put) do |f| %>
     <div class="form-group">
       <%= f.label :role, class: 'control-label' %><br />
-      <%= f.text_field :role, autocomplete: 'role', class: 'form-control col-sm-10' %>
+      <%= f.select :role, ['admin', 'member'], {}, class: 'form-control col-sm-10' %>
     </div>
     <div class="actions">
       <%= f.submit 'Submit', class: 'btn btn-primary' %>
