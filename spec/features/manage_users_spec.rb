@@ -15,7 +15,7 @@ describe 'Admin can' do
 
     click_link 'Edit'
     fill_in 'account_role', with: 'admin'
-    click_on 'Update'
+    click_on 'Submit'
     expect(page).not_to have_content("member")
   end
 
