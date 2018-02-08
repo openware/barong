@@ -1,14 +1,15 @@
 <div class="container">
-  <h2>Edit</h2>
+  <div class="page-header">
+    <h1>Edit account</h1>
+  </div>
   <%= form_for([:admin, @account], method: :put) do |f| %>
-
     <div class="form-group">
-      <%= f.label :role %><br />
-      <%= f.text_field :role, autocomplete: 'role' %>
+      <%= f.label :role, class: 'control-label' %><br />
+      <%= f.select :role, ['admin', 'member'], {}, class: 'form-control col-sm-2' %>
     </div>
-
     <div class="actions">
-      <%= f.submit 'Update', class: 'btn btn-primary' %>
+      <%= f.submit 'Submit', class: 'btn btn-primary' %>
+      <%= link_to t('doorkeeper.applications.buttons.cancel'), admin_accounts_path,  class: 'btn btn-default' %>
     </div>
   <% end %>
 </div>

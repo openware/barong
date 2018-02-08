@@ -1,46 +1,48 @@
 <div class="container">
   <p id="notice"><%= notice %></p>
+  <h1>Website</h1>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <b> Domain: </b>
+      <%= @website.domain%>
+    </li>
 
-  <p>
-    <strong>Domain:</strong>
-    <%= @website.domain %>
-  </p>
+    <li class="list-group-item">
+      <b> Title: </b>
+      <%= @website.title%>
+    </li>
 
-  <p>
-    <strong>Title:</strong>
-    <%= @website.title %>
-  </p>
+    <li class="list-group-item">
+      <b> Logo: </b>
+      <%= @website.logo%>
+    </li>
 
-  <p>
-    <strong>Logo:</strong>
-    <%= @website.logo %>
-  </p>
+    <li class="list-group-item">
+      <b> Stylesheet: </b>
+      <%= @website.stylesheet%>
+    </li>
 
-  <p>
-    <strong>Stylesheet:</strong>
-    <%= @website.stylesheet %>
-  </p>
+    <li class="list-group-item">
+      <b> Header: </b>
+      <%= @website.header%>
+    </li>
 
-  <p>
-    <strong>Header:</strong>
-    <%= @website.header %>
-  </p>
+    <li class="list-group-item">
+      <b> Footer: </b>
+      <%= @website.footer%>
+    </li>
 
-  <p>
-    <strong>Footer:</strong>
-    <%= @website.footer %>
-  </p>
+    <li class="list-group-item">
+      <b> Redirect Url: </b>
+      <%= @website.redirect_url%>
+    </li>
 
-  <p>
-    <strong>Redirect Url:</strong>
-    <%= @website.redirect_url %>
-  </p>
-
-  <p>
-    <strong>State:</strong>
-    <%= @website.state %>
-  </p>
-
-  <%= link_to 'Edit', edit_admin_website_path(@website) %> |
-  <%= link_to 'Back', admin_websites_path %>
+    <li class="list-group-item">
+      <b> State: </b>
+      <%= @website.state%>
+    </li>
+  </ul>
+  <br>
+  <%= link_to 'Edit', edit_admin_website_path(@website), class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', admin_websites_path, class: 'btn btn-default' %>
 </div>

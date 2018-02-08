@@ -13,9 +13,9 @@ describe 'Admin can' do
     visit admin_accounts_path
     expect(page).to have_content("#{account.email}")
 
-    page.first('.btn-info').click
-    fill_in 'account_role', with: 'admin'
-    click_on 'Update'
+    click_link 'Edit'
+    select 'admin', from: 'account_role'
+    click_on 'Submit'
     expect(page).not_to have_content("member")
   end
 
@@ -27,9 +27,11 @@ describe 'Admin can' do
     click_on 'Submit'
     visit admin_accounts_path
 
-    accept_alert do
-      page.first(".btn-danger").click
+    click_link 'Delete'
+    within('div.modal') do
+      click_button 'Confirm'
     end
+
     visit admin_accounts_path
     expect(page).not_to have_content("#{member.email}")
   end

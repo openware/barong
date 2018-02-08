@@ -4,13 +4,12 @@
 
 <p><%= link_to t('.new'), new_oauth_application_path, class: 'btn btn-success' %></p>
 
-<table class="table table-striped">
+<table class="table table-bordered table-striped table-hover table-sm text-center">
   <thead>
   <tr>
     <th><%= t('.name') %></th>
     <th><%= t('.callback_url') %></th>
-    <th></th>
-    <th></th>
+    <th colspan=3></th>
   </tr>
   </thead>
   <tbody>
@@ -18,7 +17,7 @@
     <tr id="application_<%= application.id %>">
       <td><%= link_to application.name, oauth_application_path(application) %></td>
       <td><%= application.redirect_uri %></td>
-      <td><%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(application), class: 'btn btn-link' %></td>
+      <td><%= link_to t('doorkeeper.applications.buttons.edit'), edit_oauth_application_path(application), class: 'btn btn-primary btn-sm' %></td>
       <td><%= render 'delete_form', application: application %></td>
     </tr>
   <% end %>
