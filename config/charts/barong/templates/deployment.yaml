@@ -13,23 +13,23 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: {{ template "barong.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.service.internalPort }}
-          env:
-{{ include "barong.env" . | indent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
-          readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+      - name: {{ .Chart.Name }}
+        image: {{ template "barong.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        env:
+{{ include "barong.env" . | indent 8 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

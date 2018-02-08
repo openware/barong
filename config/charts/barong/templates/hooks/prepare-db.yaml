@@ -18,8 +18,8 @@ spec:
     spec:
       restartPolicy: OnFailure
       containers:
-        - name: prepare-db
-          image: {{ template "barong.image" . }}
-          command: ["rake", "db:create", "db:migrate"]
-          env:
-{{ include "barong.hook-env" . | indent 12 }}
+      - name: prepare-db
+        image: {{ template "barong.image" . }}
+        command: ["rake", "db:create", "db:migrate"]
+        env:
+{{ include "barong.hook-env" . | indent 8 }}

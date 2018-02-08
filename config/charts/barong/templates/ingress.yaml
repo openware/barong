@@ -13,21 +13,21 @@ metadata:
     {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-    {{- end -}}
+  {{- range $host := .Values.ingress.hosts }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ $serviceName }}
+          servicePort: {{ $servicePort }}
+  {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
-    {{- range $host := .Values.ingress.hosts }}
-    - secretName: {{ $host | replace "." "-" }}-barong-tls
-      hosts:
-        - {{ $host }}
-    {{- end -}}
+  {{- range $host := .Values.ingress.hosts }}
+  - secretName: {{ $host | include "barong.utils.tls" }}
+    hosts:
+    - {{ $host }}
+  {{- end -}}
   {{- end -}}
 {{- end -}}
