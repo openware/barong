@@ -19,6 +19,9 @@ body.devise {
       text-transform: uppercase;
       font-weight: 600;
     }
+    .wrap {
+      white-space: nowrap;
+    }
   }
 
   #error_explanation {
