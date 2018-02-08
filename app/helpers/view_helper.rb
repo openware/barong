@@ -5,9 +5,9 @@ module ViewHelper
   def badge_by_state(state)
     case state
       when 'created'
-        'primary'
+        'info'
       when 'pending'
-        'warning'
+        'primary'
       when 'approved'
         'success'
       when 'rejected'
