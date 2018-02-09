@@ -23,6 +23,7 @@ gem 'rqrcode',      '~> 0.10.1'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
+gem 'doorkeeper-jwt'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
