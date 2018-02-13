@@ -28,7 +28,9 @@
     </div>
     <div class="col-12">
       <div class="text-center">
-        <h2>Signed in as <%= current_account.email %></h2><br/>
+        <div class="wrap">
+          <h2 class="wrap">Signed in as <%= current_account.email %></h2><br/>
+        </div>
         <h5><%= link_to 'Enable 2F authentication', security_path %></h5>
       </div>
     </div>
