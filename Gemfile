@@ -10,7 +10,7 @@ gem 'uglifier',     '~> 4'
 gem 'devise',       '~> 4.4'
 gem 'mini_racer',   '~> 0.1', require: false
 gem 'cancancan',    '~> 2.0'
-gem 'bootstrap',    '~> 4.0.0.beta3'
+gem 'bootstrap',    '~> 4.0.0'
 gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
 gem 'doorkeeper',   '~> 4.2.6'
