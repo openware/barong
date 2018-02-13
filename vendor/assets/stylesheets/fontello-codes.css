@@ -1,3 +1,5 @@
 
 .icon-check:before { content: '\e800'; } /* '' */
+.icon-ok-circled:before { content: '\e801'; } /* '' */
+.icon-down-micro:before { content: '\e802'; } /* '' */
 .icon-dot-circled:before { content: '\f192'; } /* '' */

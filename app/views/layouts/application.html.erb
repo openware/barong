@@ -23,14 +23,26 @@
 
       <div class="row justify-content-center">
         <div class="mt-5 mb-5 mx-4 main-card">
-          <div class="card pt-2">
 
-            <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
-            <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
+          <div class="card">
 
-            <%= yield %>
+            <% unless notice.blank? %>
+              <span class="alert alert-success text-center mb-0">
+                <h3><i class="icon icon-ok-circled"></i> <%= notice %></h3>
+              </span>
+            <% end %>
 
-          <% if account_signed_in? %>
+            <% unless alert.blank? %>
+              <span class="alert alert-danger mb-0">
+                <i class="icon icon-cancel-circled"></i> <h3><%= alert %></h3>
+              </span>
+            <% end %>
+
+            <div classs="pt-2">
+              <%= yield %>
+            </div>
+
+            <% if account_signed_in? %>
               <div class="card-footer py-3 px-5">
                 <div class="row">
                   <div class="col text-left">
@@ -39,11 +51,10 @@
                         Settings
                       </a>
                       <div class="dropdown-menu text-dark">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Separated link</a>
+                        <a class="dropdown-item" href="#">Password</a>
+                        <a class="dropdown-item" href="#">Two factor authentification</a>
+                        <a class="dropdown-item" href="#">Verification</a>
+                        <a class="dropdown-item" href="#">Phone</a>
                       </div>
                     </div>
 
@@ -54,8 +65,8 @@
                 </div>
               </div>
             <% end %>
-            <br/>
           </div>
+
         </div>
       </div>
     </div>

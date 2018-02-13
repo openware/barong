@@ -5,7 +5,7 @@
 //= require bootstrap-datepicker
 
 window.onload = function () {
-  $('.datepicker').datepicker();
+  $('.datepicker-toggle').datepicker();
 
   $('#send-code-btn').on('click', function () {
     number = '+' + $("#country_code").val() + $("#number").val();
