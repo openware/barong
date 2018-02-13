@@ -13,43 +13,67 @@
 
   <div class="row form-group">
     <div class="col-6">
-      <%= form.text_field :first_name, id: :profile_first_name, class: "form-control underlined", placeholder: 'First name' %>
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, id: :profile_first_name, class: "form-control form-control-lg underlined", placeholder: 'First name' %>
     </div>
 
     <div class="col-6">
-      <%= form.text_field :last_name, id: :profile_last_name, class: "form-control underlined", placeholder: 'Last name' %>
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, id: :profile_last_name, class: "form-control form-control-lg underlined", placeholder: 'Last name' %>
     </div>
   </div>
 
-  <div class="field form-group">
+  <div class="row form-group mt-4">
     <div class="col-6">
-      <%= form.text_field :dob, id: :profile_dob, class: 'datepicker', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Date of birth' %>
+      <%= form.label :dob, "Date of birth" %>
+      <div class="down-arrow">
+        <%= form.text_field :dob, id: :profile_dob, class: 'datepicker-toggle form-control form-control-lg underlined', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Date of birth' %>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <%= form.label :country %>
+      <div class="down-arrow">
+        <%= form.text_field :country, id: :profile_country, class: "form-control form-control-lg underlined", placeholder: 'Country' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row form-group mt-4">
+    <div class="col-12">
+      <%= form.label :document, "Document Series and Numbers" %>
+      <%= form.text_field :document, id: :profile_document, class: 'form-control form-control-lg underlined', placeholder: 'Document Series and Numbers' %>
+
+      <%= form.file_field :upload, class: 'custom-file-input', id: "profile_upload" %>
+      <%= form.label :upload, "Choose the file to upload" %>
+    </div>
+  </div>
+
+<!--   <div class="row form-group">
+    <div class="col-6">
+      <%#= form.label :address %>
+      <%#= form.text_field :address, id: :profile_address, class: "form-control form-control-lg underlined", placeholder: 'Address' %>
+    </div>
+
+    <div class="col-6">
+      <%#= form.label :postcode %>
+      <%#= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
     </div>
   </div>
 
   <div class="row form-group">
     <div class="col-6">
-      <%= form.text_field :address, id: :profile_address, class: "form-control underlined", placeholder: 'Address' %>
+      <%#= form.label :city %>
+      <%#= form.text_field :city, id: :profile_city, class: "form-control form-control-lg underlined", placeholder: 'City' %>
     </div>
 
     <div class="col-6">
-      <%= form.text_field :postcode, id: :profile_postcode, class: "form-control underlined", placeholder: 'Postcode' %>
+      <%#= form.label :country %>
+      <%#= form.text_field :country, id: :profile_country, class: "form-control form-control-lg underlined", placeholder: 'Country' %>
     </div>
-  </div>
+  </div> -->
 
-  <div class="row form-group">
-    <div class="col-6">
-      <%= form.text_field :city, id: :profile_city, class: "form-control underlined", placeholder: 'City' %>
-    </div>
-
-    <div class="col-6">
-      <%= form.text_field :country, id: :profile_country, class: "form-control underlined", placeholder: 'Country' %>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="d-flex justify-content-center">
-      <%= form.submit "Next", class: "btn btn-primary btn-block mb-4" %>
-    </div>
+  <div class="d-flex justify-content-between mt-4">
+    <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success col-6" %>
   </div>
 <% end %>

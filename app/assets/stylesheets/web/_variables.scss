@@ -6,16 +6,20 @@
 // https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss
 // -----------------------------------
 
+
 // colors
-$success: #5ca50d !default;
-$primary: #F47421 !default;
-$warning: #FAC718 !default;
-$divider: #e5e5e5 !default;
+$success: #5ca50d;
+$primary: #F47421;
+$warning: #FAC718;
+$divider: #e5e5e5;
 
 // border radius
-$border-radius: 0 !default;
-$border-radius-lg: 0 !default;
-$border-radius-sm: 0 !default;
+$border-radius: 3px;
+$border-radius-lg: 3px;
+$border-radius-sm: 3px;
+
+// buttons
+$btn-padding-y:  10px;
 
 // fonts
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600');

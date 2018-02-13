@@ -17,6 +17,18 @@
       "css": "dot-circled",
       "code": 61842,
       "src": "fontawesome"
+    },
+    {
+      "uid": "56b0141d7bbb0717fc6246ea145bc0bd",
+      "css": "ok-circled",
+      "code": 59393,
+      "src": "elusive"
+    },
+    {
+      "uid": "35674c31693db324f2fd6a48f1079263",
+      "css": "down-micro",
+      "code": 59394,
+      "src": "websymbols"
     }
   ]
 }

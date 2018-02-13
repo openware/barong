@@ -1,0 +1,5 @@
+@each $color, $value in $theme-colors {
+  &.alert-#{$color} {
+    color: $value;
+  }
+}
