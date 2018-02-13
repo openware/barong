@@ -122,7 +122,10 @@ Doorkeeper::JWT.configure do
 
     {
       email: account.email,
-      profile: account.as_json(only: %i[email role level]),
+      profile: account.as_json(
+        only: %i[email role level],
+        include: { profile: { only: %i[first_name last_name] } }
+      ),
       exp: 4.hours.from_now.to_i
     }
   end
