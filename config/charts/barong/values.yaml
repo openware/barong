@@ -32,6 +32,8 @@ twilio:
   authToken: changeme
   phoneNumber: changeme
 
+jwtSharedSecretKey: changeme
+
 app:
   vars: {}
 
