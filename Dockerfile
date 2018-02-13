@@ -15,6 +15,7 @@ ENV RAILS_ENV ${RAILS_ENV}
 # Users should override this variable by passing environment variable on container start.
 ENV DEVISE_SECRET_KEY='changeme'
 ENV SECRET_KEY_BASE='changeme'
+ENV JWT_SHARED_SECRET_KEY='changeme'
 
 ENV APP_HOME=/home/app
 

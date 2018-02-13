@@ -52,6 +52,8 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
   value: {{ .Values.gcs.accessKeyId }}
 - name: GCS_SECRET_ACCESS_KEY
   value: {{ .Values.gcs.secretAccessKey }}
+- name: JWT_SHARED_SECRET_KEY
+  value: {{ .Values.jwtSharedSecretKey }}
 {{- end -}}
 
 {{/*
@@ -133,6 +135,13 @@ Environment for barong container
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: vaultToken
+{{- if .Values.jwtSharedSecretKey -}}
+- name: JWT_SHARED_SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "barong.fullname" . }}
+      key: jwtSharedSecretKey
+{{- end -}}
 {{- end -}}
 
 {{/*
