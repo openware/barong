@@ -19,6 +19,10 @@ body.devise {
       text-transform: uppercase;
       font-weight: 600;
     }
+    .wrap {
+      font-size: 1.5rem;
+      white-space: nowrap;
+    }
   }
 
   #error_explanation {

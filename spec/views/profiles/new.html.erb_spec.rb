@@ -23,12 +23,6 @@ RSpec.describe "profiles/new", type: :view do
 
       assert_select "input[name=?]", "profile[last_name]"
 
-      assert_select "input[name=?]", "profile[address]"
-
-      assert_select "input[name=?]", "profile[postcode]"
-
-      assert_select "input[name=?]", "profile[city]"
-
       assert_select "input[name=?]", "profile[country]"
     end
   end
