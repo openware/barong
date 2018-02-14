@@ -27,7 +27,6 @@ RSpec.describe "profiles/new", type: :view do
 
       assert_select "input[name=?]", "profile[country]"
 
-      assert_select "input[name=?]", "profile[document]"
     end
   end
 end

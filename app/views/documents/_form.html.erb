@@ -10,26 +10,27 @@
       </ul>
     </div>
   <% end %>
-
-<div class="row">
-  <div class="field col-6">
-    <%= form.label :doc_type %>
-    <%= form.select(:doc_type, ['passport', 'identity card', 'driver license', 'utility bill'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
-  </div>
-
-    <div class="field form-group col-6">
-      <%= form.label :doc_number %>
-      <%= form.text_field :doc_number, id: :document_doc_number, class: 'form-control underlined' %>
+  <div class="col-12">
+    <%= form.file_field :upload, id: :document_upload, class: 'custom-file-input' %>
+    <%= form.label :upload, "Choose the file to upload" %>
+  </div></br>
+  <div class="row">
+    <div class="field col-6">
+      <%= form.label :doc_type %>
+      <%= form.select(:doc_type, ['passport', 'identity card', 'driver license', 'utility bill'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
     </div>
-  </div>
 
-  <div class="field form-group">
-      <%= form.text_field :doc_expire, id: :document_doc_expire, class: 'datepicker', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Expiry date' %>
-  </div>
+    <div class="field form-group">
+      <%= form.label :doc_expire %>
+      <div class="down-arrow">
+        <%= form.text_field :doc_expire, id: :document_doc_expire, class: 'datepicker-toggle form-control underlined', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Expiry date' %>
+      </div>
+    </div>
 
-  <div class="form-group">
-    <%= form.label :upload %>
-    <%= form.file_field :upload, class: 'form-control underlined' %>
+    <div class="field form-group col-12">
+      <%= form.label :doc_number, "Document Series and Numbers" %>
+      <%= form.text_field :doc_number, id: :document_doc_number, class: 'form-control form-control-lg underlined', placeholder: 'Document Series and Numbers' %>
+    </div>
   </div>
 
   <div class="actions">

@@ -26,15 +26,15 @@
 
           <div class="card">
 
-            <% unless notice.blank? %>
-              <span class="alert alert-success text-center mb-0">
-                <h3><i class="icon icon-ok-circled"></i> <%= notice %></h3>
-              </span>
-            <% end %>
-
             <% unless alert.blank? %>
               <span class="alert alert-danger mb-0">
                 <i class="icon icon-cancel-circled"></i> <h3><%= alert %></h3>
+              </span>
+            <% end %>
+
+            <% unless notice.blank? %>
+              <span class="alert alert-success mb-0">
+                <i class="icon icon-cancel-circled"></i> <h3><%= notice %></h3>
               </span>
             <% end %>
 

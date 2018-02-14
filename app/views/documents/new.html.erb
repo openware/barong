@@ -1,13 +1,24 @@
-<div class="container">
-  <div class="row">
-    <div class="col-6">
-      <h1>New Document</h1>
+<div class="text-center pt-1">
+  <h2 class="font-weight-bold pt-4 pb-4"><span class="text-muted">Verification > </span>Add document</h2>
+</div>
+
+<div class="d-flex justify-content-center box-shadow">
+  <div class="steps d-flex justify-content-between pb-2 px-5 mb-2">
+    <div class="col-4 step-col first">
+      <div class="step text-muted completed"></div>
+      <small>Email</small>
     </div>
-    <div class="col-6 d-flex justify-content-end">
-      <%= link_to 'Edit Profile', edit_profile_path(current_account.profile.id) %>
+    <div class="col-4 step-col">
+      <div class="step text-muted completed"></div>
+      <small>Phone</small>
+    </div>
+    <div class="col-4 step-col last">
+      <div class="step text-muted current"></div>
+      <small>Document</small>
     </div>
   </div>
+</div>
 
+<div class="d-flex justify-content-center px-5 py-4">
   <%= render 'form', document: @document %>
-
 </div><br/>

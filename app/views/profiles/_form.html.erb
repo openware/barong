@@ -39,39 +39,24 @@
     </div>
   </div>
 
-  <div class="row form-group mt-4">
-    <div class="col-12">
-      <%= form.label :document, "Document Series and Numbers" %>
-      <%= form.text_field :document, id: :profile_document, class: 'form-control form-control-lg underlined', placeholder: 'Document Series and Numbers' %>
-
-      <%= form.file_field :upload, class: 'custom-file-input', id: "profile_upload" %>
-      <%= form.label :upload, "Choose the file to upload" %>
-    </div>
-  </div>
-
-<!--   <div class="row form-group">
+  <div class="row form-group">
     <div class="col-6">
-      <%#= form.label :address %>
-      <%#= form.text_field :address, id: :profile_address, class: "form-control form-control-lg underlined", placeholder: 'Address' %>
+      <%= form.label :address %>
+      <%= form.text_field :address, id: :profile_address, class: "form-control form-control-lg underlined", placeholder: 'Address' %>
     </div>
 
     <div class="col-6">
-      <%#= form.label :postcode %>
-      <%#= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
+      <%= form.label :postcode %>
+      <%= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
     </div>
   </div>
 
   <div class="row form-group">
     <div class="col-6">
-      <%#= form.label :city %>
-      <%#= form.text_field :city, id: :profile_city, class: "form-control form-control-lg underlined", placeholder: 'City' %>
+      <%= form.label :city %>
+      <%= form.text_field :city, id: :profile_city, class: "form-control form-control-lg underlined", placeholder: 'City' %>
     </div>
-
-    <div class="col-6">
-      <%#= form.label :country %>
-      <%#= form.text_field :country, id: :profile_country, class: "form-control form-control-lg underlined", placeholder: 'Country' %>
-    </div>
-  </div> -->
+  </div>
 
   <div class="d-flex justify-content-between mt-4">
     <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success col-6" %>
