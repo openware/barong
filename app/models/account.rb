@@ -59,7 +59,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180214154526
 #
 # Table name: accounts
 #
@@ -83,6 +83,7 @@ end
 #  locked_at              :datetime
 #  role                   :string(255)      default("member"), not null
 #  level                  :integer          default(0), not null
+#  state                  :string(255)      default("active"), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

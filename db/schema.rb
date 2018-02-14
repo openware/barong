@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180209140602) do
+ActiveRecord::Schema.define(version: 20180214154526) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20180209140602) do
     t.datetime "locked_at"
     t.string "role", default: "member", null: false
     t.integer "level", default: 0, null: false
+    t.string "state", default: "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token", unique: true
