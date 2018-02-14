@@ -49,6 +49,6 @@ describe 'Phone verification' do
     sleep 1 #FIXME we need to wait for html event
     fill_in 'Enter code', with: FakeSMS.messages.last.body.split.last
     click_on 'CONFIRM'
-    #expect(page).to have_content('Complete your profile')
+    expect(page).to have_content('Verification > Add document')
   end
 end
