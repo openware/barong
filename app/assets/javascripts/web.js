@@ -18,7 +18,7 @@ window.onload = function () {
          if (result.success){
            $("#error").text('');
            $("#create-phone").prop('disabled', false);
-           $("#send-code-btn").text('Resend code');
+           $("#send-code-btn").text('Resend');
          } else {
            $("#error").text(result.error);
          }

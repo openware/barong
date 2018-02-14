@@ -6,7 +6,6 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/new
   def new
-    redirect_to new_document_path if Profile.find_by_account_id(current_account.id)
     if current_account.level < 2
       redirect_to new_phone_path
     else
@@ -19,16 +18,21 @@ class ProfilesController < ApplicationController
   end
 
   # POST /profiles
+  # rubocop:disable Style/IfUnlessModifier
   def create
-    begin
-      @profile = Profile.new(profile_params)
-      @profile.update!(account_id: current_account.id)
-    rescue ActiveRecord::RecordInvalid
+    profile = Profile.new(profile_params)
+    unless profile.save
       return redirect_to new_profile_url, notice: 'Some fields are empty or invalid'
     end
 
-    redirect_to new_document_path
+    document = Document.new(doc_params.merge(profile_id: profile.id))
+    unless document.save
+      return redirect_to new_profile_url, notice: 'Some fields are empty or invalid'
+    end
+
+    redirect_to index_url
   end
+  # rubocop:enable Style/IfUnlessModifier
 
   # PATCH/PUT /profiles/1
   def update
@@ -52,6 +56,12 @@ class ProfilesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def profile_params
-    params.require(:profile).permit(:account_id, :first_name, :last_name, :dob, :address, :postcode, :city, :country)
+    params.require(:profile)
+          .permit(:account_id, :first_name, :last_name, :dob, :address, :postcode, :city, :country)
+          .merge(account_id: current_account.id)
+  end
+
+  def doc_params
+    params.require(:profile).permit(:doc_number, :upload)
   end
 end
