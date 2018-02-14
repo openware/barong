@@ -31,5 +31,14 @@ bundle exec rake db:create db:migrate
 bundle exec rails server
 ```
 
+# Barong Levels
+
+In the process of verification Barong assign different levels to accounts
+
+- Level 0 is default account level
+- Level 1 will apply after email verification
+- Level 2 will apply after phone verification
+- Level 3 will apply after identity & document verification 
+
 # License
 Barong is released under the terms of the [Apache License 2.0](./LICENSE.md).
