@@ -7,8 +7,8 @@ namespace :db do
       account = Account.create(email: 'admin@gmail.com', password: '123123', role: 'admin', confirmed_at: Faker::Time.between(2.days.ago, Date.today))
       Profile.create(account: account, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, dob: Faker::Date.between(25.years.ago, 10.years.ago), address: Faker::Address.street_address, city: Faker::Address.city)
 
-      moderator = Account.create(email: 'moderator@gmail.com', password: '123123', role: 'moderator', confirmed_at: Faker::Time.between(2.days.ago, Date.today))
-      Profile.create(account: moderator, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, dob: Faker::Date.between(25.years.ago, 10.years.ago), address: Faker::Address.street_address, city: Faker::Address.city)
+      compliance = Account.create(email: 'compliance@gmail.com', password: '123123', role: 'compliance', confirmed_at: Faker::Time.between(2.days.ago, Date.today))
+      Profile.create(account: compliance, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, dob: Faker::Date.between(25.years.ago, 10.years.ago), address: Faker::Address.street_address, city: Faker::Address.city)
 
       [*1..100].each do
         account = Account.create(email: Faker::Internet.email, password: Faker::Internet.password, confirmed_at: Faker::Time.between(2.days.ago, Date.today))

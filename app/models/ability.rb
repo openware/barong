@@ -34,6 +34,11 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    can :manage, :all if account&.role&.admin?
+    case account.role
+      when 'admin'
+        can :manage, :all
+      when 'compliance'
+        can :manage,  [Profile]
+    end
   end
 end

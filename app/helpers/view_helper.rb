@@ -15,4 +15,15 @@ module ViewHelper
     end
   end
 
+  def badge_by_role(role)
+    case role
+      when 'admin'
+        'badge-success'
+      when 'compliance'
+        'badge-warning'
+      when 'member'
+        'badge-info'
+    end
+  end
+
 end
