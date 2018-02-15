@@ -5,7 +5,7 @@ module Api
     before_action :doorkeeper_authorize!
 
     def show
-      render json: current_resource_owner.as_json(only: %i[email level role state])
+      render json: current_resource_owner.as_json(only: %i[uid email level role state])
     end
 
     def current_resource_owner

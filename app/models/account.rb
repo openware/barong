@@ -15,7 +15,10 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
 
+  before_validation :assign_uid
+
   validates :email, uniqueness: true
+  validates :uid, presence: true, uniqueness: true
 
   # Generates new url
   def url_otp
@@ -56,15 +59,27 @@ class Account < ApplicationRecord
 
     save
   end
+
+  def assign_uid
+    self.uid and return
+    begin
+      self.uid = random_uid
+    end while Account.where(uid: self.uid).any?
+  end
+
+  def random_uid
+    "ID#{SecureRandom.hex(5).upcase}"
+  end
 end
 
 # == Schema Information
-# Schema version: 20180214154526
+# Schema version: 20180215133138
 #
 # Table name: accounts
 #
 #  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
+#  uid                    :string(255)      not null
+#  email                  :string(255)      not null
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
@@ -83,7 +98,7 @@ end
 #  locked_at              :datetime
 #  role                   :string(255)      default("member"), not null
 #  level                  :integer          default(0), not null
-#  state                  :string(255)      default("active"), not null
+#  state                  :string(255)      default("pending"), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -92,5 +107,6 @@ end
 #  index_accounts_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_accounts_on_email                 (email) UNIQUE
 #  index_accounts_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_accounts_on_uid                   (uid) UNIQUE
 #  index_accounts_on_unlock_token          (unlock_token) UNIQUE
 #
