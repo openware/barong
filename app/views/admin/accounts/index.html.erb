@@ -18,10 +18,18 @@
         <tr class=<%= 'table-danger' if account.unlock_token? %>>
           <td><%= account.id %></td>
           <td><%= account.email %></td>
-          <td><span class=" badge <%= account.role.admin? ? 'badge-success' : 'badge-info' %>"> <%= account.role %> </span></td>
-          <td><%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %></td>
-          <td><%= link_to 'Edit', edit_admin_account_path(account.id), class: 'btn btn-primary btn-sm' %></td>
-          <td><%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %></td>
+          <td>
+            <span class="badge badge-<%= account.role.admin? ? 'success' : 'info' %>"><%= account.role.upcase %></span>
+          </td>
+          <td>
+            <%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %>
+          </td>
+          <td>
+            <%= link_to 'Edit', edit_admin_account_path(account.id), class: 'btn btn-primary btn-sm' %>
+          </td>
+          <td>
+            <%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %>
+          </td>
         </tr>
       <% end %>
     </tbody>
