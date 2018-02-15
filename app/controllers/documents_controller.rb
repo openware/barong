@@ -13,17 +13,9 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # GET /documents/1
-  def show
-  end
-
   # GET /documents/new
   def new
     @document = Document.new
-  end
-
-  # GET /documents/1/edit
-  def edit
   end
 
   # POST /documents
@@ -33,15 +25,6 @@ class DocumentsController < ApplicationController
       redirect_to index_path, notice: 'Document was successfully created.'
     else
       redirect_to new_document_url, alert: 'Some fields are empty or invalid'
-    end
-  end
-
-  # PATCH/PUT /documents/1
-  def update
-    if @document.update(document_params)
-      redirect_to @document, notice: 'Document was successfully updated.'
-    else
-      render :edit
     end
   end
 

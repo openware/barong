@@ -14,10 +14,6 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/1/edit
-  def edit
-  end
-
   # POST /profiles
   def create
     begin
@@ -28,15 +24,6 @@ class ProfilesController < ApplicationController
     end
 
     redirect_to new_document_path
-  end
-
-  # PATCH/PUT /profiles/1
-  def update
-    if @profile.update(profile_params)
-      redirect_to index_path, notice: 'Profile was successfully updated.'
-    else
-      render :edit
-    end
   end
 
   # DELETE /profiles/1
