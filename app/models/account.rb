@@ -61,10 +61,11 @@ class Account < ApplicationRecord
   end
 
   def assign_uid
-    self.uid and return
-    begin
+    uid && return
+    loop do
       self.uid = random_uid
-    end while Account.where(uid: self.uid).any?
+      break unless Account.where(uid: uid).any?
+    end
   end
 
   def random_uid
@@ -73,7 +74,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180215133138
+# Schema version: 20180209140602
 #
 # Table name: accounts
 #
@@ -107,6 +108,5 @@ end
 #  index_accounts_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_accounts_on_email                 (email) UNIQUE
 #  index_accounts_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_accounts_on_uid                   (uid) UNIQUE
 #  index_accounts_on_unlock_token          (unlock_token) UNIQUE
 #
