@@ -20,6 +20,7 @@ gem 'carrierwave',  '~> 0.10.0'
 gem 'fog',          '~> 1.42.0'
 gem 'vault',        '~> 0.1'
 gem 'rqrcode',      '~> 0.10.1'
+gem 'countries',    require: 'countries/global'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
