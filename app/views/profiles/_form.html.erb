@@ -40,14 +40,9 @@
   </div>
 
   <div class="row form-group">
-    <div class="col-6">
+    <div class="col-12">
       <%= form.label :address %>
       <%= form.text_field :address, id: :profile_address, class: "form-control form-control-lg underlined", placeholder: 'Address' %>
-    </div>
-
-    <div class="col-6">
-      <%= form.label :postcode %>
-      <%= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
     </div>
   </div>
 
@@ -55,6 +50,11 @@
     <div class="col-6">
       <%= form.label :city %>
       <%= form.text_field :city, id: :profile_city, class: "form-control form-control-lg underlined", placeholder: 'City' %>
+    </div>
+
+    <div class="col-6">
+      <%= form.label :postcode %>
+      <%= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
     </div>
   </div>
 
