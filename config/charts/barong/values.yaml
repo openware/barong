@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/helios-public/barong
+  repository: rubykube/barong
   tag: latest
   pullPolicy: Always
 
@@ -58,7 +58,8 @@ gcs:
   secretAccessKey: changeme
 
 # Set vault host and token
-vault: {}
+vault:
+  enabled: false
 #  adress:
 #  token:
 
