@@ -40,6 +40,7 @@ class DeviseCreateAccounts < ActiveRecord::Migration[5.1]
       t.timestamps null: false
     end
 
+    add_index :accounts, :uid,                  unique: true
     add_index :accounts, :email,                unique: true
     add_index :accounts, :reset_password_token, unique: true
     add_index :accounts, :confirmation_token,   unique: true
