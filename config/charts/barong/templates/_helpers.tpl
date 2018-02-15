@@ -84,8 +84,10 @@ Environment for barong container
   value: {{ default "helioscloud.com" .Values.smtp.domain }}
 - name: GCS_BUCKET
   value: {{ default "barong-images" .Values.gcs.bucket }}
+{{- if .Values.vault.enabled }}
 - name: VAULT_ADDR
-  value: {{ required "vault.adress is required!" .Values.vault.adress }}
+  value: {{ .Values.vault.adress }}
+{{- end }}
 {{- range $key, $value := .Values.app.vars }}
 - name: {{ $key }}
   value: {{ $value | quote }}
@@ -130,18 +132,20 @@ Environment for barong container
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: gcsSecretAccessKey
+{{- if .Values.vault.enabled }}
 - name: VAULT_TOKEN
   valueFrom:
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: vaultToken
-{{- if .Values.jwtSharedSecretKey -}}
+{{- end }}
+{{- if .Values.jwtSharedSecretKey }}
 - name: JWT_SHARED_SECRET_KEY
   valueFrom:
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: jwtSharedSecretKey
-{{- end -}}
+{{- end }}
 {{- end -}}
 
 {{/*
