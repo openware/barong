@@ -84,7 +84,7 @@ input[type=number]::-webkit-outer-spin-button {
   margin-top: 32px;
   width: 100%;
   border: 2px dashed #ddd;
-  color: $devise-form-color;
+  color: #444;
   font-size: 16px;
   text-align: center;
   &::before {
@@ -102,7 +102,7 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 28px auto;
   }
   &::after {
-    content: "or drag it into this field";
+    content: "";
     display: block;
     color: #ddd;
     margin-bottom: 20px;
