@@ -11,20 +11,15 @@ module Admin
     class << self
       def inherited(klass)
         klass.instance_eval do
-          controller_name = klass.name.demodulize.underscore.singularize
-
-          if controller_name == 'dashboard_controller'
-            load_and_authorize_resource class: false
-          else
-            load_and_authorize_resource
-          end
+          load_and_authorize_resource klass.name.demodulize.underscore.singularize
         end
       end
     end
 
+  private
+
     def redirect_to_index
       redirect_to new_account_session_url
     end
-
   end
 end
