@@ -14,7 +14,9 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = '"Barong" <noreply@barong.io>'
+  sender_name = ENV.fetch('SENDER_NAME', 'Barong')
+  sender_email = ENV.fetch('SENDER_EMAIL', 'noreply@barong.io')
+  config.mailer_sender = "#{sender_name} <#{sender_email}>"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
