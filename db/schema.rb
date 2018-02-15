@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180214154526) do
+ActiveRecord::Schema.define(version: 20180209140602) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "email", default: "", null: false
+    t.string "uid", null: false
+    t.string "email", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -32,12 +33,13 @@ ActiveRecord::Schema.define(version: 20180214154526) do
     t.datetime "locked_at"
     t.string "role", default: "member", null: false
     t.integer "level", default: 0, null: false
-    t.string "state", default: "active", null: false
+    t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token", unique: true
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
+    t.index ["uid"], name: "index_accounts_on_uid", unique: true
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
   end
 
