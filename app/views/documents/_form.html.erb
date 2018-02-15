@@ -10,11 +10,13 @@
       </ul>
     </div>
   <% end %>
-  <div class="col-12 justify-content-center">
-    <label>Document upload</label>
-    <%= form.file_field :upload, id: :document_upload, class: 'custom-file-input' %>
-    <%= form.label :upload, "Choose the file to upload" %>
-  </div></br>
+  <div class="row">
+    <div class="field col-12 justify-content-center">
+      <label>Document upload</label>
+      <%= form.file_field :upload, id: :document_upload, class: 'custom-file-input' %>
+      <%= form.label :upload, "Choose the file to upload" %>
+    </div></br>
+  </div>
   <div class="row">
     <div class="field col-6">
       <%= form.label :doc_type, 'Document type' %>
