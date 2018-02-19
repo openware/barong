@@ -18,11 +18,11 @@ RSpec.describe Profile, type: :model do
          :city => "MyString",
          :country => "MyString",
          :dob => "01-01-2001")
-      document1 = profile.documents.create!(:upload => File.open('app/assets/images/logo-black.png'),
+      document1 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
         :doc_type => "MyString",
         :doc_number => "MyString",
         :doc_expire => "01-01-2020")
-      document2 = profile.documents.create!(:upload => File.open('app/assets/images/logo-black.png'),
+      document2 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
         :doc_type => "MyString",
         :doc_number => "MyString",
         :doc_expire => "01-02-2020")
