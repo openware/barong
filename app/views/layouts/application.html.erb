@@ -53,7 +53,7 @@
                       <div class="dropdown-menu text-dark">
                         <%= link_to "Change your password", edit_account_registration_path, class:'dropdown-item' %>
                         <!-- <%= link_to 'Enable two factor authentification', security_path, class:'dropdown-item' %> -->
-                        <%= link_to 'Upload document', new_document_path, class:'dropdown-item' if current_account.level > 1 %>
+                        <%= link_to 'Upload document', new_document_path, class:'dropdown-item' if current_account.profile %>
                         <%= link_to 'Add phone', new_phone_path, class:'dropdown-item' %>
                       </div>
                     </div>

@@ -15,7 +15,8 @@ class PhonesController < ApplicationController
     begin
       code = phone_params[:code]
       number = '+' + phone_params[:country_code] + phone_params[:number]
-
+      return redirect_to new_phone_url, notice: 'Confirmation code was sent to another number'\
+      unless session[:phone] == number
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       phone.validate_code!(code, session[:verif_code])
@@ -35,6 +36,7 @@ class PhonesController < ApplicationController
       return render json: { error: 'Phone already been used' } if Phone.exists?(number: number)
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
+      session[:phone] = number
       session[:verif_code] = phone.generate_code
       Rails.logger.info("Sending SMS to %s with code %s" %
                         [phone.number, session[:verif_code]])

@@ -132,3 +132,22 @@ input[type=number]::-webkit-outer-spin-button {
 .custom-file-input + label * {
   pointer-events: none;
 }
+
+// loader
+
+$off-primary: rgba($primary, 0.2);
+
+.loader {
+    display: none;
+    border-radius: 50%;
+    width: 21px;
+    height: 21px;
+    border: .25rem solid $off-primary;
+    border-top-color: $primary;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

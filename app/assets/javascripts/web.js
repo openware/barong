@@ -8,6 +8,8 @@ window.onload = function () {
   $('.datepicker-toggle').datepicker();
 
   $('#send-code-btn').on('click', function () {
+    $('.loader').css("display", "block");
+    $('#send-code-btn').hide();
     number = '+' + $("#country_code").val() + $("#number").val();
     $.ajax({
       headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') },
@@ -16,10 +18,14 @@ window.onload = function () {
       url:     'verification',
       success: function(result){
          if (result.success){
+           $('.loader').css("display", "none");
+           $('#send-code-btn').show();
            $("#error").text('');
            $("#create-phone").prop('disabled', false);
            $("#send-code-btn").text('Resend');
          } else {
+           $('.loader').css("display", "none");
+           $('#send-code-btn').show();
            $("#error").text(result.error);
          }
       }

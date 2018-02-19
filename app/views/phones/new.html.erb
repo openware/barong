@@ -25,13 +25,14 @@
         <%= label_tag :phone_number %>
       <div class="row">
         <div class="col-3">
-          <%= number_field_tag :country_code, nil, class: "px-1 form-control form-control-lg underlined", placeholder: "+1" %>
+          <%= number_field_tag :country_code, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '+1' %>
         </div>
         <div class="col-6 pr-0">
-          <%= number_field_tag :number, nil, class: "px-1 form-control form-control-lg underlined", placeholder: "000 000 0000" %>
+          <%= number_field_tag :number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '000 000 0000' %>
         </div>
         <div class="col-3 pl-0">
           <div class="send_code underlined">
+          <div class="loader"></div>
             <a href="javascript:void(0)" id="send-code-btn">Send code</a>
           </div>
         </div>
@@ -39,12 +40,12 @@
     </div>
 
     <div class="form-group mt-4">
-      <%= label_tag "SMS confirmation code" %>
-      <%= number_field_tag :code, nil, class: "form-control form-control-lg underlined", placeholder: "Enter code" %>
+      <%= label_tag 'SMS confirmation code' %>
+      <%= number_field_tag :code, nil, class: 'form-control form-control-lg underlined', placeholder: 'Enter code' %>
     </div>
 
     <div class="d-flex justify-content-between mt-4">
-      <%= submit_tag  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone col-6" %>
+      <%= submit_tag  'CONFIRM', class: 'btn btn-primary btn-block btn-success btn-phone col-6',id: 'create-phone', disabled: true %>
       <div id="error"></div>
     </div>
   <% end %>
