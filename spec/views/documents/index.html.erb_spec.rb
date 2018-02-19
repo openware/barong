@@ -17,14 +17,14 @@ RSpec.describe "documents/index", type: :view do
     assign(:documents, [
       Document.create!(
         :profile => profile,
-        :upload => File.open('app/assets/images/logo-black.png'),
+        :upload => File.open('app/assets/images/background.jpg'),
         :doc_type => "Doc Type",
         :doc_number => "Doc Number",
         :doc_expire => "01-01-2020"
       ),
       Document.create!(
         :profile => profile,
-        :upload => File.open('app/assets/images/logo-black.png'),
+        :upload => File.open('app/assets/images/background.jpg'),
         :doc_type => "Doc Type",
         :doc_number => "Doc Number",
         :doc_expire => "01-02-2020"
