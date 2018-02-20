@@ -37,11 +37,11 @@
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);;
       font-size: 20px;
 
-      &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+      &::-webkit-input-placeholder {
         font-size: 20px;
         line-height: 1.2;
         text-align: left;
-        color: #dddddd !important;
+        color: #dddddd;
       }
     }
 
