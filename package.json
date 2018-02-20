@@ -1,5 +1,7 @@
 {
   "name": "barong",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "dropify": "^0.2.2"
+  }
 }
