@@ -12,3 +12,10 @@ admin_email = ENV.fetch('ADMIN_USER', 'admin@barong.io')
 admin = Account.create(email: admin_email, password: SecureRandom.hex(20), level: 1, role: 'admin', confirmed_at: Time.now)
 
 puts 'Admin credentials: %s' % [admin.password]
+
+env_file = File.join(Rails.root, 'config', 'oauth_application.yml')
+hash = YAML.load(File.open(env_file))
+
+application = Doorkeeper::Application.new(autoauth: true, name: hash['oauth_app_name'], redirect_uri: hash['oauth_callback_url'], uid: hash['oauth_uid'], secret: hash['oauth_secret'])
+application.save!
+
