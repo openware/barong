@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
 
   use_doorkeeper
+  mount API::Base => '/api' # Grape
 
   devise_for :accounts
   root to: 'index#index', as: :index
@@ -21,9 +22,5 @@ Rails.application.routes.draw do
     resources :profiles do
       put :change_state,    on: :member
     end
-  end
-
-  namespace :api do
-    resources :account, to: 'accounts#show'
   end
 end
