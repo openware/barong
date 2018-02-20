@@ -1,0 +1,80 @@
+#security-auth {
+  width: 520px;
+  height: 325px;
+  background-color: #ffffff;
+
+  .top-section {
+    height: 96px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    padding: 0 50px;
+
+    p {
+      padding-top: 35px;
+      font-family: Roboto;
+      font-size: 26px;
+      font-weight: 500;
+      text-align: left;
+      color: #333333;
+    }
+  }
+
+  .left-section {
+    padding-left: 50px;
+    padding-top: 35px;
+
+    label {
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 1.43;
+      text-align: left;
+      color: #626262;
+    }
+
+    input {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);;
+      font-size: 20px;
+
+      ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        font-size: 20px;
+        line-height: 1.2;
+        text-align: left;
+        color: #dddddd;
+      }
+      ::-moz-placeholder { /* Firefox 19+ */
+        font-size: 20px;
+        line-height: 1.2;
+        text-align: left;
+        color: #dddddd;
+      }
+      :-ms-input-placeholder { /* IE 10+ */
+        font-size: 20px;
+        line-height: 1.2;
+        text-align: left;
+        color: #dddddd;
+      }
+      :-moz-placeholder { /* Firefox 18- */
+        font-size: 20px;
+        line-height: 1.2;
+        text-align: left;
+        color: #dddddd;
+      }
+    }
+
+    button {
+      margin-top: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      color: #ffffff;
+      padding: 10px 60px;
+    }
+  }
+
+  .right-section {
+    padding-left: 50px;
+    padding-top: 30px;
+  }
+}
