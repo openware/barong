@@ -37,29 +37,11 @@
       border-bottom: 1px solid rgba(0, 0, 0, 0.12);;
       font-size: 20px;
 
-      ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+      &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
         font-size: 20px;
         line-height: 1.2;
         text-align: left;
-        color: #dddddd;
-      }
-      ::-moz-placeholder { /* Firefox 19+ */
-        font-size: 20px;
-        line-height: 1.2;
-        text-align: left;
-        color: #dddddd;
-      }
-      :-ms-input-placeholder { /* IE 10+ */
-        font-size: 20px;
-        line-height: 1.2;
-        text-align: left;
-        color: #dddddd;
-      }
-      :-moz-placeholder { /* Firefox 18- */
-        font-size: 20px;
-        line-height: 1.2;
-        text-align: left;
-        color: #dddddd;
+        color: #dddddd !important;
       }
     }
 
