@@ -1,0 +1,26 @@
+<div class="card-footer py-3 px-5">
+  <div class="row">
+    <div class="col text-left">
+      <div class="btn-group">
+        <%- unless controller_name == 'registrations' %>
+          <a href="javascript:void(0)" class="dropdown-toggle text-white font-weight-bold" data-toggle="dropdown">
+            Help
+          </a>
+          <div class="dropdown-menu text-dark">
+            <%= link_to 'Forgot your password?', new_password_path(resource_name), class: 'dropdown-item' %>
+            <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name), class: 'dropdown-item' %>
+            <%= link_to "Didn't receive unlock instructions?", new_account_unlock_path(resource_name), class: 'dropdown-item' %>
+          </div>
+        <% end -%>
+      </div>
+    </div>
+
+    <div class="col text-right">
+      <%- if devise_mapping.registerable? && controller_name == 'sessions' %>
+        <%= link_to 'Sign up', new_registration_path(resource_name), class: 'text-white font-weight-bold' %>
+      <% else %>
+        <%= link_to 'Sign in', new_session_path(resource_name), class: 'text-white font-weight-bold' %>
+      <% end -%>
+    </div>
+  </div>
+</div>
