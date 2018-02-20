@@ -11,11 +11,11 @@
     </div>
   <% end %>
   <div class="row">
-    <div class="field col-12 justify-content-center">
+    <div class="field col-12 ">
       <label>Document upload</label>
-      <%= form.file_field :upload, id: :document_upload, class: 'custom-file-input' %>
-      <%= form.label :upload, "Choose the file to upload" %>
-    </div></br>
+      <%= form.file_field :upload, id: :document_upload, class: 'dropify', 'data-default-file': document.upload.present? ? image_url(document.upload.url) : false %>
+      </br>
+    </div>
   </div>
   <div class="row">
     <div class="field col-6">

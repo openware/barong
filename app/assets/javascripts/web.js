@@ -3,6 +3,7 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker
+//= require dropify
 
 window.onload = function () {
   $('.datepicker-toggle').datepicker();
@@ -25,4 +26,6 @@ window.onload = function () {
       }
     });
   });
+
+  $('.dropify').dropify();
 };
