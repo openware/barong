@@ -1,11 +1,15 @@
 <div class="container">
-  <p id="notice"><%= notice %></p>
+  <% if flash[:notice].present? %>
+      <div class="alert alert-info">
+        <%= flash[:notice] %>
+      </div>
+  <% end %>
 
   <h1>Websites</h1>
   <%= link_to 'New Website', new_admin_website_path, class: 'btn btn-success' %>
   <br><br>
 
-  <table class="table table-bordered table-striped table-hover table-sm text-center">
+  <table class="table table-bordered table-striped table-hover table-responsive table-sm text-center">
     <thead>
       <tr>
         <th>ID</th>
