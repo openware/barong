@@ -38,4 +38,36 @@ window.onload = function () {
           message:  '<div class="dropify-message"> <p>{{ default }}</p> </div>',
       }
   });
+
+  var doc_type = $('.document_doc_type');
+  toggleIdControls(doc_type.val());
+  
+  doc_type.on('change', function(){
+    toggleIdControls(this.value);
+  });
+
+  function toggleIdControls(doc_type){
+    switch (doc_type) {
+      case 'DL':
+        $('#doc-issued-state').show();
+        $('.pp-label').hide();
+        $('.id-label').hide();
+        $('.dl-label').show();
+        $('.file_name_2').show();
+        break;
+      case 'P':
+        $('#doc-issued-state').hide();
+        $('.pp-label').show();
+        $('.id-label').hide();
+        $('.dl-label').hide();
+        $('.file_name_2').hide();
+        break;
+      default:
+        $('#doc-issued-state').hide();
+        $('.pp-label').hide();
+        $('.id-label').show();
+        $('.dl-label').hide();
+        $('.file_name_2').hide();
+    }
+  }
 };

@@ -6,9 +6,17 @@
 class Phone < ApplicationRecord
   belongs_to :account
 
-  validates :number, phone: true
+  validates :number, phone: { types: :mobile }
 
   before_validation :parse_country
+
+  def validate_number!
+    self.validate!
+    if self.country != "AU"
+      errors.add(:code, "Invalid country code.")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
 
   def validate_code!(original, confirm)
     if original != confirm

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220142157) do
+ActiveRecord::Schema.define(version: 20180222010938) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -45,10 +45,12 @@ ActiveRecord::Schema.define(version: 20180220142157) do
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "profile_id"
-    t.string "upload"
+    t.string "doc_file_name"
+    t.string "doc_file_name_2"
     t.string "doc_type"
     t.string "doc_number"
-    t.date "doc_expire"
+    t.string "doc_state"
+    t.string "green_id_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_documents_on_profile_id"
@@ -109,11 +111,17 @@ ActiveRecord::Schema.define(version: 20180220142157) do
     t.bigint "account_id"
     t.string "first_name"
     t.string "last_name"
+    t.string "middle_name"
     t.date "dob"
-    t.string "address"
+    t.string "flat_number"
+    t.string "street_number"
+    t.string "street_name"
+    t.string "street_type"
     t.string "postcode"
-    t.string "city"
+    t.string "suburb"
+    t.string "address_state"
     t.string "country"
+    t.string "green_id_status"
     t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
