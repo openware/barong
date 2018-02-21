@@ -1,14 +1,14 @@
 <%= form_with(model: [:admin, @website], local: true) do |form| %>
   <% if website.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(website.errors.count, "error") %> prohibited this website from being saved:</h2>
+    <div id="error_explanation">
+      <h2><%= pluralize(website.errors.count, "error") %> prohibited this website from being saved:</h2>
 
-        <ul>
-          <% website.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
+      <ul>
+        <% website.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 
   <%= form.label :domain, class: 'control-label'%>
@@ -44,7 +44,7 @@
   <br>
 
   <%= form.submit 'Submit', class: 'btn btn-primary' %>
-  <%= link_to t('doorkeeper.applications.buttons.cancel'), oauth_applications_path,  class: 'btn btn-default' %>
+  <%= link_to t('doorkeeper.applications.buttons.cancel'), admin_websites_path,  class: 'btn btn-default' %>
   <br>
   <br>
 
