@@ -2,11 +2,11 @@ body.devise {
   background-image: image-url($devise-background-image);
   background-size: cover;
   background-repeat: no-repeat;
-  box-shadow: 1000px 1000px 1000px rgba(black, .4) inset;
 
   .card {
     border: 0;
     border-top: 5px solid $devise-form-color;
+
     .title {
       padding: 20px 20px 0 20px;
     }

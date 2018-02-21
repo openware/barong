@@ -8,7 +8,7 @@
   <%= domain_stylesheet_tag(domain_asset :stylesheet) %>
   <%= javascript_include_tag 'web' %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <%= favicon_link_tag asset_path('favicon.png'), :rel => 'icon', :type =>  'image/png' %>
+  <%= favicon_link_tag asset_path('favicon.png'), rel: 'icon', type: 'image/png' %>
 </head>
 <body class="devise">
   <%= domain_html_tag(domain_asset :header) %>
@@ -16,7 +16,7 @@
   <div class="container-fluid">
 
     <div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-10 col-md-6 col-lg-4">
+      <div class="col-xs-10 col-sm-8 col-md-6 col-lg-2">
         <div class="main-logo">
           <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
         </div>
@@ -24,13 +24,30 @@
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-10 col-md-6 col-lg-5 mt-5">
+      <div class="mt-5 mb-5 mx-4 main-card">
         <div class="card">
 
-          <% unless notice.blank? %><span class="alert alert-primary mb-0"><%= notice %></span><% end %>
-          <% unless alert.blank? %><span class="alert alert-danger mb-0"><%= alert %></span><% end %>
+          <% unless alert.blank? %>
+            <span class="alert alert-danger mb-0">
+              <i class="icon icon-cancel-circled"></i> <h3><%= alert %></h3>
+            </span>
+          <% end %>
 
-          <%= yield %>
+          <% unless notice.blank? %>
+            <span class="alert alert-success mb-0">
+              <i class="icon icon-cancel-circled"></i> <h3><%= notice %></h3>
+            </span>
+          <% end %>
+
+          <div classs="pt-2">
+            <%= yield %>
+          </div>
+
+          <% if account_signed_in? %>
+            <%= render 'layouts/shared/account_footer' %>
+          <% else %>
+            <%= render 'devise/shared/footer' %>
+          <% end %>
 
         </div>
       </div>
