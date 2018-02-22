@@ -12,9 +12,9 @@ Rails.application.routes.draw do
   get   'security',             to: 'security#enable'
   get   'otp',                  to: 'security#otp'
 
-  resources :phones
-  resources :profiles
-  resources :documents
+  resources :phones,    only: [:new, :create]
+  resources :profiles,  only: [:new, :create]
+  resources :documents, only: [:new, :create]
 
   namespace :admin do
     get '/', to: 'dashboard#index', as: :dashboard

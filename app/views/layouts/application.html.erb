@@ -43,27 +43,7 @@
             </div>
 
             <% if account_signed_in? %>
-              <div class="card-footer py-3 px-5">
-                <div class="row">
-                  <div class="col text-left">
-                    <div class="btn-group">
-                      <a href="javascript:void(0)" class="dropdown-toggle text-white" data-toggle="dropdown">
-                        Settings
-                      </a>
-                      <div class="dropdown-menu text-dark">
-                        <%= link_to "Change your password", edit_account_registration_path, class:'dropdown-item' %>
-                        <!-- <%= link_to 'Enable two factor authentification', security_path, class:'dropdown-item' %> -->
-                        <%= link_to 'Upload document', new_document_path, class:'dropdown-item' if current_account.profile %>
-                        <%= link_to 'Add phone', new_phone_path, class:'dropdown-item' %>
-                      </div>
-                    </div>
-
-                  </div>
-                  <div class="col text-right">
-                    <%= link_to 'Sign out', destroy_account_session_path, method: :delete, class: "text-white" %>
-                  </div>
-                </div>
-              </div>
+              <%= render 'layouts/shared/account_footer' %>
             <% end %>
           </div>
 

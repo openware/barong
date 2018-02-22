@@ -1,39 +1,32 @@
-<div class="text-center pt-1">
-  <h2 class="font-weight-bold pt-4 pb-4"><span class="text-muted">Change password</h2>
-</div>
+<div class="row justify-content-center">
+  <div class="container-fluid box-shadow mx-3">
+    <div class="mb-3">
+      <h2 class="title font-weight-bold">Change password</h2>
+    </div>
+  </div>
 
-<div class="d-flex justify-content-center px-5 py-4">
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-    <%= devise_error_messages! %>
+  <div class="container-fluid justify-content-center px-5 py-4">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= devise_error_messages! %>
 
-    <div class="form-group">
-      <div class="row">
-        <div class="col-6 pr-0">
-          <%= f.label :password %>
-          <%= f.password_field :password, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined" %>
-        </div>
+      <div class="form-group">
+          <%= f.label :current_password, 'Old Password' %>
+          <%= f.password_field :current_password, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined", placeholder: 'Enter old password' %>
+      </div>
 
-        <div class="col-6 pr-0">
+      <div class="form-group">
+          <%= f.label :password, 'New password' %>
+          <%= f.password_field :password, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined", placeholder: 'Enter new password' %>
+      </div>
+
+      <div class="form-group">
           <%= f.label :password_confirmation %>
-          <%= f.password_field :password_confirmation, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined" %>
-        </div>
+          <%= f.password_field :password_confirmation, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined", placeholder: 'Enter new password' %>
       </div>
-    </div>
 
-    <div class="form-group">
-      <div class="row">
-        <div class="col-6 pr-0">
-          <%= f.label :current_password %>
-          <%= f.password_field :current_password, autocomplete: 'off',  class: "px-1 form-control form-control-lg underlined" %>
-        </div>
+      <div class="d-flex justify-content-between mt-4">
+        <%= f.submit  "CHANGE", class: "btn btn-primary btn-block btn-success btn-phone col-6" %>
       </div>
-    </div>
-
-    <div class="d-flex justify-content-between mt-4">
-      <%= f.submit  "CONFIRM", class: "btn btn-primary btn-block btn-success btn-phone col-6" %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
-
-
-
