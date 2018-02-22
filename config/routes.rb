@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
 
   use_doorkeeper
-  mount API::Base => '/api' # Grape
+  mount API::Base, at: '/api'
 
   devise_for :accounts
   root to: 'index#index', as: :index

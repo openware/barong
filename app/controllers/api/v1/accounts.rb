@@ -5,8 +5,6 @@ require 'doorkeeper/grape/helpers'
 module API
   module V1
     class Accounts < Grape::API
-      format :json
-
       helpers Doorkeeper::Grape::Helpers
 
       before do
