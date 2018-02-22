@@ -3,7 +3,7 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker
-//= require dropify/dist/js/dropify
+//= require dropify/src/js/dropify
 
 window.onload = function () {
   $('.datepicker-toggle').datepicker();
