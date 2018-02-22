@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   devise_for :accounts
   root to: 'index#index', as: :index
 
-  post  'phones/verification',  to: 'phones#verify'
+  post  'phones/verification', to: 'phones#verify'
   get   'security',             to: 'security#enable'
   get   'otp',                  to: 'security#otp'
 
