@@ -6,6 +6,7 @@ module API
       format :json
 
       mount API::V1::Accounts
+      mount API::V1::Security
 
       add_swagger_documentation base_path: '/api',
                                 info: {
