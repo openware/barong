@@ -10,6 +10,13 @@
   </head>
   <body>
     <%= render 'admin/shared/navigation' %>
+    <div class="container">
+      <% if flash[:notice].present? %>
+        <div class="alert alert-info">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+    </div>
     <%= yield %>
   </body>
 </html>
