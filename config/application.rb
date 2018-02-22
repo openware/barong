@@ -22,7 +22,7 @@ module Barong
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*' # Permit CORS from any origin, only in the API route
-        resource '/api/*', headers: :any, methods: [ :get, :post, :put, :delete, :options ]
+        resource '*', headers: :any, methods: [ :get, :post, :put, :delete, :options ]
       end
     end
 
