@@ -10,7 +10,9 @@
         <th>E-mail</th>
         <th>Role</th>
         <th>Last sign in</th>
-        <th colspan=3></th>
+        <% if can?(:update, Account) || can?(:destroy, Account) %>
+          <th colspan=3></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -20,9 +22,15 @@
           <td><%= account.email %></td>
           <td><span class=" badge <%= badge_by_role(account.role) %>"> <%= account.role %> </span></td>
           <td><%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %></td>
-          <td><%= link_to 'Edit', edit_admin_account_path(account.id),  class: 'btn btn-primary btn-sm' %></td>
-          <td><%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %></td>
-        </tr>
+          <% if can? :update, Account %>
+            <td><%= link_to 'Edit', edit_admin_account_path(account.id),  class: 'btn btn-primary btn-sm'  %></td>
+          <% end %>
+
+          <% if can? :destroy, Account %>
+            <td><%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %></td>
+          <% end %>
+
+          </tr>
       <% end %>
     </tbody>
   </table>

@@ -39,6 +39,7 @@ class Ability
         can :manage, :all
       when 'compliance'
         can :manage,  [Profile]
+        can :read,    [Account]
     end
   end
 end

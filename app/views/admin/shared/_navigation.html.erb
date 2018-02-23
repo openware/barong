@@ -3,7 +3,7 @@
     <%= link_to 'Barong Admin', admin_accounts_path, class: 'navbar-brand' %>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
-        <% if can? :read, admin_accounts_path %>
+        <% if can? :read, Account %>
             <li class="nav-item <%= 'active' if params[:controller].match?(/accounts/) %>">
               <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
             </li>
