@@ -6,35 +6,20 @@
   </div>
 
   <div class="container-fluid mx-3 px-5 py-4">
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <%= form_for(resource, as: resource_name, url: accounts_sign_in_confirm_path) do |f| %>
       <%= devise_error_messages! %>
-      <div class="form-group">
-        <div class="row">
-          <%= f.label :email %>
-          <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'px-1 form-control form-control-lg underlined', placeholder: 'Enter email' %>
-        </div>
-      </div>
 
-      <div class="form-group">
-        <div class="row">
-          <%= f.label :password %>
-          <%= f.password_field :password, autocomplete: 'off', class: 'px-1 form-control form-control-lg underlined', placeholder: 'Enter password' %>
-        </div>
-      </div>
-
-      <% if devise_mapping.rememberable? -%>
+      <div id="email-form">
         <div class="form-group">
           <div class="row">
-            <%= f.label :remember_me do %>
-              <%= f.check_box :remember_me, class: 'checkbox' %>
-              Remember me
-            <% end %>
+            <%= f.label :email %>
+            <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'px-1 form-control form-control-lg underlined', placeholder: 'Enter email', required: true %>
           </div>
         </div>
-      <% end -%>
 
-      <div class="row mt-4">
-        <%= f.submit 'Submit', class: 'btn btn-block btn-success col-6' %>
+        <div class="row mt-4 d-flex justify-content-between">
+          <%= f.submit 'Submit', class: 'btn btn-success' %>
+        </div>
       </div>
     <% end %>
   </div>
