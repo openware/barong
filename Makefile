@@ -16,6 +16,9 @@ build:
 push: build
 	gcloud docker -- push $(IMAGE)
 
+secret:
+	@kubectl create secret generic gcs-credentials --from-file="credentials.json"
+
 run:
 	@echo '> Starting "$(SERVICE)" container...'
 	@docker run -d --name=database -e MYSQL_ALLOW_EMPTY_PASSWORD=true -p 13306:13306 mysql
