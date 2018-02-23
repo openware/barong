@@ -6,16 +6,18 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-seed_file = File.join(Rails.root, 'config', 'seed.yml')
-seed = YAML.load(File.open(env_file))
-
 admin_email = ENV.fetch('ADMIN_USER', 'admin@barong.io')
 
 admin = Account.create(email: admin_email, password: SecureRandom.hex(20), level: 1, role: 'admin', confirmed_at: Time.now)
 
 puts 'Admin credentials: %s' % [admin.password]
 
-app_seed = seed['oauth_application']
-application = Doorkeeper::Application.new(autoauth: true, name: app_seed['oauth_app_name'], redirect_uri: app_seed['oauth_callback_url'], uid: app_seed['oauth_uid'], secret: app_seed['oauth_secret'])
-application.save!
+if File.exist?([Rails.root, '/config', '/seed.yml'].join)
+  seed_file = File.join(Rails.root, 'config', 'seed.yml')
+  seed = YAML.load(File.open(seed_file))
+
+  app_seed = seed['oauth_application']
+  application = Doorkeeper::Application.new(skipauth: true, name: app_seed['oauth_app_name'], redirect_uri: app_seed['oauth_callback_url'])
+  application.save!
+end
 

@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 20180220142157) do
     t.string "secret", null: false
     t.text "redirect_uri", null: false
     t.string "scopes", default: "", null: false
-    t.boolean "autoauth", default: false
+    t.boolean "skipauth", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true

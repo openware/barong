@@ -1,5 +1,3 @@
 oauth_application:
-  oauth_app_name:     'changeme'
-  oauth_callback_url: 'http://changeme/callback'
-  oauth_uid:          'changeme'
-  oauth_secret:       'changeme'
+  oauth_app_name:     'Client App'
+  oauth_callback_url: 'http://localhost:3001/oauth/callback'
