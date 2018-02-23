@@ -10,18 +10,16 @@ module API
       helpers Doorkeeper::Grape::Helpers
 
       before do
-        doorkeeper_authorize!
-
-        def current_profile
-          @current_profile = Account.find(doorkeeper_token.resource_owner_id).profile if doorkeeper_token
+        def profile
+          @profile = Account.find_by_uid(params[:uid]).profile
         end
       end
 
       desc 'Profile related routes'
       resource :profile do
-        desc 'Return information about current resource owner'
+        desc 'Return information about profile'
         get '/' do
-          current_profile.as_json(only: %i[first_name last_name dob address postcode city country])
+          profile.as_json(only: %i[first_name last_name dob address postcode city country])
         end
 
         desc 'Creates profile'
