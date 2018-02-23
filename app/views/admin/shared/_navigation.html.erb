@@ -3,17 +3,29 @@
     <%= link_to 'Barong Admin', admin_accounts_path, class: 'navbar-brand' %>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item <%= 'active' if params[:controller].match?(/accounts/) %>">
-          <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
-        </li>
-        <li class="nav-item <%= 'active' if params[:controller].match?(/profiles/) %>">
-          <%= link_to 'Profiles', admin_profiles_path, class: 'nav-link' %>
-        </li>
-        <li class="nav-item <%= 'active' if params[:controller].match?(/application/) %>" >
-          <%= link_to 'Applications', oauth_applications_path, class: 'nav-link' %>
-        <li class="nav-item <%= 'active' if params[:controller].match?(/website/) %>">
-          <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>
-        </li>
+        <% if can? :read, admin_accounts_path %>
+            <li class="nav-item <%= 'active' if params[:controller].match?(/accounts/) %>">
+              <%= link_to 'Accounts', admin_accounts_path, class: 'nav-link' %>
+            </li>
+        <% end %>
+
+        <% if can? :read, Profile %>
+            <li class="nav-item <%= 'active' if params[:controller].match?(/profiles/) %>">
+              <%= link_to 'Profiles', admin_profiles_path, class: 'nav-link' %>
+            </li>
+        <% end %>
+
+        <% if current_account.role.admin? %>
+            <li class="nav-item <%= 'active' if params[:controller].match?(/application/) %>" >
+              <%= link_to 'Applications', oauth_applications_path, class: 'nav-link' %>
+            </li>
+        <% end %>
+
+        <% if can? :read, Website %>
+            <li class="nav-item <%= 'active' if params[:controller].match?(/website/) %>">
+              <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>
+            </li>
+        <% end %>
       </ul>
       <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
     </div>
