@@ -7,26 +7,10 @@ module API
     class Profiles < Grape::API
       format :json
 
-      helpers Doorkeeper::Grape::Helpers
-
-      before do
-        doorkeeper_authorize!
-
-        def current_profile
-          @current_profile = Account.find(doorkeeper_token.resource_owner_id).profile if doorkeeper_token
-        end
-      end
-
-      desc 'Profile related routes'
+      desc 'Creates new profile'
       resource :profile do
-        desc 'Return information about current resource owner'
-        get '/' do
-          current_profile.as_json(only: %i[first_name last_name dob address postcode city country])
-        end
-
-        desc 'Creates profile'
         params do
-          requires :account_id, type: String, desc: 'ID of account'
+          requires :uid,        type: String, desc: 'UID of account'
           requires :first_name, type: String, desc: 'First name for profile'
           requires :last_name,  type: String, desc: 'Last name for profile'
           requires :dob,        type: String, desc: 'Date of birth for profile'
@@ -36,14 +20,15 @@ module API
           requires :country,    type: String, desc: 'Country for profile'
         end
         post '/create' do
-          Profile.create!(account_id: params[:account_id],
-                          first_name: params[:first_name],
-                          last_name:  params[:last_name],
-                          dob:        params[:dob],
-                          address:    params[:address],
-                          postcode:   params[:postcode],
-                          city:       params[:city],
-                          country:    params[:country])
+          profile = Profile.create(account_id: Account.find_by_uid(params[:uid]).id,
+                                   first_name: params[:first_name],
+                                   last_name:  params[:last_name],
+                                   dob:        params[:dob],
+                                   address:    params[:address],
+                                   postcode:   params[:postcode],
+                                   city:       params[:city],
+                                   country:    params[:country])
+          profile.save
         end
       end
     end
