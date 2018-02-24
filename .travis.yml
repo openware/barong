@@ -36,7 +36,7 @@ script:
   - yarn install
 
 # Execute all of the commands which need to be executed after the build passed.
-after_success:
+after_success: ruby ci/bump.rb
 
 # Execute all of the commands which need to be executed after the build failed.
 after_failure:
