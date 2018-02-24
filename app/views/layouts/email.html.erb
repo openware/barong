@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Barong Mailer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body>
+  <table class="body-wrap">
+    <tbody>
+      <tr>
+        <td class="title-header">
+          <% url = '' %>
+          <%= url.blank? ? image_tag('logo-black.png') : image_tag(url) %>
+        </td>
+        <td class="container">
+          <div class="content">
+            <%= yield %>
+          </div>
+        </td>
+      </tr>
+    </tbody></table>
+</body>
+
+<style>
+  body {
+    width: 100%;
+    height: 100%;
+    background: #F9F9F9;
+  }
+  body .body-wrap {
+    width: 100%;
+  }
+  body .body-wrap .title-header {
+    display: block;
+    text-align: center;
+  }
+  body .body-wrap .title-header img {
+    width: 200px;
+    margin: 20px 0;
+  }
+  body .body-wrap .container {
+    display: block;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    border: 2px solid #F1F1F1;
+  }
+  body .body-wrap .container .content {
+    padding: 50px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+  }
+</style>
