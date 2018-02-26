@@ -11,7 +11,7 @@ module Admin
     class << self
       def inherited(klass)
         klass.instance_eval do
-          load_and_authorize_resource klass.name.demodulize.underscore.singularize
+          load_and_authorize_resource
         end
       end
     end

@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  alias current_user current_account # CanCanCan expects current_user.
+
   helper_method :domain_asset
 
   def domain_asset(item)

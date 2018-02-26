@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-
   use_doorkeeper
   mount API::Base, at: '/api'
 
@@ -16,7 +15,7 @@ Rails.application.routes.draw do
   resources :documents, only: [:new, :create]
 
   namespace :admin do
-    get '/', to: 'dashboard#index', as: :dashboard
+    get '/', to: 'accounts#index', as: :accounts
     resources :accounts
     resources :websites
     resources :profiles do
