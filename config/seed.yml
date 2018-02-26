@@ -1,0 +1,3 @@
+oauth_application:
+  oauth_app_name:     'Client App'
+  oauth_callback_url: 'http://localhost:3001/oauth/callback'
