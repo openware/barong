@@ -17,6 +17,7 @@ module Admin
 
     def edit
       @account = Account.find(params[:id])
+      @roles = %w[admin compliance member]
     end
 
     def update
