@@ -12,7 +12,7 @@ namespace :db do
 
       [*1..100].each do
         account = Account.create!(email: Faker::Internet.email, password: Faker::Internet.password, confirmed_at: Faker::Time.between(2.days.ago, Date.today))
-        states = %w[create!d pending approved rejected]
+        states = %w[created pending approved rejected]
         profile = Profile.create!(account: account, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, state: states.sample, dob: Faker::Date.between(25.years.ago, 10.years.ago), address: Faker::Address.street_address, city: Faker::Address.city)
 
         [*0..Faker::Number.between(0, 2)].each do |count|
