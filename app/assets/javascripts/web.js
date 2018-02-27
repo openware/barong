@@ -33,5 +33,9 @@ window.onload = function () {
     });
   });
 
-  $('.dropify').dropify();
+  $('.dropify').dropify({
+      tpl: {
+          message:  '<div class="dropify-message"> <p>{{ default }}</p> </div>',
+      }
+  });
 };
