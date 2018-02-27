@@ -23,6 +23,9 @@ chdir APP_ROOT do
   system! 'cp config/database.yml.example config/database.yml'
   system! 'bin/rails db:create db:migrate'
 
+  puts "\n== Seeding database =="
+  system! 'bin/rails db:seed'
+
   puts "\n=== Preparing assets ==="
   system! 'bin/rake yarn:install assets:precompile'
 end
