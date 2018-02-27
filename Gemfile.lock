@@ -2,6 +2,8 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.6)
+    aasm (4.12.3)
+      concurrent-ruby (~> 1.0)
     actioncable (5.1.4)
       actionpack (= 5.1.4)
       nio4r (~> 2.0)
@@ -505,6 +507,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm (~> 4.12.3)
   annotate (~> 2.7)
   bootstrap (~> 4.0.0)
   bootstrap-datepicker-rails

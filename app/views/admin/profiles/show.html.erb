@@ -44,7 +44,7 @@
         </a>
         <div class="dropdown-menu">
           <% @states.each do |state|%>
-            <%= link_to(state.upcase_first, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @profile.state == state%>
+            <%= link_to(state.capitalize, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') %>
           <% end %>
         </div>
       </div>

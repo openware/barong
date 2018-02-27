@@ -10,7 +10,7 @@
       </a>
       <div class="dropdown-menu">
         <% @states.each do |state|%>
-            <%= link_to(state.upcase_first, admin_profiles_path(filter: state), class: 'dropdown-item') unless params[:filter] == state%>
+            <%= link_to(state.capitalize, admin_profiles_path(filter: state), class: 'dropdown-item') %>
         <% end %>
       </div>
     </div>
