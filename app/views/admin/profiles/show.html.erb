@@ -42,11 +42,10 @@
         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <%= @profile.state.upcase_first %>
         </a>
-        <div class="dropdown-menu">
           <% @states.each do |state|%>
-            <%= link_to(state.upcase_first, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @profile.state == state%>
+            <%= p @states %>
+            <%= link_to @states(state), change_state_admin_profile_path(@profile, state: state), method: :put, class: 'btn btn-primary' %>
           <% end %>
-        </div>
       </div>
     </li>
   </ul>

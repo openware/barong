@@ -31,3 +31,10 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    attributes:
+      job:
+        state:
+          pending: Pending
+          approved: Approved
+          rejected: Rejected
