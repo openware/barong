@@ -11,6 +11,8 @@ Barong is oAuth server for [peatio.tech](https://www.peatio.tech) stack.
 
 # Development
 
+[Getting started](./docs/getting-started.md)
+
 Prerequisites:
 - Ruby version: `2.5.0`
 - Bundler preinstalled
@@ -31,6 +33,12 @@ bundle exec rake db:create db:migrate
 bundle exec rails server
 ```
 
+# Test client application
+
+You can find example of Barong usage here: [Barong Test Client App](https://github.com/rubykube/barong-client-app)
+
+[How to get client app credentials](./docs/oauthclient.md)
+
 # Barong Levels
 
 In the process of verification Barong assign different levels to accounts
@@ -38,7 +46,7 @@ In the process of verification Barong assign different levels to accounts
 - Level 0 is default account level
 - Level 1 will apply after email verification
 - Level 2 will apply after phone verification
-- Level 3 will apply after identity & document verification 
+- Level 3 will apply after identity & document verification
 
 # License
 Barong is released under the terms of the [Apache License 2.0](./LICENSE.md).
