@@ -1,6 +1,6 @@
 <p>Dear <%= @email %>!</p>
 
-<p>Thank you for signing up with CoinField. To provide you the best
+<p>Thank you for signing up with <%= app_name %>. To provide you the best
   service possible, we require you to verify your email address. If you are
   receiving this email and have never signed up with us, please feel free to
   ignore this email. To finish your verification, please follow the directions below.</p>
@@ -9,5 +9,4 @@
 
 <p>Link to click <%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
 
-<p>Best regards,</p>
-<p>CoinField Team</p>
+<p>Best regards, <br> <%= app_name %> Team</p>

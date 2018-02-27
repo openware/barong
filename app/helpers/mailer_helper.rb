@@ -17,4 +17,8 @@ module MailerHelper
     end
   end
 
+  def app_name
+    ENV.fetch('APP_NAME', 'Barong')
+  end
+
 end

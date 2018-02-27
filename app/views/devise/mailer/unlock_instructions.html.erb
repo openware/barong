@@ -1,6 +1,6 @@
 <p>Dear <%= @resource.email %>!</p>
 
-<p>Thank you for using with CoinField.</p>
+<p>Thank you for using with <%= app_name %>.</p>
 
 <p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
 
@@ -8,5 +8,4 @@
 
 <p>Link: <%= link_to 'Unlock my account', unlock_url(@resource, unlock_token: @token) %></p>
 
-<p>Best regards,</p>
-<p>CoinField Team</p>
+<p>Best regards, <br> <%= app_name %> Team</p>

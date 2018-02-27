@@ -1,6 +1,6 @@
 <p>Dear <%= @email %>!</p>
 
-<p>Thank you for using with CoinField.</p>
+<p>Thank you for using with <%= app_name %>.</p>
 
 <% if @resource.try(:unconfirmed_email?) %>
   <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
@@ -8,5 +8,4 @@
   <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
 <% end %>
 
-<p>Best regards,</p>
-<p>CoinField Team</p>
+<p>Best regards, <br> <%= app_name %> Team</p>
