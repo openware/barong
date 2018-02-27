@@ -13,6 +13,12 @@ module Barong
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
+    # Configure Sentry as early as possible.
+    if ENV['SENTRY_DSN_BACKEND'].present? && ENV['SENTRY_ENV'].to_s.split(',').include?(Rails.env)
+      require 'sentry-raven'
+      Raven.configure { |config| config.dsn = ENV['SENTRY_DSN_BACKEND'] }
+    end
+
     # Stop Rails generator from creating unneeded scripts.
     config.generators.assets = false
     config.generators.helper = false

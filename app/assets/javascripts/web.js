@@ -1,3 +1,5 @@
+//= require raven-js/dist/raven
+//= require ./lib/sentry
 //= require rails-ujs
 //= require jquery3
 //= require popper
