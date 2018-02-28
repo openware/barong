@@ -4,7 +4,7 @@ class Document < ApplicationRecord
   belongs_to :profile
   validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
 
-  validates :upload, length: { minimum: 180.kilobytes, maximum: 10.megabytes }
+  validates :upload, length: { maximum: 10.megabytes }
   validates :doc_number, length: { maximum: 128 }
   validates_format_of :doc_expire,
                        with: /\d{4}\-\d{2}\-\d{2}/,
