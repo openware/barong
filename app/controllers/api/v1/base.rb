@@ -3,6 +3,8 @@
 module API
   module V1
     class Base < Grape::API
+      version 'v1'
+
       format :json
 
       mount API::V1::Accounts
@@ -12,7 +14,7 @@ module API
                                   title: 'Barong',
                                   description: 'API for barong OAuth server '
                                 },
-                                api_version: 'v1',
+                                add_version: true,
                                 target_class: API::V1::Accounts,
                                 hide_format: true,
                                 hide_documentation_path: true,

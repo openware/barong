@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   use_doorkeeper
   mount API::Base, at: '/api'
+  get '/api/swagger', to: 'swagger#index', as: :api_swagger
 
   devise_for :accounts
   root to: 'index#index', as: :index

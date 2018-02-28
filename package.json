@@ -2,6 +2,7 @@
   "name": "barong",
   "private": true,
   "dependencies": {
-    "dropify": "^0.2.2"
+    "dropify": "^0.2.2",
+    "swagger-ui": "2.2.10"
   }
 }
