@@ -2,6 +2,7 @@
   "name": "barong",
   "private": true,
   "dependencies": {
-    "dropify": "^0.2.2"
+    "dropify": "^0.2.2",
+    "widdershins": "^3.0.5"
   }
 }
