@@ -6,7 +6,7 @@
   </div>
 
   <div class="container-fluid justify-content-center px-5 py-4">
-    <%= form_for(resource, as: resource_name, url: account_unlock_path(resource_name), html: { method: :post }) do |f| %>
+    <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
       <%= devise_error_messages! %>
 
       <div class="form-group">
