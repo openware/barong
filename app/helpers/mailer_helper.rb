@@ -2,12 +2,20 @@
 
 module MailerHelper
 
+  def app_name
+    ENV.fetch('APP_NAME', 'Barong')
+  end
+
+  def url_host
+    ENV.fetch('URL_HOST', 'http://localhost:3000')
+  end
+
   def determine_logo_url
-    host      = confirmation_url(Account.first) # TODO: need way to determine a host correctly, just tip to me, but it works!
     websites  = Website.all
     logo_url  = nil
+
     websites.each do |website|
-      logo_url = website.logo if host.include?(website.domain)
+      logo_url = website.logo if url_host.include?(website.domain) && website.domain.present?
     end
 
     if logo_url.blank?
@@ -15,10 +23,6 @@ module MailerHelper
     else
       image_tag(logo_url)
     end
-  end
-
-  def app_name
-    ENV.fetch('APP_NAME', 'Barong')
   end
 
 end
