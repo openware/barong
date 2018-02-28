@@ -11,17 +11,12 @@ module MailerHelper
   end
 
   def determine_logo_url
-    websites  = Website.all
-    logo_url  = nil
+    website = Website.find_by(domain: url_host)
 
-    websites.each do |website|
-      logo_url = website.logo if url_host.include?(website.domain) && website.domain.present?
-    end
-
-    if logo_url.blank?
+    if website.blank?
       image_tag('logo-black.png')
     else
-      image_tag(logo_url)
+      image_tag(website.logo)
     end
   end
 
