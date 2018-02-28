@@ -10,7 +10,7 @@ class Account < ApplicationRecord
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :confirmable, :lockable, :async
+         :confirmable, :lockable
 
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
