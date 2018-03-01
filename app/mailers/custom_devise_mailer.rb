@@ -9,28 +9,24 @@ class CustomDeviseMailer < Devise::Mailer
 
   default template_path: 'devise/mailer'
 
-  def confirmation_instructions(record, token, opts={})
-    headers['Domain-Name'] = opts[:domain]
+  def confirmation_instructions(record, token, opts = {})
+    key = "confirmation_instructions_#{record.email}_domain"
+    headers['Domain-Name'] = Rails.cache.read(key)
+    Rails.cache.delete(key)
     super
   end
 
-  def email_changed(record, token, opts={})
-    headers['Domain-Name'] = opts[:domain]
+  def reset_password_instructions(record, token, opts = {})
+    key = "reset_password_instructions_#{record.email}_domain"
+    headers['Domain-Name'] = Rails.cache.read(key)
+    Rails.cache.delete(key)
     super
   end
 
-  def password_change(record, token, opts={})
-    headers['Domain-Name'] = opts[:domain]
-    super
-  end
-
-  def reset_password_instructions(record, token, opts={})
-    headers['Domain-Name'] = opts[:domain]
-    super
-  end
-
-  def unlock_instructions(record, token, opts={})
-    headers['Domain-Name'] = opts[:domain]
+  def unlock_instructions(record, token, opts = {})
+    key = "unlock_instructions_#{record.email}_domain"
+    headers['Domain-Name'] = Rails.cache.read(key)
+    Rails.cache.delete(key)
     super
   end
 

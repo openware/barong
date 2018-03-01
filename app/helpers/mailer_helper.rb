@@ -7,7 +7,7 @@ module MailerHelper
   end
 
   def determine_logo_url
-    domain = headers['Domain-Name']
+    domain = headers['Domain-Name'].to_s
 
     website = Website.find_by(domain: domain)
 
