@@ -22,7 +22,12 @@ module API
                                      doc_type:   params[:doc_type],
                                      doc_number: params[:doc_number],
                                      doc_expire: params[:doc_expire])
-          document.save
+          if document.valid?
+            document.save
+            return document
+          else
+            error(message: 'error')
+          end
         end
       end
     end

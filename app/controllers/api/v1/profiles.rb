@@ -28,7 +28,12 @@ module API
                                    postcode:   params[:postcode],
                                    city:       params[:city],
                                    country:    params[:country])
-          profile.save
+          if profile.valid?
+            profile.save
+            return profile
+          else
+            error(message: 'Some fields are invalid')
+          end
         end
       end
     end
