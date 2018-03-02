@@ -13,7 +13,7 @@
   <div class="row">
     <div class="field col-12 ">
       <label>Document upload</label>
-      <%= form.file_field :upload, id: :document_upload, class: 'dropify', 'data-default-file': document.upload.present? ? image_url(document.upload.url) : false %>
+      <%= form.file_field :upload, id: :document_upload, class: 'dropify', 'data-allowed-file-extensions': 'png jpg jpeg', 'data-max-file-size': '10M', 'data-default-file': document.upload.present? ? image_url(document.upload.url) : false %>
       </br>
     </div>
   </div>
