@@ -19,10 +19,13 @@ chdir APP_ROOT do
   puts "\n== Removing old logs and tempfiles =="
   system! 'bin/rails log:clear tmp:clear'
 
-  puts "\n=== Preparing assets ==="
-  system! 'bin/rake yarn:install assets:precompile'
-
   puts "\n== Preparing database =="
   system! 'cp config/database.yml.example config/database.yml'
   system! 'bin/rails db:create db:migrate'
+
+  puts "\n== Seeding database =="
+  system! 'bin/rails db:seed'
+
+  puts "\n=== Preparing assets ==="
+  system! 'bin/rake yarn:install assets:precompile'
 end
