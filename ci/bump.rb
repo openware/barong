@@ -32,7 +32,7 @@ end
 #
 # @return [String]
 def repository_slug
-  ENV.fetch("REPOSITORY_SLUG", "rubykube/peatio")
+  ENV.fetch("REPOSITORY_SLUG", "rubykube/barong")
 end
 
 #
@@ -50,7 +50,7 @@ end
 #  4) Future pushes to master will be treated as new patch version number.
 #
 def bump_from_master_branch
-  # Get latest version of Peatio.
+  # Get latest version of Barong.
   return unless (latest_version = versions.last)
 
   # Find a branch which is specific the version.
@@ -101,7 +101,7 @@ def tag_n_push(tag)
 end
 
 #
-# Loads all Peatio tags, and returns them in ascending order.
+# Loads all Barong tags, and returns them in ascending order.
 #
 # @return [Array<Gem::Version>]
 def versions
@@ -122,7 +122,7 @@ def tagged_commits_mapping
 end
 
 #
-# Loads all Peatio branches, selects only version-specific, and returns them.
+# Loads all Barong branches, selects only version-specific, and returns them.
 #
 # @return [Array<Hash>]
 #   Array of hashes each containing "name" & "version" keys.
