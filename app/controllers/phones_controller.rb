@@ -15,8 +15,10 @@ class PhonesController < ApplicationController
     begin
       code = phone_params[:code]
       number = '+' + phone_params[:country_code] + phone_params[:number]
-      return redirect_to new_phone_url, notice: 'Confirmation code was sent to another number'\
+
+      return redirect_to new_phone_url, notice: 'Confirmation code was sent to another number' \
       unless session[:phone] == number
+
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       phone.validate_code!(code, session[:verif_code])
@@ -32,19 +34,25 @@ class PhonesController < ApplicationController
 
   def verify
     begin
-      number = phone_params[:number]
-      return render json: { error: 'Phone already been used' } if Phone.exists?(number: number)
+      number = phone_params[:number].delete(' ')
+
+      return render status: :bad_request, json: { error: 'This phone number has already been used' } \
+      if Phone.exists?(number: number)
+
       phone = Phone.new(account_id: current_account.id, number: number)
       phone.validate!
       session[:phone] = number
       session[:verif_code] = phone.generate_code
+
       Rails.logger.info("Sending SMS to %s with code %s" %
                         [phone.number, session[:verif_code]])
+
       app_name = ENV.fetch('APP_NAME', 'Barong')
+
       phone.send_sms("Your verification code for #{app_name}: #{session[:verif_code]}")
 
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-      return render json: { error: 'Phone is invalid' }
+      return render status: :bad_request, json: { error: 'Phone is invalid' }
     end
 
     render json: { success: 'Code was sent' }
