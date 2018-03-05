@@ -24,7 +24,8 @@ class DocumentsController < ApplicationController
     if @document.update(profile_id: current_account.profile.id)
       redirect_to index_path, notice: 'Document was successfully created.'
     else
-      redirect_to new_document_url, alert: 'Some fields are empty or invalid'
+      flash[:alert] = 'Some fields are empty or invalid'
+      render :new
     end
   end
 
