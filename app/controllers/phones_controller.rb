@@ -24,7 +24,7 @@ class PhonesController < ApplicationController
       phone.save!
 
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-      return redirect_to new_phone_url, notice: 'Phone verification failed. Number is invalid or was already verified'
+      return redirect_to new_phone_url, alert: 'Phone verification failed. Number is invalid or was already verified'
     end
 
     redirect_to new_profile_path
