@@ -4,8 +4,9 @@
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker
 //= require dropify/src/js/dropify
-//= require intlTelInput
-//= require libphonenumber/utils
+//= require intl-tel-input/build/js/intlTelInput
+//= require intl-tel-input/build/js/utils
+
 
 window.onload = function () {
   $('.datepicker-toggle').datepicker();
@@ -13,7 +14,6 @@ window.onload = function () {
   $('#send-code-btn').on('click', function () {
     $('.loader').css("display", "block");
     $('#send-code-btn').hide();
-    console.log($("#phone-input").intlTelInput("getNumber", intlTelInputUtils.numberFormat.E164))
     number = $("#phone-input").intlTelInput("getNumber");
     code = $("#phone-input").intlTelInput("getSelectedCountryData").dialCode;
     $("#code-input").val(code);
@@ -47,7 +47,6 @@ window.onload = function () {
 
     $("#phone-input").intlTelInput({
         formatOnInit: true,
-        separateDialCode: true,
-        utilsScript: "assets/libphonenumber/utils.js"
+        separateDialCode: true
     });
 };
