@@ -17,7 +17,8 @@ module Security
       if @key.save
         redirect_to security_keys_path, notice: 'Key was successfully created.'
       else
-        redirect_to new_security_key_path, alert: 'Some fields are empty or invalid'
+        flash[:alert] = 'Some fields are empty or invalid'
+        render :new
       end
     end
 
