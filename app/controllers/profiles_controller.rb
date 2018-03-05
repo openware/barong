@@ -20,7 +20,8 @@ class ProfilesController < ApplicationController
       @profile = Profile.new(profile_params)
       @profile.update!(account_id: current_account.id)
     rescue ActiveRecord::RecordInvalid
-      return redirect_to new_profile_url, alert: 'Some fields are empty or invalid'
+      flash[:alert] = 'Some fields are empty or invalid'
+      return render :new
     end
 
     redirect_to new_document_path
