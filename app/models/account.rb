@@ -21,18 +21,15 @@ class Account < ApplicationRecord
   validates :uid, presence: true, uniqueness: true
 
   # Generates new url
-  def url_otp
-    path = "totp/keys/user#{id}"
-    res = Vault.logical.write(path, generate: true, issuer: 'Barong', account_name: email)
-    res.data[:url]
+  def create_otp
+    Vault.logical.write("totp/keys/#{uid}", generate: true, issuer: 'Barong', account_name: uid)
   rescue Vault::VaultError
     raise 'Error. OTP service is not available'
   end
 
   # Verifies otp
-  def verify_otp(otp)
-    res = Vault.logical.write(code: otp)
-    res.data[:valid]
+  def verify_otp(code)
+    Vault.logical.write("totp/code/#{uid}", code: code).data[:valid]
   rescue Vault::VaultError
     raise 'Error. OTP service is not available'
   end
