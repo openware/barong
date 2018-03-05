@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 describe 'Phone verification' do
+  let!(:account) { create :account, level: 1 }
+
   before(:example) do
-    account.update(level: 1)
     sign_in account
     visit new_phone_path
   end
-
-  let!(:account) { create :account }
 
   it 'can access page' do
     expect(page).to have_content('Add mobile phone')

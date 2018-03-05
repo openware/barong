@@ -7,6 +7,6 @@ describe 'Admin sign in' do
     account.update(role: :admin)
     sign_in account
     visit admin_accounts_path
-    # expect(page).to have_content("Welcome, #{account.email}!")
+    expect(page).to have_text(/Applications/)
   end
 end

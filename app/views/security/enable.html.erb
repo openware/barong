@@ -1,7 +1,13 @@
-<div class="container justify-content-center">
-  <div class="d-flex justify-content-center ">
-    <div class="qr-code mw-4">
-      <%= raw generate_qr_code %>
+<div class="row justify-content-center">
+  <div class="container-fluid box-shadow mx-3">
+    <div class="mb-3">
+      <h2 class="title font-weight-bold">Get your Google Auth code</h2>
     </div>
+  </div>
+
+  <div class="container-fluid mx-3 px-5 py-4 d-flex flex-column align-items-center">
+    <img alt="QR Code" src="data:image/png;base64,<%= @otp.data[:barcode] %>" />
+    <input class="form-control text-center" value="<%= @otp_secret %>" disabled />
+    <a class="visible-xs" href="<%= @otp.data[:url] %>">Open in Google Authenticator</a>
   </div>
 </div>

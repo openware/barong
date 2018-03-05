@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+  <div class="container-fluid box-shadow mx-3">
+    <div class="mb-3">
+      <h2 class="title font-weight-bold">Hello, <%= resource[:email] %>!</h2>
+    </div>
+  </div>
+
+  <div class="container-fluid mx-3 px-5 py-4">
+    <%= form_for(resource, as: resource_name, url: account_session_path) do |f| %>
+      <%= f.hidden_field :email %>
+
+      <div id="passwords-form">
+        <div class="form-group">
+          <div class="row">
+            <%= f.label :password %>
+            <%= f.password_field :password, autocomplete: 'off', class: 'px-1 form-control form-control-lg underlined', placeholder: 'Enter password' %>
+          </div>
+        </div>
+
+        <% if @otp_enabled %>
+          <div id="otp-code" class="form-group">
+            <div class="row">
+              <%= label_tag :otp, '6-digit Google Authenticator code' %>
+              <%= text_field_tag :otp, '', autocomplete: 'off', class: 'px-1 form-control form-control-lg underlined', required: true, maxlength: 6, size: 6, pattern: '\d{6}', placeholder: 'XXXXXX' %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if devise_mapping.rememberable? -%>
+          <div class="form-group">
+            <div class="row">
+              <%= f.label :remember_me do %>
+                <%= f.check_box :remember_me, class: 'checkbox' %>
+                Remember me
+              <% end %>
+            </div>
+          </div>
+        <% end -%>
+
+        <div class="row mt-4 d-flex justify-content-between">
+          <%= f.submit 'Submit', class: 'btn btn-success' %>
+          <%= link_to 'Back', new_account_session_path, class: 'btn btn-secondary text-white' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
