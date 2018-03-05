@@ -1,0 +1,19 @@
+<%= form_with(model: [:security, @key], local: true) do |form| %>
+
+    <%= form.label :label, class: 'control-label'%>
+    <%= form.text_field :label, class: 'form-control'%>
+    <br>
+
+    <%= form.label :token, class: 'control-label'%>
+    <%= form.text_field :token, class: 'form-control'%>
+    <br>
+
+    <%= form.label :limit, class: 'control-label'%>
+    <%= form.text_field :limit, class: 'form-control'%>
+    <br>
+
+    <%= form.submit 'Submit', class: 'btn btn-primary' %>
+    <br>
+    <br>
+
+<% end %>
