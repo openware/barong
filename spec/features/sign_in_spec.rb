@@ -12,12 +12,29 @@ describe 'Sign in' do
     visit index_path
     expect {
       Devise.maximum_attempts.times do
-        fill_in 'Email', with: account.email
-        fill_in 'Password', with: '11111111'
-        click_on 'Submit'
+        sign_in account, password: '11111111'
       end
     }.to change { ActionMailer::Base.deliveries.count }.by(1)
     expect(account.reload.locked_at?).to be_truthy
+  end
+
+  context 'with OTP' do
+    let!(:otp) { Faker::Number.number(6) }
+
+    before(:example) do
+      allow(Vault::TOTP).to receive(:exist?).and_return(true)
+      allow(Vault::TOTP).to receive(:validate?) { |_, code| otp == code }
+    end
+
+    it 'allows to sign in with OTP' do
+      sign_in account, otp: otp
+      expect(page).to have_content("Signed in as #{account.email}")
+    end
+
+    it 'displays an error if OTP is wrong' do
+      sign_in account, otp: '123456'
+      expect(page).to have_content('Wrong Google Auth code')
+    end
   end
 
 end

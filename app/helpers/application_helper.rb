@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rqrcode'
-
 #
 # ApplicationHelper
 #
@@ -19,7 +17,7 @@ module ApplicationHelper
   end
 
   def generate_qr_code
-    url = current_account.url_otp
+    url = current_account.create_otp.data[:url]
     RQRCode::QRCode.new(url, size: 8, level: :l).as_html
   rescue StandardError => e
     e.message
