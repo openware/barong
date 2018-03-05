@@ -38,12 +38,12 @@ class PhonesController < ApplicationController
       phone.validate!
       session[:phone] = number
       session[:verif_code] = phone.generate_code
-      Rails.logger.info("Sending SMS to %s with code %s" %
-                        [phone.number, session[:verif_code]])
       app_name = ENV.fetch('APP_NAME', 'Barong')
       phone.send_sms("Your verification code for #{app_name}: #{session[:verif_code]}")
-
-    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      Rails.logger.info("Sending SMS to %s with code %s" %
+                        [phone.number, session[:verif_code]])
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid, Twilio::REST::TwilioError => e
+      return render json: { error: 'Sorry, something went wrong' } if e.class == Twilio::REST::RestError
       return render json: { error: 'Phone is invalid' }
     end
 
