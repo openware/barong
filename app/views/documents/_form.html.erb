@@ -26,7 +26,7 @@
     <div class="field form-group">
       <%= form.label :doc_expire, 'Document expiry' %>
       <div class="down-arrow">
-        <%= form.text_field :doc_expire, id: :document_doc_expire, class: 'datepicker-toggle form-control underlined', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Expiry date' %>
+        <%= form.text_field :doc_expire, id: :document_doc_expire, class: 'datepicker-toggle form-control underlined', 'data-date-format': 'yyyy-mm-dd', 'data-date-start-date': '+1d', placeholder: 'Expiry date' %>
       </div>
     </div>
 
