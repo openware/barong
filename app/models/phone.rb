@@ -20,9 +20,11 @@ class Phone < ApplicationRecord
   def send_sms(content)
     sid = Rails.application.secrets.twilio_account_sid
     token = Rails.application.secrets.twilio_auth_token
+    from_phone = Rails.application.secrets.twilio_phone_number
+
     client = Twilio::REST::Client.new(sid, token)
     client.messages.create(
-      from: Rails.application.secrets.twilio_phone_number,
+      from: from_phone,
       to:   number,
       body: content
     )

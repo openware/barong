@@ -46,12 +46,14 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
   value: {{ default "changeme" .Values.secretKeyBase | quote }}
 - name: DEVISE_SECRET_KEY
   value: {{ default "changeme" .Values.deviseSecretKey | quote }}
-- name: GCS_BUCKET
-  value: {{ default "barong-images" .Values.gcs.bucket }}
-- name: GCS_ACCESS_KEY_ID
-  value: {{ .Values.gcs.accessKeyId }}
-- name: GCS_SECRET_ACCESS_KEY
-  value: {{ .Values.gcs.secretAccessKey }}
+- name: STORAGE_PROVIDER
+  value: {{ required "storage.provider is required!" .Values.storage.provider | quote }}
+- name: STORAGE_BUCKET_NAME
+  value: {{ required "storage.bucket is required!" .Values.storage.bucket | quote }}
+{{ if eq .Values.storage.provider "AWS" }}
+- name: STORAGE_REGION
+  value: {{ required "storage.region is required!" .Values.storage.region | quote }}
+{{ end }}
 - name: JWT_SHARED_SECRET_KEY
   value: {{ .Values.jwtSharedSecretKey }}
 {{- end -}}
@@ -82,8 +84,8 @@ Environment for barong container
   value: {{ default "25" .Values.smtp.port | quote }}
 - name: SMTP_DOMAIN
   value: {{ default "helioscloud.com" .Values.smtp.domain }}
-- name: GCS_BUCKET
-  value: {{ default "barong-images" .Values.gcs.bucket }}
+- name: STORAGE_BUCKET_NAME
+  value: {{ required "storage.bucket is required!" .Values.storage.bucket }}
 {{- if .Values.vault.enabled }}
 - name: VAULT_ADDR
   value: {{ .Values.vault.adress }}
@@ -122,16 +124,16 @@ Environment for barong container
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
       key: twilioPhoneNumber
-- name: GCS_ACCESS_KEY_ID
+- name: STORAGE_ACCESS_KEY
   valueFrom:
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
-      key: gcsAccessKeyId
-- name: GCS_SECRET_ACCESS_KEY
+      key: storageAccessKey
+- name: STORAGE_SECRET_KEY
   valueFrom:
     secretKeyRef:
       name: {{ template "barong.fullname" . }}
-      key: gcsSecretAccessKey
+      key: storageSecretKey
 {{- if .Values.vault.enabled }}
 - name: VAULT_TOKEN
   valueFrom:
@@ -180,4 +182,3 @@ output: www-example-com-tls
 {{- $host := index . | replace "." "-" -}}
 {{- printf "%s-tls" $host -}}
 {{- end -}}
-

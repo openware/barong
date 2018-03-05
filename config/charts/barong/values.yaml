@@ -50,12 +50,15 @@ smtp: {}
 #  port:
 #  domain:
 
-# Google Cloud Storage credentials
-# Defulat bucket name: 'barong-images'
-gcs:
-# bucket:
-  accessKeyId: changeme
-  secretAccessKey: changeme
+# Supported providers: AWS (S3), GCS (GCP)
+storage: {}
+# provider: "AWS"
+  provider: "Google"
+  bucket_name: "barong-images"
+  access_key: "changeme"
+  secret_key: "changeme"
+# Region used only for AWS S3
+# region: ""
 
 # Set vault host and token
 vault:
