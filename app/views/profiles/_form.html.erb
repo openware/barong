@@ -27,7 +27,7 @@
     <div class="col-6">
       <%= form.label :dob, "Date of birth" %>
       <div class="down-arrow">
-        <%= form.text_field :dob, id: :profile_dob, class: 'datepicker-toggle form-control form-control-lg underlined', 'data-date-format': 'yyyy-mm-dd', placeholder: 'Date of birth' %>
+        <%= form.text_field :dob, id: :profile_dob, class: 'datepicker-toggle form-control form-control-lg underlined', 'data-date-format': 'yyyy-mm-dd', 'data-date-end-date': '-1d', placeholder: 'Date of birth' %>
       </div>
     </div>
 
