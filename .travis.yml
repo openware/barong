@@ -12,6 +12,9 @@ env:
 services:
   - mysql
 
+addons:
+  chrome: stable
+
 # Execute all of the commands which need to be executed before installing dependencies.
 before_install:
  - gem install bundler
