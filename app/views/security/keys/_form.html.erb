@@ -1,19 +1,19 @@
 <%= form_with(model: [:security, @key], local: true) do |form| %>
 
-    <%= form.label :label, class: 'control-label'%>
-    <%= form.text_field :label, class: 'form-control'%>
+    <%= form.label :label%>
+    <%= form.text_field :label, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
     <%= form.label :token, class: 'control-label'%>
-    <%= form.text_field :token, class: 'form-control'%>
+    <%= form.text_field :token, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
-    <%= form.label :limit, class: 'control-label'%>
-    <%= form.text_field :limit, class: 'form-control'%>
+    <%= form.label :rake_limit, class: 'control-label'%>
+    <%= form.number_field :rake_limit, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
-    <%= form.submit 'Submit', class: 'btn btn-primary' %>
-    <br>
-    <br>
+    <div class="actions">
+      <%= form.submit 'Submit', class: 'btn btn-success btn-block' %>
+    </div>
 
 <% end %>
