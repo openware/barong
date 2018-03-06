@@ -4,12 +4,24 @@
     <%= form.text_field :label, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
-    <%= form.label :token, class: 'control-label'%>
-    <%= form.text_field :token, class: 'px-1 form-control form-control-lg underlined'%>
+    <%= form.label :access_key, class: 'control-label'%>
+    <%= form.text_field :access_key, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
-    <%= form.label :rake_limit, class: 'control-label'%>
-    <%= form.number_field :rake_limit, class: 'px-1 form-control form-control-lg underlined'%>
+    <%= form.label :secret_key, class: 'control-label'%>
+    <%= form.text_field :secret_key, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :trusted_ip_list, class: 'control-label'%>
+    <%= form.text_field :trusted_ip_list, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :scopes, class: 'control-label'%>
+    <%= form.text_field :scopes, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+    
+    <%= form.label :rate_limit, class: 'control-label'%>
+    <%= form.number_field :rate_limit, class: 'px-1 form-control form-control-lg underlined'%>
     <br>
 
     <div class="actions">

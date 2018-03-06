@@ -56,8 +56,13 @@ ActiveRecord::Schema.define(version: 20180306070936) do
 
   create_table "keypairs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "label"
-    t.string "token"
-    t.integer "rake_limit"
+    t.string "access_key"
+    t.string "secret_key"
+    t.string "trusted_ip_list"
+    t.string "scopes"
+    t.datetime "expires_at"
+    t.datetime "deleted_at"
+    t.integer "rate_limit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

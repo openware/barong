@@ -28,7 +28,7 @@ class KeypairsController < ApplicationController
   end
 
   def keypair_params
-    params.require(:keypair).permit(:label, :token, :rake_limit)
+    params.require(:keypair).permit(:label, :access_key, :secret_key, :trusted_ip_list, :scopes, :expires_at, :deleted_at, :rate_limit)
   end
 
 end

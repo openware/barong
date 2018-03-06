@@ -4,7 +4,6 @@
 class Keypair < ApplicationRecord
 
   validates :label,
-            :token,
             presence: true
 
 end
@@ -14,10 +13,15 @@ end
 #
 # Table name: keypairs
 #
-#  id         :integer          not null, primary key
-#  label      :string(255)
-#  token      :string(255)
-#  rake_limit :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id              :integer          not null, primary key
+#  label           :string(255)
+#  access_key      :string(255)
+#  secret_key      :string(255)
+#  trusted_ip_list :string(255)
+#  scopes          :string(255)
+#  expires_at      :datetime
+#  deleted_at      :datetime
+#  rate_limit      :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #
