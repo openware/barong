@@ -1,21 +1,33 @@
 # frozen_string_literal: true
 
 #
+# Phone Verification module
+#
+module PhoneVerification
+  extend ActiveSupport::Concern
+
+  included do
+    attr_accessor :verification_code, :submitted_verification_code
+
+    validate do
+      if verification_code.present? && submitted_verification_code.present?
+        errors.add(:verification_code, :invalid) unless verification_code == submitted_verification_code
+      end
+    end
+  end
+end
+
+#
 # Class Phone
 #
 class Phone < ApplicationRecord
+  include PhoneVerification
+
   belongs_to :account
 
   validates :number, phone: true
 
   before_validation :parse_country
-
-  def validate_code!(original, confirm)
-    if original != confirm
-      errors.add(:code, "Invalid code.")
-      raise ActiveRecord::RecordInvalid.new(self)
-    end
-  end
 
   def send_sms(content)
     sid = Rails.application.secrets.twilio_account_sid

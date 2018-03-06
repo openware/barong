@@ -13,23 +13,24 @@ describe 'Phone verification' do
   end
 
   it 'verifies phone number' do
-    fill_in 'number', with: 'qwerty'
+    fill_in 'phone-input', with: 'qwerty'
     click_on 'Send code'
     expect(page).to have_content('invalid')
   end
 
   it 'verifies phone number' do
-    fill_in 'number', with: '+380955555555'
+    fill_in 'phone-input', with: '+380955555555'
     click_on 'Send code'
     expect(page).not_to have_content('invalid')
   end
 
   it 'creates phone' do
-    fill_in 'number', with: '+380955555555'
+    fill_in 'phone-input', with: '+380955555555'
     click_on 'Send code'
+    expect(page).not_to have_content('invalid')
     sleep 1 #FIXME we need to wait for html event
-    fill_in 'Enter code', with: FakeSMS.messages.last.body.split.last
-    click_on 'CONFIRM'
+    fill_in 'code', with: FakeSMS.messages.last.body.split.last
+    click_on 'Confirm'
     expect(page).to have_content('Verification > Fill in personal information')
   end
 end
