@@ -8,6 +8,9 @@ defaults: &defaults
   url:
     host: 'localhost'
     scheme: 'http'
+  
+  rails_max_threads: 5
+  port: 3000
 
 development:
   <<: *defaults
