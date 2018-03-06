@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :keys
   use_doorkeeper
   mount API::Base, at: '/api'
 
@@ -11,6 +10,7 @@ Rails.application.routes.draw do
   post  'phones/verification',  to: 'phones#verify'
   get   'security',             to: 'security#enable'
 
+  resources :keypairs
   resources :phones,    only: %i[new create]
   resources :profiles,  only: %i[new create]
   resources :documents, only: %i[new create]
@@ -22,9 +22,5 @@ Rails.application.routes.draw do
     resources :profiles do
       put :change_state,    on: :member
     end
-  end
-
-  namespace :security do
-    resources :keys
   end
 end

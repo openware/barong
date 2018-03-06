@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateKeys < ActiveRecord::Migration[5.1]
+class CreateKeypairs < ActiveRecord::Migration[5.1]
   def change
-    create_table :keys do |t|
+    create_table :keypairs do |t|
       t.string  :label
       t.string  :token
 

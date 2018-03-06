@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Model Key
-class Key < ApplicationRecord
+# Model Keypair
+class Keypair < ApplicationRecord
 
   validates :label,
             :token,
@@ -10,9 +10,9 @@ class Key < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180305083426
+# Schema version: 20180306070936
 #
-# Table name: keys
+# Table name: keypairs
 #
 #  id         :integer          not null, primary key
 #  label      :string(255)

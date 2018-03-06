@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180305083426) do
+ActiveRecord::Schema.define(version: 20180306070936) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 20180305083426) do
     t.index ["profile_id"], name: "index_documents_on_profile_id"
   end
 
-  create_table "keys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "keypairs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "label"
     t.string "token"
     t.integer "rake_limit"
