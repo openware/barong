@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+require 'ostruct'
+require 'econfig/active_record'
+
+module Econfig
+  class ActiveRecord
+    class Option < ::ActiveRecord::Base
+      self.table_name = 'config_settings'
+      serialize :value
+    end
+
+    def has_key?(key)
+      Option.exists?(key: key.to_s)
+    end
+
+    def get(key)
+      Option.find_by(key: key).yield_self do |option|
+        if option.present? and option.value.is_a?(Hash)
+          OpenStruct.new(option.value)
+        else
+          option&.value
+        end
+      end
+    end
+  end
+
+  module Services
+    class ConfigSettingsSeed
+      def self.execute
+        %i(memory env secrets yaml).each do |backend|
+          Econfig.backends.delete(backend)
+        end
+        Econfig.backends.push :env, Econfig::ENV.new
+        Econfig.backends.push :secrets, Econfig::YAML.new('config/secrets.yml')
+        Econfig.backends.push :db, Econfig::ActiveRecord.new
+        Econfig.backends.push :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
+        Econfig.default_write_backend = :db
+
+        Econfig.backends[:yaml].send(:options).each do |key, value|
+          Econfig.backends[:db].set(key, value)
+        end
+        Econfig.backends.delete(:yaml)
+      end
+    end
+  end
+end
+
+if ActiveRecord::Base.connection.table_exists?(Econfig::ActiveRecord::Option.table_name)
+  # NOTE: seed :db backend from :yaml and remove :yaml backend
+  Econfig::Services::ConfigSettingsSeed.execute
+else
+  # NOTE: use all backends except :db and configure :yaml form custom file
+  Econfig.backends.delete(:yaml)
+  Econfig.backends.push :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
+end

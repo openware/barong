@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220142157) do
+ActiveRecord::Schema.define(version: 20180305122359) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -41,6 +41,12 @@ ActiveRecord::Schema.define(version: 20180220142157) do
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_accounts_on_uid", unique: true
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
+  end
+
+  create_table "config_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "key", null: false
+    t.text "value"
+    t.index ["key"], name: "index_config_settings_on_key", unique: true
   end
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

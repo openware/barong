@@ -30,6 +30,10 @@ ActiveRecord::Migration.maintain_test_schema!
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  config.after(:suite) do
+    ActiveRecord::Base.connection.execute 'delete from config_settings'
+  end
+  
   config.before(:each) do
     stub_const("Twilio::REST::Client", FakeSMS)
   end
