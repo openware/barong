@@ -4,8 +4,6 @@
 # Class Account
 #
 class Account < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
@@ -13,14 +11,10 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
 
-  before_validation :assign_uid
+  validates :email, presence: true, uniqueness: true
+  validates :uid,   presence: true, uniqueness: true
 
-  validates :email, uniqueness: true
-  validates :uid, presence: true, uniqueness: true
-
-  def role
-    super.inquiry
-  end
+  after_initialize { self[:uid] = generate_uid if uid.empty? }
 
   def otp_exist?
     Vault::TOTP.exist?(uid)
@@ -45,15 +39,9 @@ class Account < ApplicationRecord
     save
   end
 
-  def assign_uid
-    return unless uid.blank?
-    loop do
-      self.uid = random_uid
-      break unless Account.where(uid: uid).any?
-    end
-  end
+private
 
-  def random_uid
+  def generate_uid
     "ID#{SecureRandom.hex(5).upcase}"
   end
 end
@@ -64,8 +52,8 @@ end
 # Table name: accounts
 #
 #  id                     :integer          not null, primary key
-#  uid                    :string(255)      not null
-#  email                  :string(255)      not null
+#  uid                    :string(255)      default(""), not null
+#  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime

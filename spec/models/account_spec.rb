@@ -1,41 +1,23 @@
-require 'spec_helper'
+describe Account do
+  describe 'validations' do
+    it { is_expected.to validate_presence_of :email }
+    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
 
-RSpec.describe Account, type: :model do
+    it { is_expected.to validate_presence_of :uid }
+    it { is_expected.to validate_uniqueness_of :uid }
 
-  ## Test of validations
-  it { should validate_presence_of(:email) }
-  it { should validate_presence_of(:password) }
-
-  ## Test of relationships
-  it { should have_one(:profile).dependent(:destroy) }
-
-  context 'Profile with 2 or more documents' do
-    it do
-      account = Account.create!(email: 'test@mail.com', password: '123123')
-      expect(Account.count).to eq 1
-      profile = Profile.create!(
-         :account => account,
-         :first_name => "MyString",
-         :last_name => "MyString",
-         :address => "MyString",
-         :postcode => "MyString",
-         :city => "MyString",
-         :country => "MyString",
-         :dob => "01-01-2001")
-      expect(Profile.count).to eq 1
-      document1 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
-        :doc_type => "MyString",
-        :doc_number => "MyString",
-        :doc_expire => "01-01-2020")
-      document2 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
-        :doc_type => "MyString",
-        :doc_number => "MyString",
-        :doc_expire => "01-02-2020")
-      expect(profile.reload.documents).to eq([document1, document2])
-
-    end
-
-    after(:all) { Account.destroy_all }
+    it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_confirmation_of(:password).on(:create) }
   end
 
+  describe 'relations' do
+    it { is_expected.to have_one(:profile).dependent(:destroy) }
+    it { is_expected.to have_many(:phones).dependent(:destroy) }
+  end
+
+  context 'default values' do
+    its(:uid)   { is_expected.to be_present  }
+    its(:level) { is_expected.to be_zero     }
+    its(:role)  { is_expected.to eq 'member' }
+  end
 end

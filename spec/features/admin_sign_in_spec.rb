@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 describe 'Admin sign in' do
-  let(:account) { create :account }
+  let!(:admin) { create :admin }
+
+  before(:example) do
+    sign_in admin
+    visit admin_accounts_path
+  end
 
   it 'allows to sign in as admin' do
-    account.update(role: :admin)
-    sign_in account
-    visit admin_accounts_path
-    expect(page).to have_text(/Applications/)
+    expect(page).to have_content(/Applications/)
   end
 end
