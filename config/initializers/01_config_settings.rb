@@ -25,6 +25,17 @@ module Econfig
     end
   end
 
+  class YAML
+    def get(key)
+      if options[key].present? and options[key].is_a?(Hash)
+        OpenStruct.new(options[key])
+      else
+        options[key]
+      end
+
+    end
+  end
+
   module Services
     class ConfigSettingsSeed
       def self.execute
@@ -51,6 +62,7 @@ if ActiveRecord::Base.connection.table_exists?(Econfig::ActiveRecord::Option.tab
   Econfig::Services::ConfigSettingsSeed.execute
 else
   # NOTE: use all backends except :db and configure :yaml form custom file
+  Econfig.backends.delete(:memory)
   Econfig.backends.delete(:yaml)
-  Econfig.backends.push :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
+  Econfig.backends.insert_before :env, :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
 end
