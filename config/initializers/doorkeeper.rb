@@ -58,7 +58,7 @@ Doorkeeper.configure do
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   # default_scopes  :public
-  # optional_scopes :write, :update
+  optional_scopes :peatio, :barong
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -121,12 +121,20 @@ Doorkeeper::JWT.configure do
     account = Account.find(opts[:resource_owner_id])
 
     {
+      iat: Time.now.to_i,
+      exp: 4.hours.from_now.to_i,
+      sub: 'session',
+      iss: 'barong',
+      aud: opts[:scopes].all,
+
+      # unique token id (for revocation purposes)
+      jti: SecureRandom.hex(12).upcase,
+
+      uid:   account.uid,
       email: account.email,
-      profile: account.as_json(
-        only: %i[email role level],
-        include: { profile: { only: %i[first_name last_name state] } }
-      ),
-      exp: 4.hours.from_now.to_i
+      role:  account.role,
+      level: account.level,
+      state: account.state,
     }
   end
 
