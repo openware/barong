@@ -40,8 +40,8 @@ module Econfig
     class SetupBackends
       # NOTE: setup backends in order the will be searched 
       def self.execute
-        %i(memory env secrets yaml).each do |backend|
-          Econfig.backends.delete(backend)
+        %i(memory env secrets db yaml).each do |backend|
+          Econfig.backends.delete(backend) if Econfig.backends.send(:index_of, backend).present?
         end
         Econfig.backends.push :env, Econfig::ENV.new
         Econfig.backends.push :secrets, Econfig::YAML.new('config/secrets.yml')
