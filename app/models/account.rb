@@ -4,6 +4,8 @@
 # Class Account
 #
 class Account < ApplicationRecord
+  ROLES = %i[admin compliance member]
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
