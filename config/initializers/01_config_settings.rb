@@ -37,7 +37,8 @@ module Econfig
   end
 
   module Services
-    class ConfigSettingsSeed
+    class SetupBackends
+      # NOTE: setup backends in order the will be searched 
       def self.execute
         %i(memory env secrets yaml).each do |backend|
           Econfig.backends.delete(backend)
@@ -47,22 +48,24 @@ module Econfig
         Econfig.backends.push :db, Econfig::ActiveRecord.new
         Econfig.backends.push :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
         Econfig.default_write_backend = :db
-
+      end
+    end
+    
+    class ConfigSettingsSeed
+      #NOTE: popultae :db backend from :yaml backend
+      def self.execute
         Econfig.backends[:yaml].send(:options).each do |key, value|
           Econfig.backends[:db].set(key, value)
         end
-        Econfig.backends.delete(:yaml)
       end
     end
   end
 end
 
 if ActiveRecord::Base.connection.table_exists?(Econfig::ActiveRecord::Option.table_name)
-  # NOTE: seed :db backend from :yaml and remove :yaml backend
+  Econfig::Services::SetupBackends.execute
   Econfig::Services::ConfigSettingsSeed.execute
 else
-  # NOTE: use all backends except :db and configure :yaml form custom file
-  Econfig.backends.delete(:memory)
-  Econfig.backends.delete(:yaml)
-  Econfig.backends.insert_before :env, :yaml, Econfig::YAML.new('config/config_settings_seed.yml')
+  Econfig::Services::SetupBackends.execute
+  Econfig.backends.delete(:db)
 end
