@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 describe 'Sign in' do
-  let!(:account) { create :account }
+  let!(:account) { create :account, :confirmed }
 
   it 'allows to sign in with email and password' do
     sign_in account
-    expect(page).to have_content("Signed in as #{account.email}")
+    expect(page).to have_content 'Signed in successfully'
   end
 
   it 'blocks account when system detects too many sign in attempts' do
@@ -28,7 +28,7 @@ describe 'Sign in' do
 
     it 'allows to sign in with OTP' do
       sign_in account, otp: otp
-      expect(page).to have_content("Signed in as #{account.email}")
+      expect(page).to have_content('Signed in successfully')
     end
 
     it 'displays an error if OTP is wrong' do

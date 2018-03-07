@@ -1,30 +1,44 @@
 # frozen_string_literal: true
 
-describe 'Admin can' do
+describe 'accounts management', order: :defined do
+  let!(:admin) { create :admin }
+  let!(:member) { create :account }
+
   before(:example) do
-    account.update(role: :admin)
-    sign_in account
+    sign_in admin
     visit admin_accounts_path
   end
-  let(:member) { create :account }
-  let(:account) { create :account }
 
-  it 'edit roles' do
-    expect(page).to have_content("#{account.email}")
-    click_link 'Edit'
-    select 'admin', from: 'account_role'
-    click_on 'Submit'
-    expect(page).not_to have_content("member")
+  def row_for(account)
+    within '.container table' do
+      find('tr') { |el| el.has_text?(account.email) }
+    end
   end
 
-  it 'delete accounts' do
-    click_link 'Delete'
-    within('div.modal') do
-      click_button 'Confirm'
+  context 'on admin panel' do
+    it 'can set account role' do
+      within row_for(member) do
+        click_on 'Edit'
+      end
+
+      select 'admin', from: 'account_role'
+      click_on 'Submit'
+
+      expect(row_for(member).find('.badge')).to have_text 'admin'
     end
 
-    visit admin_accounts_path
-    expect(page).not_to have_content("#{member.email}")
-  end
+    it 'can delete accounts' do
+      within row_for(member) do
+        click_on 'Delete'
+      end
 
+      within 'div.modal' do
+        click_button 'Confirm'
+      end
+
+      visit admin_accounts_path
+
+      expect(page).not_to have_content(member.email)
+    end
+  end
 end

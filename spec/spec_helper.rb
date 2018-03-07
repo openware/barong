@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 
 # Prevent database truncation if the environment is production.
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 
 require 'rspec/rails'
+require 'rspec/its'
 require 'shoulda-matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -30,9 +31,6 @@ ActiveRecord::Migration.maintain_test_schema!
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  config.before(:each) do
-    stub_const("Twilio::REST::Client", FakeSMS)
-  end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -73,7 +71,7 @@ RSpec.configure do |config|
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
-  # config.example_status_persistence_file_path = "spec/examples.txt"
+  config.example_status_persistence_file_path = 'tmp/rspec/examples.txt'
 
   # Limits the available syntax to the non-monkey patched syntax that is
   # recommended. For more details, see:
@@ -131,25 +129,14 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
   # Arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-  config.include(Shoulda::Matchers::ActiveModel, type: :model)
-  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
 end
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
-    # Choose a test framework:
     with.test_framework :rspec
-    # with.test_framework :minitest
-    # with.test_framework :minitest_4
-    # with.test_framework :test_unit
-
-    # Choose one or more libraries:
-    with.library :active_record
-    # with.library :active_model
-    # with.library :action_controller
-    # Or, choose the following (which implies all of the above):
     with.library :rails
   end
 end

@@ -31,10 +31,12 @@ gem 'bootstrap-datepicker-rails'
 gem 'doorkeeper-jwt'
 
 group :development, :test do
-  gem 'listen',     '~> 3.1'
-  gem 'pry-byebug', '~> 3.5'
-  gem 'annotate',   '~> 2.7'
-  gem 'faker',      '~> 1.8'
+  gem 'listen',      '~> 3.1'
+  gem 'pry-byebug',  '~> 3.5'
+  gem 'annotate',    '~> 2.7'
+  gem 'faker',       '~> 1.8'
+  gem 'guard-rspec', '~> 4.7'
+  gem 'pry-rails',   '~> 0.3.6'
 end
 
 group :test do
@@ -44,4 +46,5 @@ group :test do
   gem 'selenium-webdriver',  '~> 3.8'
   gem 'chromedriver-helper', '~> 1.1'
   gem 'shoulda-matchers',    '~> 3.1.2'
+  gem 'rspec-its',           '~> 1.2'
 end

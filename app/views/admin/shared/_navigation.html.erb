@@ -15,7 +15,7 @@
             </li>
         <% end %>
 
-        <% if current_account.role.admin? %>
+        <% if current_account.role == 'admin' %>
             <li class="nav-item <%= 'active' if params[:controller].match?(/application/) %>" >
               <%= link_to 'Applications', oauth_applications_path, class: 'nav-link' %>
             </li>
