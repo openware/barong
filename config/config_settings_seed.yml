@@ -5,9 +5,8 @@ defaults: &defaults
     default_from: 'Barong <noreply@barong.io>'
     admin: 'admin@barong.io'
 
-  url:
-    host: 'localhost'
-    scheme: 'http'
+  url_host: 'localhost'
+  url_scheme: 'http'
   
   rails_max_threads: 5
   port: 3000

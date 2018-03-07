@@ -7,7 +7,7 @@ namespace :slate do
       if ARGV[1].present?
         ARGV[1]
       else
-        "#{Barong.config.url.scheme}://#{Barong.config.url.host}/api/swagger_doc"
+        "#{Barong.config.url_scheme}://#{Barong.config.url_host}/api/swagger_doc"
       end
     outfile = Rails.root.join('docs', 'index.md').to_s
     executable = 'node node_modules/widdershins/widdershins'
