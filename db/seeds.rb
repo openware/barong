@@ -25,8 +25,7 @@ if File.exist?(seed_file)
     puts "Application ID: %s\nSecret: %s" % [result.uid, result.secret]
   end
 else
-  admin_email = ENV.fetch('ADMIN_USER', 'admin@barong.io')
-  admin = Account.create(email: admin_email, password: SecureRandom.hex(20), level: 1, role: 'admin', confirmed_at: Time.now)
+  admin = Account.create(email: Barong.config.email.admin, password: SecureRandom.hex(20), level: 1, role: 'admin', confirmed_at: Time.now)
 
   puts 'Admin credentials: %s' % [admin.password]
 end

@@ -1,0 +1,27 @@
+defaults: &defaults
+  app_name: 'Barong'
+
+  email:
+    default_from: 'noreply@barong.io'
+    admin: 'admin@barong.io'
+
+  rails_max_threads: 5
+  port: 3000
+  
+  bot_username: 'rubykube-bot'
+  bot_name: 'Rubykube Bot'
+  bot_email: 'bot@rubykube.io'
+  repository_slug: 'rubykube/peatio'
+
+development:
+  <<: *defaults
+  url_host: 'localhost'
+  url_scheme: 'http'
+
+test:
+  <<: *defaults
+  url_host: 'localhost'
+  url_scheme: 'http'
+
+production:
+  <<: *defaults

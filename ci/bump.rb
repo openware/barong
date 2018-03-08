@@ -8,7 +8,7 @@ require "uri"
 #
 # @return [String]
 def bot_username
-  ENV.fetch("BOT_USERNAME", "rubykube-bot")
+  Baron.config.bot_username
 end
 
 #
@@ -16,7 +16,7 @@ end
 #
 # @return [String]
 def bot_name
-  ENV.fetch("BOT_NAME", "Rubykube Bot")
+  Baron.config.bot_name
 end
 
 #
@@ -24,7 +24,7 @@ end
 #
 # @return [String]
 def bot_email
-  ENV.fetch("BOT_EMAIL", "bot@rubykube.io")
+  Baron.config.bot_email
 end
 
 #
@@ -32,7 +32,7 @@ end
 #
 # @return [String]
 def repository_slug
-  ENV.fetch("REPOSITORY_SLUG", "rubykube/barong")
+  Baron.config.repository_slug
 end
 
 #

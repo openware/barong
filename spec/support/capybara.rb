@@ -2,16 +2,16 @@
 
 screen_size = [1280, 800]
 
-if ENV.key?('SELENIUM_HOST')
+if Barong.config['selenium_host'].present?
   Capybara.register_driver :chrome do |app|
     Capybara::Selenium::Driver.new \
       app,
-      url:                  "http://#{ENV.fetch('SELENIUM_HOST')}:#{ENV.fetch('SELENIUM_PORT')}/wd/hub",
+      url:                  "http://#{Barong.config.selenium_host}:#{Barong.config.selenium_port}/wd/hub",
       browser:              :remote,
       desired_capabilities: :chrome
   end
 
-  Capybara.app_host   = "http://#{ENV.fetch('TEST_APP_HOST')}:#{ENV.fetch('TEST_APP_PORT')}"
+  Capybara.app_host   = "http://#{Barong.config.test_app_host}:#{Barong.config.test_app_port}"
   Capybara.run_server = false
 
   RSpec.configure do |config|
@@ -21,8 +21,8 @@ if ENV.key?('SELENIUM_HOST')
   end
 else
   Capybara.register_driver :chrome do |app|
-    headless = !ENV['CHROME_HEADLESS'].in?(%w[ 0 false ])
-    debug    = ENV['CHROME_DEBUG'].in?(%w[ 1 true ])
+    headless = !Barong.config['chrome_headless'].in?(%w[ 0 false ])
+    debug    = Barong.config['chrome_debug'].in?(%w[ 1 true ])
 
     driver_options = { args: [] }
     driver_options[:args] << '--log-path=' + Rails.root.join('log/chromedriver.log').to_s

@@ -95,8 +95,8 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
 
   config.action_mailer.default_url_options = {
-      host: ENV['URL_HOST'],
-      protocol: ENV['URL_SCHEME']
+      host: Barong.config.url_host,
+      protocol: Barong.config.url_scheme
   }
 
   config.action_mailer.smtp_settings = {
