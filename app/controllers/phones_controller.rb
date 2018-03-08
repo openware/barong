@@ -33,17 +33,15 @@ class PhonesController < ApplicationController
   end
 
   def verify
-    sanitized_number = Phonelib.parse(phone_params[:number]).sanitized
-    if Phone.exists?(number: sanitized_number)
-      render json: { error: 'This phone was already verified' }, status: :unprocessable_entity
-      return
-    end
-
     number = Phonelib.parse(phone_params[:number]).international
     phone = Phone.new(account_id: current_account.id, number: number)
 
+    if phone.number_exists?
+      return render json: { error: 'This phone was already verified' }, status: :unprocessable_entity
+    end
+
     if phone.validate
-      set_session(sanitized_number, phone.generate_code)
+      set_session(Phonelib.parse(phone.number).sanitized, phone.generate_code)
       send_verification_code(phone)
       render json: { success: 'Code was sent' }
     else

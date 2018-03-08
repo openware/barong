@@ -42,9 +42,10 @@
       <%= number_field_tag :code, nil, class: 'form-control form-control-lg underlined', placeholder: 'Enter code' %>
     </div>
 
+    <div id="error" class="alert alert-danger col-12" role="alert"></div>
+
     <div class="d-flex justify-content-between mt-4">
       <%= submit_tag 'Confirm', class: 'btn btn-primary btn-block btn-success btn-phone col-6',id: 'create-phone', disabled: true %>
-      <div id="error"></div>
     </div>
   <% end %>
 </div>

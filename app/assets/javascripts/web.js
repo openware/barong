@@ -34,6 +34,7 @@ window.onload = function () {
       success: function(result) {
           if (result.success) {
               $('.loader').hide();
+              $('#error').fadeOut('fast');
               $('#send-code-btn').show();
               $('#error').text('');
               $('#create-phone').prop('disabled', false);
@@ -43,6 +44,7 @@ window.onload = function () {
       error: function(result) {
           $('.loader').hide();
           $('#send-code-btn').show();
+          $('#error').fadeIn('fast');
           $('#error').text(result.responseJSON.error);
       }
     });

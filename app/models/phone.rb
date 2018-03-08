@@ -29,6 +29,11 @@ class Phone < ApplicationRecord
 
   before_validation :parse_country
 
+  def number_exists?
+    sanitized_number = Phonelib.parse(number).sanitized
+    Phone.exists?(number: sanitized_number)
+  end
+
   def send_sms(content)
     sid = Rails.application.secrets.twilio_account_sid
     token = Rails.application.secrets.twilio_auth_token
