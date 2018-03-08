@@ -2,7 +2,7 @@ defaults: &defaults
   app_name: 'Barong'
 
   email:
-    default_from: 'Barong <noreply@barong.io>'
+    default_from: 'noreply@barong.io'
     admin: 'admin@barong.io'
 
   rails_max_threads: 5

@@ -25,7 +25,11 @@ gem 'fog',          '~> 1.42.0'
 gem 'vault',        '~> 0.1'
 gem 'rqrcode',      '~> 0.10.1'
 gem 'countries',    require: 'countries/global'
-gem 'econfig', '~> 2.0.0', require: 'econfig/rails'
+gem 'econfig', 
+  github: 'varvet/econfig', 
+  ref: 'd5a3f97', 
+  require: 'econfig/rails'
+gem 'dry-validation'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
