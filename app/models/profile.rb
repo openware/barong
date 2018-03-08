@@ -2,10 +2,35 @@
 
 # Profile model
 class Profile < ApplicationRecord
+  include AASM
   belongs_to :account
 
   has_many :documents, dependent: :destroy
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
+
+  aasm column: :state do
+    state :pending, initial: true
+    state :approved
+    state :rejected
+
+    event :approve, success: %i[set_account_level state_change_notify] do
+      transitions from: :pending, to: :approved
+    end
+
+    event :reject, success: %i[set_account_level state_change_notify] do
+      transitions from: %i[pending approved], to: :rejected
+    end
+  end
+
+  def set_account_level
+    account.level_set(approved? ? :identity : :phone)
+  end
+
+  def state_change_notify
+    puts "Email: Hi #{first_name}, your account has been #{aasm.to_state}."
+    ApplicationMailer.email_notify(account.email).deliver
+  end
+
 end
 
 # == Schema Information
