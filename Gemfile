@@ -20,11 +20,13 @@ gem 'grape-swagger', '~> 0.28'
 gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
 gem 'phonelib',     '~> 0.3.6'
 gem 'twilio-ruby',  '~> 5.6.0'
-gem 'carrierwave',  '~> 0.10.0'
-gem 'fog',          '~> 1.42.0'
-gem 'vault',        '~> 0.1'
-gem 'rqrcode',      '~> 0.10.1'
-gem 'countries',    require: 'countries/global'
+
+gem 'fog-google',  '~> 1.3.0'
+gem 'fog-aws',     '~> 2.0.1'
+gem 'carrierwave', '~> 1.2.2'
+
+gem 'vault', '~> 0.1'
+gem 'countries', require: 'countries/global'
 
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
