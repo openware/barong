@@ -14,7 +14,7 @@ build:
 	@docker build -t $(IMAGE) .
 
 push: build
-	gcloud docker -- push $(IMAGE)
+	@docker push $(IMAGE)
 
 run:
 	@echo '> Starting "$(SERVICE)" container...'
