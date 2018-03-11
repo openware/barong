@@ -16,7 +16,7 @@ namespace :db do
         profile = Profile.create!(account: account, first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, country: Faker::Address.country, state: states.sample, dob: Faker::Date.between(25.years.ago, 10.years.ago), address: Faker::Address.street_address, city: Faker::Address.city)
 
         [*0..Faker::Number.between(0, 2)].each do |count|
-          profile.documents.create!(doc_type: Faker::File.extension, doc_number: Faker::Number.number(4), doc_expire: Date.today + count.days, upload: File.open('app/assets/images/background.jpg'))
+          profile.documents.create!(doc_type: Faker::File.extension, doc_number: Faker::Number.number(4), doc_expire: Date.today + count.days, upload: File.open('app/assets/images/background.png'))
         end
       end
 

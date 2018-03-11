@@ -10,9 +10,17 @@ module ApplicationHelper
 
   def domain_logo_tag(url)
     if url.blank?
-      image_tag('logo-white.png')
+      image_tag('logo.png')
     else
       image_tag(url)
+    end
+  end
+
+  def domain_title(title)
+    if title.blank?
+      'Lex Exchange - More than just Bitcoin'
+    else
+      title
     end
   end
 
