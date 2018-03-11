@@ -16,7 +16,7 @@ RSpec.describe "documents/new", type: :view do
 
     assign(:document, Document.new(
         :profile => profile,
-        :upload => File.open('app/assets/images/background.jpg'),
+        :upload => File.open('app/assets/images/background.png'),
         :doc_type => "MyString",
         :doc_number => "MyString",
         :doc_expire => "01-01-2020"
