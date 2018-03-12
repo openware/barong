@@ -25,34 +25,66 @@
 
   <div class="row form-group mt-4">
     <div class="col-6">
+      <%= form.label :middle_name %>
+      <%= form.text_field :middle_name, id: :profile_middle_name, class: "form-control form-control-lg underlined", placeholder: 'Middle name' %>
+    </div>
+
+    <div class="col-6">
       <%= form.label :dob, "Date of birth" %>
       <div class="down-arrow">
-        <%= form.text_field :dob, id: :profile_dob, class: 'datepicker-toggle form-control form-control-lg underlined', 'data-date-format': 'yyyy-mm-dd', 'data-date-end-date': '-1d', placeholder: 'Date of birth' %>
+        <%= form.text_field :dob, id: :profile_dob, class: 'datepicker-toggle form-control form-control-lg underlined',
+                            'data-date-start-date': 70.years.ago.strftime("%d/%m/%Y"),
+                            'data-date-end-date': 18.years.ago.strftime("%d/%m/%Y"),
+                            'data-date-format': 'dd/mm/yyyy', placeholder: 'Date of birth' %>
       </div>
     </div>
-
-    <div class="col-6">
-      <%= form.label :country %>
-      <%= display_country %>
-    </div>
-  </div>
-
-  <div class="row form-group">
-    <div class="col-12">
-      <%= form.label :address %>
-      <%= form.text_field :address, id: :profile_address, class: "form-control form-control-lg underlined", placeholder: 'Address' %>
-    </div>
   </div>
 
   <div class="row form-group">
     <div class="col-6">
-      <%= form.label :city %>
-      <%= form.text_field :city, id: :profile_city, class: "form-control form-control-lg underlined", placeholder: 'City' %>
+      <%= form.label :flat_number, "Unit/Flat Number" %>
+      <%= form.text_field :flat_number, id: :profile_flat_number, class: "form-control form-control-lg underlined", placeholder: 'Unit/Flat Number' %>
+    </div>
+
+    <div class="col-6">
+      <%= form.label :street_number, "Street Number" %>
+      <%= form.text_field :street_number, id: :profile_street_number, class: "form-control form-control-lg underlined", placeholder: 'Street Number' %>
+    </div>    
+  </div>
+
+  <div class="row form-group">
+    <div class="col-6">
+      <%= form.label :street_name, "Street Name" %>
+      <%= form.text_field :street_name, id: :profile_street_name, class: "form-control form-control-lg underlined", placeholder: 'Street Name' %>
+    </div>
+
+    <div class="col-6">
+      <%= form.label :street_type %>
+      <%= form.text_field :street_type, id: :profile_street_type, class: "form-control form-control-lg underlined", placeholder: 'Street Type' %>
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-6">
+      <%= form.label :suburb %>
+      <%= form.text_field :suburb, id: :profile_suburb, class: "form-control form-control-lg underlined", placeholder: 'Suburb' %>
     </div>
 
     <div class="col-6">
       <%= form.label :postcode %>
       <%= form.text_field :postcode, id: :profile_postcode, class: "form-control form-control-lg underlined", placeholder: 'Postcode' %>
+    </div>
+  </div>
+
+  <div class="row form-group">
+    <div class="col-6">
+      <%= form.label :state, "State" %>
+      <%= form.select(:address_state, get_states_for_profile, {id: :address_state, :include_blank => "Select state"}, {class: 'form-control underlined'}) %>
+    </div>
+
+    <div class="col-6">
+      <%= form.label :country %>
+      <%= form.select(:country, get_countries, {id: :country}, {class: 'form-control form-control-lg underlined', selected: params[:country]}) %>
     </div>
   </div>
 

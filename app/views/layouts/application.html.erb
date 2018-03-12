@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Barong</title>
+    <title><%= domain_title(domain_asset :title) %></title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'web', media: 'all' %>
@@ -14,17 +14,15 @@
     <%= domain_html_tag(domain_asset :header) %>
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div class="col-xs-10 col-sm-8 col-md-6 col-lg-2">
-          <div class="main-logo">
-            <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
-          </div>
-        </div>
-      </div>
-
-      <div class="row justify-content-center">
         <div class="mt-5 mb-5 mx-4 main-card">
-
           <div class="card">
+            <div class="row justify-content-center">
+              <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="main-logo">
+                  <%= link_to domain_logo_tag(domain_asset :logo), index_path %>
+                </div>
+              </div>
+            </div>
 
             <% unless alert.blank? %>
               <span class="alert alert-danger mb-0">

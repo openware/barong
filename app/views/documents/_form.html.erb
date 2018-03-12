@@ -10,33 +10,51 @@
       </ul>
     </div>
   <% end %>
-  <div class="row">
-    <div class="field col-12 ">
-      <label>Document upload</label>
-      <%= form.file_field :upload, id: :document_upload, class: 'dropify', 'data-allowed-file-extensions': 'png jpg jpeg', 'data-max-file-size': '10M', 'data-default-file': document.upload.present? ? image_url(document.upload.url) : false %>
-      </br>
-    </div>
-  </div>
+  
   <div class="row">
     <div class="field col-6">
       <%= form.label :doc_type, 'Document type' %>
-      <%= form.select(:doc_type, ['Passport', 'Identity card', 'Driver license'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
+      <%= form.select(:doc_type, get_id_types, {id: :document_doc_type, :include_blank => "Select Id Type"}, {class: 'document_doc_type form-control underlined'}) %>
     </div>
 
-    <div class="field form-group">
-      <%= form.label :doc_expire, 'Document expiry' %>
-      <div class="down-arrow">
-        <%= form.text_field :doc_expire, id: :document_doc_expire, class: 'datepicker-toggle form-control underlined', 'data-date-format': 'yyyy-mm-dd', 'data-date-start-date': '+1d', placeholder: 'Expiry date' %>
-      </div>
-    </div>
-
-    <div class="field form-group col-12">
+    <div class="field form-group col-6">
       <%= form.label :doc_number, 'Document number' %>
       <%= form.text_field :doc_number, id: :document_doc_number, class: 'px-1 form-control form-control-lg underlined', placeholder: 'AB123456' %>
     </div>
   </div>
 
-  <div class="actions">
-    <%= form.submit 'Submit', class: 'btn btn-block btn-success' %>
+  <div class="row hide" id="doc-issued-state">
+    <div class="field col-6" >
+      <%= form.label :doc_state, "State issued" %>
+      <%= form.select(:doc_state, get_states_for_documents, {id: :doc_state, :include_blank => "Select state"}, {class: 'form-control underlined'}) %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field col-12 mt-4 justify-content-center">
+      <%= form.label :doc_file_name, "Upload first page of passport", {class: 'pp-label hide'} %>
+      <%= form.label :doc_file_name, "Upload front of Driving License", {class: 'dl-label hide'} %>
+      <%= form.label :doc_file_name, "Upload document", {class: 'id-label'} %>
+      <%= form.file_field :doc_file_name, id: :document_doc_file_name, class: 'dropify',
+                          'data-allowed-file-extensions': 'png jpg jpeg',
+                          'data-max-file-size': '10M',
+                          'data-default-file': document.doc_file_name.present? ? image_url(document.doc_file_name.url) : false
+                          %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field col-12 mt-4 justify-content-center file_name_2 hide">
+      <%= form.label :doc_file_name_2, "Upload back of Driving License" %>  
+      <%= form.file_field :doc_file_name_2, id: :document_doc_file_name_2, class: 'dropify',
+                          'data-allowed-file-extensions': 'png jpg jpeg',
+                          'data-max-file-size': '10M',
+                          'data-default-file': document.doc_file_name_2.present? ? image_url(document.doc_file_name_2.url) : false
+                          %>
+    </div>
+  </div>
+
+  <div class="actions mt-4">
+    <%= form.submit 'Next', class: 'btn btn-block btn-success' %>
   </div>
 <% end %>

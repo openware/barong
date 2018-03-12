@@ -22,13 +22,13 @@
 <div class="d-flex justify-content-center px-5 py-4">
   <%= form_tag('/phones') do %>
     <div class="form-group">
-        <%= label_tag :phone_number %>
+        <%= label_tag :phone_number%>
       <div class="row">
-        <div class="col-3">
-          <%= number_field_tag :country_code, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '+1' %>
+        <div class="col-2">
+          <%= number_field_tag :country_code, '61', class: 'px-1 form-control form-control-lg underlined text-center custom-readonly', readonly: true %>
         </div>
         <div class="col-6 pr-0">
-          <%= number_field_tag :number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '000 000 0000' %>
+          <%= number_field_tag :number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '4########' %>
         </div>
         <div class="col-3 pl-0">
           <div class="send_code underlined">

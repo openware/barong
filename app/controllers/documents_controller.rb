@@ -16,15 +16,24 @@ class DocumentsController < ApplicationController
   # GET /documents/new
   def new
     @document = Document.new
+    render :id_doc
   end
 
   # POST /documents
   def create
-    @document = Document.new(document_params)
-    if @document.update(profile_id: current_account.profile.id)
-      redirect_to index_path, notice: 'Document was successfully created.'
-    else
-      flash[:alert] = 'Some fields are empty or invalid'
+    begin
+      @document = Document.new(document_params)
+      @document.profile_id = current_account.profile.id
+      @document.validate!
+
+      if current_account.profile != 'VERIFIED'
+        @document.green_id_status = GreenId.new().submit_id_details(current_account.id, current_account.profile, document_params)
+      end
+
+      if @document.update(profile_id: current_account.profile.id)
+        redirect_to index_path, notice: 'Document was successfully created.'
+      end
+    rescue ActiveRecord::RecordInvalid
       render :new
     end
   end
@@ -42,6 +51,6 @@ class DocumentsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def document_params
-    params.require(:document).permit(:profile_id, :doc_type, :doc_number, :doc_expire, :upload)
+    params.require(:document).permit(:profile_id, :doc_type, :doc_number, :doc_state, :doc_file_name, :doc_file_name_2)
   end
 end

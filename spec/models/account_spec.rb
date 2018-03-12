@@ -23,11 +23,11 @@ RSpec.describe Account, type: :model do
          :country => "MyString",
          :dob => "01-01-2001")
       expect(Profile.count).to eq 1
-      document1 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
+      document1 = profile.documents.create!(:upload => File.open('app/assets/images/background.png'),
         :doc_type => "MyString",
         :doc_number => "MyString",
         :doc_expire => "01-01-2020")
-      document2 = profile.documents.create!(:upload => File.open('app/assets/images/background.jpg'),
+      document2 = profile.documents.create!(:upload => File.open('app/assets/images/background.png'),
         :doc_type => "MyString",
         :doc_number => "MyString",
         :doc_expire => "01-02-2020")
