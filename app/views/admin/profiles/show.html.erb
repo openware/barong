@@ -18,7 +18,12 @@
 
     <li class="list-group-item">
       <b> Address: </b>
-      <%= @profile.address%>
+      <%= @profile.street_number%>
+      <%= @profile.street_name%>
+      <%= @profile.street_type%>
+      <%= @profile.postcode%>
+      <%= @profile.address_state%>
+      <%= @profile.country%>
     </li>
 
     <li class="list-group-item">
@@ -27,8 +32,8 @@
     </li>
 
     <li class="list-group-item">
-      <b> City: </b>
-      <%= @profile.city%>
+      <b> Suburb: </b>
+      <%= @profile.suburb%>
     </li>
 
     <li class="list-group-item">
