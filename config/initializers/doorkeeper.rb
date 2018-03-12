@@ -135,6 +135,12 @@ Doorkeeper::JWT.configure do
       role:  account.role,
       level: account.level,
       state: account.state,
+
+      # backword compatibility
+      profile: account.as_json(
+        only: %i[email role level],
+        include: { profile: { only: %i[first_name last_name state] } }
+      ),
     }
   end
 
