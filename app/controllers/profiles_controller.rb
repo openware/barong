@@ -18,7 +18,12 @@ class ProfilesController < ApplicationController
   def create
     begin
       @profile = Profile.new(profile_params)
-      @profile.update!(account_id: current_account.id)
+      @profile.account_id = current_account.id
+      @profile.validate!
+      green_id_status = GreenId.new().register(@profile.account_id, profile_params)
+      if @profile.update!(green_id_status: green_id_status )
+        redirect_to new_document_path
+      end
     rescue ActiveRecord::RecordInvalid
       flash[:alert] = 'Some fields are empty or invalid'
       return render :new
@@ -40,6 +45,10 @@ class ProfilesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def profile_params
-    params.require(:profile).permit(:account_id, :first_name, :last_name, :dob, :address, :postcode, :city, :country)
+    params.require(:profile).permit(:account_id,
+      :first_name, :last_name, :middle_name,
+      :dob, :flat_number, :street_number,
+      :street_name, :street_type, :postcode,
+      :suburb, :address_state, :country)
   end
 end

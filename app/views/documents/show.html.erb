@@ -1,0 +1,24 @@
+<div class="container">
+  <p id="notice"><%= notice %></p>
+
+  <p>
+    <strong>Doc type:</strong>
+    <%= @document.doc_type %>
+  </p>
+
+  <p>
+    <strong>Doc number:</strong>
+    <%= @document.doc_number %>
+  </p>
+
+  <p>
+    <%= @document.doc_file_name.present? ? image_tag(@document.doc_file_name.url, alt: 'Doc photo') : ''%>
+  </p>
+
+  <p>
+    <%= @document.doc_file_name_2.present? ? image_tag(@document.doc_file_name.url, alt: 'Doc photo') : ''%>
+  </p>
+
+  <%= link_to 'Edit', edit_document_path(@document) %>
+  <%= link_to 'Back', documents_path %>
+</div>

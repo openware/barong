@@ -56,6 +56,10 @@ input[name=otp] {
   letter-spacing: .8em;
 }
 
+.form-control.custom-readonly {
+  background-color: #fff;
+}
+
 .down-arrow {
   position: relative;
   &::after {
@@ -85,7 +89,7 @@ input[name=otp] {
 }
 
 // Styling the label
-.custom-file-input + label {
+.custom-file-input-label {
   margin-top: 32px;
   width: 100%;
   border: 2px dashed #ddd;
@@ -150,6 +154,10 @@ $off-primary: rgba($primary, 0.2);
     border: .25rem solid $off-primary;
     border-top-color: $primary;
     animation: spin 1s infinite linear;
+}
+
+.hide {
+  display:none;
 }
 
 @keyframes spin {

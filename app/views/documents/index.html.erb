@@ -1,0 +1,30 @@
+<div class="container"></div>
+<p id="notice"><%= notice %></p>
+
+<h1>Documents</h1>
+
+<table class="table table-bordered table-sm text-center">
+  <thead>
+  <tr>
+    <th>Doc type</th>
+    <th>Doc number</th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @documents.each do |document| %>
+    <tr>
+      <td><%= document.doc_type %></td>
+      <td><%= document.doc_number %></td>
+      <td><%= document.doc_file_name.present? ? image_tag(document.doc_file_name.url, width: '100', alt: 'Doc photo') : ''%></td>
+      <td><%= link_to 'Edit', edit_document_path(document) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Document', new_document_path %>
+</div>
