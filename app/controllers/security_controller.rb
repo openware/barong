@@ -7,7 +7,7 @@ class SecurityController < ApplicationController
 
   # GET /security
   def enable
-    @otp = Vault::TOTP.safe_create(current_account.uid)
+    @otp = Vault::TOTP.safe_create(current_account.uid, current_account.email)
 
     if @otp.nil?
       redirect_to(index_path, alert: 'You already have created your OTP key')

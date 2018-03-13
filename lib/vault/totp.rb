@@ -9,9 +9,9 @@ module Vault
       ISSUER_NAME = 'Barong'
 
       # Make sure the key won't be regenerated
-      def safe_create(uid)
+      def safe_create(uid, email)
         return if exist?(uid)
-        create(uid)
+        create(uid, email)
       end
 
       # Check if OTP key already exists for given uid
@@ -25,12 +25,12 @@ module Vault
 
     private
 
-      def create(uid)
+      def create(uid, email)
         Vault.logical.write(
           "totp/keys/#{uid}",
           generate: true,
-          issuer: ISSUER_NAME,
-          account_name: uid,
+          issuer: ENV.fetch('APP_NAME', 'Barong'),
+          account_name: email,
           qr_size: 300
         )
       end
