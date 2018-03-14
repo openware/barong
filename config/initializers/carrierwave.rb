@@ -12,7 +12,7 @@ CarrierWave.configure do |config|
       google_storage_access_key_id: Rails.application.secrets.storage_access_key,
       google_storage_secret_access_key: Rails.application.secrets.storage_secret_key
     }
-    config.fog_directory = Rails.application.secrets.bucket
+    config.fog_directory = Rails.application.secrets.storage_bucket_name
   elsif 'AWS'.casecmp(Rails.application.secrets.storage_provider) == 0
     config.fog_provider = 'fog/aws'
     config.fog_credentials = {
@@ -21,7 +21,7 @@ CarrierWave.configure do |config|
       aws_secret_access_key: Rails.application.secrets.storage_secret_key,
       region: Rails.application.secrets.storage_region
     }
-    config.fog_directory = Rails.application.secrets.bucket
+    config.fog_directory = Rails.application.secrets.storage_bucket_name
   else
     config.storage :file
   end
