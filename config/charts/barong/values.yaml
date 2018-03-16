@@ -51,12 +51,12 @@ smtp: {}
 #  domain:
 
 # Supported providers: AWS (S3), GCS (GCP)
-storage: {}
+storage:
 # provider: "AWS"
   provider: "Google"
-  bucket_name: "barong-images"
-  access_key: "changeme"
-  secret_key: "changeme"
+  bucket: "barong-images"
+  accessKey: "changeme"
+  secretKey: "changeme"
 # Region used only for AWS S3
 # region: ""
 

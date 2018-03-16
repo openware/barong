@@ -50,6 +50,10 @@ It is pre-install hook, so we don't have secrets created yet and we need to use 
   value: {{ required "storage.provider is required!" .Values.storage.provider | quote }}
 - name: STORAGE_BUCKET_NAME
   value: {{ required "storage.bucket is required!" .Values.storage.bucket | quote }}
+- name: STORAGE_ACCESS_KEY
+  value: {{ required "storage.accessKey" .Values.storage.accessKey }}
+- name: STORAGE_SECRET_KEY
+  value: {{ required "storage.secretKey" .Values.storage.secretKey }}
 {{ if eq .Values.storage.provider "AWS" }}
 - name: STORAGE_REGION
   value: {{ required "storage.region is required!" .Values.storage.region | quote }}
@@ -84,8 +88,14 @@ Environment for barong container
   value: {{ default "25" .Values.smtp.port | quote }}
 - name: SMTP_DOMAIN
   value: {{ default "helioscloud.com" .Values.smtp.domain }}
+- name: STORAGE_PROVIDER
+  value: {{ required "storage.provider is required!" .Values.storage.provider | quote }}
 - name: STORAGE_BUCKET_NAME
-  value: {{ required "storage.bucket is required!" .Values.storage.bucket }}
+  value: {{ required "storage.bucket is required!" .Values.storage.bucket | quote }}
+{{ if eq .Values.storage.provider "AWS" }}
+- name: STORAGE_REGION
+  value: {{ required "storage.region is required!" .Values.storage.region | quote }}
+{{ end }}
 {{- if .Values.vault.enabled }}
 - name: VAULT_ADDR
   value: {{ .Values.vault.adress }}
