@@ -15,11 +15,11 @@ module API
         end
       end
 
-      desc 'Account related routes'
+      desc 'Profile related routes'
       resource :profile do
-        desc 'Return information about current resource owner'
+        desc 'Return profile of current resource owner'
         get '/' do
-          current_account.profile.as_json(only: %i[first_name last_name dob address city country])
+          current_account.profile.as_json(only: %i[first_name last_name dob address city country state])
         end
       end
     end
