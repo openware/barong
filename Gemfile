@@ -18,7 +18,7 @@ gem 'grape',        '~> 1.0'
 gem 'sneakers',     '~> 2.6'
 gem 'grape-swagger', '~> 0.28'
 gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
-gem 'phonelib',     '~> 0.3.6'
+gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
 
 gem 'fog-google',  '~> 1.3.0'
