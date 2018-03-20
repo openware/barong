@@ -11,7 +11,7 @@ window.onload = function () {
   $('#send-code-btn').on('click', function () {
     $('.loader').css("display", "block");
     $('#send-code-btn').hide();
-    number = '+' + $("#country_code").val() + $("#number").val();
+    number = $("#country_code").val() + $("#number").val();
     $.ajax({
       headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') },
       method:  'POST',
