@@ -18,8 +18,26 @@ module API
       desc 'Account related routes'
       resource :account do
         desc 'Return information about current resource owner'
-        get '/' do
+        get '/show' do
           current_account.as_json(only: %i[uid email level role state])
+        end
+
+        desc 'Create account'
+        params do
+          requires :email, type: String, desc: 'Account email'
+          requires :password, type: String, desc: 'Account password'
+        end
+        post '/new' do
+          email = params[:email]
+          password = params[:password]
+          account = Account.create!(email: email.downcase, password: password)
+
+          if account.valid?
+            account.save
+            return account
+          else
+            error!(message: 'Invalid email or password', status: 500)
+          end  
         end
       end
     end
