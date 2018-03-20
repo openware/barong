@@ -59,7 +59,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180220142157
+# Schema version: 20180227180232
 #
 # Table name: accounts
 #
@@ -85,6 +85,7 @@ end
 #  role                   :string(255)      default("member"), not null
 #  level                  :integer          default(0), not null
 #  state                  :string(255)      default("pending"), not null
+#  otp_enabled            :boolean          default(FALSE)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

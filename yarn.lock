@@ -117,6 +117,10 @@ get-stream@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
 
+intl-tel-input@^12.1.10:
+  version "12.1.10"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-12.1.10.tgz#d19f0d0fe254bde238965fd754edec5e4dffa73d"
+
 invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"

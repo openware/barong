@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "dropify": "^0.2.2",
+    "intl-tel-input": "^12.1.10",
     "widdershins": "^3.0.5"
   }
 }
