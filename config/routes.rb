@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   root to: 'index#index', as: :index
 
   post 'phones/verification', to: 'phones#verify'
+
   get  'security',            to: 'security#enable'
+  post 'security/confirm',    to: 'security#confirm'
 
   resources :phones,    only: %i[new create]
   resources :profiles,  only: %i[new create]

@@ -24,10 +24,6 @@ class Account < ApplicationRecord
     super.inquiry
   end
 
-  def otp_exist?
-    Vault::TOTP.exist?(uid)
-  end
-
   def after_confirmation
     level_set(:mail)
     self.state = 'active'
