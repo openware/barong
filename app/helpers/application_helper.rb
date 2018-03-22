@@ -4,6 +4,15 @@
 # ApplicationHelper
 #
 module ApplicationHelper
+
+  def domain_title_tag(text)
+    if text.blank?
+      'Barong'
+    else
+      text
+    end
+  end
+
   def domain_stylesheet_tag(url)
     stylesheet_link_tag(url) unless url.nil?
   end
