@@ -28,6 +28,8 @@ class Account < ApplicationRecord
 
   def after_confirmation
     level_set(:mail)
+    self.state = 'active'
+    save
   end
 
   def level_set(step)
