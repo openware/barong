@@ -9,3 +9,5 @@
 Expiration of new JWT can also be specified by parameter 'expires_in' in seconds, otherwise,
 it will look for the ENV variable JWT_LIFETIME, if both are not specified, JWT expiration
 time will be set to 4 hours
+- 3. post 'api/session/create' - accepts 3 params: 'email', 'password', and 'appcliation_id',
+checks if they are valid, and, if they are, returns valid JWT access token.
