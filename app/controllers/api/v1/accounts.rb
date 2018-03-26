@@ -22,6 +22,20 @@ module API
           get '/' do
             current_account.as_json(only: %i[uid email level role state])
           end
+
+          desc 'Change user\'s password'
+          params do
+            requires :old_password, :new_password
+          end
+
+          put '/password' do
+            account = current_account
+            declared_params = declared(params)
+            return error!('401 Unauthorized', 401) unless account.valid_password? declared_params[:old_password]
+            account.password = declared_params[:new_password]
+            return error!('400 Bad request', 400) unless declared_params[:new_password]
+            return error!(account.errors.full_messages.to_sentence) unless account.save
+          end
         end
 
         desc 'Creates new account'
