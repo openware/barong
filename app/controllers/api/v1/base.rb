@@ -5,8 +5,17 @@ module API
     class Base < Grape::API
       format :json
 
+      before do
+        doorkeeper_authorize!
+
+        def current_account
+          @current_account = Account.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+        end
+      end
+
       mount API::V1::Accounts
       mount API::V1::Profiles
+      mount API::V1::Admin::Base
 
       add_swagger_documentation base_path: '/api',
                                 info: {
