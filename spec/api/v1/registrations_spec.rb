@@ -13,7 +13,7 @@ describe 'Registrations' do
 
       it 'renders an error' do
         expect_status_to_eq 422
-        expect_body.to eq('error' => ['Email is invalid'])
+        expect_body.to eq(error: ['Email is invalid'])
       end
     end
 
@@ -22,7 +22,7 @@ describe 'Registrations' do
 
       it 'renders an error' do
         expect_status_to_eq 422
-        expect_body.to eq('error' => ["Email can't be blank"])
+        expect_body.to eq(error: ["Email can't be blank"])
       end
     end
 
