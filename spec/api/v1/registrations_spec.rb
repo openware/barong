@@ -9,7 +9,7 @@ describe 'Registrations' do
     before { do_request }
 
     context 'when email is invalid' do
-      let(:params) { { email: 'bad_format' } }
+      let(:params) { { email: 'bad_format', password: 'password' } }
 
       it 'renders an error' do
         expect_status_to_eq 422
@@ -18,7 +18,7 @@ describe 'Registrations' do
     end
 
     context 'when email is blank' do
-      let(:params) { { email: '' } }
+      let(:params) { { email: '', password: 'password' } }
 
       it 'renders an error' do
         expect_status_to_eq 422
@@ -26,20 +26,20 @@ describe 'Registrations' do
       end
     end
 
-    context 'when email is absent' do
+    context 'when email and password are absent' do
       let(:params) {}
 
       it 'renders an error' do
         expect_status_to_eq 400
+        expect_body.to eq(error: 'email is missing, password is missing')
       end
     end
 
     context 'when email is valid' do
-      let(:params) { { email: Faker::Internet.email } }
+      let(:params) { { email: Faker::Internet.email, password: 'password' } }
 
       it 'creates an account' do
         expect_status_to_eq 201
-        expect_body.to eq('Account is created')
       end
     end
   end
