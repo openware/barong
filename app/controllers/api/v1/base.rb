@@ -8,6 +8,8 @@ module API
       mount API::V1::Accounts
       mount API::V1::Profiles
       mount API::V1::Security
+      mount API::V1::Documents
+
       if ENV['SIMPLE_LOGIN_ENABLED'].in?(%w[ 1 true ]) || Rails.env.test?
         mount API::V1::Session
       end
