@@ -39,7 +39,6 @@ describe 'Registrations' do
 
       it 'creates an account' do
         expect_status_to_eq 201
-        expect_body.to eq('Account is created')
       end
     end
   end

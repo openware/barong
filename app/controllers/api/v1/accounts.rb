@@ -26,21 +26,15 @@ module API
         params do
           requires :confirmation_token, type: String, desc: 'Confirmation token from email'
           requires :password, type: String, desc: 'New Password'
-          requires :password_confirmation, type: String, desc: 'New Password Confirmation'
         end
+
         patch '/confirm' do
-          current_account.confirm_by_token(params[:confirmation_token])
-          if current_account.errors.any?
-            return error!(current_account.errors.full_messages, 422)
-          end
+          account = Account.find_first_by_auth_conditions confirmation_token: params[:confirmation_token]
+          return error!('Confirmation token is invalid', 422) if account != current_account
+          return error!('Account is already confirmed', 422) unless current_account.confirm
 
-          current_account.update(password: params[:password],
-                                 password_confirmation: params[:password_confirmation])
-          if current_account.errors.any?
-            return error!(current_account.errors.full_messages, 422)
-          end
-
-          'User was confirmed and password was set'
+          current_account.update(password: params[:password])
+          error!(current_account.errors.full_messages, 422) if current_account.errors.any?
         end
       end
     end

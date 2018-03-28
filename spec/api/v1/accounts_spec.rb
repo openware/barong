@@ -3,8 +3,6 @@ require 'spec_helper'
 describe 'Api::V1::Accounts' do
   include_context 'doorkeeper authentication'
 
-  before { do_request }
-
   describe 'GET /api/account' do
     let(:do_request) { get '/api/account', headers: auth_header }
     let(:account_attrs) do
@@ -18,14 +16,75 @@ describe 'Api::V1::Accounts' do
     end
 
     it 'gets current account' do
+      do_request
       expect(response.status).to eq(200)
       expect(json_body).to eq(account_attrs)
     end
   end
 
-  xdescribe 'POST /api/account' do
+  describe 'PATCH /api/account/confirm' do
     let(:do_request) do
-      post '/api/account', params: params, headers: auth_header
+      patch '/api/account/confirm', params: params, headers: auth_header
+    end
+    let!(:current_account) { create(:account, confirmed_at: nil) }
+
+    let(:params) { }
+
+    context 'when required params are missing' do
+      let(:error_message) do
+        'confirmation_token is missing, password is missing'
+      end
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(error: error_message)
+      end
+    end
+
+    context 'when confirmation token is invalid' do
+      let(:params) do
+        {
+          confirmation_token: 'token',
+          password: 'password'
+        }
+      end
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Confirmation token is invalid')
+      end
+    end
+
+    context 'when account is confirmed' do
+      let(:params) do
+        {
+          confirmation_token: current_account.confirmation_token,
+          password: 'password'
+        }
+      end
+
+      it 'renders an error' do
+        current_account.confirm
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Account is already confirmed')
+      end
+    end
+
+    context "when all requirements is pass" do
+      let(:params) do
+        {
+          confirmation_token: current_account.confirmation_token,
+          password: 'password'
+        }
+      end
+
+      it 'updates a password' do
+        do_request
+        expect_status_to_eq 200
+      end
     end
   end
 end

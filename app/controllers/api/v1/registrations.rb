@@ -16,9 +16,7 @@ module API
         post do
           generated_password = Devise.friendly_token.first(8)
           account = Account.create(email: params[:email], password: generated_password)
-          return error!(account.errors.full_messages, 422) unless account.persisted?
-
-          'Account is created'
+          error!(account.errors.full_messages, 422) unless account.persisted?
         end
       end
     end
