@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Session create test' do
-  describe 'POST /api/session/create' do
+  describe 'POST /api/session/create', if: ENV['CHROME_DEBUG'].in?(%w[ 1 true ]) do
     let!(:email) { 'user@barong.io' }
     let!(:password) { 'testpassword111' }
     let(:uri) { '/api/session/create' }
