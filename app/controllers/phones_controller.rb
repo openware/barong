@@ -46,7 +46,7 @@ class PhonesController < ApplicationController
     end
   end
 
-  private
+private
 
   def save_session(phone)
     session[:phone] = phone.number
