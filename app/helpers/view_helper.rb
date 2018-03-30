@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module ViewHelper
-
   def badge_by_state(state)
     case state
       when 'created'
@@ -25,5 +24,4 @@ module ViewHelper
         'badge-info'
     end
   end
-
 end
