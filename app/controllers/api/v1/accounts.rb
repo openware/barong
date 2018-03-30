@@ -9,16 +9,6 @@ module API
 
       desc 'Account related routes'
       resource :account do
-        desc 'Creates new account'
-        params do
-          requires :email, type: String, desc: 'Account Email'
-          requires :password, type: String, desc: 'Account Password'
-        end
-        post do
-          account = Account.create(email: params[:email], password: params[:password])
-          error!(account.errors.full_messages, 422) unless account.persisted?
-        end
-
         namespace do
           before do
             doorkeeper_authorize!
@@ -32,16 +22,16 @@ module API
           get '/' do
             current_account.as_json(only: %i[uid email level role state])
           end
+        end
 
-          desc 'Confirms an account'
-          params do
-            requires :confirmation_token, type: String, desc: 'Confirmation token from email'
-          end
-          patch '/confirm' do
-            account = Account.find_first_by_auth_conditions confirmation_token: params[:confirmation_token]
-            return error!('Confirmation token is invalid', 422) if account != current_account
-            error!('Account is already confirmed', 422) unless current_account.confirm
-          end
+        desc 'Creates new account'
+        params do
+          requires :email, type: String, desc: 'Account Email'
+          requires :password, type: String, desc: 'Account Password'
+        end
+        post do
+          account = Account.create(email: params[:email], password: params[:password])
+          error!(account.errors.full_messages, 422) unless account.persisted?
         end
       end
     end
