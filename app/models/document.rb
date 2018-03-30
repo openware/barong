@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+#
+# Document
+#
 class Document < ApplicationRecord
   mount_uploader :upload, UploadUploader
 
