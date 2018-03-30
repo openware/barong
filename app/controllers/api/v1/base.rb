@@ -8,7 +8,6 @@ module API
       mount API::V1::Accounts
       mount API::V1::Profiles
       mount API::V1::Security
-      mount API::V1::Registrations
 
       add_swagger_documentation base_path: '/api',
                                 info: {
