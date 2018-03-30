@@ -1,0 +1,20 @@
+engines:
+  brakeman:
+    enabled: true
+  rubocop:
+    enabled: true
+  reek:
+    enabled: true
+  bundler-audit:
+    enabled: true
+  fixme:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - ruby:
+        - javascript:
+exclude_patterns:
+  - db/schema.rb
+  - ci/bump.rb
