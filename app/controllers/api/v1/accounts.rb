@@ -21,6 +21,16 @@ module API
         get '/' do
           current_account.as_json(only: %i[uid email level role state])
         end
+
+        desc 'Confirms an account'
+        params do
+          requires :confirmation_token, type: String, desc: 'Confirmation token from email'
+        end
+        patch '/confirm' do
+          account = Account.find_first_by_auth_conditions confirmation_token: params[:confirmation_token]
+          return error!('Confirmation token is invalid', 422) if account != current_account
+          error!('Account is already confirmed', 422) unless current_account.confirm
+        end
       end
     end
   end
