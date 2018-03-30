@@ -32,7 +32,7 @@ describe 'Api::V1::Accounts' do
 
     context 'when required params are missing' do
       let(:error_message) do
-        'confirmation_token is missing, password is missing'
+        'confirmation_token is missing'
       end
 
       it 'renders an error' do
@@ -45,8 +45,7 @@ describe 'Api::V1::Accounts' do
     context 'when confirmation token is invalid' do
       let(:params) do
         {
-          confirmation_token: 'token',
-          password: 'password'
+          confirmation_token: 'token'
         }
       end
 
@@ -60,8 +59,7 @@ describe 'Api::V1::Accounts' do
     context 'when account is confirmed' do
       let(:params) do
         {
-          confirmation_token: current_account.confirmation_token,
-          password: 'password'
+          confirmation_token: current_account.confirmation_token
         }
       end
 
@@ -76,12 +74,11 @@ describe 'Api::V1::Accounts' do
     context "when all requirements is pass" do
       let(:params) do
         {
-          confirmation_token: current_account.confirmation_token,
-          password: 'password'
+          confirmation_token: current_account.confirmation_token
         }
       end
 
-      it 'updates a password' do
+      it 'confirms an account' do
         do_request
         expect_status_to_eq 200
       end

@@ -22,19 +22,14 @@ module API
           current_account.as_json(only: %i[uid email level role state])
         end
 
-        desc 'Confirms an account and set new password'
+        desc 'Confirms an account'
         params do
           requires :confirmation_token, type: String, desc: 'Confirmation token from email'
-          requires :password, type: String, desc: 'New Password'
         end
-
         patch '/confirm' do
           account = Account.find_first_by_auth_conditions confirmation_token: params[:confirmation_token]
           return error!('Confirmation token is invalid', 422) if account != current_account
-          return error!('Account is already confirmed', 422) unless current_account.confirm
-
-          current_account.update(password: params[:password])
-          error!(current_account.errors.full_messages, 422) if current_account.errors.any?
+          error!('Account is already confirmed', 422) unless current_account.confirm
         end
       end
     end

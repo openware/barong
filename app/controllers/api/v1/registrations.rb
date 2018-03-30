@@ -12,10 +12,10 @@ module API
         desc 'Creates new account'
         params do
           requires :email, type: String, desc: 'Account Email'
+          requires :password, type: String, desc: 'Account Password'
         end
         post do
-          generated_password = Devise.friendly_token.first(8)
-          account = Account.create(email: params[:email], password: generated_password)
+          account = Account.create(email: params[:email], password: params[:password])
           error!(account.errors.full_messages, 422) unless account.persisted?
         end
       end
