@@ -30,4 +30,5 @@
 /config/database.yml
 
 .DS_Store
-
+.cache/
+.yarnrc
