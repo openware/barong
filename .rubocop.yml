@@ -1,6 +1,7 @@
 AllCops:
   Exclude:
     - db/schema.rb
+    - ci/bump.rb
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
@@ -38,29 +39,11 @@ Style/PercentLiteralDelimiters:
    '%i':    '[]'
    '%':     '[]'
 
-Layout/AlignParameters:
-  Enabled: false
-
 Lint/UnusedMethodArgument:
   Enabled: false
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: single_quotes
-
-Layout/SpaceBeforeBlockBraces:
-  Enabled: true
-
-Layout/SpaceInsideBlockBraces:
-  Enabled: true
-
-Layout/SpaceInsideHashLiteralBraces:
-  Enabled: true
-
-Style/DoubleNegation:
-  Enabled: false
-
-Style/CaseEquality:
-  Enabled: false
 
 Style/Documentation:
   Exclude:
@@ -72,12 +55,6 @@ Style/Documentation:
     - app/mailers/**/*
     - config/application.rb
 
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Enabled: false
-
-Layout/SpaceInsideBrackets:
-  Enabled: false
-
 Performance/TimesMap:
   Exclude:
     - db/**/*
@@ -87,14 +64,8 @@ Metrics/AbcSize:
   Exclude:
     - db/**/*
 
-Layout/TrailingWhitespace:
-  Enabled: false
-
 Style/NumericPredicate:
   EnforcedStyle: comparison
-
-Layout/EmptyLinesAroundModuleBody:
-  Enabled: false
 
 Layout/SpaceInLambdaLiteral:
   EnforcedStyle: require_space
@@ -103,9 +74,7 @@ Metrics/BlockLength:
   Exclude:
     - config/environments/**/*.rb
     - lib/tasks/auto_annotate_models.rake
-
-Layout/MultilineArrayBraceLayout:
-  Enabled: false
+  ExcludedMethods: ['describe', 'context', 'namespace']
 
 Style/EmptyMethod:
   EnforcedStyle: expanded
