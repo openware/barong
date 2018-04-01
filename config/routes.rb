@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   use_doorkeeper
   mount API::Base, at: '/api'
 
-  devise_for :accounts, controllers: { sessions: 'sessions' }
+  devise_for :accounts, controllers: { sessions: 'sessions', registrations: 'registrations' }
   devise_scope :account do
     match 'accounts/sign_in/confirm', to: 'sessions#confirm', via: %i[get post]
   end
@@ -14,9 +14,9 @@ Rails.application.routes.draw do
   post 'phones/verification', to: 'phones#verify'
   get  'security',            to: 'security#enable'
 
-  resources :phones,    only: [:new, :create]
-  resources :profiles,  only: [:new, :create]
-  resources :documents, only: [:new, :create]
+  resources :phones,    only: %i[new create]
+  resources :profiles,  only: %i[new create]
+  resources :documents, only: %i[new create]
 
   namespace :admin do
     get '/', to: 'accounts#index', as: :accounts

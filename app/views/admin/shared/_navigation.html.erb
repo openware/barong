@@ -26,6 +26,13 @@
               <%= link_to 'Websites', admin_websites_path, class: 'nav-link' %>
             </li>
         <% end %>
+
+        <% if can? :read, Settings %>
+          <li class="nav-item <%= 'active' if params[:controller].match?(/settings/) %>">
+            <%= link_to 'Websites', admin_setttings_path, class: 'nav-link' %>
+          </li>
+        <% end %>
+
       </ul>
       <%= link_to 'Sign out', destroy_account_session_path, method: :delete %>
     </div>
