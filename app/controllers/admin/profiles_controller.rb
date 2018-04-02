@@ -13,7 +13,7 @@ module Admin
 
     def show
       @profile = Profile.find(params[:id])
-      @documents = @profile.documents
+      @documents = @profile.account.documents
       @states = %w[created pending approved rejected]
     end
 

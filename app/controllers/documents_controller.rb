@@ -9,7 +9,7 @@ class DocumentsController < ApplicationController
     if current_account.level < 2
       redirect_to new_phone_path
     else
-      @documents = current_account.profile.documents
+      @documents = current_account.documents
     end
   end
 
@@ -20,8 +20,8 @@ class DocumentsController < ApplicationController
 
   # POST /documents
   def create
-    @document = Document.new(document_params)
-    if @document.update(profile_id: current_account.profile.id)
+    @document = current_account.documents.new(document_params)
+    if @document.save
       redirect_to index_path, notice: 'Document was successfully created.'
     else
       flash[:alert] = 'Some fields are empty or invalid'
@@ -42,6 +42,6 @@ class DocumentsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def document_params
-    params.require(:document).permit(:profile_id, :doc_type, :doc_number, :doc_expire, :upload)
+    params.require(:document).permit(:account_id, :doc_type, :doc_number, :doc_expire, :upload)
   end
 end

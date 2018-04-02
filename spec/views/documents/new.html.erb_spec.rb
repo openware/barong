@@ -3,19 +3,8 @@ require 'spec_helper'
 RSpec.describe "documents/new", type: :view do
   before(:each) do
     account = assign(:account, Account.create!(email: 'myemail@mail.com', password: 'MyString'))
-
-    profile = assign(:profile, Profile.create!(
-         :account => account,
-         :first_name => "MyString",
-         :last_name => "MyString",
-         :address => "MyString",
-         :postcode => "MyString",
-         :city => "MyString",
-         :country => "MyString",
-         :dob => "01-01-2001"))
-
     assign(:document, Document.new(
-        :profile => profile,
+        :account => account,
         :upload => File.open('app/assets/images/background.jpg'),
         :doc_type => "MyString",
         :doc_number => "MyString",
