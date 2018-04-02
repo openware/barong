@@ -1,0 +1,31 @@
+<%= form_with(model: keypair, local: true) do |form| %>
+
+    <%= form.label :label%>
+    <%= form.text_field :label, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :access_key, class: 'control-label'%>
+    <%= form.text_field :access_key, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :secret_key, class: 'control-label'%>
+    <%= form.text_field :secret_key, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :trusted_ip_list, class: 'control-label'%>
+    <%= form.text_field :trusted_ip_list, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <%= form.label :scopes, class: 'control-label'%>
+    <%= form.text_field :scopes, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+    
+    <%= form.label :rate_limit, class: 'control-label'%>
+    <%= form.number_field :rate_limit, class: 'px-1 form-control form-control-lg underlined'%>
+    <br>
+
+    <div class="actions">
+      <%= form.submit 'Submit', class: 'btn btn-success btn-block' %>
+    </div>
+
+<% end %>

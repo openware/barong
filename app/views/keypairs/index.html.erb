@@ -1,0 +1,42 @@
+<div class="row justify-content-center">
+  <div class="container-fluid box-shadow mx-3">
+    <div class="mb-3">
+      <h1 class="title font-weight-bold">Keypairs</h1>
+    </div>
+  </div>
+
+  <div class="container-fluid justify-content-center px-5 py-4">
+    <table class="table table-bordered table-striped table-hover table-sm text-center">
+      <thead>
+      <tr>
+        <th>Label</th>
+        <th>Access key</th>
+        <th>Secret key</th>
+        <th>Trusted ip list</th>
+        <th>Scopes</th>
+        <th>Rate limit</th>
+        <th colspan="3"></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @keypairs.each do |keypair| %>
+          <tr>
+            <td><%= keypair.label %></td>
+            <td><%= keypair.access_key %></td>
+            <td><%= keypair.secret_key %></td>
+            <td><%= keypair.trusted_ip_list %></td>
+            <td><%= keypair.scopes %></td>
+            <td><%= keypair.rate_limit %></td>
+            <td><%= link_to 'Destroy', keypair_path(keypair), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-default btn-danger btn-sm' %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <div class="container-fluid justify-content-center px-5 py-4">
+    <%= link_to 'New Keypair', new_keypair_path, class: 'btn btn-success btn-block btn-phone col-6'%>
+  </div>
+</div>
