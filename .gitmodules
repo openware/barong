@@ -1,0 +1,3 @@
+[submodule "docs/api"]
+	path = docs/api
+	url = git@github.com:rubykube/barong-docs.git

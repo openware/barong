@@ -3,31 +3,31 @@
 module API
   module V1
     class Base < Grape::API
+      version 'v1', using: :path
+
       format :json
+      content_type   :json, 'application/json'
+      default_format :json
 
-      mount API::V1::Accounts
-      mount API::V1::Profiles
-      mount API::V1::Security
-      mount API::V1::Documents
+      mount V1::Accounts
+      mount V1::Documents
+      mount V1::Security
+      mount V1::Session
+      mount V1::Profiles
 
-      if ENV['SIMPLE_LOGIN_ENABLED'].in?(%w[ 1 true ]) || Rails.env.test?
-        mount API::V1::Session
-      end
-
-      add_swagger_documentation base_path: '/api',
-                                info: {
-                                  title: 'Barong',
-                                  description: 'API for barong OAuth server '
-                                },
-                                api_version: 'v1',
-                                target_class: API::V1::Accounts,
-                                hide_format: true,
-                                hide_documentation_path: true,
-                                mount_path: '/swagger_doc'
-
-      route :any, '*path' do
-        raise StandardError, 'Unable to find endpoint'
-      end
+      add_swagger_documentation \
+        mount_path:  '/swagger',
+        base_path:   '/api/v1',
+        api_version: 'v1',
+        add_version: false,
+        doc_version: '1.5.0',
+        info: {
+          title:        'Barong REST API',
+          description:  'Barong OAuth and KYC service REST API.',
+          contact_name: 'Helios Technologies',
+          license:      'Apache License 2.0',
+          license_url:  'https://github.com/rubykube/barong/blob/master/LICENSE.md'
+        }
     end
   end
 end

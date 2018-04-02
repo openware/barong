@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-require 'barong/security/access_token'
+require_dependency 'doorkeeper/grape/helpers'
+require_dependency 'barong/security/access_token'
 
 module API
   module V1
     class Security < Grape::API
+      format :json
+      content_type   :json, 'application/json'
+      default_format :json
+
       helpers Doorkeeper::Grape::Helpers
 
       before do

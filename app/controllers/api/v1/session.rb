@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-require 'barong/security/access_token'
+require_dependency 'barong/security/access_token'
 
 module API
   module V1
     class Session < Grape::API
+      format :json
+      content_type   :json, 'application/json'
+      default_format :json
+
       desc 'Session related routes'
       resource :session do
         post '/create' do
