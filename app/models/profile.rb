@@ -4,7 +4,6 @@
 class Profile < ApplicationRecord
   belongs_to :account
 
-  has_many :documents, dependent: :destroy
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
 end
 

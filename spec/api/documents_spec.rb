@@ -3,7 +3,6 @@ require 'spec_helper'
 describe 'Documents API test' do
   describe 'POST /api/documents/' do
     let!(:account) { create :account }
-    let!(:profile) { create :profile, account: account }
     let!(:image) { Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/files/documents_test.jpg'), 'image/jpg') }
     subject!(:access_token) { create :doorkeeper_token, resource_owner_id: account.id }
     let(:headers) do
@@ -15,11 +14,6 @@ describe 'Documents API test' do
 
     it 'Checks if params are ok and returns success' do
       post '/api/documents', headers: headers, params: params
-      expect(response.status).to eq(201)
-    end
-
-    it 'Uses only declared params' do
-      post '/api/documents', params: params.merge(password: 'sample_string'), headers: headers
       expect(response.status).to eq(201)
     end
 
@@ -51,9 +45,9 @@ describe 'Documents API test' do
       post '/api/documents', params: params, headers: headers
       expect(response.status).to eq(201)
 
-      get '/api/documents', params: params, headers: headers
+      get '/api/documents', headers: headers
       response_arr = JSON.parse(response.body)
-      expect(response_arr.count).to eq(2)
+      expect(response_arr.count).to eq(1)
       expect(response_arr.last['upload']).to_not be_nil
       expect(response_arr.last['doc_type']).to eq('passport')
       expect(response_arr.last['doc_expire']).to eq('2020-01-22')
