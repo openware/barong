@@ -20,7 +20,7 @@ module API
 
           desc 'Return information about current resource owner'
           get '/' do
-            current_account.as_json(only: %i[uid email level role state])
+            present current_account, with: API::Entities::Account
           end
         end
 

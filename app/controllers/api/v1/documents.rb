@@ -19,7 +19,7 @@ module API
       resource :documents do
         desc 'Return current user documents list'
         get '/' do
-          current_account.profile.documents.as_json(only: %i[upload doc_type doc_number doc_expire])
+          present current_account.profile.documents, with: API::Entities::Document
         end
 
         desc 'Upload a new document for current user'

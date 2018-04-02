@@ -19,7 +19,7 @@ module API
       resource :profile do
         desc 'Return profile of current resource owner'
         get '/' do
-          current_account.profile.as_json(only: %i[first_name last_name dob address city country state])
+          present current_account.profile, with: API::Entities::Profile
         end
       end
     end
