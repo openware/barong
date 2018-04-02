@@ -9,6 +9,7 @@ module API
       mount API::V1::Profiles
       mount API::V1::Security
       mount API::V1::Documents
+      mount API::V1::Phones
 
       add_swagger_documentation base_path: '/api',
                                 info: {
