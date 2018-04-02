@@ -10,6 +10,10 @@ FROM ruby:2.5.0
 ARG RAILS_ENV=production
 ENV RAILS_ENV ${RAILS_ENV}
 
+# User and group id for 'app' user
+ARG UID=1000
+ARG GID=1000
+
 # Devise requires secret key to be set during image build or it raises an error
 # preventing from running any scripts.
 # Users should override this variable by passing environment variable on container start.
@@ -19,8 +23,8 @@ ENV JWT_SHARED_SECRET_KEY='changeme'
 
 ENV APP_HOME=/home/app
 
-RUN groupadd -r app --gid=1000
-RUN useradd -r -m -g app -d /home/app --uid=1000 app
+RUN groupadd -r app --gid=${GID}
+RUN useradd -r -m -g app -d /home/app --uid=${UID} app
 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
