@@ -20,8 +20,7 @@ gem 'grape-swagger', '~> 0.28'
 gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
-
-gem 'fog-google',  '~> 1.3.0'
+gem 'fog',          '~> 2.0.0'
 gem 'fog-aws',     '~> 2.0.1'
 gem 'carrierwave', '~> 1.2.2'
 
