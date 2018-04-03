@@ -4,10 +4,21 @@ sudo: required
 
 language: ruby
 
-cache: bundler
+cache:
+  - bundler
+  - yarn
+
+branches:
+  only:
+    - "master"
 
 env:
-  - RAILS_ENV=test RAKE_ENV=test DISPLAY=:0.0 DATABASE_PASSWORD="" BOT_USERNAME=kite-bot BOT_NAME="Kite Bot" BOT_EMAIL=kite-bot@heliostech.fr
+  - RAILS_ENV=test
+    RAKE_ENV=test
+    DISPLAY=:0.0
+    BOT_USERNAME=kite-bot
+    BOT_NAME="Kite Bot"
+    BOT_EMAIL=kite-bot@heliostech.fr
 
 services:
   - mysql
@@ -17,24 +28,24 @@ addons:
 
 # Execute all of the commands which need to be executed before installing dependencies.
 before_install:
- - gem install bundler
- - nvm install node
- - npm i -g yarn
- - yarn
+  - gem install bundler
+  - . $HOME/.nvm/nvm.sh
+  - nvm install 8
+  - nvm use 8
+  - npm i -g yarn
 
 # Execute all of the commands which should install application dependencies.
 install:
- - bundle install --deployment --without production development --jobs=$(nproc) --retry=3
+  - bundle install --deployment --without production development --jobs=$(nproc) --retry=3
 
 # Execute all of the commands which need to be executed before running actual tests.
 before_script:
   - cp config/database.yml.example config/database.yml
-  - bundle exec rake db:create db:migrate
+  - bundle exec rake yarn:install db:create db:migrate
 
 # Execute all of the commands which should make the build pass or fail.
 script:
   - xvfb-run --auto-servernum --server-args="-screen 0 1280x800x16" bundle exec rspec
-  - yarn install
 
 # Execute all of the commands which need to be executed after the build passed.
 after_success: ruby ci/bump.rb
