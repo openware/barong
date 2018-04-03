@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   use_doorkeeper
   mount API::Base, at: '/api'
 
-  devise_for :accounts, controllers: { sessions: 'sessions' }
+  devise_for :accounts, controllers: { sessions: :sessions,
+                                       confirmations: :confirmations }
   devise_scope :account do
     match 'accounts/sign_in/confirm', to: 'sessions#confirm', via: %i[get post]
   end
