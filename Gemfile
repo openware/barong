@@ -31,6 +31,7 @@ gem 'countries', require: 'countries/global'
 gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
 gem 'doorkeeper-jwt'
+gem 'public_suffix'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

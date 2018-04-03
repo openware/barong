@@ -1,12 +1,15 @@
 # frozen_string_literal: true
+require 'uri'
 
 class ConfirmationsController < Devise::ConfirmationsController
   private
 
   def after_confirmation_path_for(resource_name, resource)
-    return params[:redirect_uri] if ENV['DOMAIN_NAME'].present? &&
-                                    params[:redirect_uri].ends_with(".#{ENV['DOMAIN_NAME']}")
+    return super if params[:redirect_uri].blank? || ENV['DOMAIN_NAME'].blank?
+    domain = URI(params[:redirect_uri]).host
+    root_domain = PublicSuffix.parse(domain).domain
+    return params[:redirect_uri] if ENV['DOMAIN_NAME'] == root_domain
 
-    new_session_path(resource_name)
+    super
   end
 end

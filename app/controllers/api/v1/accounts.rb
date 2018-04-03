@@ -30,7 +30,7 @@ module API
           requires :password, type: String, desc: 'Account Password'
         end
         post do
-          account = Account.create(email: params[:email], password: params[:password])
+          account = Account.create(declared(params))
           error!(account.errors.full_messages, 422) unless account.persisted?
         end
       end
