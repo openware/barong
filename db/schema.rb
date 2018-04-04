@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180402122730) do
+ActiveRecord::Schema.define(version: 20180402133658) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -52,6 +52,17 @@ ActiveRecord::Schema.define(version: 20180402122730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_documents_on_account_id"
+  end
+
+  create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "account_id"
+    t.string "key", null: false
+    t.string "value", null: false
+    t.string "scope", default: "public", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_labels_on_account_id"
+    t.index ["key", "value", "account_id"], name: "index_labels_on_key_and_value_and_account_id", unique: true
   end
 
   create_table "oauth_access_grants", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -135,6 +146,7 @@ ActiveRecord::Schema.define(version: 20180402122730) do
   end
 
   add_foreign_key "documents", "accounts"
+  add_foreign_key "labels", "accounts", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "profiles", "accounts"
