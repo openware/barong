@@ -39,5 +39,4 @@ private
   def find_uid_by_params_email
     Account.find_by_email(resource_params[:email]).try(:uid)
   end
-
 end

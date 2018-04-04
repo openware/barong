@@ -33,10 +33,10 @@ ActiveRecord::Schema.define(version: 20180404153832) do
     t.datetime "locked_at"
     t.string "role", default: "member", null: false
     t.integer "level", default: 0, null: false
+    t.boolean "otp_enabled", default: false
     t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "otp_enabled", default: false
     t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token", unique: true
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
@@ -110,10 +110,10 @@ ActiveRecord::Schema.define(version: 20180404153832) do
     t.string "country"
     t.string "number", null: false
     t.datetime "validated_at"
+    t.string "code", limit: 5
     t.integer "account_id", null: false, unsigned: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "code", limit: 5
     t.index ["account_id"], name: "index_phones_on_account_id"
     t.index ["number"], name: "index_phones_on_number", unique: true
   end
