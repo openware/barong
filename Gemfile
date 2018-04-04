@@ -15,6 +15,7 @@ gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
 gem 'doorkeeper',   '~> 4.2.6'
 gem 'grape',        '~> 1.0'
+gem 'grape-entity', '~> 0.7.1'
 gem 'sneakers',     '~> 2.6'
 gem 'grape-swagger', '~> 0.28'
 gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
@@ -41,10 +42,14 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec-rails',         '~> 3.7'
+  gem 'rspec-rails',         '~> 3.7.1'
   gem 'factory_bot_rails',   '~> 4.8'
   gem 'capybara',            '~> 2.17'
   gem 'selenium-webdriver',  '~> 3.8'
   gem 'chromedriver-helper', '~> 1.1'
   gem 'shoulda-matchers',    '~> 3.1.2'
+end
+
+group :development do
+  gem 'grape_on_rails_routes', '~> 0.3.2'
 end

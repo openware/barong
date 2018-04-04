@@ -13,6 +13,7 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
   has_many :documents, dependent: :destroy
+  has_many :labels
 
   before_validation :assign_uid
 
