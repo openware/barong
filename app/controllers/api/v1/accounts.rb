@@ -40,8 +40,8 @@ module API
 
         desc 'Creates new account'
         params do
-          requires :email, type: String, desc: 'Account Email'
-          requires :password, type: String, desc: 'Account Password'
+          requires :email, type: String, desc: 'Account Email', allow_blank: false
+          requires :password, type: String, desc: 'Account Password', allow_blank: false
         end
         post do
           account = Account.create(declared(params))
