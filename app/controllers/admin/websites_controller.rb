@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class WebsitesController < ModuleController
     before_action :set_website, only: [:show, :edit, :update, :destroy]
@@ -46,15 +48,16 @@ module Admin
       redirect_to admin_websites_url, notice: 'Website was successfully destroyed.'
     end
 
-    private
-      # Use callbacks to share common setup or constraints between actions.
-      def set_website
-        @website = Website.find(params[:id])
-      end
+  private
 
-      # Only allow a trusted parameter "white list" through.
-      def website_params
-        params.require(:website).permit(:domain, :title, :logo, :stylesheet, :header, :footer, :redirect_url, :state)
-      end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_website
+      @website = Website.find(params[:id])
+    end
+
+    # Only allow a trusted parameter "white list" through.
+    def website_params
+      params.require(:website).permit(:domain, :title, :logo, :stylesheet, :header, :footer, :redirect_url, :state)
+    end
   end
 end

@@ -25,7 +25,7 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  # access_token_expires_in 2.hours
+  access_token_expires_in ENV.fetch('JWT_LIFETIME', 4.hours)
 
   # Assign a custom TTL for implicit grants.
   # custom_access_token_expires_in do |oauth_client|
@@ -119,10 +119,9 @@ Doorkeeper::JWT.configure do
   # about the account.
   token_payload do |opts|
     account = Account.find(opts[:resource_owner_id])
-
     {
       iat: Time.now.to_i,
-      exp: 4.hours.from_now.to_i,
+      exp: opts[:expires_in].to_i.seconds.from_now.to_i,
       sub: 'session',
       iss: 'barong',
       aud: opts[:scopes].all,

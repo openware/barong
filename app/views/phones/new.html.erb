@@ -25,10 +25,10 @@
         <%= label_tag :phone_number %>
       <div class="row">
         <div class="col-3">
-          <%= number_field_tag :country_code, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '+1' %>
+          <%= text_field_tag :country_code, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '+1' %>
         </div>
         <div class="col-6 pr-0">
-          <%= number_field_tag :number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '000 000 0000' %>
+          <%= text_field_tag :number, nil, class: 'px-1 form-control form-control-lg underlined', placeholder: '000 000 0000' %>
         </div>
         <div class="col-3 pl-0">
           <div class="send_code underlined">
