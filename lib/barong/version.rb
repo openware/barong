@@ -1,3 +1,3 @@
 module Barong
-  VERSION = '1.0.0'
+  VERSION = '1.5.1'
 end
