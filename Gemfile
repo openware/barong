@@ -21,7 +21,7 @@ gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
 
-gem 'fog-google',  '~>0.1.0'
+gem 'fog-google',  '~> 0.1.0'
 gem 'fog-aws',     '~> 2.0.1'
 gem 'carrierwave', '~> 1.2.2'
 
