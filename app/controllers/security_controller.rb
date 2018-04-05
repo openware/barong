@@ -1,25 +1,15 @@
 # frozen_string_literal: true
 
-#
-# SecurityController
-#
 class SecurityController < ApplicationController
+  before_action :check_otp_enabled, only: :enable
 
-  # GET /security
   def enable
-    @otp = Vault::TOTP.safe_create(current_account.uid, current_account.email)
-
-    if @otp.nil?
-      redirect_to(index_path, alert: 'You already have created your OTP key')
-      return
-    end
-
-    @otp_secret = CGI.parse(URI.parse(@otp.data[:url]).query)['secret'][0]
+    @otp = Vault::TOTP.create(current_account.uid, current_account.email)
+    @otp_secret = Vault::TOTP.otp_secret(@otp)
   end
 
   def confirm
-    return redirect_to index_path unless otp_enabled?
-
+    return redirect_to index_path unless current_account.otp_enabled
     render action: :confirm
   end
 
@@ -27,26 +17,24 @@ class SecurityController < ApplicationController
     if Vault::TOTP.validate?(current_account.uid, params[:otp])
       redirect_to index_path
     else
-      Vault.logical.delete("totp/keys/#{current_account.uid}")
-      render  security_confirm_path, alert: 'err'
+      render security_confirm_path, alert: 'Code is invalid'
     end
   end
 
-private
+  private
 
-  def otp_enabled?
-    uid = current_account.uid
-    return false unless uid.present?
-    Vault::TOTP.exist?(uid)
+  def check_otp_enabled
+    if current_account.opt_enabled
+      redirect_to(index_path, alert: 'You are already enabled 2FA')
+    end   
   end
 
   def otp_verify
-    return if Vault::TOTP.validate?(find_uid_by_params_email, params[:otp])
+    return if Vault::TOTP.validate?(current_account.uid, params[:otp])
 
     set_flash_message! :alert, :wrong_otp_code
     redirect_to accounts_sign_in_confirm_path
   rescue Vault::HTTPClientError => e
     redirect_to new_account_session_path, alert: "Vault error: #{e.errors.join}"
   end
-
 end
