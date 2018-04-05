@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'Api::V1::Accounts' do
   include_context 'doorkeeper authentication'
 
-  describe 'GET /api/account' do
-    let(:do_request) { get '/api/account', headers: auth_header }
+  describe 'GET /api/v1/account' do
+    let(:do_request) { get '/api/v1/account', headers: auth_header }
     let(:account_attrs) do
       {
         uid: current_account.uid,
@@ -22,9 +22,9 @@ describe 'Api::V1::Accounts' do
     end
   end
 
-  describe 'POST /api/account' do
+  describe 'POST /api/v1/account' do
     let(:do_request) do
-      post '/api/account', params: params
+      post '/api/v1/account', params: params
     end
 
     before { do_request }
