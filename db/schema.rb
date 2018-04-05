@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180404153832) do
+ActiveRecord::Schema.define(version: 20180410093510) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20180404153832) do
     t.string "city"
     t.string "country"
     t.string "state", default: "pending", null: false
+    t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_profiles_on_account_id"
