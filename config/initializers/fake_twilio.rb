@@ -1,3 +1,3 @@
-if Rails.env.test?
-  Twilio::REST::Client = FakeSMS
-end
+# frozen_string_literal: true
+
+Twilio::REST::Client = FakeSMS if Rails.env.test?
