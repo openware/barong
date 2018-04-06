@@ -4,6 +4,7 @@ module API
   module V1
     class Base < Grape::API
       format :json
+      prefix :v1
 
       mount API::V1::Accounts
       mount API::V1::Profiles
