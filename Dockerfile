@@ -39,8 +39,7 @@ RUN su app -s /bin/bash -c "bundle install --path /opt/vendor/bundle"
 # Copy the main application.
 COPY . $APP_HOME
 
-RUN chown -R app:app /home/app && \
-    mv config/database.yml.example config/database.yml
+RUN chown -R app:app /home/app
 
 USER app
 
