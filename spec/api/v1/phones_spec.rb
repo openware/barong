@@ -3,9 +3,9 @@ require 'spec_helper'
 describe 'Api::V1::Phones' do
   include_context 'doorkeeper authentication'
 
-  describe 'POST /api/phones' do
+  describe 'POST /api/v1/phones' do
     let(:do_request) do
-      post '/api/phones', params: params, headers: auth_header
+      post '/api/v1/phones', params: params, headers: auth_header
     end
     let(:params) {{ phone_number: phone_number }}
 
@@ -54,9 +54,9 @@ describe 'Api::V1::Phones' do
     end
   end
 
-  describe 'POST /api/phones/verify' do
+  describe 'POST /api/v1/phones/verify' do
     let(:do_request) do
-      post '/api/phones/verify', params: params, headers: auth_header
+      post '/api/v1/phones/verify', params: params, headers: auth_header
     end
     let(:params) do
       {

@@ -64,8 +64,8 @@ describe 'Api::V1::Accounts' do
       end
     end
   end
-  describe 'PUT /api/account/password' do
-    let(:url) { '/api/account/password' }
+  describe 'PUT /api/v1/account/password' do
+    let(:url) { '/api/v1/account/password' }
     let!(:password0) { 'testpassword111' }
     let!(:password1) { 'testpassword123' }
     let(:params0) do
