@@ -28,7 +28,6 @@ install:
 
 # Execute all of the commands which need to be executed before running actual tests.
 before_script:
-  - cp config/database.yml.example config/database.yml
   - bundle exec rake db:create db:migrate
 
 # Execute all of the commands which should make the build pass or fail.
