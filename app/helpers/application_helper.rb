@@ -4,7 +4,6 @@
 # ApplicationHelper
 #
 module ApplicationHelper
-
   def domain_title_tag(text)
     if text.blank?
       'Barong'

@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (needs plugins)
   orm :active_record
 
   # This block will be called to check whether the resource owner is authenticated or not.
-  resource_owner_authenticator do |routes|
+  resource_owner_authenticator do |_routes|
     # Put your resource owner authentication logic here.
     # If you want to use named routes from your app you need
     # to call them on routes object eg.
     # routes.new_user_session_path
-    current_account || warden.authenticate!(:scope => :account)
+    current_account || warden.authenticate!(scope: :account)
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -16,7 +18,7 @@ Doorkeeper.configure do
     # Put your admin authentication logic here.
     # Example implementation:
     # Admin.find_by_id(session[:admin_id]) || redirect_to(new_admin_session_url)
-    #current_account || warden.authenticate!(:scope => :admin)
+    # current_account || warden.authenticate!(:scope => :admin)
     redirect_to index_url unless current_account.role == 'admin'
   end
 
@@ -106,7 +108,7 @@ Doorkeeper.configure do
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
   # For example if dealing with a trusted application.
-  skip_authorization do |resource_owner, client|
+  skip_authorization do |_resource_owner, client|
     client.application.skipauth
   end
 
@@ -133,7 +135,7 @@ Doorkeeper::JWT.configure do
       email: account.email,
       role:  account.role,
       level: account.level,
-      state: account.state,
+      state: account.state
     }
   end
 

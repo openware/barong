@@ -27,7 +27,7 @@ describe 'Phone verification' do
   it 'creates phone' do
     fill_in 'number', with: '+380955555555'
     click_on 'Send code'
-    sleep 1 #FIXME we need to wait for html event
+    sleep 1 # FIXME: we need to wait for html event
     fill_in 'Enter code', with: FakeSMS.messages.last.body.split.last
     click_on 'CONFIRM'
     expect(page).to have_content('Verification > Fill in personal information')

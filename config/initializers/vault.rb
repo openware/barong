@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'vault/totp'
 
 Vault.configure do |config|
