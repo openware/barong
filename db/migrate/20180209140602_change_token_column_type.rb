@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeTokenColumnType < ActiveRecord::Migration[5.1]
   def up
     remove_index  :oauth_access_tokens, :token

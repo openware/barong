@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 
 # Prevent database truncation if the environment is production.
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -31,7 +31,7 @@ ActiveRecord::Migration.maintain_test_schema!
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.before(:each) do
-    stub_const("Twilio::REST::Client", FakeSMS)
+    stub_const('Twilio::REST::Client', FakeSMS)
   end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

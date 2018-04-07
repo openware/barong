@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'doorkeeper authentication' do
   let!(:current_account) { create(:account) }
   let(:access_token) do
