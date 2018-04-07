@@ -10,11 +10,11 @@ describe 'Sign in' do
 
   it 'blocks account when system detects too many sign in attempts' do
     visit index_path
-    expect {
+    expect do
       Devise.maximum_attempts.times do
         sign_in account, password: '11111111'
       end
-    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    end.to change { ActionMailer::Base.deliveries.count }.by(1)
     expect(account.reload.locked_at?).to be_truthy
   end
 
@@ -36,5 +36,4 @@ describe 'Sign in' do
       expect(page).to have_content('Wrong Google Auth code')
     end
   end
-
 end
