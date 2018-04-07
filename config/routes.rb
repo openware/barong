@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
   post 'phones/verification', to: 'phones#verify'
   get  'security',            to: 'security#enable'
+  get  'security/confirm',    to: 'security#confirm'
+  post 'security/confirm',    to: 'security#validate_otp'
 
   resources :phones,    only: [:new, :create]
   resources :profiles,  only: [:new, :create]

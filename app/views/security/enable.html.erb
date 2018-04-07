@@ -9,5 +9,6 @@
     <img alt="QR Code" src="data:image/png;base64,<%= @otp.data[:barcode] %>" />
     <input class="form-control text-center" value="<%= @otp_secret %>" disabled />
     <a class="visible-xs" href="<%= @otp.data[:url] %>">Open in Google Authenticator</a>
+    <%= link_to 'Next', security_confirm_path, class: 'btn btn-success'%>
   </div>
 </div>
