@@ -9,32 +9,19 @@ class SecurityController < ApplicationController
   end
 
   def confirm
-    return redirect_to index_path unless current_account.otp_enabled
-    render action: :confirm
-  end
-
-  def validate_otp
     if Vault::TOTP.validate?(current_account.uid, params[:otp])
-      redirect_to index_path
+      status = current_account.update(otp_enabled: true)
+      return redirect_to index_path, notice: '2FA is enabled' if status
+      redirect_to security_path, alert: current_account.errors.full_messages.to_sentence
     else
-      render security_confirm_path, alert: 'Code is invalid'
+      redirect_to security_path, alert: 'Code is invalid'
     end
   end
 
   private
 
   def check_otp_enabled
-    if current_account.opt_enabled
-      redirect_to(index_path, alert: 'You are already enabled 2FA')
-    end   
-  end
-
-  def otp_verify
-    return if Vault::TOTP.validate?(current_account.uid, params[:otp])
-
-    set_flash_message! :alert, :wrong_otp_code
-    redirect_to accounts_sign_in_confirm_path
-  rescue Vault::HTTPClientError => e
-    redirect_to new_account_session_path, alert: "Vault error: #{e.errors.join}"
+    return unless current_account.otp_enabled
+    redirect_to(index_path, alert: 'You are already enabled 2FA')
   end
 end

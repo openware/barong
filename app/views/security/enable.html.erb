@@ -9,6 +9,19 @@
     <img alt="QR Code" src="data:image/png;base64,<%= @otp.data[:barcode] %>" />
     <input class="form-control text-center" value="<%= @otp_secret %>" disabled />
     <a class="visible-xs" href="<%= @otp.data[:url] %>">Open in Google Authenticator</a>
-    <%= link_to 'Next', security_confirm_path, class: 'btn btn-success'%>
+
+    <div class="container-fluid mx-3 px-5 py-4 d-flex flex-column align-items-center">
+      <%= form_tag(security_confirm_path) do %>
+        <div id="otp-code" class="form-group">
+          <div class="row">
+            <%= label_tag :otp, '6-digit Google Authenticator code' %>
+            <%= text_field_tag :otp, '', autocomplete: 'off', class: 'px-1 form-control form-control-lg underlined', required: true, maxlength: 6, size: 6, pattern: '\d{6}', placeholder: 'XXXXXX' %>
+          </div>
+        </div>
+        <div class="row mt-4 d-flex justify-content-between">
+          <%= submit_tag 'Submit', class: 'btn btn-success', data: { confirm: 'Are you agree? If you lost your device you will need to verify your access' } %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
