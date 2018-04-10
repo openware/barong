@@ -1,28 +1,9 @@
 # frozen_string_literal: true
 
 #
-# Phone Verification module
-#
-module PhoneVerification
-  extend ActiveSupport::Concern
-
-  included do
-    attr_accessor :verification_code, :submitted_verification_code
-
-    validate do
-      if verification_code.present? && submitted_verification_code.present?
-        errors.add(:verification_code, :invalid) unless verification_code == submitted_verification_code
-      end
-    end
-  end
-end
-
-#
 # Class Phone
 #
 class Phone < ApplicationRecord
-  include PhoneVerification
-
   belongs_to :account
 
   validates :number, phone: true
