@@ -37,9 +37,10 @@ module API
                                   allow_blank: false
         end
         post do
-          return unless phone_valid?(params[:phone_number])
+          declared_params = declared(params)
+          return unless phone_valid?(declared_params[:phone_number])
 
-          phone = current_account.phones.create(number: params[:phone_number])
+          phone = current_account.phones.create(number: declared_params[:phone_number])
           error!(phone.errors, 422) if phone.errors.any?
 
           PhoneUtils.send_confirmation_sms(phone)
@@ -55,11 +56,12 @@ module API
                                        allow_blank: false
         end
         post '/verify' do
-          return unless phone_valid?(params[:phone_number])
+          declared_params = declared(params)
+          return unless phone_valid?(declared_params[:phone_number])
 
-          phone_number = PhoneUtils.sanitize(params[:phone_number])
+          phone_number = PhoneUtils.sanitize(declared_params[:phone_number])
           phone = current_account.phones.find_by(number: phone_number,
-                                                 code: params[:verification_code])
+                                                 code: declared_params[:verification_code])
 
           unless phone
             return error!('Phone is not found or verification code is invalid', 404)
