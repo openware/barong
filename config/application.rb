@@ -18,12 +18,12 @@ module Barong
     config.generators.helper = false
     config.generators.tests  = false
     config.generators.test_framework :rspec
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W[#{config.root}/lib]
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*' # Permit CORS from any origin, only in the API route
-        resource '/api/*', headers: :any, methods: [ :get, :post, :put, :delete, :options ]
+        resource '/api/*', headers: :any, methods: %i[get post put delete options]
       end
     end
 

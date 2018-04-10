@@ -2,7 +2,7 @@
 
 module Admin
   class WebsitesController < ModuleController
-    before_action :set_website, only: [:show, :edit, :update, :destroy]
+    before_action :set_website, only: %i[show edit update destroy]
 
     # GET /admin/websites
     def index

@@ -12,9 +12,7 @@ def sign_in(account, params = {})
   fill_in 'account_email', with: params[:email] || account.email
   click_on 'Submit'
 
-  if params[:otp]
-    fill_in 'otp', with: params[:otp]
-  end
+  fill_in 'otp', with: params[:otp] if params[:otp]
 
   fill_in 'account_password', with: params[:password] || account.password
   click_on 'Submit'

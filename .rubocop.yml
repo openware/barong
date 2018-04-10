@@ -1,7 +1,10 @@
 AllCops:
   Exclude:
     - db/schema.rb
+    - db/seeds.rb
     - ci/bump.rb
+    - bin/*
+    - config/initializers/*
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
@@ -74,7 +77,7 @@ Metrics/BlockLength:
   Exclude:
     - config/environments/**/*.rb
     - lib/tasks/auto_annotate_models.rake
-  ExcludedMethods: ['describe', 'context', 'namespace']
+  ExcludedMethods: ['describe', 'context', 'namespace', 'resource']
 
 Style/EmptyMethod:
   EnforcedStyle: expanded

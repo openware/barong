@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'JWT renewal test' do
@@ -26,7 +28,7 @@ describe 'JWT renewal test' do
 
     it 'Checks if current JWT is valid and returns error, cause it is not' do
       post url
-      expect(response.body).to eq("{\"error\":\"The access token is invalid\"}")
+      expect(response.body).to eq('{"error":"The access token is invalid"}')
     end
 
     it 'Checks if current JWT is valid and returns error, cause it has expired' do
@@ -34,8 +36,8 @@ describe 'JWT renewal test' do
       expect(response.status).to eq(201)
       new_jwt = JSON.parse(response.body)
       sleep(2)
-      post url, headers: { 'Authorization' => "Bearer #{new_jwt}"}
-      expect(response.body).to eq("{\"error\":\"The access token expired\"}")
+      post url, headers: { 'Authorization' => "Bearer #{new_jwt}" }
+      expect(response.body).to eq('{"error":"The access token expired"}')
     end
   end
 end

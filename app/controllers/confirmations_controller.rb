@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 require 'uri'
 
 class ConfirmationsController < Devise::ConfirmationsController
-  private
+private
 
   def after_confirmation_path_for(resource_name, resource)
     return super if params[:redirect_uri].blank? || ENV['DOMAIN_NAME'].blank?
