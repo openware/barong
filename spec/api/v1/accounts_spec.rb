@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Api::V1::Accounts' do
@@ -65,7 +67,7 @@ describe 'Api::V1::Accounts' do
     end
   end
   describe 'PUT /api/account/password' do
-    let(:url) { '/api/account/password' }
+    let(:url) { '/api/v1/account/password' }
     let!(:password0) { 'testpassword111' }
     let!(:password1) { 'testpassword123' }
     let(:params0) do
@@ -84,13 +86,13 @@ describe 'Api::V1::Accounts' do
 
     subject!(:acc) do
       create :account,
-      password: password0,
-      password_confirmation: password0
+             password: password0,
+             password_confirmation: password0
     end
 
     let!(:access_token) do
       create :doorkeeper_token,
-      resource_owner_id: acc.id
+             resource_owner_id: acc.id
     end
 
     let(:headers) do

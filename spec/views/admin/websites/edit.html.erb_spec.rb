@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'admin/websites/edit', type: :view do
   before(:each) do
     @website = assign(:admin_website, Website.create!(
-                                              domain: 'MyString',
-                                              title: 'MyString',
-                                              logo: 'MyString',
-                                              stylesheet: 'MyString',
-                                              header: 'MyText',
-                                              footer: 'MyText',
-                                              redirect_url: 'MyString',
-                                              state: 'MyString'
+                                        domain: 'MyString',
+                                        title: 'MyString',
+                                        logo: 'MyString',
+                                        stylesheet: 'MyString',
+                                        header: 'MyText',
+                                        footer: 'MyText',
+                                        redirect_url: 'MyString',
+                                        state: 'MyString'
     ))
   end
 

@@ -17,9 +17,9 @@ Rails.application.routes.draw do
   get  'security',            to: 'security#enable'
   post 'security/confirm',    to: 'security#confirm'
 
-  resources :phones,    only: [:new, :create]
-  resources :profiles,  only: [:new, :create]
-  resources :documents, only: [:new, :create]
+  resources :phones,    only: %i[new create]
+  resources :profiles,  only: %i[new create]
+  resources :documents, only: %i[new create]
 
   namespace :admin do
     get '/', to: 'accounts#index', as: :accounts
