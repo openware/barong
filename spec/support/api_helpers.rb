@@ -5,7 +5,11 @@ def json_body
 end
 
 def expect_status_to_eq(status)
-  expect(response.status).to eq status
+  expect_status.to eq status
+end
+
+def expect_status
+  expect(response.status)
 end
 
 def expect_body

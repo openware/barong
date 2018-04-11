@@ -10,6 +10,7 @@ module API
       mount API::V1::Profiles
       mount API::V1::Security
       mount API::V1::Documents
+      mount API::V1::Phones
       mount API::V1::Session
       mount API::V1::Labels
 

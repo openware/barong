@@ -15,5 +15,26 @@ module PhoneUtils
       phone  = Phonelib.parse(number)
       phone.valid? && phone.international(false) == number
     end
+
+    def send_confirmation_sms(phone)
+      Rails.logger.info("Sending SMS to #{phone.number} with code #{phone.code}")
+
+      app_name = ENV.fetch('APP_NAME', 'Barong')
+      send_sms(number: phone.number,
+               content: "Your verification code for #{app_name}: #{phone.code}")
+    end
+
+    def send_sms(number:, content:)
+      sid = Rails.application.secrets.twilio_account_sid
+      token = Rails.application.secrets.twilio_auth_token
+      from_phone = Rails.application.secrets.twilio_phone_number
+
+      client = Twilio::REST::Client.new(sid, token)
+      client.messages.create(
+        from: from_phone,
+        to:   '+' + number,
+        body: content
+      )
+    end
   end
 end

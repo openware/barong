@@ -14,13 +14,16 @@ class PhonesController < ApplicationController
 
   def create
     number = PhoneUtils.sanitize(phone_params[:country_code] + phone_params[:number])
-    return redirect_to new_phone_url, notice: 'Confirmation code was sent to another number'\
     unless session[:phone] == number
-    phone = Phone.new \
-      account_id:                  current_account.id,
-      number:                      number,
-      verification_code:           session[:verif_code],
-      submitted_verification_code: phone_params[:code]
+      return redirect_to new_phone_url, notice: 'Confirmation code was sent to another number'
+    end
+
+    phone = Phone.new(account_id: current_account.id,
+                      number: number,
+                      verification_code: session[:verif_code],
+                      submitted_verification_code: phone_params[:code],
+                      validated_at: Time.current)
+
     if phone.save
       current_account.level_set(:phone)
       redirect_to new_profile_path
@@ -37,9 +40,7 @@ class PhonesController < ApplicationController
 
     if PhoneUtils.valid?(phone.number)
       save_session(phone)
-      Rails.logger.info("Sending SMS to #{phone.number} with code #{session[:verif_code]}")
-      app_name = ENV.fetch('APP_NAME', 'Barong')
-      phone.send_sms("Your verification code for #{app_name}: #{session[:verif_code]}")
+      PhoneUtils.send_confirmation_sms(phone)
       render json: { success: 'Code was sent' }
     else
       render json: { error: 'Phone is invalid' }
@@ -50,7 +51,7 @@ private
 
   def save_session(phone)
     session[:phone] = phone.number
-    session[:verif_code] = phone.generate_code
+    session[:verif_code] = phone.code
   end
 
   def phone_params

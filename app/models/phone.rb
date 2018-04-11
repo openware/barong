@@ -28,36 +28,33 @@ class Phone < ApplicationRecord
   validates :number, phone: true
 
   before_validation :parse_country
+  before_validation :sanitize_number
+  after_initialize :generate_code
 
-  def send_sms(content)
-    sid = Rails.application.secrets.twilio_account_sid
-    token = Rails.application.secrets.twilio_auth_token
-    from_phone = Rails.application.secrets.twilio_phone_number
-
-    client = Twilio::REST::Client.new(sid, token)
-    client.messages.create(
-      from: from_phone,
-      to:   '+' + number,
-      body: content
-    )
-  end
+  scope :verified, -> { where.not(validated_at: nil) }
 
   def number_exists?
-    Phone.exists?(number: number)
+    Phone.verified.exists?(number: number)
   end
 
+private
+
   def generate_code
-    rand.to_s[2..6]
+    self.code = rand.to_s[2..6]
   end
 
   def parse_country
     data = Phonelib.parse(number)
     self.country = data.country
   end
+
+  def sanitize_number
+    self.number = PhoneUtils.sanitize(number)
+  end
 end
 
 # == Schema Information
-# Schema version: 20180126130155
+# Schema version: 20180404153832
 #
 # Table name: phones
 #
@@ -68,6 +65,7 @@ end
 #  account_id   :integer          unsigned, not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  code         :string(5)
 #
 # Indexes
 #
