@@ -9,9 +9,9 @@ describe 'Session create test' do
     let!(:application) { create :doorkeeper_application }
     subject!(:acc) do
       create :account,
-      email: email,
-      password: password,
-      password_confirmation: password
+             email: email,
+             password: password,
+             password_confirmation: password
     end
 
     it 'Checks if current credentials are valid and returns valid JWT' do
@@ -26,27 +26,27 @@ describe 'Session create test' do
 
     it 'Checks if current credentials are valid and returns error, cause they are not' do
       post uri
-      expect(response.body).to eq("{\"error\":\"email is missing, password is missing, application_id is missing\"}")
+      expect(response.body).to eq('{"error":"email is missing, password is missing, application_id is missing"}')
       expect(response.status).to eq(400)
 
       post uri, params: { email: 'rick@morty.io', password: 'season1' }
-      expect(response.body).to eq("{\"error\":\"application_id is missing\"}")
+      expect(response.body).to eq('{"error":"application_id is missing"}')
       expect(response.status).to eq(400)
 
       post uri, params: { email: email }
-      expect(response.body).to eq("{\"error\":\"password is missing, application_id is missing\"}")
+      expect(response.body).to eq('{"error":"password is missing, application_id is missing"}')
       expect(response.status).to eq(400)
 
       post uri, params: { email: email, password: password }
-      expect(response.body).to eq("{\"error\":\"application_id is missing\"}")
+      expect(response.body).to eq('{"error":"application_id is missing"}')
       expect(response.status).to eq(400)
 
       post uri, params: { email: email, password: 'password', application_id: application.uid }
-      expect(response.body).to eq("{\"error\":\"401 Unauthorized\"}")
+      expect(response.body).to eq('{"error":"401 Unauthorized"}')
       expect(response.status).to eq(401)
 
       post uri, params: { email: email, password: password, application_id: 'application.uid' }
-      expect(response.body).to eq("{\"error\":\"401 Unauthorized\"}")
+      expect(response.body).to eq('{"error":"401 Unauthorized"}')
       expect(response.status).to eq(401)
     end
   end

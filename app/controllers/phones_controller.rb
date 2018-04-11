@@ -18,8 +18,8 @@ class PhonesController < ApplicationController
       current_account.level_set(:phone)
       redirect_to new_profile_path
     else
-      redirect_to new_phone_url,
-                  alert: 'Phone verification failed. Number is invalid or was already verified'
+      flash.now[:alert] = 'Phone verification failed. Number is invalid or was already verified'
+      render :new
     end
   end
 
@@ -45,18 +45,22 @@ private
   end
 
   def check_phone
-    @phone_number = PhoneUtils.sanitize(phone_params[:country_code] + phone_params[:number])
+    country_code = phone_params.fetch(:country_code, '')
+    number = phone_params.fetch(:number, '')
+
+    @phone_number = PhoneUtils.sanitize(country_code + number)
     return if session[:phone] == @phone_number
 
-    redirect_to new_phone_url,
-                alert: 'Confirmation code was sent to another number'
+    flash.now[:alert] = 'Confirmation code was sent to another number'
+    render :new
   end
 
   def check_code
     return if PhoneUtils.verify_code(server_code: session[:verif_code],
                                      user_code: phone_params[:code])
-    redirect_to new_phone_url,
-                alert: 'Verification code is invalid'
+
+    flash.now[:alert] = 'Verification code is invalid'
+    render :new
   end
 
   def save_session(phone)
