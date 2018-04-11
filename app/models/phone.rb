@@ -37,7 +37,7 @@ class Phone < ApplicationRecord
     Phone.verified.exists?(number: number)
   end
 
-  private
+private
 
   def generate_code
     self.code = rand.to_s[2..6]

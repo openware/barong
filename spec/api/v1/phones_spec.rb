@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Api::V1::Phones' do
@@ -7,7 +9,7 @@ describe 'Api::V1::Phones' do
     let(:do_request) do
       post '/api/v1/phones', params: params, headers: auth_header
     end
-    let(:params) {{ phone_number: phone_number }}
+    let(:params) { { phone_number: phone_number } }
 
     before { do_request }
 

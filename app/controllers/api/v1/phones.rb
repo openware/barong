@@ -63,9 +63,7 @@ module API
           phone = current_account.phones.find_by(number: phone_number,
                                                  code: declared_params[:verification_code])
 
-          unless phone
-            return error!('Phone is not found or verification code is invalid', 404)
-          end
+          return error!('Phone is not found or verification code is invalid', 404) unless phone
 
           phone.update(validated_at: Time.current)
           current_account.level_set(:phone)
