@@ -1,16 +1,21 @@
-engines:
+version: '2'
+plugins:
   brakeman:
     enabled: true
   rubocop:
     enabled: true
   reek:
     enabled: true
+    exclude_patterns:
+      - spec/
   bundler-audit:
     enabled: true
   fixme:
     enabled: true
   duplication:
     enabled: true
+    exclude_patterns:
+      - spec/
     config:
       languages:
         - ruby:
@@ -18,3 +23,5 @@ engines:
 exclude_patterns:
   - db/schema.rb
   - ci/bump.rb
+  - node_modules/
+  - vendor/
