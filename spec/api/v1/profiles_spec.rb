@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
-ENV['PROFILE_METADATA'] = 'gender place_of_birth'
-
 describe 'Api::V1::Profiles' do
   include_context 'doorkeeper authentication'
+
+  let!(:optional_params) do
+    {
+      metadata: {
+        gender: Faker::Dog.gender,
+        place_of_birth: Faker::Address.city
+      }
+    }
+  end
 
   describe 'POST /api/v1/profiles' do
     let!(:url) { '/api/v1/profiles' }
@@ -16,13 +23,6 @@ describe 'Api::V1::Profiles' do
         city: Faker::Address.city,
         address: Faker::Address.street_address,
         postcode: Faker::Address.zip_code
-      }
-    end
-
-    let!(:optional_params) do
-      {
-        gender: Faker::Dog.gender,
-        place_of_birth: Faker::Address.city
       }
     end
 
@@ -44,29 +44,19 @@ describe 'Api::V1::Profiles' do
       post url, params: request_params, headers: auth_header
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
-      expect(profile).to_not be_nil
-      expect(profile.gender).to be_nil
-      expect(profile.place_of_birth).to be_nil
+      expect(profile).to be
+      expect(profile.metadata).to be_blank
     end
 
     it 'creates new profile with all metadata fields' do
       post url, params: request_params.merge(optional_params), headers: auth_header
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
-      expect(profile).to_not be_nil
-      expect(profile.gender).to eq(optional_params[:gender])
-      expect(profile.place_of_birth).to eq(optional_params[:place_of_birth])
-    end
-
-    it 'creates new profile with not all metadata fields' do
-      post url, params: request_params.merge(optional_params).except(:place_of_birth), headers: auth_header
-      expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to_not be_nil
-      expect(profile.gender).to eq(optional_params[:gender])
-      expect(profile.place_of_birth).to be_nil
+      expect(profile).to be
+      expect(profile.metadata.symbolize_keys).to eq(optional_params[:metadata])
     end
   end
+
   describe 'GET /api/v1/profiles' do
     let!(:url) { '/api/v1/profiles' }
     let!(:request_params) do
@@ -81,20 +71,15 @@ describe 'Api::V1::Profiles' do
       }
     end
 
-    let!(:optional_params) do
-      {
-        gender: Faker::Dog.gender,
-        place_of_birth: Faker::Address.city
-      }
-    end
-
     it 'returns user profile data with metadata' do
-      post url, params: request_params.merge(optional_params), headers: auth_header
+      post url, params: request_params.merge(optional_params),
+                headers: auth_header
       expect(response.status).to eq(201)
 
       get url, headers: auth_header
       expect(response.status).to eq(200)
-      expected_json = request_params.merge(state: Account.last.state, metadata: optional_params).to_json
+      expected_json = request_params.merge(state: Account.last.state)
+                                    .merge(optional_params).to_json
       expect(response.body).to eq(expected_json)
     end
   end

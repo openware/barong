@@ -31,9 +31,7 @@ module API
           requires :postcode, type: String
           requires :city, type: String
           requires :country, type: String
-          Profile::METADATA.map(&:to_sym).each do |meta|
-            optional meta, type: String
-          end
+          optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post do

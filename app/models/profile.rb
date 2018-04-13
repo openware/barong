@@ -3,9 +3,8 @@
 # Profile model
 class Profile < ApplicationRecord
   belongs_to :account
-  store :metadata, accessors: ENV.fetch('PROFILE_METADATA').split(' '), coder: JSON
+  serialize :metadata, JSON
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
-  METADATA = ENV.fetch('PROFILE_METADATA').split(' ')
 end
 
 # == Schema Information
