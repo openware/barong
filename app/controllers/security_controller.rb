@@ -2,6 +2,7 @@
 
 class SecurityController < ApplicationController
   before_action :check_otp_enabled, only: :enable
+  before_action :check_vault_availability
 
   def enable
     @otp = Vault::TOTP.create(current_account.uid, current_account.email)
@@ -19,6 +20,12 @@ class SecurityController < ApplicationController
   end
 
 private
+
+  def check_vault_availability
+    return if Vault::TOTP.server_available?
+
+    redirect_to index_path, alert: '2FA is disabled'
+  end
 
   def check_otp_enabled
     return unless current_account.otp_enabled

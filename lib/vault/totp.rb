@@ -6,6 +6,12 @@ module Vault
     class <<self
       ISSUER_NAME = 'Barong'
 
+      def server_available?
+        read_data('sys/health').present?
+      rescue Vault::VaultError
+        false
+      end
+
       def otp_secret(otp)
         CGI.parse(URI.parse(otp.data[:url]).query)['secret'][0]
       end
