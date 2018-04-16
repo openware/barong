@@ -45,10 +45,7 @@ private
   end
 
   def check_phone
-    country_code = phone_params.fetch(:country_code, '')
-    number = phone_params.fetch(:number, '')
-
-    @phone_number = PhoneUtils.sanitize(country_code + number)
+    @phone_number = extract_phone_number_from_params
     return if session[:phone] == @phone_number
 
     flash.now[:alert] = 'Confirmation code was sent to another number'
@@ -61,6 +58,12 @@ private
 
     flash.now[:alert] = 'Verification code is invalid'
     render :new
+  end
+
+  def extract_phone_number_from_params
+    country_code = phone_params.fetch(:country_code, '')
+    number = phone_params.fetch(:number, '')
+    PhoneUtils.sanitize(country_code + number)
   end
 
   def save_session(phone)
