@@ -13,6 +13,10 @@ Metrics/LineLength:
   Enabled: false
   Max: 110
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"  
+
 Layout/CaseIndentation:
   EnforcedStyle: end
   IndentOneStep: true

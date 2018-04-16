@@ -9,7 +9,7 @@
         <%= params[:filter]&.upcase_first || 'Select' %>
       </a>
       <div class="dropdown-menu">
-        <% @states.each do |state|%>
+        <% Profile::STATES.each do |state|%>
             <%= link_to(state.upcase_first, admin_profiles_path(filter: state), class: 'dropdown-item') unless params[:filter] == state%>
         <% end %>
       </div>

@@ -5,13 +5,18 @@ require 'spec_helper'
 describe 'Documents API test' do
   describe 'POST /api/v1/documents/' do
     let!(:account) { create :account }
-    let!(:image) { Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/files/documents_test.jpg'), 'image/jpg') }
+    let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
     subject!(:access_token) { create :doorkeeper_token, resource_owner_id: account.id }
     let(:headers) do
       { Authorization: "Bearer #{access_token.token}" }
     end
     let(:params) do
-      { doc_type: 'passport', doc_expire: '2020-01-22', doc_number: 'AA1234BB', upload: image }
+      {
+        doc_type: 'Passport',
+        doc_expire: '2020-01-22',
+        doc_number: 'AA1234BB',
+        upload: image
+      }
     end
 
     it 'Checks if params are ok and returns success' do
@@ -51,7 +56,7 @@ describe 'Documents API test' do
       response_arr = JSON.parse(response.body)
       expect(response_arr.count).to eq(1)
       expect(response_arr.last['upload']).to_not be_nil
-      expect(response_arr.last['doc_type']).to eq('passport')
+      expect(response_arr.last['doc_type']).to eq('Passport')
       expect(response_arr.last['doc_expire']).to eq('2020-01-22')
       expect(response_arr.last['doc_number']).to eq('AA1234BB')
       expect(response.status).to eq(200)

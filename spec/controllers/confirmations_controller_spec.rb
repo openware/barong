@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe ConfirmationsController, type: :controller do
   before do
     @request.env['devise.mapping'] = Devise.mappings[:account]

@@ -37,6 +37,7 @@ class Ability
     case account&.role
       when 'admin'
         can :manage, :all
+        cannot %i[update destroy], Account, id: account.id
       when 'compliance'
         can :manage,  [Profile]
         can :read,    [Account]
