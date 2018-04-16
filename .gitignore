@@ -32,3 +32,4 @@
 .DS_Store
 .cache/
 .yarnrc
+coverage

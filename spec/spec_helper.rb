@@ -1,5 +1,20 @@
 # frozen_string_literal: true
 
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails' do
+    add_group 'API', 'app/controllers/api'
+    add_filter 'app/channels'
+    add_filter 'app/uploaders'
+    add_filter 'lib/barong/version.rb'
+    add_filter 'app/jobs/application_job.rb'
+    add_filter 'app/helpers'
+    add_filter 'app/mailers'
+    add_filter 'app/models/ability.rb'
+  end
+  puts 'Coverage is calculating'
+end
+
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 
