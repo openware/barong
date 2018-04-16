@@ -7,6 +7,10 @@ plugins:
   reek:
     enabled: true
     checks:
+      FeatureEnvy:
+        enabled: false
+      RepeatedConditional:
+        enabled: false
       NilCheck:
         enabled: false
       InstanceVariableAssumption:
