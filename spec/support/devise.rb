@@ -11,7 +11,7 @@ module RequestHelpers
   def sign_in(account, params = {})
     visit index_path
 
-    allow(Vault::TOTP).to receive(:exist?) { params[:otp].present? }
+    allow(Vault::TOTP).to receive(:server_available?) { true }
 
     fill_in 'account_email', with: params[:email] || account.email
     click_on 'Submit'

@@ -18,11 +18,23 @@ describe 'Sign in' do
     expect(account.reload.locked_at?).to be_truthy
   end
 
+  context 'when credentials are wrong' do
+    it 'renders an error' do
+      sign_in nil, email: 'invalid@example.com', password: account.password
+      expect(page).to have_content('Invalid Email or password')
+    end
+
+    it 'renders an error' do
+      sign_in nil, email: account.email, password: 'invalid'
+      expect(page).to have_content('Invalid Email or password')
+    end
+  end
+
   context 'with OTP' do
     let!(:otp) { Faker::Number.number(6) }
+    let!(:account) { create :account, otp_enabled: true }
 
     before(:example) do
-      allow(Vault::TOTP).to receive(:exist?).and_return(true)
       allow(Vault::TOTP).to receive(:validate?) { |_, code| otp == code }
     end
 

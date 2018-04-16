@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SessionsController < Devise::SessionsController
-
   prepend_before_action :otp_verify, if: :otp_enabled?, only: :create
 
   def confirm
