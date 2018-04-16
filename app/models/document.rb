@@ -6,8 +6,11 @@
 class Document < ApplicationRecord
   mount_uploader :upload, UploadUploader
 
+  TYPES = ['Passport', 'Identity card', 'Driver license'].freeze
+
   belongs_to :account
   validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
+  validates :doc_type, inclusion: { in: TYPES }
 
   validates :upload, length: { maximum: 10.megabytes }
   validates :doc_number, length: { maximum: 128 }

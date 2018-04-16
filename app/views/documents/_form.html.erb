@@ -20,7 +20,7 @@
   <div class="row">
     <div class="field col-6">
       <%= form.label :doc_type, 'Document type' %>
-      <%= form.select(:doc_type, ['Passport', 'Identity card', 'Driver license'], {id: :document_doc_type}, {class: 'form-control underlined'}) %>
+      <%= form.select(:doc_type, Document::TYPES, {id: :document_doc_type}, {class: 'form-control underlined'}) %>
     </div>
 
     <div class="field form-group">

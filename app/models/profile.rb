@@ -2,9 +2,12 @@
 
 # Profile model
 class Profile < ApplicationRecord
+  STATES = %w[created pending approved rejected].freeze
+
   belongs_to :account
   serialize :metadata, JSON
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
+  validates :state, inclusion: { in: STATES }
   after_update :set_level_if_state_changed
 
 private

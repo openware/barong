@@ -10,7 +10,6 @@ if ENV['COVERAGE']
     add_filter 'app/jobs/application_job.rb'
     add_filter 'app/helpers'
     add_filter 'app/mailers'
-    add_filter 'app/models/ability.rb'
   end
   puts 'Coverage is calculating'
 end
@@ -49,6 +48,7 @@ RSpec.configure do |config|
     stub_const('Twilio::REST::Client', FakeSMS)
   end
 
+  config.fixture_path = "#{Rails.root}/spec/fixtures"
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
