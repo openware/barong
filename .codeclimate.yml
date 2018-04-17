@@ -7,6 +7,10 @@ plugins:
   reek:
     enabled: true
     checks:
+      NilCheck:
+        enabled: false
+      InstanceVariableAssumption:
+        enabled: false
       IrresponsibleModule:
         enabled: false
       UncommunicativeModuleName:
