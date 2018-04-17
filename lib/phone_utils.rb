@@ -36,5 +36,10 @@ module PhoneUtils
         body: content
       )
     end
+
+    def verify_code(server_code:, user_code:)
+      return false if server_code.blank?
+      server_code == user_code
+    end
   end
 end

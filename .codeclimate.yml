@@ -1,20 +1,40 @@
-engines:
+version: '2'
+plugins:
   brakeman:
     enabled: true
   rubocop:
     enabled: true
   reek:
     enabled: true
+    checks:
+      FeatureEnvy:
+        enabled: false
+      RepeatedConditional:
+        enabled: false
+      NilCheck:
+        enabled: false
+      InstanceVariableAssumption:
+        enabled: false
+      IrresponsibleModule:
+        enabled: false
+      UncommunicativeModuleName:
+        enabled: false
+    exclude_patterns:
+      - spec/
   bundler-audit:
     enabled: true
   fixme:
     enabled: true
   duplication:
     enabled: true
+    exclude_patterns:
+      - spec/
     config:
       languages:
         - ruby:
         - javascript:
 exclude_patterns:
-  - db/schema.rb
+  - db/
   - ci/bump.rb
+  - node_modules/
+  - vendor/

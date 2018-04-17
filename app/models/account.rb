@@ -24,10 +24,6 @@ class Account < ApplicationRecord
     super.inquiry
   end
 
-  def otp_exist?
-    Vault::TOTP.exist?(uid)
-  end
-
   def after_confirmation
     level_set(:mail)
     self.state = 'active'
@@ -88,10 +84,10 @@ end
 #  locked_at              :datetime
 #  role                   :string(255)      default("member"), not null
 #  level                  :integer          default(0), not null
+#  otp_enabled            :boolean          default(FALSE)
 #  state                  :string(255)      default("pending"), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  otp_enabled            :boolean          default(FALSE)
 #
 # Indexes
 #
