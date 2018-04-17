@@ -40,21 +40,21 @@ describe 'Api::V1::Accounts' do
       end
     end
 
-    context 'when email is blank' do
-      let(:params) { { email: '', password: 'password' } }
-
-      it 'renders an error' do
-        expect_status_to_eq 422
-        expect_body.to eq(error: ["Email can't be blank"])
-      end
-    end
-
     context 'when email and password are absent' do
       let(:params) {}
 
       it 'renders an error' do
         expect_status_to_eq 400
         expect_body.to eq(error: 'email is missing, password is missing')
+      end
+    end
+
+    context 'when email is blank' do
+      let(:params) { { email: '', password: 'password' } }
+
+      it 'renders an error' do
+        expect_status_to_eq 422
+        expect_body.to eq(error: ["Email can't be blank"])
       end
     end
 
@@ -66,6 +66,7 @@ describe 'Api::V1::Accounts' do
       end
     end
   end
+
   describe 'PUT /api/v1/account/password' do
     let(:url) { '/api/v1/account/password' }
     let!(:password0) { 'testpassword111' }

@@ -49,6 +49,7 @@ group :test do
   gem 'chromedriver-helper', '~> 1.1'
   gem 'shoulda-matchers',    '~> 3.1.2'
   gem 'rails-controller-testing'
+  gem 'capybara-screenshot'
 end
 
 group :development do

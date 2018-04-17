@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 
   alias current_user current_account # CanCanCan expects current_user.
 
+  rescue_from Vault::VaultError, with: :vault_exception
+
   helper_method :domain_asset
 
   def domain_asset(item)
@@ -14,5 +16,12 @@ class ApplicationController < ActionController::Base
 
   def doorkeeper_unauthorized_render_options(error: nil)
     { json: { error: 'Not authorized' } }
+  end
+
+private
+
+  def vault_exception(exception)
+    Rails.logger.error "#{exception.class}: #{exception.message}"
+    redirect_to index_path, alert: 'Something wrong with 2FA'
   end
 end

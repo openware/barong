@@ -72,6 +72,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    capybara-screenshot (1.0.19)
+      capybara (>= 1.0, < 4)
+      launchy
     carrierwave (1.2.2)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -368,6 +371,7 @@ DEPENDENCIES
   bootstrap-datepicker-rails
   cancancan (~> 2.0)
   capybara (~> 2.17)
+  capybara-screenshot
   carrierwave (~> 1.2.2)
   chromedriver-helper (~> 1.1)
   countries

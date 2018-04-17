@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'capybara-screenshot/rspec'
+Capybara::Screenshot.prune_strategy = :keep_last_run
+
 screen_size = [1280, 800]
 
 if ENV.key?('SELENIUM_HOST')
