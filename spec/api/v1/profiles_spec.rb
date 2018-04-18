@@ -12,8 +12,8 @@ describe 'Api::V1::Profiles' do
     }
   end
 
-  describe 'POST /api/v1/profiles' do
-    let!(:url) { '/api/v1/profiles' }
+  describe 'POST /api/v1/profile' do
+    let!(:url) { '/api/v1/profile' }
     let!(:request_params) do
       {
         last_name: Faker::Name.last_name,
@@ -57,8 +57,8 @@ describe 'Api::V1::Profiles' do
     end
   end
 
-  describe 'GET /api/v1/profiles' do
-    let!(:url) { '/api/v1/profiles' }
+  describe 'GET /api/v1/profile' do
+    let!(:url) { '/api/v1/profile' }
     let!(:request_params) do
       {
         first_name: Faker::Name.first_name,
