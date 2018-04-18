@@ -20,7 +20,11 @@ module Admin
     def change_state
       @profile = Profile.find(params[:id])
       if @profile.update(state: params[:state])
-        @profile.account.level_set(:identity) if @profile.state == 'approved'
+        if @profile.state == 'approved'
+          @profile.account.level_set(:identity)
+        else
+          @profile.account.level_set(:phone)
+        end
         redirect_to admin_profile_path(@profile), notice: 'Profile was successfully updated.'
       else
         redirect_to admin_profiles_path
