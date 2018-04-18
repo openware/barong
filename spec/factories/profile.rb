@@ -10,13 +10,5 @@ FactoryBot.define do
     city { Faker::RickAndMorty.location }
     country { Faker::Simpsons.location }
     state { 'validated' }
-
-    transient do
-      documents_count 1
-    end
-
-    after(:create) do |profile, evaluator|
-      create_list(:document, evaluator.documents_count, profile: profile)
-    end
   end
 end
