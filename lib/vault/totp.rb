@@ -8,7 +8,7 @@ module Vault
 
       def server_available?
         read_data('sys/health').present?
-      rescue StandartError
+      rescue StandardError
         false
       end
 
