@@ -19,10 +19,16 @@ ENV JWT_SHARED_SECRET_KEY='changeme'
 
 ENV APP_HOME=/home/app
 
-RUN groupadd -r app --gid=1000
-RUN useradd -r -m -g app -d /home/app --uid=1000 app
+# Allow customization of user ID and group ID (it's useful when you use Docker bind mounts)
+ARG UID=1000
+ARG GID=1000
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+# Create group "app" and user "app".
+RUN groupadd -r --gid ${GID} app \
+&& useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
+ --gid ${GID} --uid ${UID} app \
+
+ && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
  && apt-get update \
