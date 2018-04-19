@@ -56,7 +56,7 @@ describe 'Api::V1::Security' do
 
     context 'when otp do not enabled' do
       it 'generates qr code' do
-        expect(Vault::TOTP).to receive(:safe_create) { true }
+        expect(Vault::TOTP).to receive(:create) { true }
         do_request
         expect(response.status).to eq(201)
       end
@@ -174,6 +174,79 @@ describe 'Api::V1::Security' do
       it 'responses with success' do
         do_request
         expect(response.status).to eq(201)
+      end
+    end
+  end
+
+  describe 'POST /api/v1/security/reset_password' do
+    let(:do_request) do
+      post '/api/v1/security/reset_password', params: params
+    end
+    let(:params) { { email: email } }
+
+    context 'when email is unknown' do
+      let(:email) { 'unknown@example.com' }
+
+      it 'renders not found error' do
+        expect(Devise::Mailer).to_not receive(:reset_password_instructions)
+        do_request
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when account is found by email' do
+      let!(:account) { create(:account, email: email) }
+      let(:email) { 'email@example.com' }
+      let(:fake_mailer) { double(deliver: '') }
+
+      it 'sends reset password instructions' do
+        expect(Devise::Mailer).to receive(:reset_password_instructions) { fake_mailer }
+        do_request
+        expect(response.status).to eq(201)
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/security/reset_password' do
+    let(:do_request) do
+      put '/api/v1/security/reset_password', params: params
+    end
+    let(:params) do
+      {
+        reset_password_token: reset_password_token,
+        password: password
+      }
+    end
+    let(:reset_password_token) { '' }
+    let(:password) { '' }
+
+    context 'when params are blank' do
+      it 'renders 400 error' do
+        do_request
+        expect(response.status).to eq(400)
+        expect_body.to eq(error: 'reset_password_token is empty, password is empty')
+      end
+    end
+
+    context 'when reset_password_token is invalid' do
+      let(:reset_password_token) { 'invalid' }
+      let(:password) { 'password' }
+
+      it 'renders 404 error' do
+        do_request
+        expect(response.status).to eq(404)
+        expect_body.to eq(error: 'Record is not found')
+      end
+    end
+
+    context 'when reset_password_token is valid' do
+      let!(:account) { create(:account) }
+      let(:reset_password_token) { account.send_reset_password_instructions }
+      let(:password) { 'password' }
+
+      it 'resets a password' do
+        expect { do_request }.to change { account.reload.encrypted_password }
+        expect(response.status).to eq(200)
       end
     end
   end

@@ -1,19 +1,9 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-
 module API
   module V1
     class Documents < Grape::API
       helpers Doorkeeper::Grape::Helpers
-
-      before do
-        doorkeeper_authorize!
-
-        def current_account
-          Account.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-        end
-      end
 
       desc 'Documents related routes'
       resource :documents do

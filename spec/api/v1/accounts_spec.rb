@@ -108,22 +108,28 @@ describe 'Api::V1::Accounts' do
       expect(response.status).to eq(200)
     end
 
-    it 'Checks if credentials are valid and returns error, cause they are not' do
+    it 'renders 401 when old password is invalid' do
       put url, params: params1, headers: headers
-      expect(response.status).to eq(401)
       expect(response.body).to eq('{"error":"401 Unauthorized"}')
-
-      put url
       expect(response.status).to eq(401)
+    end
+
+    it 'renders 401 without auth header' do
+      put url, params: params0
       expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect(response.status).to eq(401)
+    end
 
+    it 'renders 400 when new password is missing' do
       put url, params: params0.except(:new_password), headers: headers
-      expect(response.status).to eq(400)
       expect(response.body).to eq('{"error":"new_password is missing"}')
-
-      put url, params: params0.except(:old_password), headers: headers
       expect(response.status).to eq(400)
+    end
+
+    it 'renders 400 is old password is missing' do
+      put url, params: params0.except(:old_password), headers: headers
       expect(response.body).to eq('{"error":"old_password is missing"}')
+      expect(response.status).to eq(400)
     end
   end
 end
