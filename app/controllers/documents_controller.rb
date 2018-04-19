@@ -1,24 +1,13 @@
 # frozen_string_literal: true
 
 class DocumentsController < ApplicationController
-  before_action :set_document, only: %i[show edit update destroy]
   before_action :authenticate_account!
+  before_action :check_account_level
 
-  # GET /documents
-  def index
-    if current_account.level < 2
-      redirect_to new_phone_path
-    else
-      @documents = current_account.documents
-    end
-  end
-
-  # GET /documents/new
   def new
-    @document = Document.new
+    @document = current_account.documents.new
   end
 
-  # POST /documents
   def create
     @document = current_account.documents.new(document_params)
     if @document.save
@@ -29,19 +18,14 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # DELETE /documents/1
-  def destroy
-    @document.destroy
-    redirect_to documents_url, notice: 'Document was successfully destroyed.'
+private
+
+  def check_account_level
+    redirect_to new_phone_path if current_account.level < 2
   end
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_document
-    @document = Document.find(params[:id])
-  end
-
-  # Only allow a trusted parameter "white list" through.
   def document_params
-    params.require(:document).permit(:account_id, :doc_type, :doc_number, :doc_expire, :upload)
+    params.require(:document)
+          .permit(:doc_type, :doc_number, :doc_expire, :upload)
   end
 end

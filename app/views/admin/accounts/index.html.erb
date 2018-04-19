@@ -21,11 +21,11 @@
           <td><%= account.email %></td>
           <td><span class=" badge <%= badge_by_role(account.role) %>"> <%= account.role %> </span></td>
           <td><%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %></td>
-          <% if can? :update, Account %>
+          <% if can? :update, account %>
             <td><%= link_to 'Edit', edit_admin_account_path(account.id),  class: 'btn btn-primary btn-sm'  %></td>
           <% end %>
 
-          <% if can? :destroy, Account %>
+          <% if can? :destroy, account %>
             <td><%= link_to 'Delete', admin_account_path(account.id), method: :delete, class: 'btn btn-danger btn-sm', data: {confirm: 'Are you sure?'} %></td>
           <% end %>
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SecurityController < ApplicationController
-  before_action :check_otp_enabled, only: :enable
+  before_action :check_otp_enabled
   before_action :check_vault_availability
 
   def enable

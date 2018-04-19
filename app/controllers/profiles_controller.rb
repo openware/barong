@@ -1,25 +1,18 @@
 # frozen_string_literal: true
 
 class ProfilesController < ApplicationController
-  before_action :set_profile, only: %i[edit update destroy]
   before_action :authenticate_account!
+  before_action :redirect_if_profile_created
+  before_action :check_account_level
 
-  # GET /profiles/new
   def new
-    redirect_to new_document_path if Profile.find_by_account_id(current_account.id)
-    if current_account.level < 2
-      redirect_to new_phone_path
-    else
-      @profile = Profile.new
-    end
+    @profile = current_account.build_profile
   end
 
-  # POST /profiles
   def create
-    begin
-      @profile = Profile.new(profile_params)
-      @profile.update!(account_id: current_account.id)
-    rescue ActiveRecord::RecordInvalid
+    @profile = current_account.create_profile(profile_params)
+
+    if @profile.errors.any?
       flash[:alert] = 'Some fields are empty or invalid'
       return render :new
     end
@@ -27,19 +20,19 @@ class ProfilesController < ApplicationController
     redirect_to new_document_path
   end
 
-  # DELETE /profiles/1
-  def destroy
-    @profile.destroy
-    redirect_to profiles_url, notice: 'Profile was successfully destroyed.'
+private
+
+  def redirect_if_profile_created
+    redirect_to new_document_path if current_account.profile
   end
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_profile
-    @profile = Profile.find(params[:id])
+  def check_account_level
+    redirect_to new_phone_path if current_account.level < 2
   end
 
-  # Only allow a trusted parameter "white list" through.
   def profile_params
-    params.require(:profile).permit(:account_id, :first_name, :last_name, :dob, :address, :postcode, :city, :country)
+    params.require(:profile)
+          .permit(:first_name, :last_name,
+                  :dob, :address, :postcode, :city, :country)
   end
 end

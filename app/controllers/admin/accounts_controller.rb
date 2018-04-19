@@ -2,17 +2,8 @@
 
 module Admin
   class AccountsController < ModuleController
-
     def index
       @accounts = Account.page(params[:page])
-    end
-
-    def destroy
-      return if params[:id] == current_user.id.to_s
-      Account.find(params[:id]).destroy!
-      respond_to do |format|
-        format.html { redirect_to admin_accounts_url, notice: 'Successfully destroyed.' }
-      end
     end
 
     def edit
@@ -25,11 +16,17 @@ module Admin
       redirect_to admin_accounts_url
     end
 
+    def destroy
+      Account.find(params[:id]).destroy!
+      respond_to do |format|
+        format.html { redirect_to admin_accounts_url, notice: 'Successfully destroyed.' }
+      end
+    end
+
   private
 
     def account_params
       params.require(:account).permit(:role)
     end
-
   end
 end
