@@ -56,7 +56,7 @@ describe 'Api::V1::Security' do
 
     context 'when otp do not enabled' do
       it 'generates qr code' do
-        expect(Vault::TOTP).to receive(:safe_create) { true }
+        expect(Vault::TOTP).to receive(:create) { true }
         do_request
         expect(response.status).to eq(201)
       end

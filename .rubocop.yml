@@ -13,6 +13,9 @@ Metrics/LineLength:
   Enabled: false
   Max: 110
 
+Style/IfUnlessModifier:
+  Enabled: false
+
 Layout/CaseIndentation:
   EnforcedStyle: end
   IndentOneStep: true
