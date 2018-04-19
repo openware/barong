@@ -26,14 +26,12 @@ RSpec.describe Profile, type: :model do
     it 'sends notification emails' do
       profile.update(state: 'approved')
       expect(profile.account.level).to eq(3)
-      expect(mailer_deliveries.count).to eq(1)
       expect(mailer_deliveries.last.to).to eq([profile.account.email])
       expect(mailer_deliveries.last.subject).to eq('Your identity was approved')
       expect(mailer_deliveries.last.from).to eq([ENV['SENDER_EMAIL']])
 
       profile.update(state: 'rejected')
       expect(profile.account.level).to eq(2)
-      expect(mailer_deliveries.count).to eq(2)
       expect(mailer_deliveries.last.to).to eq([profile.account.email])
       expect(mailer_deliveries.last.subject).to eq('Your identity was rejected')
     end
