@@ -13,9 +13,12 @@ Metrics/LineLength:
   Enabled: false
   Max: 110
 
+Style/IfUnlessModifier:
+  Enabled: false
+
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - "spec/**/*"  
+    - "spec/**/*"
 
 Layout/CaseIndentation:
   EnforcedStyle: end

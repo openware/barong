@@ -1,21 +1,9 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-
 module API
   module V1
     # Responsible for CRUD for labes
     class Labels < Grape::API
-      helpers Doorkeeper::Grape::Helpers
-
-      before { doorkeeper_authorize! }
-
-      before do
-        def current_account
-          Account.find(doorkeeper_token.resource_owner_id)
-        end
-      end
-
       resource :labels do
         desc 'List all labels for current account.'
         get do

@@ -9,6 +9,6 @@ FactoryBot.define do
     address { Faker::Address.street_address }
     city { Faker::RickAndMorty.location }
     country { Faker::Simpsons.location }
-    state { 'approved' }
+    state { 'validated' }
   end
 end

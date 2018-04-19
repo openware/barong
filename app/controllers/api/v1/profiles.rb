@@ -5,20 +5,10 @@ require 'doorkeeper/grape/helpers'
 module API
   module V1
     class Profiles < Grape::API
-      helpers Doorkeeper::Grape::Helpers
-
-      before do
-        doorkeeper_authorize!
-
-        def current_account
-          Account.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-        end
-      end
-
       desc 'Profile related routes'
       resource :profiles do
         desc 'Return profile of current resource owner'
-        get do
+        get '/me' do
           current_account.profile.as_json(only: %i[first_name last_name dob address country city postcode state metadata])
         end
 

@@ -1,33 +1,8 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-
 module API
   module V1
     class Phones < Grape::API
-      helpers Doorkeeper::Grape::Helpers
-
-      before do
-        doorkeeper_authorize!
-
-        def current_account
-          @current_account = Account.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-        end
-
-        def phone_valid?(phone_number)
-          unless PhoneUtils.valid?(phone_number)
-            error!('Phone number is invalid', 400)
-            return false
-          end
-
-          if Phone.verified.exists?(number: phone_number)
-            error!('Phone number is already exists', 400)
-            return false
-          end
-          true
-        end
-      end
-
       desc 'Phone related routes'
       resource :phones do
         desc 'Add new phone'
