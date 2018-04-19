@@ -16,6 +16,10 @@ Metrics/LineLength:
 Style/IfUnlessModifier:
   Enabled: false
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
+
 Layout/CaseIndentation:
   EnforcedStyle: end
   IndentOneStep: true

@@ -15,7 +15,7 @@ module API
 
       do_not_route_options!
 
-      rescue_from(ActiveRecord::RecordNotFound) { error!(:not_found, 404) }
+      rescue_from(ActiveRecord::RecordNotFound) { error!('Record is not found', 404) }
       rescue_from(Vault::VaultError) do |error|
         error_message = error.message
         Rails.logger.error "#{error.class}: #{error_message}"

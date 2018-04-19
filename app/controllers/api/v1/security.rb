@@ -50,6 +50,40 @@ module API
             error!('Your code is invalid', 422)
           end
         end
+
+        desc 'Send reset password instructions'
+        params do
+          requires :email, type: String, desc: 'account email', allow_blank: false
+        end
+        post '/reset_password' do
+          account = Account.find_by!(declared(params))
+          account.send_reset_password_instructions
+
+          if account.errors.any?
+            error!(current_account.errors.full_messages.to_sentence, 422)
+          end
+        end
+
+        desc 'Sets new account password'
+        params do
+          requires :reset_password_token, type: String,
+                                          desc: 'Token from email',
+                                          allow_blank: false
+          requires :password, type: String,
+                              desc: 'Account password',
+                              allow_blank: false
+        end
+        put '/reset_password' do
+          required_params = declared(params)
+                            .merge(password_confirmation: params[:password])
+
+          account = Account.reset_password_by_token(required_params)
+          raise ActiveRecord::RecordNotFound unless account.persisted?
+
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+        end
       end
     end
   end
