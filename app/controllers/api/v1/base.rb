@@ -11,7 +11,7 @@ module API
       mount API::V1::Security
       mount API::V1::Documents
       mount API::V1::Phones
-      mount API::V1::Session
+      mount API::V1::Sessions
       mount API::V1::Labels
 
       add_swagger_documentation base_path: '/api',

@@ -57,8 +57,8 @@ describe 'Api::V1::Profiles' do
     end
   end
 
-  describe 'GET /api/v1/profiles' do
-    let!(:url) { '/api/v1/profiles' }
+  describe 'GET /api/v1/profiles/me' do
+    let!(:url) { '/api/v1/profiles/me' }
     let!(:request_params) do
       {
         first_name: Faker::Name.first_name,
@@ -72,8 +72,8 @@ describe 'Api::V1::Profiles' do
     end
 
     it 'returns user profile data with metadata' do
-      post url, params: request_params.merge(optional_params),
-                headers: auth_header
+      post '/api/v1/profiles', params: request_params.merge(optional_params),
+                               headers: auth_header
       expect(response.status).to eq(201)
 
       get url, headers: auth_header
