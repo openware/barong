@@ -62,7 +62,7 @@ def bump_from_master_branch
 
   # Increment patch version number, tag, and push.
   candidate_version = Gem::Version.new(latest_version.segments.dup.tap { |s| s[2] += 1 }.join("."))
-  tag_n_push(candidate_version.to_s, name: 'master') unless versions.include?(candidate_version)
+  tag_n_push(candidate_version.to_s, name: "master") unless versions.include?(candidate_version)
 end
 
 #
@@ -96,6 +96,7 @@ end
 #
 # @param tag [String]
 def tag_n_push(tag, branch)
+  puts "tag_n_push(tag, branch)"
   File.open "lib/barong/version.rb", "w" do |f|
     f.write <<-RUBY
 module Barong
@@ -198,8 +199,9 @@ bump &&= ENV["TRAVIS_TAG"].to_s.empty?
 bump &&= !tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
 
 if bump
+  puts 'Going to bump for: ' + ENV["TRAVIS_BRANCH"]
   if ENV["TRAVIS_BRANCH"] == "master"
-    bump_from_master_branch
+    bump_from_master_branch if ENV["INCREMENT_PATCH_LEVEL_ON_MASTER"]
   else
     bump_from_version_specific_branch(ENV["TRAVIS_BRANCH"])
   end

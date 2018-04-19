@@ -7,7 +7,13 @@ language: ruby
 cache: bundler
 
 env:
-  - RAILS_ENV=test RAKE_ENV=test DISPLAY=:0.0 DATABASE_PASSWORD="" BOT_USERNAME=kite-bot BOT_NAME="Kite Bot" BOT_EMAIL=kite-bot@heliostech.fr
+  - RAILS_ENV=test
+    RAKE_ENV=test
+    DISPLAY=:0.0
+    DATABASE_PASSWORD=""
+    BOT_USERNAME=kite-bot
+    BOT_NAME="Kite Bot"
+    BOT_EMAIL=kite-bot@heliostech.fr
 
 services:
   - mysql
