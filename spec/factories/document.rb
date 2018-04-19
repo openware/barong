@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :document do
-    profile
+    account
 
-    doc_type 'passport'
+    doc_type 'Passport'
     doc_number { Faker::Code.asin }
     doc_expire { Faker::Business.credit_card_expiry_date }
 

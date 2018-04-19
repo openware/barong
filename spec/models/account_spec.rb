@@ -11,16 +11,18 @@ RSpec.describe Account, type: :model do
   ## Test of relationships
   it { should have_one(:profile).dependent(:destroy) }
 
+  let(:uploaded_file) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+
   context 'Account with 2 or more documents' do
     it do
       account = Account.create!(email: 'test@mail.com', password: '123123')
       expect(Account.count).to eq 1
-      document1 = account.documents.create!(upload: File.open('app/assets/images/background.jpg'),
-                                            doc_type: 'MyString',
+      document1 = account.documents.create!(upload: uploaded_file,
+                                            doc_type: 'Passport',
                                             doc_number: 'MyString',
                                             doc_expire: '01-01-2020')
-      document2 = account.documents.create!(upload: File.open('app/assets/images/background.jpg'),
-                                            doc_type: 'MyString',
+      document2 = account.documents.create!(upload: uploaded_file,
+                                            doc_type: 'Passport',
                                             doc_number: 'MyString',
                                             doc_expire: '01-02-2020')
       expect(account.reload.documents).to eq([document1, document2])
