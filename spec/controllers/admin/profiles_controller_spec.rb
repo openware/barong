@@ -61,8 +61,8 @@ describe Admin::ProfilesController, type: :controller do
           expect(response).to redirect_to admin_profile_path
         end
 
-        it 'does not change a level' do
-          expect { do_request }.to_not change { profile.account.reload.level }
+        it 'change level to 2' do
+          expect { do_request }.to change { profile.account.reload.level }.to(2)
         end
       end
     end
