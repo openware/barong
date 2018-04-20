@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'phone_utils'
+
 class PhonesController < ApplicationController
   before_action :authenticate_account!
   before_action :check_account_level
