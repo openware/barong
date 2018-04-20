@@ -185,20 +185,34 @@ def generic_semver?(version)
   version.segments.count == 3 && version.segments.all? { |segment| segment.match?(/\A[0-9]+\z/) }
 end
 
-# Build must not run on a fork.
-bump   = ENV["TRAVIS_REPO_SLUG"] == repository_slug
-# Skip PRs.
-bump &&= ENV["TRAVIS_PULL_REQUEST"] == "false"
-# Build must run on branch.
-bump &&= !ENV["TRAVIS_BRANCH"].to_s.empty?
-# GitHub API key must be available.
-bump &&= !ENV["GITHUB_API_KEY"].to_s.empty?
-# Build must not run on tag.
-bump &&= ENV["TRAVIS_TAG"].to_s.empty?
-# Ensure this commit is not tagged.
-bump &&= !tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
+def check_eligible
+  begin
+    raise ArgumentError, 'Build must not run on a fork.' \
+      if ENV["TRAVIS_REPO_SLUG"] != repository_slug
 
-if bump
+    raise ArgumentError, 'Skip pull requests.' \
+      if ENV["TRAVIS_PULL_REQUEST"] == "true"
+
+    raise ArgumentError, 'Build must run on branch' \
+      if ENV["TRAVIS_BRANCH"].to_s.empty?
+
+    raise ArgumentError, 'GitHub API key must be available.' \
+      if ENV["GITHUB_API_KEY"].to_s.empty?
+
+    raise ArgumentError, 'Build must not run on tag' \
+      unless ENV["TRAVIS_TAG"].to_s.empty?
+
+    raise ArgumentError, 'Ensure this commit is not tagged.' \
+      if tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
+
+    rescue ArgumentError => e
+      puts "Build not eligible: #{e.message}"
+      return false
+  end
+  return true
+end
+
+if check_eligible
   puts 'Going to bump for: ' + ENV["TRAVIS_BRANCH"]
   if ENV["TRAVIS_BRANCH"] == "master"
     bump_from_master_branch if ENV["INCREMENT_PATCH_LEVEL_ON_MASTER"]
