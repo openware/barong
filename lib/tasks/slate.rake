@@ -9,12 +9,13 @@ namespace :slate do
       else
         protocol = ENV.fetch('URL_SCHEME', 'http')
         host = ENV.fetch('URL_HOST', 'localhost:3000')
-        "#{protocol}://#{host}/api/swagger_doc"
+        "#{protocol}://#{host}/api/v1/swagger_doc"
       end
     outfile = Rails.root.join('docs', 'index.md').to_s
+    config_file = Rails.root.join('.widdershins.json').to_s
     executable = 'node node_modules/widdershins/widdershins'
 
-    cmd = "#{executable} #{swagger_input_file_or_url} --outfile=#{outfile} --verbose"
+    cmd = "#{executable} #{swagger_input_file_or_url} --outfile=#{outfile} --verbose -e #{config_file}"
     puts cmd
 
     puts(system(cmd) ? "Success. Check #{outfile}" : 'Error')
