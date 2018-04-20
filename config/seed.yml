@@ -1,5 +1,5 @@
 admin:
-  email:          "admin@barong.io"
+  email:    admin@barong.io
 applications:
   - name:         "Local Peatio"
     redirect_uri: "http://localhost:8000/auth/barong/callback"

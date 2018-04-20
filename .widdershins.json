@@ -1,0 +1,21 @@
+{
+  "codeSamples": true,
+  "httpsnippet": false,
+  "language_tabs": [
+    { "http": "HTTP" },
+    { "shell": "Curl" },
+    { "javascript": "JavaScript" }
+  ],
+  "language_clients": [
+    { "shell": "curl" },
+    { "node": "request" },
+    { "java": "unirest" }
+  ],
+  "theme": "darkula",
+  "search": true,
+  "sample": true,
+  "schema": true,
+  "discovery": true,
+  "summary": true,
+  "headings": 2
+}

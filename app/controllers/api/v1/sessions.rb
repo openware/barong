@@ -2,7 +2,7 @@
 
 module API
   module V1
-    class Session < Grape::API
+    class Sessions < Grape::API
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session'

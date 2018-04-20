@@ -9,14 +9,6 @@ FactoryBot.define do
     address { Faker::Address.street_address }
     city { Faker::RickAndMorty.location }
     country { Faker::Simpsons.location }
-    state { 'validated' }
-
-    transient do
-      documents_count 1
-    end
-
-    after(:create) do |profile, evaluator|
-      create_list(:document, evaluator.documents_count, profile: profile)
-    end
+    state { 'pending' }
   end
 end

@@ -10,6 +10,8 @@ class Account < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable
 
+  acts_as_eventable prefix: 'account', on: %i[create update]
+
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
   has_many :documents, dependent: :destroy
@@ -55,6 +57,17 @@ class Account < ApplicationRecord
 
   def random_uid
     "ID#{SecureRandom.hex(5).upcase}"
+  end
+
+  def as_json_for_event_api
+    {
+      uid: uid,
+      email: email,
+      level: level,
+      otp_enabled: otp_enabled,
+      created_at: created_at&.iso8601,
+      updated_at: updated_at&.iso8601
+    }
   end
 end
 
