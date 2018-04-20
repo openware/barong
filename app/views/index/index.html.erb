@@ -7,11 +7,10 @@
         <div class="d-flex justify-content-center">
           <% if current_account.level == 1 %>
             <%= link_to 'Verify your phone', new_phone_path, class: 'btn btn-primary btn-block mb-4' %>
-          <% end %>
-          <% if current_account.level == 3%>
-            <h2 class="wrap"> Your identity has been successfully approved</h2>
+          <% elsif current_account.level == 2 %>
+            <%= render partial: 'profile_review_states' %>
           <% else %>
-            <h2 class="wrap"> Pending compliance officer approval </h2>
+            <h2 class="wrap"> Your identity has been successfully approved</h2>
           <% end %>
         </div>
       </div>
