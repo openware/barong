@@ -38,3 +38,4 @@ exclude_patterns:
   - ci/bump.rb
   - node_modules/
   - vendor/
+  - config/initializers/*
