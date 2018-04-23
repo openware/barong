@@ -20,6 +20,8 @@ module API
       end
 
       def phone_valid?(phone_number)
+        phone_number = PhoneUtils.sanitize(phone_number)
+
         unless PhoneUtils.valid?(phone_number)
           error!('Phone number is invalid', 400)
           return false

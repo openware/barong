@@ -19,6 +19,7 @@ module API
           error!(phone.errors, 422) if phone.errors.any?
 
           PhoneUtils.send_confirmation_sms(phone)
+          { message: 'Code was sent successfully' }
         end
 
         desc 'Verify a phone'
@@ -42,6 +43,7 @@ module API
 
           phone.update(validated_at: Time.current)
           current_account.level_set(:phone)
+          { message: 'Phone was verified successfully' }
         end
       end
     end

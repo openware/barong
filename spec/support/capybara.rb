@@ -5,6 +5,10 @@ Capybara::Screenshot.prune_strategy = :keep_last_run
 
 screen_size = [1280, 800]
 
+Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+  driver.browser.save_screenshot(path)
+end
+
 if ENV.key?('SELENIUM_HOST')
   Capybara.register_driver :chrome do |app|
     Capybara::Selenium::Driver.new \
