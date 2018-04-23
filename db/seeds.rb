@@ -10,8 +10,8 @@ if Account.find_by(email: seed['admin']['email']).nil?
   )
 
   # Confirm admin account
-  admin.update(confirmed_at: Time.now)
-  admin.level_set(:mail)
+  admin.confirm
+  admin.level_set(:identity)
 
   puts "Admin email: #{admin.email}"
   puts "Admin password: #{admin.password}"
