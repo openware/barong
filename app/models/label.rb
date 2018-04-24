@@ -4,6 +4,9 @@
 class Label < ApplicationRecord
   belongs_to :account
 
+  LEVELS = %w[email_verified phone_verified
+              profile_filled documents_checked unlimited].freeze
+
   SCOPES =
     HashWithIndifferentAccess.new(
       public: 'public', private: 'private'
@@ -26,6 +29,18 @@ class Label < ApplicationRecord
   validates :value,
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ }
+
+  class << self
+    def set_level_for_account(account, level)
+      unless LEVELS.include?(level)
+        raise ArgumentError, "Allowed levels are #{LEVELS}"
+      end
+
+      account.labels.where(scope: 'private')
+             .find_or_create_by(key: 'account_level')
+             .update!(value: level)
+    end
+  end
 end
 
 # == Schema Information

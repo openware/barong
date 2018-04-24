@@ -11,6 +11,7 @@ class Profile < ApplicationRecord
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
   validates :state, inclusion: { in: STATES }
   after_update :set_level_if_state_changed
+  after_create :set_account_level
 
   def as_json_for_event_api
     {
@@ -31,9 +32,14 @@ class Profile < ApplicationRecord
 
 private
 
+  def set_account_level
+    Label.set_level_for_account(account, 'profile_filled')
+  end
+
   def set_level_if_state_changed
     if saved_change_to_state? && state == 'rejected'
       account.level_set(:phone)
+      Label.set_level_for_account(account, 'profile_filled')
       ProfileReviewMailer.rejected(account).deliver_now
     elsif saved_change_to_state? && state == 'approved'
       account.level_set(:identity)
