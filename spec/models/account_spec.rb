@@ -30,4 +30,36 @@ RSpec.describe Account, type: :model do
 
     after(:all) { Account.destroy_all }
   end
+
+  describe '#set_level' do
+    let!(:account) { create(:account, level: 0) }
+    let(:account_level) do
+      Label.find_by(account_id: account.id, key: 'account_level')&.value
+    end
+
+    before { account.level_set(level) }
+
+    context 'when mail' do
+      let(:level) { :mail }
+      it { expect(account.reload.level).to eq 1 }
+      it { expect(account_level).to eq 'email_verified' }
+    end
+
+    context 'when phone' do
+      let(:level) { :phone }
+      it { expect(account.reload.level).to eq 2 }
+      it { expect(account_level).to eq 'phone_verified' }
+    end
+
+    context 'when identity' do
+      let(:level) { :identity }
+      it { expect(account.reload.level).to eq 3 }
+      it { expect(account_level).to eq 'documents_checked' }
+    end
+
+    context 'when address' do
+      let(:level) { :address }
+      it { expect(account.reload.level).to eq 4 }
+    end
+  end
 end

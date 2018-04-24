@@ -36,10 +36,13 @@ class Account < ApplicationRecord
     case step
       when :mail
         self.level = 1
+        Label.set_level_for_account(self, 'email_verified')
       when :phone
         self.level = 2
+        Label.set_level_for_account(self, 'phone_verified')
       when :identity
         self.level = 3
+        Label.set_level_for_account(self, 'documents_checked')
       when :address
         self.level = 4
     end
