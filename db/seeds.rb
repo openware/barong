@@ -25,3 +25,9 @@ seed['applications'].each do |params|
   app = Doorkeeper::Application.create(params)
   puts app.to_json
 end
+
+# Create level mappings from seed
+seed['level_mappings'].each do |params|
+  next if LevelMapping.exists?(params)
+  LevelMapping.create!(params)
+end
