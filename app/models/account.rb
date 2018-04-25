@@ -32,6 +32,24 @@ class Account < ApplicationRecord
     save
   end
 
+  def update_level
+    account_level = 0
+
+    select_level_labels.each_with_index do |lvl, i|
+      break unless lvl.id == i + 1
+      account_level += 1
+    end
+
+    update(level: account_level)
+  end
+
+  def select_level_labels
+    Level.joins(:label)
+         .where(labels: { account_id: id })
+         .where('labels.value = levels.value')
+         .order(:id)
+  end
+
   def level_set(step)
     case step
       when :mail

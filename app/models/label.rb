@@ -26,6 +26,17 @@ class Label < ApplicationRecord
   validates :value,
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ }
+
+  after_commit :change_level_if_label_mapped, on: [:create, :update]
+  after_destroy :change_level_if_label_mapped
+
+private
+
+  def change_level_if_label_mapped
+    level = Level.find_by(key: key)
+    return unless level
+    account.update_level
+  end
 end
 
 # == Schema Information

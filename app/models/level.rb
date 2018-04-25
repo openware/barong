@@ -3,6 +3,7 @@
 class Level < ApplicationRecord
   validates :key, :value, :description, presence: true
   validates :value, uniqueness: { scope: :key }
+  belongs_to :label, foreign_key: :key, primary_key: :key
 end
 
 # == Schema Information
