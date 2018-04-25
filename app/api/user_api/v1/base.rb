@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API
+module UserApi
   module V1
     class Base < Grape::API
       version 'v1', using: :path
@@ -36,13 +36,13 @@ module API
         error!('Something went wrong', 500)
       end
 
-      mount API::V1::Accounts
-      mount API::V1::Profiles
-      mount API::V1::Security
-      mount API::V1::Documents
-      mount API::V1::Phones
-      mount API::V1::Sessions
-      mount API::V1::Labels
+      mount UserApi::V1::Accounts
+      mount UserApi::V1::Profiles
+      mount UserApi::V1::Security
+      mount UserApi::V1::Documents
+      mount UserApi::V1::Phones
+      mount UserApi::V1::Sessions
+      mount UserApi::V1::Labels
 
       add_swagger_documentation base_path: '/api',
                                 info: {
@@ -50,6 +50,7 @@ module API
                                   description: 'API for barong OAuth server '
                                 },
                                 api_version: 'v1',
+                                doc_version: Barong::VERSION,
                                 hide_format: true,
                                 hide_documentation_path: true,
                                 mount_path: '/swagger_doc'

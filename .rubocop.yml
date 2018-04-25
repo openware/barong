@@ -63,6 +63,7 @@ Style/Documentation:
     - app/helpers/**/*
     - app/mailers/**/*
     - config/application.rb
+    - app/api/**/*
 
 Performance/TimesMap:
   Exclude:

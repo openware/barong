@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module API
+module ManagementAPI
   class Base < Grape::API
-    mount API::V1::Base
+    mount ManagementAPI::V1::Base
   end
 end

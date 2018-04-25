@@ -2,7 +2,8 @@
 
 Rails.application.routes.draw do
   use_doorkeeper
-  mount API::Base, at: '/api'
+  mount UserApi::Base, at: '/api'
+  mount ManagementAPI::V1::Base, at: '/management_api'
 
   devise_for :accounts, controllers: { sessions: :sessions,
                                        confirmations: :confirmations }

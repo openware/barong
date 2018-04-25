@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API
+module UserApi
   module V1
     class Sessions < Grape::API
       desc 'Session related routes'

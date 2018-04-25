@@ -2,7 +2,7 @@
 
 require 'doorkeeper/grape/helpers'
 
-module API
+module UserApi
   module V1
     module Helpers
       include Doorkeeper::Grape::Helpers
