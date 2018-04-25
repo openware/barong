@@ -24,4 +24,10 @@ module ViewHelper
         'badge-info'
     end
   end
+
+  def self.with_frontend_domain(params)
+    frontend_domain = ENV['FRONTEND_DOMAIN']
+    return params if frontend_domain.blank?
+    params.merge(domain: frontend_domain)
+  end
 end

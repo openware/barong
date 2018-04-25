@@ -38,6 +38,19 @@ module API
           account = Account.create(declared(params))
           error!(account.errors.full_messages, 422) unless account.persisted?
         end
+
+        desc 'Confirms new account'
+        params do
+          requires :confirmation_token, type: String,
+                                        desc: 'Token from email',
+                                        allow_blank: false
+        end
+        post '/confirm' do
+          account = Account.confirm_by_token(params[:confirmation_token])
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+        end
       end
     end
   end

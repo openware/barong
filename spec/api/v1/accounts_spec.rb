@@ -132,4 +132,50 @@ describe 'Api::V1::Accounts' do
       expect(response.status).to eq(400)
     end
   end
+
+  describe 'POST /api/v1/accounts/confirm' do
+    let(:do_request) do
+      post '/api/v1/accounts/confirm', params: { confirmation_token: confirmation_token }
+    end
+
+    context 'when token is blank' do
+      let(:confirmation_token) { '' }
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(error: 'confirmation_token is empty')
+      end
+    end
+
+    context 'when token is invalid' do
+      let(:confirmation_token) { 'invalid' }
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Confirmation token is invalid')
+      end
+    end
+
+    context 'when account is confirmed' do
+      let!(:account) { create(:account, confirmed_at: nil) }
+      let(:confirmation_token) { account.confirmation_token }
+
+      it 'renders an error' do
+        account.confirm
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Email was already confirmed, please try signing in')
+      end
+    end
+
+    context 'when account is not confirmed' do
+      let!(:account) { create(:account, confirmed_at: nil) }
+      let(:confirmation_token) { account.confirmation_token }
+
+      it 'confirms an account' do
+        do_request
+        expect_status_to_eq 201
+      end
+    end
+  end
 end
