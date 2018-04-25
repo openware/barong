@@ -33,16 +33,39 @@ describe 'Api::V1::Phones' do
       end
     end
 
-    context 'when phone is already exists and verified' do
+    context 'when phone is already exists' do
       let!(:phone) do
-        create(:phone, validated_at: 1.minutes.ago)
+        create(:phone, validated_at: validated_at)
       end
       let(:phone_number) { phone.number }
 
-      it 'renders an error' do
-        do_request
-        expect_body.to eq(error: 'Phone number is already exists')
-        expect_status.to eq 400
+      context 'when phone verified' do
+        let(:validated_at) { 1.minutes.ago }
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(error: 'Phone number is already exists')
+          expect_status.to eq 400
+        end
+      end
+
+      context 'when phone verified but number is not sanitized' do
+        let(:validated_at) { 1.minutes.ago }
+        let(:phone_number) { "++#{phone.number}" }
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(error: 'Phone number is already exists')
+          expect_status.to eq 400
+        end
+      end
+
+      context 'when phone is not verified' do
+        let(:validated_at) { nil }
+
+        it 'assigns a phone to account and send sms' do
+          do_request
+        end
       end
     end
 
@@ -52,6 +75,7 @@ describe 'Api::V1::Phones' do
       it 'creates a phone and send sms' do
         do_request
         expect_status.to eq 201
+        expect_body.to eq(message: 'Code was sent successfully')
       end
     end
   end
@@ -137,6 +161,7 @@ describe 'Api::V1::Phones' do
         expect_status.to eq 201
         expect(phone.reload.validated_at).to be
         expect(current_account.reload.level).to eq 2
+        expect_body.to eq(message: 'Phone was verified successfully')
       end
     end
   end

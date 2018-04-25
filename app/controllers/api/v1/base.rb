@@ -22,6 +22,20 @@ module API
         error!(error_message, 500)
       end
 
+      rescue_from(Twilio::REST::RestError) do |error|
+        Rails.logger.error "Twilio Client Error: #{error.message}"
+        error!('Something wrong with Twilio Client', 500)
+      end
+
+      rescue_from(Grape::Exceptions::ValidationErrors) do |error|
+        error!(error.message, 400)
+      end
+
+      rescue_from(:all) do |error|
+        Rails.logger.error "#{error.class}: #{error.message}"
+        error!('Something went wrong', 500)
+      end
+
       mount API::V1::Accounts
       mount API::V1::Profiles
       mount API::V1::Security

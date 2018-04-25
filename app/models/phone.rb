@@ -35,7 +35,7 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180404153832
+# Schema version: 20180423125629
 #
 # Table name: phones
 #
@@ -43,13 +43,13 @@ end
 #  country      :string(255)
 #  number       :string(255)      not null
 #  validated_at :datetime
+#  code         :string(5)
 #  account_id   :integer          unsigned, not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  code         :string(5)
 #
 # Indexes
 #
 #  index_phones_on_account_id  (account_id)
-#  index_phones_on_number      (number) UNIQUE
+#  index_phones_on_number      (number)
 #

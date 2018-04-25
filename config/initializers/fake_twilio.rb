@@ -1,3 +1,3 @@
-if Rails.env.test?
+if Rails.env.development?
   Twilio::REST::Client = FakeSMS
 end
