@@ -6,3 +6,16 @@ applications:
     uid:          "a68be319fca51caca60eed5711226e568bd1c1d13ff452b945515f1a6ffbaca4"
     secret:       "ab80e2c843861c4d23e63f5472cd1c9ee6f55e388863e21f22b03a9093977f29"
     skipauth:     true
+level_mappings:
+  - label_key: email
+    label_value: verified
+    account_level: 1
+  - label_key: phone
+    label_value: verified
+    account_level: 2
+  - label_key: identity
+    label_value: verified
+    account_level: 3
+  - label_key: document
+    label_value: verified
+    account_level: 4

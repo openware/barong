@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180423125629) do
+ActiveRecord::Schema.define(version: 20180425114738) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -64,6 +64,15 @@ ActiveRecord::Schema.define(version: 20180423125629) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_labels_on_account_id"
     t.index ["key", "value", "account_id"], name: "index_labels_on_key_and_value_and_account_id", unique: true
+  end
+
+  create_table "level_mappings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "account_level", null: false
+    t.string "label_key", null: false
+    t.string "label_value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["label_key", "label_value"], name: "index_level_mappings_on_label_key_and_label_value", unique: true
   end
 
   create_table "oauth_access_grants", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
