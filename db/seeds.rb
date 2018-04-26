@@ -82,6 +82,12 @@ seeds['applications'].each do |seed|
   result[:applications].push(app.as_json(only: %i[name redirect_uri uid secret]))
 end
 
+logger.info '---'
+logger.info 'Seeding levels'
+seeds['levels'].each do |level_data|
+  Level.create!(level_data)
+end
+
 # print well-formated json to stderr (easy to read in the commant output)
 logger.info "Result:\n#{JSON.pretty_generate(result)}"
 

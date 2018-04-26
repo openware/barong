@@ -1,0 +1,21 @@
+admin:
+  email:    admin@barong.io
+applications:
+  - name:         "Local Peatio"
+    redirect_uri: "http://localhost:8000/auth/barong/callback"
+    uid:          "a68be319fca51caca60eed5711226e568bd1c1d13ff452b945515f1a6ffbaca4"
+    secret:       "ab80e2c843861c4d23e63f5472cd1c9ee6f55e388863e21f22b03a9093977f29"
+    skipauth:     true
+levels:
+  - key: email
+    value: verified
+    description: "User clicked on the confirmation link"
+  - key: phone
+    value: verified
+    description: "User entered a valid code from sms"
+  - key: identity
+    value: verified
+    description: "User identity is not in sanction list"
+  - key: document
+    value: verified
+    description: "User personal documents have been verified"
