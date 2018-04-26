@@ -27,14 +27,13 @@ class Label < ApplicationRecord
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ }
 
-  after_commit :change_level_if_label_mapped, on: [:create, :update]
-  after_destroy :change_level_if_label_mapped
+  after_commit :update_level_if_label_defined, on: [:create, :update]
+  after_destroy :update_level_if_label_defined
 
 private
 
-  def change_level_if_label_mapped
-    level = Level.find_by(key: key)
-    return unless level
+  def update_level_if_label_defined
+    return unless Level.exists?(key: key)
     account.update_level
   end
 end
