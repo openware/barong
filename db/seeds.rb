@@ -1,27 +1,89 @@
 # frozen_string_literal: true
 
-seed = YAML.load(File.open(Rails.root.join('config', 'seed.yml')))
+seeds = YAML.safe_load(
+  ERB.new(
+    File.read(
+      ENV.fetch('SEEDS_FILE', Rails.root.join('config', 'seeds.yml'))
+    )
+  ).result
+)
 
-if Account.find_by(email: seed['admin']['email']).nil?
-  admin = Account.create(
-    role: 'admin',
-    email: seed['admin']['email'],
-    password: ENV.fetch('ADMIN_PASSWORD', SecureRandom.hex(15))
-  )
+logger = Logger.new(STDERR, progname: 'db:seed')
+result = { administrators: [], applications: [] }
 
-  # Confirm admin account
-  admin.update(confirmed_at: Time.now)
-  admin.level_set(:mail)
+logger.info 'Seeding administrators'
+seeds['administrators'].each do |seed|
+  logger.info '---'
 
-  puts "Admin email: #{admin.email}"
-  puts "Admin password: #{admin.password}"
+  # Skip existing accounts
+  if Account.find_by(email: seed['account']['email']).present?
+    logger.info "Administrator '#{seed['account']['email']}' already exists"
+    result[:administrators].push(email: seed['account']['email'])
+    next
+  end
+
+  admin = Account.new(role: 'admin', password: Faker::Internet.password(15, 20, true))
+  admin.attributes = seed['account'] # will override the random password if set
+
+  if admin.save
+    logger.info "Created account for '#{admin.email}'"
+
+    # Confirm the email
+    admin.update(confirmed_at: Time.now, level: 1) && logger.info("Confirmed email for '#{admin.email}'")
+
+    # Create a Profile using defaults where values are not set in seeds.yml
+    if seed['phone']
+      phone = Phone.new(seed['phone'])
+      phone.account = admin
+
+      if phone.save && phone.update(validated_at: Time.now)
+        logger.info "Created phone for '#{admin.email}'"
+      else
+        logger.error "Can't create phone for '#{admin.email}': #{phone.errors.full_messages.join('; ')}"
+      end
+    end
+
+    # Create a Profile using defaults where values are not set in seeds.yml
+    if seed['profile']
+      profile = Profile.new(seed['profile'])
+      profile.account = admin
+
+      if profile.save
+        logger.info "Created profile for '#{admin.email}'"
+      else
+        logger.error "Can't create profile for '#{admin.email}': #{profile.errors.full_messages.join('; ')}"
+      end
+    end
+
+    result[:administrators].push(email: admin.email, password: admin.password)
+  end
 else
-  puts "Account #{seed['admin']['email']} already exists"
+  logger.error "Can't create admin '#{admin.email}': #{admin.errors.full_messages.join('; ')}"
 end
 
-# Create applications from seed
-seed['applications'].each do |params|
-  next if Doorkeeper::Application.find_by(uid: params['uid']).present?
-  app = Doorkeeper::Application.create(params)
-  puts app.to_json
+# Create applications
+logger.info '---'
+logger.info 'Seeding applications'
+seeds['applications'].each do |seed|
+  logger.info '---'
+  if Doorkeeper::Application.find_by(uid: seed['name']).present?
+    logger.info "Application '#{seed['name']}' already exists"
+    next
+  end
+
+  app = Doorkeeper::Application.create(seed)
+
+  if app.errors.any?
+    logger.error "Can't create application '#{app.name}': #{app.errors.full_messages.join('; ')}"
+    next
+  end
+
+  logger.info "Created application '#{app.name}'"
+  result[:applications].push(app.as_json(only: %i[name redirect_uri uid secret]))
 end
+
+# print well-formated json to stderr (easy to read in the commant output)
+logger.info "Result:\n#{JSON.pretty_generate(result)}"
+
+# print json to stdout (can pipe to something else)
+puts JSON.generate(result)

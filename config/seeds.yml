@@ -1,0 +1,34 @@
+# List of Barong administrators.
+#
+# Other parameters that you can set here can be found in Account,
+# Profile and Phone models (e.g. app/models/account.rb...); all the
+# model properties are listed at the very bottom of this models files.
+#
+# Note: email is the only required field here.
+administrators:
+  - account:
+      email: <%= ENV.fetch('ADMIN_EMAIL', 'admin@barong.io') %>
+      password: <%= ENV.fetch('ADMIN_PASSWORD', nil) %>
+    # profile:
+    #   first_name: John
+    #   last_name: Doe
+    #   dob: '1985-12-31'
+    #   country: GBR
+    #   city: London
+    #   address: '42 Usual Street'
+    # phone:
+    #   number: +380681234567
+
+# List of applications that will use Barong OAuth.
+# You can set any Doorkeeper::Application property here.
+#
+# Note: in production env, `redirect_uri` can only be a 'https' url.
+applications:
+  - name: Peatio
+    redirect_uri: http://peatio:8000/auth/barong/callback
+    skipauth: true
+    # uid: 42424242424242424242424242424242424242424242424242424242424
+    # scopes:
+    #   - peatio
+    #   - barong
+
