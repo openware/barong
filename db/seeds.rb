@@ -85,6 +85,7 @@ end
 logger.info '---'
 logger.info 'Seeding levels'
 seeds['levels'].each do |level_data|
+  next if Level.exists?(level_data)
   Level.create!(level_data)
 end
 
