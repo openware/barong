@@ -137,9 +137,14 @@ Doorkeeper::JWT.configure do
     }
   end
 
-  # Set the encryption secret. This would be shared with any other applications
-  # that should be able to read the payload of the token.
-  secret_key Base64.urlsafe_decode64(Rails.application.secrets.jwt_shared_secret_key)
+  # Set the encryption secret. It's public key would be shared with any other
+  # applications that should be able to verify the payload of the token.
+  ENV['JWT_PRIVATE_KEY_PATH'].tap do |pem_key|
+    raise unless OpenSSL::PKey::RSA.new(File.read(pem_key)).private?
+    secret_key_path pem_key
+  rescue
+    secret_key Base64.urlsafe_decode64(Rails.application.secrets.jwt_shared_secret_key)
+  end
 
   # Specify encryption type. Supports any algorithim in
   # https://github.com/progrium/ruby-jwt
