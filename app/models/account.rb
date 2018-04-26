@@ -35,8 +35,8 @@ class Account < ApplicationRecord
   def update_level
     account_level = 0
 
-    select_level_labels.each_with_index do |lvl, i|
-      break unless lvl.id == i + 1
+    select_level_labels.each_with_index do |lvl, index|
+      break unless lvl.id == index + 1
       account_level += 1
     end
 
