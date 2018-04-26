@@ -30,6 +30,10 @@
 /config/database.yml
 /config/application.yml
 
+# Plugins
+/config/plugins.yml
+/vendor/plugins
+
 .DS_Store
 .cache/
 .yarnrc

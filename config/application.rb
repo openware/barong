@@ -8,6 +8,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Require the plugins listed in config/plugins.yml.
+require_relative 'plugins'
+
 module Barong
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
