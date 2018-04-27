@@ -8,7 +8,7 @@
 administrators:
   - account:
       email: <%= ENV.fetch('ADMIN_EMAIL', 'admin@barong.io') %>
-      password: <%= ENV.fetch('ADMIN_PASSWORD', nil) %>
+      password: <%= ENV['ADMIN_PASSWORD'] %>
     # profile:
     #   first_name: John
     #   last_name: Doe
