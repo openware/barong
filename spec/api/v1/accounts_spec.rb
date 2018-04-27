@@ -110,7 +110,7 @@ describe 'Api::V1::Accounts' do
 
     it 'renders 401 when old password is invalid' do
       put url, params: params1, headers: headers
-      expect(response.body).to eq('{"error":"401 Unauthorized"}')
+      expect(response.body).to eq('{"error":"Invalid password."}')
       expect(response.status).to eq(401)
     end
 
