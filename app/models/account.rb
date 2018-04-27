@@ -32,6 +32,20 @@ class Account < ApplicationRecord
     save
   end
 
+  def update_level
+    tags = []
+    account_level = 0
+    tags = labels.map { |l| [l.key, l.value].join ':' }
+    levels = Level.all.order(id: :asc)
+
+    levels.each do |lvl|
+      break unless tags.include?(lvl.key + ':' + lvl.value)
+      account_level = lvl.id
+    end
+
+    update(level: account_level)
+  end
+
   def level_set(step)
     case step
       when :mail
