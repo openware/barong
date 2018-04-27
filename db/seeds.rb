@@ -9,21 +9,21 @@ seeds = YAML.safe_load(
 )
 
 logger = Logger.new(STDERR, progname: 'db:seed')
-result = { administrators: [], applications: [] }
+result = { accounts: [], applications: [] }
 
-logger.info 'Seeding administrators'
-seeds['administrators'].each do |seed|
+logger.info 'Seeding accounts'
+seeds['accounts'].each do |seed|
   logger.info '---'
 
   # Skip existing accounts
   if Account.find_by(email: seed['account']['email']).present?
-    logger.info "Administrator '#{seed['account']['email']}' already exists"
-    result[:administrators].push(email: seed['account']['email'])
+    logger.info "Account '#{seed['account']['email']}' already exists"
+    result[:accounts].push(email: seed['account']['email'])
     next
   end
 
-  admin = Account.new(role: 'admin', password: Faker::Internet.password(15, 20, true))
-  admin.attributes = seed['account'] # will override the random password if set
+  admin = Account.new(seed['account'])
+  admin.password ||= Faker::Internet.password(15, 20, true)
 
   if admin.save
     logger.info "Created account for '#{admin.email}'"
@@ -55,10 +55,10 @@ seeds['administrators'].each do |seed|
       end
     end
 
-    result[:administrators].push(email: admin.email, password: admin.password)
+    result[:accounts].push(email: admin.email, password: admin.password)
+  else
+    logger.error "Can't create admin '#{admin.email}': #{admin.errors.full_messages.join('; ')}"
   end
-else
-  logger.error "Can't create admin '#{admin.email}': #{admin.errors.full_messages.join('; ')}"
 end
 
 # Create applications
