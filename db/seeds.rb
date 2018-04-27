@@ -22,8 +22,9 @@ seeds['administrators'].each do |seed|
     next
   end
 
-  admin = Account.new(role: 'admin', password: Faker::Internet.password(15, 20, true))
-  admin.attributes = seed['account'] # will override the random password if set
+  admin = Account.new(role: 'admin')
+  admin.assign_attributes(seed['account'])
+  admin.password = Faker::Internet.password(15, 20, true) if seed['account']['password'].blank?
 
   if admin.save
     logger.info "Created account for '#{admin.email}'"
