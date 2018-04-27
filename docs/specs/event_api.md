@@ -147,7 +147,7 @@ event: {
 
 | Field      | Description                          |
 | ---------- | ------------------------------------ |
-| `record`   | The up-to-date withdraw attributes.  |
+| `record`   | The up-to-date profile attributes.  |
 
 ## Format of `model.profile.updated` event
 
@@ -176,7 +176,7 @@ event: {
 
 | Field      | Description                                      |
 | ---------- | ------------------------------------------------ |
-| `record`   | The up-to-date withdraw attributes.               |
+| `record`   | The up-to-date profile attributes.               |
 | `changes`  | The changed profile attributes and their values. |
 
 ## Producing events using Ruby
