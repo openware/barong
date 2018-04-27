@@ -61,6 +61,14 @@ class Account < ApplicationRecord
     save
   end
 
+  def approved?
+    profile.state == 'approved'
+  end
+
+  def rejected?
+    profile.state == 'rejected'
+  end
+
   def assign_uid
     return unless uid.blank?
     loop do

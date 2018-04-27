@@ -16,7 +16,6 @@ RSpec.describe Account, type: :model do
   context 'Account with 2 or more documents' do
     it do
       account = Account.create!(email: 'test@mail.com', password: '123123')
-      expect(Account.count).to eq 1
       document1 = account.documents.create!(upload: uploaded_file,
                                             doc_type: 'Passport',
                                             doc_number: 'MyString',

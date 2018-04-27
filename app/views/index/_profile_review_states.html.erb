@@ -1,0 +1,5 @@
+<% if current_account.rejected? %>
+  <h2 class="wrap"> Your identity was rejected by compliance officer </br> <%= link_to 'upload a new document', new_profile_path %> to ask for a new review</h2>
+<% else %>
+  <h2 class="wrap"> Pending compliance officer approval </h2>
+<% end %>

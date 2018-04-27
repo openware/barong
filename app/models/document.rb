@@ -17,6 +17,13 @@ class Document < ApplicationRecord
   validates_format_of :doc_expire,
                       with: /\d{4}\-\d{2}\-\d{2}/,
                       message: 'Date must be in the following format: yyyy-mm-dd'
+  after_create :set_pending_if_rejected
+
+private
+
+  def set_pending_if_rejected
+    account.profile.update(state: 'pending') if account.profile && account.profile.state == 'rejected'
+  end
 end
 
 # == Schema Information
