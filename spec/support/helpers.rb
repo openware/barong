@@ -15,3 +15,7 @@ end
 def expect_body
   expect(json_body)
 end
+
+def create_label_with_level(account, level)
+  create(:label, account: account, key: level.key, value: level.value)
+end
