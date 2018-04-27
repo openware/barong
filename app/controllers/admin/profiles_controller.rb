@@ -12,6 +12,7 @@ module Admin
     def show
       @profile = Profile.find(params[:id])
       @documents = @profile.account.documents
+      @labels = @profile.account.labels
     end
 
     def change_state

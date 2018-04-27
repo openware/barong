@@ -23,7 +23,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get '/', to: 'accounts#index', as: :accounts
-    resources :accounts, except: %i[new create show]
+    resources :accounts, except: %i[new create show] do
+      resources :labels, except: %i[index show]
+    end
     resources :websites
     resources :profiles, only: %i[index show] do
       put :change_state, on: :member

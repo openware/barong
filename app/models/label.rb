@@ -15,12 +15,14 @@ class Label < ApplicationRecord
     end
   end
 
+  validates :account_id, :key, :value, :scope, presence: true
+
   validates :scope,
             inclusion: { in: SCOPES.keys }
 
   validates :key,
             length: 3..255,
-            format: { with: /\A[a-z0-9_-]+\z/ },
+            format: { with: /\A[A-Za-z0-9_-]+\z/ },
             uniqueness: { scope: :account_id }
 
   validates :value,
