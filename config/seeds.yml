@@ -5,19 +5,12 @@
 # model properties are listed at the very bottom of this models files.
 #
 # Note: email is the only required field here.
-administrators:
+accounts:
   - account:
       email: <%= ENV.fetch('ADMIN_EMAIL', 'admin@barong.io') %>
       password: <%= ENV.fetch('ADMIN_PASSWORD', nil) %>
-    # profile:
-    #   first_name: John
-    #   last_name: Doe
-    #   dob: '1985-12-31'
-    #   country: GBR
-    #   city: London
-    #   address: '42 Usual Street'
-    # phone:
-    #   number: +380681234567
+      role: 'admin'
+      state: 'active'
 
 # List of applications that will use Barong OAuth.
 # You can set any Doorkeeper::Application property here.
@@ -27,7 +20,7 @@ applications:
   - name: Peatio
     redirect_uri: http://peatio:8000/auth/barong/callback
     skipauth: true
-    # uid: 42424242424242424242424242424242424242424242424242424242424
+    # uid: setid
     # scopes:
     #   - peatio
     #   - barong
