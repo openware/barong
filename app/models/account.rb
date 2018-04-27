@@ -79,6 +79,12 @@ class Account < ApplicationRecord
       email: email,
       level: level,
       otp_enabled: otp_enabled,
+      confirmation_token: confirmation_token,
+      confirmed_at: confirmed_at,
+      confirmation_sent_at: confirmation_sent_at,
+      reset_password_token: reset_password_token,
+      reset_password_sent_at: reset_password_sent_at,
+      state: state,
       created_at: created_at&.iso8601,
       updated_at: updated_at&.iso8601
     }

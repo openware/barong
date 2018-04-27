@@ -22,7 +22,6 @@ class Profile < ApplicationRecord
       postcode: postcode,
       city: city,
       country: country,
-      state: state,
       metadata: metadata,
       created_at: created_at&.iso8601,
       updated_at: updated_at&.iso8601
