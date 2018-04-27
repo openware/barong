@@ -1,10 +1,9 @@
 AllCops:
   Exclude:
-    - db/schema.rb
-    - db/seeds.rb
+    - db/**/*
     - ci/bump.rb
     - bin/*
-    - config/initializers/*
+    - config/**/*
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes

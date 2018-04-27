@@ -76,4 +76,30 @@
     <% end %>
     </tbody>
   </table>
+  <br>
+  <%= link_to 'New Label', new_admin_account_label_path(@profile.account_id), class: 'btn btn-success' %>
+  <br>
+  <h4 class="text-center"> Labels </h4>
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Key</th>
+      <th>Value</th>
+      <th>Scope</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @labels.each do |label| %>
+      <tr>
+        <td><%= label.id %></td>
+        <td><%= label.key %></td>
+        <td><%= label.value %></td>
+        <td><%= label.scope %></td>
+        <td><%= link_to 'Edit', edit_admin_account_label_path(id: label.id, account_id: @profile.account_id), class: 'btn btn-primary btn-sm' %></td>
+        <td><%= link_to 'Delete', admin_account_label_path(id: label.id, account_id: @profile.account_id), class: 'btn btn-danger btn-sm', method: :delete, data: {confirm: 'Are you sure?'} %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
 </div>

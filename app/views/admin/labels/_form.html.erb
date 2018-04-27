@@ -1,0 +1,30 @@
+<%= form_with(model: [:admin, @account, @label], local: true) do |form| %>
+  <% if label.errors.any? %>
+   <div class="alert alert-danger">
+      <h2><%= pluralize(@label.errors.count, "error") %> prohibited this label from being saved:</h2>
+      <ul>
+        <% @label.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.label :key, class: 'control-label'%>
+  <%= form.text_field :key, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :value, class: 'control-label'%>
+  <%= form.text_field :value, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :scope, class: 'control-label'%>
+  <%= form.select :scope, Label::SCOPES , class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.submit 'Submit', class: 'btn btn-primary' %>
+
+  <br>
+  <br>
+
+<% end %>
