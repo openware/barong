@@ -21,11 +21,11 @@ module API
           declared_params = declared(params)
 
           unless account.valid_password? declared_params[:old_password]
-            return error!('401 Unauthorized', 401)
+            return error!('Invalid password.', 401)
           end
 
           account.password = declared_params[:new_password]
-          return error!('400 Bad request', 400) unless declared_params[:new_password]
+          return error!('Invalid password.', 400) unless declared_params[:new_password]
           return error!(account.errors.full_messages.to_sentence) unless account.save
         end
 

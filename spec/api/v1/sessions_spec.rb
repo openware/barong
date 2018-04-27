@@ -42,11 +42,11 @@ describe 'Session create test' do
       expect(response.status).to eq(400)
 
       post uri, params: { email: email, password: 'password', application_id: application.uid }
-      expect(response.body).to eq('{"error":"401 Unauthorized"}')
+      expect(response.body).to eq('{"error":"Invalid Email or password."}')
       expect(response.status).to eq(401)
 
       post uri, params: { email: email, password: password, application_id: 'application.uid' }
-      expect(response.body).to eq('{"error":"401 Unauthorized"}')
+      expect(response.body).to eq('{"error":"Wrong application id"}')
       expect(response.status).to eq(401)
     end
   end
