@@ -23,7 +23,7 @@ seeds['accounts'].each do |seed|
   end
 
   admin = Account.new(seed['account'])
-  admin.password ||= Faker::Internet.password(15, 20, true)
+  admin.password ||= SecureRandom.hex(20)
 
   if admin.save
     logger.info "Created account for '#{admin.email}'"
