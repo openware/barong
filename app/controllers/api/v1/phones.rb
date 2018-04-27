@@ -35,7 +35,7 @@ module API
           phone_number = PhoneUtils.sanitize(declared_params[:phone_number])
           phone = current_account.phones.find_by!(number: phone_number)
 
-          unless phone.regenerate_phone
+          unless phone.regenerate_code
             return error!(phone.errors, 422)
           end
 
