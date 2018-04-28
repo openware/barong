@@ -15,7 +15,7 @@ class PhonesController < ApplicationController
   def create
     if current_account.phones.create(number: @phone_number,
                                      validated_at: Time.current)
-      current_account.level_set(:phone)
+      current_account.assign_verified_label(:phone)
       redirect_to new_profile_path
     else
       flash.now[:alert] = 'Phone verification failed. Number is invalid or was already verified'

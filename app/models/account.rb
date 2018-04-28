@@ -27,7 +27,7 @@ class Account < ApplicationRecord
   end
 
   def after_confirmation
-    level_set(:mail)
+    assign_verified_label(:email)
     self.state = 'active'
     save
   end
@@ -47,19 +47,9 @@ class Account < ApplicationRecord
     update(level: account_level)
   end
 
-  def level_set(step)
-    case step
-      when :mail
-        self.level = 1
-      when :phone
-        self.level = 2
-      when :identity
-        self.level = 3
-      when :address
-        self.level = 4
-    end
-
-    save
+  def assign_verified_label(key)
+    labels.find_or_create_by(key: key, scope: 'private')
+          .update!(value: 'verified')
   end
 
   def assign_uid
