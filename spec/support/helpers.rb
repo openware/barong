@@ -95,6 +95,14 @@ module APITestHelpers
                    value: level.value,
                    scope: scope)
   end
+
+  def set_level(account, level)
+    raise "level doesn't exist" if Level.last.id < level
+    levels = Level.where(id: 1..level)
+    levels.each do |lvl|
+      Label.find_or_create_by(account: account, key: lvl.key, value: lvl.value, scope: 'private')
+    end
+  end
 end
 
 RSpec.configure { |config| config.include APITestHelpers }

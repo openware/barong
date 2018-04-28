@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe ProfilesController, type: :controller do
-  let!(:current_account) { create(:account, level: 2) }
-  before { login_as current_account }
+  let!(:current_account) { create(:account) }
+  let!(:level) { 2 }
+
+  before do
+    set_level(current_account, level)
+    login_as current_account
+  end
 
   let(:profile) { build :profile }
 
@@ -35,7 +40,8 @@ RSpec.describe ProfilesController, type: :controller do
     end
 
     context 'when account has low level' do
-      let!(:current_account) { create(:account, level: 1) }
+      let!(:current_account) { create(:account) }
+      let!(:level) { 1 }
 
       it 'redirects to new_phone_path' do
         get :new, params: {}
@@ -62,7 +68,8 @@ RSpec.describe ProfilesController, type: :controller do
     end
 
     context 'when account has low level' do
-      let!(:current_account) { create(:account, level: 1) }
+      let!(:current_account) { create(:account) }
+      let(:level) { 1 }
 
       it 'redirects to new_phone_path' do
         post :create, params: { profile: valid_attributes }

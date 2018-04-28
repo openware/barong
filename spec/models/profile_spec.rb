@@ -10,12 +10,18 @@ RSpec.describe Profile, type: :model do
     let(:profile)  { create :profile }
     let(:mailer_deliveries) { ActionMailer::Base.deliveries }
 
-    it 'changes account level' do
-      profile.update(state: 'approved')
-      expect(profile.account.level).to eq(3)
+    describe 'changes account level' do
+      it 'changes account level from 3 to 4' do
+        set_level(profile.account, 3)
+        profile.update(state: 'approved')
+        expect(profile.account.level).to eq(4)
+      end
 
-      profile.update(state: 'rejected')
-      expect(profile.account.level).to eq(2)
+      it 'changes account level from 4 to 3' do
+        set_level(profile.account, 4)
+        profile.update(state: 'rejected')
+        expect(profile.account.level).to eq(3)
+      end
     end
 
     after(:each) do
@@ -23,14 +29,16 @@ RSpec.describe Profile, type: :model do
     end
 
     it 'sends notification emails' do
+      set_level(profile.account, 3)
       profile.update(state: 'approved')
-      expect(profile.account.level).to eq(3)
+      expect(profile.account.level).to eq(4)
       expect(mailer_deliveries.last.to).to eq([profile.account.email])
       expect(mailer_deliveries.last.subject).to eq('Your identity was approved')
       expect(mailer_deliveries.last.from).to eq([ENV['SENDER_EMAIL']])
 
+      set_level(profile.account, 4)
       profile.update(state: 'rejected')
-      expect(profile.account.level).to eq(2)
+      expect(profile.account.level).to eq(3)
       expect(mailer_deliveries.last.to).to eq([profile.account.email])
       expect(mailer_deliveries.last.subject).to eq('Your identity was rejected')
     end

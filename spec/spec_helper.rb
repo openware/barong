@@ -46,6 +46,9 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   config.before(:each) do
     stub_const('Twilio::REST::Client', FakeSMS)
+    %w[email phone identity document].each_with_index do |key, index|
+      FactoryBot.create(:level, id: index + 1, key: key, value: 'verified')
+    end
   end
 
   config.fixture_path = "#{Rails.root}/spec/fixtures"

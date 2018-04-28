@@ -151,12 +151,13 @@ describe 'Api::V1::Phones' do
     end
 
     context 'when phone and code is valid' do
-      let!(:current_account) { create(:account, level: 1) }
+      let!(:current_account) { create(:account) }
       let!(:phone) { create(:phone, account: current_account) }
       let(:phone_number) { phone.number }
       let(:verification_code) { phone.code }
 
       it 'responses with success' do
+        set_level(current_account, 1)
         do_request
         expect_status.to eq 201
         expect(phone.reload.validated_at).to be

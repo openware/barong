@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 describe 'Phone verification' do
-  let!(:account) { create :account, level: 1 }
+  let!(:account) { create :account }
 
   before(:example) do
+    set_level(account, 1)
     sign_in account
     visit new_phone_path
   end
