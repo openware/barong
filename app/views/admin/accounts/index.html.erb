@@ -8,6 +8,8 @@
         <th>ID</th>
         <th>E-mail</th>
         <th>Role</th>
+        <th>Level</th>
+        <th>Labels</th>
         <th>Last sign in</th>
         <% if can?(:update, Account) || can?(:destroy, Account) %>
           <th colspan=3></th>
@@ -20,6 +22,8 @@
           <td><%= account.id %></td>
           <td><%= account.email %></td>
           <td><span class=" badge <%= badge_by_role(account.role) %>"> <%= account.role %> </span></td>
+          <td><%= account.level %></td>
+          <td><%= label_tags(account) %></td>
           <td><%= account.last_sign_in_at.to_s(:long) if account.last_sign_in_at? %></td>
           <% if can? :update, account %>
             <td><%= link_to 'Edit', edit_admin_account_path(account.id),  class: 'btn btn-primary btn-sm'  %></td>
