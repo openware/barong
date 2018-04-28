@@ -35,7 +35,8 @@ class Account < ApplicationRecord
   def update_level
     tags = []
     account_level = 0
-    tags = labels.map { |l| [l.key, l.value].join ':' }
+    tags = labels.with_private_scope
+                 .map { |l| [l.key, l.value].join ':' }
     levels = Level.all.order(id: :asc)
 
     levels.each do |lvl|
