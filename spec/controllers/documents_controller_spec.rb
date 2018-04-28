@@ -25,9 +25,10 @@ RSpec.describe DocumentsController, type: :controller do
 
   describe 'GET #new' do
     context 'when account has low level' do
-      let!(:current_account) { create(:account, level: 1) }
+      let!(:current_account) { create(:account) }
 
       it 'redirects to new_phone_path' do
+        set_level(current_account, 1)
         get :new, params: {}
         expect(response).to redirect_to(new_phone_path)
       end

@@ -4,10 +4,10 @@ RSpec.describe Label, type: :model do
   it { should belong_to(:account) }
 
   describe 'update account level if label defined as level', order: :defined do
-    let!(:email_verified_level)    { create :level, id: 1, key: 'email',    value: 'verified' }
-    let!(:phone_verified_level)    { create :level, id: 2, key: 'phone',    value: 'verified' }
-    let!(:identity_verified_level) { create :level, id: 3, key: 'identity', value: 'verified' }
-    let!(:document_verified_level) { create :level, id: 4, key: 'document', value: 'verified' }
+    let!(:email_verified_level)    { Level.find(1) }
+    let!(:phone_verified_level)    { Level.find(2) }
+    let!(:identity_verified_level) { Level.find(3) }
+    let!(:document_verified_level) { Level.find(4) }
 
     context 'when account has no labels' do
       let!(:account) { create(:account) }

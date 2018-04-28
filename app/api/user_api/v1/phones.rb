@@ -63,7 +63,7 @@ module UserApi
           return error!('Phone is not found or verification code is invalid', 404) unless phone
 
           phone.update(validated_at: Time.current)
-          current_account.level_set(:phone)
+          current_account.add_level_label(:phone)
           { message: 'Phone was verified successfully' }
         end
       end

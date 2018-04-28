@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe PhonesController, type: :controller do
-  let!(:current_account) { create(:account, level: 1) }
-  before { login_as current_account }
+  let!(:current_account) { create(:account) }
+  let!(:level) { 1 }
+  before do
+    set_level(current_account, level)
+    login_as current_account
+  end
 
   describe '#new' do
     let(:do_request) { get :new }
 
     context 'when account level is not passed' do
-      let!(:current_account) { create(:account, level: 0) }
+      let!(:current_account) { create(:account) }
+      let!(:level) { 0 }
 
       it 'redirects to index page' do
         do_request
@@ -29,7 +34,8 @@ RSpec.describe PhonesController, type: :controller do
     let(:params) { {} }
 
     context 'when account level is not passed' do
-      let!(:current_account) { create(:account, level: 0) }
+      let!(:current_account) { create(:account) }
+      let!(:level) { 0 }
 
       it 'redirects to index page' do
         do_request
@@ -131,7 +137,8 @@ RSpec.describe PhonesController, type: :controller do
     let(:phone_number) { '' }
 
     context 'when account level is not passed' do
-      let!(:current_account) { create(:account, level: 0) }
+      let!(:current_account) { create(:account) }
+      let!(:level) { 0 }
 
       it 'redirects to index page' do
         do_request

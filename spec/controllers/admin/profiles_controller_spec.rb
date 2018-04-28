@@ -42,6 +42,9 @@ describe Admin::ProfilesController, type: :controller do
     context 'when state is valid' do
       context 'when state is approved' do
         let(:state) { 'approved' }
+        before do
+          set_level(profile.account, 3)
+        end
 
         it 'updates a state' do
           expect { do_request }.to change { profile.reload.state }.to('approved')
@@ -49,20 +52,23 @@ describe Admin::ProfilesController, type: :controller do
         end
 
         it 'verifies identity' do
-          expect { do_request }.to change { profile.account.reload.level }.to(3)
+          expect { do_request }.to change { profile.account.reload.level }.to(4)
         end
       end
 
       context 'when state is rejected' do
         let(:state) { 'rejected' }
+        before do
+          set_level(profile.account, 4)
+        end
 
         it 'updates a state' do
           expect { do_request }.to change { profile.reload.state }.to('rejected')
           expect(response).to redirect_to admin_profile_path
         end
 
-        it 'change level to 2' do
-          expect { do_request }.to change { profile.account.reload.level }.to(2)
+        it 'change level to 3' do
+          expect { do_request }.to change { profile.account.reload.level }.to(3)
         end
       end
     end
