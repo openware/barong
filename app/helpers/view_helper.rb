@@ -25,6 +25,10 @@ module ViewHelper
     end
   end
 
+  def label_tags(account)
+    account.labels.map { |l| "#{l.key}:#{l.value}" }.join(', ')
+  end
+
   def self.with_frontend_domain(params)
     frontend_domain = ENV['FRONTEND_DOMAIN']
     return params if frontend_domain.blank?
