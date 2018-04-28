@@ -13,6 +13,12 @@ RSpec.describe Label, type: :model do
       let!(:account) { create(:account) }
       it { expect(account.reload.level).to eq 0 }
 
+      it 'does not change level if valid label has public scope' do
+        expect do
+          create_label_with_level(account, email_verified_level, scope: 'public')
+        end.to_not change { account.reload.level }
+      end
+
       it 'when checks labels-levels mappings' do
         expect do
           create_label_with_level(account, email_verified_level)

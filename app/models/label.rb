@@ -15,6 +15,8 @@ class Label < ApplicationRecord
     end
   end
 
+  scope :with_private_scope, -> { where(scope: 'private') }
+
   validates :account_id, :key, :value, :scope, presence: true
 
   validates :scope,
