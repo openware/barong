@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module API
+module UserApi
   module V1
     # Responsible for CRUD for labes
     class Labels < Grape::API
       resource :labels do
         desc 'List all labels for current account.'
         get do
-          present current_account.labels, with: API::Entities::Label
+          present current_account.labels, with: Entities::Label
         end
 
         desc 'Return a label by key.'
@@ -19,7 +19,7 @@ module API
             label = current_account.labels.find_by(key: params[:key])
             return error!('Couldn\'t find Label', 404) if label.blank?
 
-            present label, with: API::Entities::Label
+            present label, with: Entities::Label
           end
         end
 
@@ -36,7 +36,7 @@ module API
               scope: 'public'
             )
           if label.save
-            present label, with: API::Entities::Label
+            present label, with: Entities::Label
           else
             error!(label.errors.as_json(full_messages: true), 422)
           end
@@ -53,7 +53,7 @@ module API
           return error!('Can\'t update Label.', 400) if label.private?
 
           label.update(value: params[:value])
-          present label, with: API::Entities::Label
+          present label, with: Entities::Label
         end
 
         desc "Delete a label  with 'public' scope."

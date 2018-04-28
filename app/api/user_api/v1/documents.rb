@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API
+module UserApi
   module V1
     class Documents < Grape::API
       helpers Doorkeeper::Grape::Helpers

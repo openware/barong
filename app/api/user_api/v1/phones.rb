@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API
+module UserApi
   module V1
     class Phones < Grape::API
       desc 'Phone related routes'

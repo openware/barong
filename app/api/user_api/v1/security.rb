@@ -2,7 +2,7 @@
 
 require 'barong/security/access_token'
 
-module API
+module UserApi
   module V1
     class Security < Grape::API
       desc 'Security related routes'
