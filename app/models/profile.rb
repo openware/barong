@@ -31,11 +31,12 @@ class Profile < ApplicationRecord
 private
 
   def set_level_if_state_changed
+    # TODO: We remove state from profile. This step will be refactored
     if saved_change_to_state? && state == 'rejected'
-      account.level_set(:phone)
+      assign_verified_label(:phone)
       ProfileReviewMailer.rejected(account).deliver_now
     elsif saved_change_to_state? && state == 'approved'
-      account.level_set(:identity)
+      assign_verified_label(:identity)
       ProfileReviewMailer.approved(account).deliver_now
     end
   end
