@@ -89,5 +89,35 @@ RSpec.describe Label, type: :model do
         expect(account.reload.level).to eq 0
       end
     end
+
+    context 'document label changes' do
+      let!(:account) { create(:account) }
+      let(:mailer_deliveries) { ActionMailer::Base.deliveries }
+      let!(:document_label) do
+        create(
+          :label,
+          account: account,
+          key: 'document',
+          value: 'pending',
+          scope: 'private'
+        )
+      end
+
+      context 'when label value is verified' do
+        it 'sends notification email' do
+          document_label.update(value: 'verified')
+          expect(mailer_deliveries.last.to).to eq [account.email]
+          expect(mailer_deliveries.last.subject).to eq 'Your identity was approved'
+        end
+      end
+
+      context 'when label value is rejected' do
+        it 'sends notification email' do
+          document_label.update(value: 'rejected')
+          expect(mailer_deliveries.last.to).to eq [account.email]
+          expect(mailer_deliveries.last.subject).to eq 'Your identity was rejected'
+        end
+      end
+    end
   end
 end

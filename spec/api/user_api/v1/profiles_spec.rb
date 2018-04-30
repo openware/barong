@@ -78,8 +78,7 @@ describe 'Api::V1::Profiles' do
 
       get url, headers: auth_header
       expect(response.status).to eq(200)
-      expected_json = request_params.merge(state: Account.last.state)
-                                    .merge(optional_params).to_json
+      expected_json = request_params.merge(optional_params).to_json
       expect(response.body).to eq(expected_json)
     end
   end

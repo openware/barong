@@ -4,7 +4,7 @@
 # Class Phone
 #
 class Phone < ApplicationRecord
-  belongs_to :account
+  belongs_to :account, optional: true
 
   validates :number, phone: true
 

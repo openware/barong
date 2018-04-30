@@ -39,6 +39,15 @@ private
   def update_level_if_label_defined
     return unless Level.exists?(key: key)
     account.reload.update_level
+    send_document_review_notification if key == 'document'
+  end
+
+  def send_document_review_notification
+    if value == 'verified'
+      ProfileReviewMailer.approved(account).deliver_now
+    elsif value == 'rejected'
+      ProfileReviewMailer.rejected(account).deliver_now
+    end
   end
 end
 

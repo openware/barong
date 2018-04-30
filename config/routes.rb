@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     end
     resources :websites
     resources :profiles, only: %i[index show] do
-      put :change_state, on: :member
+      put :document_label, on: :member
     end
   end
 end
