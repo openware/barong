@@ -1,5 +1,5 @@
 ---
-title: Barong v1.7.0
+title: Barong v1.8.0
 language_tabs:
   - http: HTTP
   - shell: Curl
@@ -14,13 +14,13 @@ headingLevel: 2
 ---
 
 
-<h1 id="Barong">Barong v1.7.0</h1>
+<h1 id="Barong">Barong v1.8.0</h1>
 
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 
-API for barong OAuth server
+API for barong OAuth server 
 
 
 Base URLs:
@@ -33,6 +33,97 @@ Base URLs:
 
 
 Operations about accounts
+
+
+## postV1AccountsConfirm
+
+
+<a id="opIdpostV1AccountsConfirm"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/confirm HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/confirm \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/confirm',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/confirm`
+
+
+*Confirms new account*
+
+
+Confirms new account
+
+
+> Body parameter
+
+
+```yaml
+confirmation_token: string
+
+
+```
+
+
+<h3 id="postV1AccountsConfirm-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» confirmation_token|body|string|true|Token from email|
+
+
+<h3 id="postV1AccountsConfirm-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Confirms new account|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
 
 
 ## postV1Accounts
@@ -356,7 +447,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-04-20'
+dob: '2018-05-02'
 address: string
 postcode: string
 city: string
@@ -1224,6 +1315,97 @@ This operation does not require authentication
 </aside>
 
 
+## postV1PhonesSendCode
+
+
+<a id="opIdpostV1PhonesSendCode"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/phones/send_code HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/phones/send_code \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/phones/send_code',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/phones/send_code`
+
+
+*Resend activation code*
+
+
+Resend activation code
+
+
+> Body parameter
+
+
+```yaml
+phone_number: string
+
+
+```
+
+
+<h3 id="postV1PhonesSendCode-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[postV1PhonesSendCode](#schemapostv1phonessendcode)|false|No description|
+|» phone_number|body|string|true|Phone number with country code|
+
+
+<h3 id="postV1PhonesSendCode-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Resend activation code|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
 ## postV1Phones
 
 
@@ -1298,7 +1480,7 @@ phone_number: string
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|object|false|No description|
+|body|body|[postV1PhonesSendCode](#schemapostv1phonessendcode)|false|No description|
 |» phone_number|body|string|true|Phone number with country code|
 
 
@@ -1827,3 +2009,5 @@ This operation does not require authentication
   "name": "Barong"
 }
 </script>
+
+
