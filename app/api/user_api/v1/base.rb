@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_dependency 'user_api/errors'
+require 'barong/security/access_token'
+
 module UserApi
   module V1
     class Base < Grape::API
@@ -12,6 +15,7 @@ module UserApi
       default_format :json
 
       helpers V1::Helpers
+      use V1::Auth::Middleware
 
       do_not_route_options!
 
@@ -29,6 +33,10 @@ module UserApi
 
       rescue_from(Grape::Exceptions::ValidationErrors) do |error|
         error!(error.message, 400)
+      end
+
+      rescue_from(UserApi::AuthorizationError) do |error|
+        error!(error.message, 401)
       end
 
       rescue_from(:all) do |error|

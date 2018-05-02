@@ -6,8 +6,7 @@ describe 'Session create test' do
     let!(:password) { 'testpassword111' }
     let(:uri) { '/api/v1/sessions' }
     let(:check_uri) { '/api/v1/security/renew' }
-    let!(:application) { create :doorkeeper_application }
-    subject!(:acc) do
+    let!(:current_account) do
       create :account,
              email: email,
              password: password,
@@ -15,7 +14,7 @@ describe 'Session create test' do
     end
 
     it 'Checks if current credentials are valid and returns valid JWT' do
-      post uri, params: { email: email, password: password, application_id: application.uid }
+      post uri, params: { email: email, password: password }
       expect(response.status).to eq(201)
       response_jwt = JSON.parse(response.body)
 
@@ -26,27 +25,15 @@ describe 'Session create test' do
 
     it 'Checks if current credentials are valid and returns error, cause they are not' do
       post uri
-      expect(response.body).to eq('{"error":"email is missing, password is missing, application_id is missing"}')
-      expect(response.status).to eq(400)
-
-      post uri, params: { email: 'rick@morty.io', password: 'season1' }
-      expect(response.body).to eq('{"error":"application_id is missing"}')
+      expect_body.to eq(error: 'email is missing, email is empty, password is missing, password is empty')
       expect(response.status).to eq(400)
 
       post uri, params: { email: email }
-      expect(response.body).to eq('{"error":"password is missing, application_id is missing"}')
+      expect(response.body).to eq('{"error":"password is missing, password is empty"}')
       expect(response.status).to eq(400)
 
-      post uri, params: { email: email, password: password }
-      expect(response.body).to eq('{"error":"application_id is missing"}')
-      expect(response.status).to eq(400)
-
-      post uri, params: { email: email, password: 'password', application_id: application.uid }
+      post uri, params: { email: email, password: 'password' }
       expect(response.body).to eq('{"error":"Invalid Email or password."}')
-      expect(response.status).to eq(401)
-
-      post uri, params: { email: email, password: password, application_id: 'application.uid' }
-      expect(response.body).to eq('{"error":"Wrong application id"}')
       expect(response.status).to eq(401)
     end
   end

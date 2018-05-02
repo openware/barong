@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'Api::V1::Profiles' do
-  include_context 'doorkeeper authentication'
+  include_context 'jwt authentication'
 
   let!(:optional_params) do
     {

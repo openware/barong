@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'barong/security/access_token'
-
 module UserApi
   module V1
     class Security < Grape::API
@@ -9,10 +7,8 @@ module UserApi
       resource :security do
         desc 'Renews JWT if current JWT is valid'
         post '/renew' do
-          # expiration time will be specified by the request param or taken from ENV, if both are nil, it will be 4 hours
-          Barong::Security::AccessToken.create params[:expires_in],
-                                               current_account.id,
-                                               current_application
+          Barong::Security::AccessToken.generate_jwt(account_uid: current_account.uid,
+                                                     expires_in: params[:expires_in])
         end
 
         desc 'Generate qr code for 2FA'

@@ -42,6 +42,41 @@ module APITestHelpers
            headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
+  def create_jwt_token(account)
+      secret_key = Rails.application.secrets.secret_key_base
+
+      payload = {
+        account_uid: account.uid,
+        iat: Time.current.to_i,
+        jti: SecureRandom.hex(12).upcase,
+        exp: 30.seconds.from_now.to_i,
+        sub: 'session',
+        iss: 'barong'
+      }
+
+    JWT.encode(payload, secret_key, 'HS256')
+  end
+
+  def jwt_decode(token)
+    JWT.decode(token,
+               Rails.application.secrets.secret_key_base,
+               true,
+               token_verification_options)
+  end
+
+  def token_verification_options
+    {
+      verify_expiration: true,
+      verify_iat: true,
+      verify_jti: true,
+      sub: 'session',
+      verify_sub: true,
+      algorithms: ['HS256'],
+      iss: 'barong',
+      verify_iss: true
+    }
+  end
+
   def jwt_keypair_encoded
     require 'openssl'
     require 'base64'
