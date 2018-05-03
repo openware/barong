@@ -28,6 +28,22 @@ module UserApi
             error!('Invalid Email or password.', 401)
           end
         end
+
+        desc 'Validates client jwt and generates peatio session jwt'
+        params do
+          requires :key_uid, type: String, allow_blank: false
+          requires :jwt_token, type: String, allow_blank: false
+        end
+        post 'generate_jwt' do
+          status 200
+          declared_params = declared(params).symbolize_keys
+          generator = SessionJwtGenerator.new declared_params
+          error!('Payload is invalid', 401) unless generator.verify_payload
+
+          { token: generator.generate_session_jwt }
+        rescue JWT::DecodeError => e
+          error! "Failed to decode and verify JWT: #{e.inspect}", 401
+        end
       end
     end
   end

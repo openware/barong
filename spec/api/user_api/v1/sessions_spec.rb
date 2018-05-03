@@ -50,4 +50,100 @@ describe 'Session create test' do
       expect(response.status).to eq(401)
     end
   end
+
+  describe 'POST /api/v1/sessions/generate_jwt' do
+    let(:do_request) do
+      post '/api/v1/sessions/generate_jwt', params: params
+    end
+    let(:params) { {} }
+    let!(:account) { create(:account) }
+    let!(:api_key) do
+      create(:api_key, account: account,
+                       public_key: jwt_keypair_encoded[:public])
+    end
+
+    context 'when required params are missing' do
+      it 'renders an error' do
+        do_request
+        expect_status.to eq 400
+        expect_body.to eq(error: 'key_uid is missing, key_uid is empty, jwt_token is missing, jwt_token is empty')
+      end
+    end
+
+    context 'when key is not found' do
+      let(:params) do
+        {
+          key_uid: 'invalid',
+          jwt_token: 'invalid_token'
+        }
+      end
+      it 'renders an error' do
+        do_request
+        expect_status.to eq 404
+        expect_body.to eq(error: 'Record is not found')
+      end
+    end
+
+    context 'when payload is invalid' do
+      let(:params) do
+        {
+          key_uid: api_key.uid,
+          jwt_token: 'invalid_token'
+        }
+      end
+      it 'renders an error' do
+        do_request
+        expect_status.to eq 401
+        expect(json_body[:error]).to include('Failed to decode and verify JWT')
+      end
+    end
+
+    context 'when payload is valid but does not contain required fields' do
+      let(:params) do
+        {
+          key_uid: api_key.uid,
+          jwt_token: encode_api_key_payload({})
+        }
+      end
+      it 'renders an error' do
+        do_request
+        expect_status.to eq 401
+        expect(json_body[:error]).to include('Payload is invalid')
+      end
+    end
+
+    context 'when payload is valid' do
+      let(:params) do
+        {
+          key_uid: api_key.uid,
+          jwt_token: encode_api_key_payload(key_uid: api_key.uid)
+        }
+      end
+      let(:expected_payload) do
+        {
+          sub: 'session',
+          iss: 'barong',
+          aud: api_key.scopes,
+          email: account.email,
+          level: account.level,
+          role: account.role,
+          state: account.state
+        }
+      end
+
+      before do
+        expect(Rails.application.secrets).to \
+          receive(:jwt_shared_secret_key) { jwt_keypair_encoded[:private] }
+        do_request
+      end
+
+      it { expect_status.to eq 200 }
+      it 'generates valid session jwt' do
+        token = json_body[:token]
+        payload, = jwt_decode(token)
+
+        expect(payload.symbolize_keys).to include(expected_payload)
+      end
+    end
+  end
 end

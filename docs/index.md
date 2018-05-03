@@ -1,5 +1,5 @@
 ---
-title: Barong v1.7.0
+title: Barong v1.8.0.alpha
 language_tabs:
   - http: HTTP
   - shell: Curl
@@ -14,13 +14,13 @@ headingLevel: 2
 ---
 
 
-<h1 id="Barong">Barong v1.7.0</h1>
+<h1 id="Barong">Barong v1.8.0.alpha</h1>
 
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
 
 
-API for barong OAuth server
+API for barong OAuth server 
 
 
 Base URLs:
@@ -33,6 +33,97 @@ Base URLs:
 
 
 Operations about accounts
+
+
+## postV1AccountsConfirm
+
+
+<a id="opIdpostV1AccountsConfirm"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/confirm HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/confirm \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/confirm',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/confirm`
+
+
+*Confirms new account*
+
+
+Confirms new account
+
+
+> Body parameter
+
+
+```yaml
+confirmation_token: string
+
+
+```
+
+
+<h3 id="postV1AccountsConfirm-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» confirmation_token|body|string|true|Token from email|
+
+
+<h3 id="postV1AccountsConfirm-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Confirms new account|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
 
 
 ## postV1Accounts
@@ -356,7 +447,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-04-20'
+dob: '2018-05-07'
 address: string
 postcode: string
 city: string
@@ -462,6 +553,99 @@ This operation does not require authentication
 
 
 Operations about securities
+
+
+## postV1SecurityVerifyApiKey
+
+
+<a id="opIdpostV1SecurityVerifyApiKey"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/security/verify_api_key HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/security/verify_api_key \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/security/verify_api_key',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/security/verify_api_key`
+
+
+*Verify API key*
+
+
+Verify API key
+
+
+> Body parameter
+
+
+```yaml
+uid: string
+account_uid: string
+
+
+```
+
+
+<h3 id="postV1SecurityVerifyApiKey-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» uid|body|string|true|API Key uid|
+|» account_uid|body|string|false|Account uid|
+
+
+<h3 id="postV1SecurityVerifyApiKey-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Verify API key|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
 
 
 ## putV1SecurityResetPassword
@@ -1224,6 +1408,97 @@ This operation does not require authentication
 </aside>
 
 
+## postV1PhonesSendCode
+
+
+<a id="opIdpostV1PhonesSendCode"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/phones/send_code HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/phones/send_code \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/phones/send_code',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/phones/send_code`
+
+
+*Resend activation code*
+
+
+Resend activation code
+
+
+> Body parameter
+
+
+```yaml
+phone_number: string
+
+
+```
+
+
+<h3 id="postV1PhonesSendCode-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[postV1PhonesSendCode](#schemapostv1phonessendcode)|false|No description|
+|» phone_number|body|string|true|Phone number with country code|
+
+
+<h3 id="postV1PhonesSendCode-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Resend activation code|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
 ## postV1Phones
 
 
@@ -1298,7 +1573,7 @@ phone_number: string
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|object|false|No description|
+|body|body|[postV1PhonesSendCode](#schemapostv1phonessendcode)|false|No description|
 |» phone_number|body|string|true|Phone number with country code|
 
 
@@ -1319,6 +1594,99 @@ This operation does not require authentication
 
 
 Operations about sessions
+
+
+## postV1SessionsGenerateJwt
+
+
+<a id="opIdpostV1SessionsGenerateJwt"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/sessions/generate_jwt HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/sessions/generate_jwt \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/sessions/generate_jwt',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/sessions/generate_jwt`
+
+
+*Validates client jwt and generates peatio session jwt*
+
+
+Validates client jwt and generates peatio session jwt
+
+
+> Body parameter
+
+
+```yaml
+key_uid: string
+jwt_token: string
+
+
+```
+
+
+<h3 id="postV1SessionsGenerateJwt-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» key_uid|body|string|true|No description|
+|» jwt_token|body|string|true|No description|
+
+
+<h3 id="postV1SessionsGenerateJwt-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Validates client jwt and generates peatio session jwt|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
 
 
 ## postV1Sessions
@@ -1817,6 +2185,411 @@ This operation does not require authentication
 </aside>
 
 
+<h1 id="Barong-api_keys">api_keys</h1>
+
+
+Operations about api_keys
+
+
+## deleteV1ApiKeysUid
+
+
+<a id="opIddeleteV1ApiKeysUid"></a>
+
+
+> Code samples
+
+
+```http
+DELETE //localhost:3000/api/v1/api_keys/{uid} HTTP/1.1
+Host: null
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X DELETE //localhost:3000/api/v1/api_keys/{uid}
+
+
+```
+
+
+```javascript
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/api_keys/{uid}',
+  method: 'delete',
+
+
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`DELETE /v1/api_keys/{uid}`
+
+
+*Delete an api key*
+
+
+Delete an api key
+
+
+<h3 id="deleteV1ApiKeysUid-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|uid|path|string|true|API key uid|
+
+
+<h3 id="deleteV1ApiKeysUid-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Delete an api key|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## patchV1ApiKeysUid
+
+
+<a id="opIdpatchV1ApiKeysUid"></a>
+
+
+> Code samples
+
+
+```http
+PATCH //localhost:3000/api/v1/api_keys/{uid} HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X PATCH //localhost:3000/api/v1/api_keys/{uid} \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/api_keys/{uid}',
+  method: 'patch',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`PATCH /v1/api_keys/{uid}`
+
+
+*Updates an api key*
+
+
+Updates an api key
+
+
+> Body parameter
+
+
+```yaml
+public_key: string
+scopes: string
+expires_in: string
+
+
+```
+
+
+<h3 id="patchV1ApiKeysUid-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|uid|path|string|true|API key uid|
+|body|body|object|false|No description|
+|» public_key|body|string|false|API key public_key|
+|» scopes|body|string|false|API key comma separated scopes|
+|» expires_in|body|string|false|API key expires_in duration in seconds|
+
+
+<h3 id="patchV1ApiKeysUid-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Updates an api key|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## getV1ApiKeysUid
+
+
+<a id="opIdgetV1ApiKeysUid"></a>
+
+
+> Code samples
+
+
+```http
+GET //localhost:3000/api/v1/api_keys/{uid} HTTP/1.1
+Host: null
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X GET //localhost:3000/api/v1/api_keys/{uid}
+
+
+```
+
+
+```javascript
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/api_keys/{uid}',
+  method: 'get',
+
+
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`GET /v1/api_keys/{uid}`
+
+
+*Return a api key by uid*
+
+
+Return a api key by uid
+
+
+<h3 id="getV1ApiKeysUid-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|uid|path|string|true|API key uid|
+
+
+<h3 id="getV1ApiKeysUid-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return a api key by uid|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## postV1ApiKeys
+
+
+<a id="opIdpostV1ApiKeys"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/api_keys HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/api_keys \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/api_keys',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/api_keys`
+
+
+*Create an api key*
+
+
+Create an api key
+
+
+> Body parameter
+
+
+```yaml
+public_key: string
+scopes: string
+expires_in: string
+
+
+```
+
+
+<h3 id="postV1ApiKeys-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» public_key|body|string|true|API key public_key|
+|» scopes|body|string|false|API key comma separated scopes|
+|» expires_in|body|string|false|API key expires_in duration in seconds|
+
+
+<h3 id="postV1ApiKeys-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Create an api key|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## getV1ApiKeys
+
+
+<a id="opIdgetV1ApiKeys"></a>
+
+
+> Code samples
+
+
+```http
+GET //localhost:3000/api/v1/api_keys HTTP/1.1
+Host: null
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X GET //localhost:3000/api/v1/api_keys
+
+
+```
+
+
+```javascript
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/api_keys',
+  method: 'get',
+
+
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`GET /v1/api_keys`
+
+
+*List all api keys for current account.*
+
+
+List all api keys for current account.
+
+
+<h3 id="getV1ApiKeys-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List all api keys for current account.|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
 <script type="application/ld+json">
 {
   "@context": "http://schema.org/",
@@ -1827,3 +2600,5 @@ This operation does not require authentication
   "name": "Barong"
 }
 </script>
+
+
