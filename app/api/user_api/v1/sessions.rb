@@ -7,26 +7,21 @@ module UserApi
       resource :sessions do
         desc 'Start a new session'
         params do
-          requires :email
-          requires :password
-          requires :application_id
-          optional :expires_in, allow_blank: false
+          requires :email, type: String, desc: 'Sessions Email', allow_blank: false
+          requires :password, type: String, desc: 'Sessions Password', allow_blank: false
+          optional :expires_in, type: Integer, desc: 'Expires in(seconds)', allow_blank: false
         end
 
         post do
           declared_params = declared(params, include_missing: false)
-          acc = Account.find_by(email: declared_params[:email])
+          account = Account.find_by(email: declared_params[:email])
 
-          return error!('Invalid Email or password.', 401) unless acc
-
-          app = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          return error!('Wrong application id', 401) unless app
-
-          if acc.valid_password? declared_params[:password]
-            Barong::Security::AccessToken.create declared_params[:expires_in], acc.id, app
-          else
+          unless account&.valid_password? declared_params[:password]
             error!('Invalid Email or password.', 401)
           end
+
+          Barong::Security::AccessToken.generate_jwt(account_uid: account.uid,
+                                                     expires_in: params[:expires_in])
         end
       end
     end

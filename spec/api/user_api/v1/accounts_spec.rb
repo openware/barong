@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Api::V1::Accounts' do
-  include_context 'doorkeeper authentication'
+  include_context 'jwt authentication'
 
   describe 'GET /api/v1/accounts/me' do
     let(:do_request) { get '/api/v1/accounts/me', headers: auth_header }
@@ -85,49 +85,40 @@ describe 'Api::V1::Accounts' do
       }
     end
 
-    subject!(:acc) do
+    let(:current_account) do
       create :account,
              password: password0,
              password_confirmation: password0
     end
 
-    let!(:access_token) do
-      create :doorkeeper_token,
-             resource_owner_id: acc.id
-    end
-
-    let(:headers) do
-      { Authorization: "Bearer #{access_token.token}" }
-    end
-
     it 'Checks if provided credentials are valid and changes password to the new one' do
-      put url, params: params0, headers: headers
+      put url, params: params0, headers: auth_header
       expect(response.status).to eq(200)
 
-      put url, params: params1, headers: headers
+      put url, params: params1, headers: auth_header
       expect(response.status).to eq(200)
     end
 
     it 'renders 401 when old password is invalid' do
-      put url, params: params1, headers: headers
+      put url, params: params1, headers: auth_header
       expect(response.body).to eq('{"error":"Invalid password."}')
       expect(response.status).to eq(401)
     end
 
     it 'renders 401 without auth header' do
       put url, params: params0
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'Authorization failed')
       expect(response.status).to eq(401)
     end
 
     it 'renders 400 when new password is missing' do
-      put url, params: params0.except(:new_password), headers: headers
+      put url, params: params0.except(:new_password), headers: auth_header
       expect(response.body).to eq('{"error":"new_password is missing"}')
       expect(response.status).to eq(400)
     end
 
     it 'renders 400 is old password is missing' do
-      put url, params: params0.except(:old_password), headers: headers
+      put url, params: params0.except(:old_password), headers: auth_header
       expect(response.body).to eq('{"error":"old_password is missing"}')
       expect(response.status).to eq(400)
     end

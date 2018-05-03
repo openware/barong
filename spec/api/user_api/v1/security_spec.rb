@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Api::V1::Security' do
-  include_context 'doorkeeper authentication'
+  include_context 'jwt authentication'
 
   describe 'POST /api/v1/security/renew' do
     let(:url) { '/api/v1/security/renew' }
@@ -20,13 +20,13 @@ describe 'Api::V1::Security' do
     it 'Checks if current JWT is valid and returns JWT with specified liftime' do
       post url, params: { expires_in: 1000 }, headers: auth_header
       expect(response.status).to eq(201)
-      new_jwt_payload = JWT.decode JSON.parse(response.body), nil, false
+      new_jwt_payload = jwt_decode JSON.parse(response.body)
       expect(new_jwt_payload.first['exp'].to_i).to be <= Time.now.to_i + 1000
     end
 
     it 'Checks if current JWT is valid and returns error, cause it is not' do
       post url
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'Authorization failed')
     end
 
     it 'Checks if current JWT is valid and returns error, cause it has expired' do
@@ -35,7 +35,7 @@ describe 'Api::V1::Security' do
       new_jwt = JSON.parse(response.body)
       sleep(2)
       post url, headers: { 'Authorization' => "Bearer #{new_jwt}" }
-      expect(response.body).to eq('{"error":"The access token expired"}')
+      expect(response.body).to include 'Signature has expired'
     end
   end
 

@@ -1,22 +1,14 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-
 module UserApi
   module V1
     module Helpers
-      include Doorkeeper::Grape::Helpers
-
       def current_account
         @current_account ||= begin
-          doorkeeper_authorize!
-          Account.find(doorkeeper_token.resource_owner_id)
+          Account.find_by(uid: env['user_api.v1.current_account_uid'])
         end
-      end
 
-      def current_application
-        doorkeeper_authorize! unless doorkeeper_token
-        doorkeeper_token.application
+        @current_account || raise(AuthorizationError)
       end
 
       def phone_valid?(phone_number)
