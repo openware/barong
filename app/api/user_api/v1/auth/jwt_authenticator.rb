@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserApi
   module V1
     module Auth
@@ -14,7 +16,7 @@ module UserApi
             raise AuthorizationError, 'Token type is not provided or invalid.'
           end
 
-          payload, _ = decode_and_verify_token(@token_value)
+          payload, = decode_and_verify_token(@token_value)
           payload.fetch('account_uid')
         end
 

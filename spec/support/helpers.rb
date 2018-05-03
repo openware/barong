@@ -20,39 +20,32 @@ module APITestHelpers
   end
 
   def post_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
     post destination,
-         params: params,
+         params: normalize_body(body),
          headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
   def put_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
-
     put destination,
-        params: params,
+        params: normalize_body(body),
         headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
-  def delete_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
-
-    delete destination,
-           params: params,
-           headers: headers.reverse_merge('Content-Type' => 'application/json')
+  def normalize_body(body)
+    body.is_a?(String) ? body : body.to_json
   end
 
   def create_jwt_token(account)
-      secret_key = Rails.application.secrets.secret_key_base
+    secret_key = Rails.application.secrets.secret_key_base
 
-      payload = {
-        account_uid: account.uid,
-        iat: Time.current.to_i,
-        jti: SecureRandom.hex(12).upcase,
-        exp: 30.seconds.from_now.to_i,
-        sub: 'session',
-        iss: 'barong'
-      }
+    payload = {
+      account_uid: account.uid,
+      iat: Time.current.to_i,
+      jti: SecureRandom.hex(12).upcase,
+      exp: 30.seconds.from_now.to_i,
+      sub: 'session',
+      iss: 'barong'
+    }
 
     JWT.encode(payload, secret_key, 'HS256')
   end
@@ -76,16 +69,6 @@ module APITestHelpers
       verify_iss: true
     }
   end
-
-  def jwt_keypair_encoded
-    require 'openssl'
-    require 'base64'
-    OpenSSL::PKey::RSA.generate(2048).yield_self do |p|
-      { public:  Base64.urlsafe_encode64(p.public_key.to_pem),
-        private: Base64.urlsafe_encode64(p.to_pem) }
-    end.tap { |p| ENV['JWT_PUBLIC_KEY'] = p[:public] }
-  end
-  memoize :jwt_keypair_encoded
 
   def multisig_jwt(payload, keychain, signers, algorithms)
     JWT::Multisig.generate_jwt(payload, keychain.slice(*signers), algorithms)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_dependency 'user_api/errors'
-require 'barong/security/access_token'
+require_dependency 'barong/security/access_token'
 
 module UserApi
   module V1

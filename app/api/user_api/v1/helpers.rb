@@ -8,7 +8,7 @@ module UserApi
           Account.find_by(uid: env['user_api.v1.current_account_uid'])
         end
 
-        @current_account or raise AuthorizationError
+        @current_account || raise(AuthorizationError)
       end
 
       def phone_valid?(phone_number)

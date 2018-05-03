@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Magic Label to Level Mapping
 class Level < ApplicationRecord
   validates :key, :value, :description, presence: true
   validates :value, uniqueness: { scope: :key }
