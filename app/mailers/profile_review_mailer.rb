@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class ProfileReviewMailer < ActionMailer::Base
-  default from: ENV.fetch('SENDER_EMAIL', 'noreply@barong.io')
-
+class ProfileReviewMailer < ApplicationMailer
   def approved(account)
     @profile = account.profile
     @app_name = ENV.fetch('APP_NAME', 'Barong')
