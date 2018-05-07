@@ -15,6 +15,7 @@ module UserApi
         desc 'Upload a new document for current user'
         params do
           requires :doc_expire, :doc_type, :doc_number, :upload
+          optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post '/' do
