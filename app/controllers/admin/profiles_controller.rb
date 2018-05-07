@@ -14,7 +14,7 @@ module Admin
 
     def document_label
       account = @profile.account
-      if account.labels.find_or_create_by(key: :document).update(value: params[:state])
+      if account.labels.find_or_create_by(key: :document, scope: :private).update(value: params[:state])
         redirect_to admin_profile_path(@profile), notice: 'Document label was successfully updated.'
       else
         redirect_to admin_profiles_path
