@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Admin::AccountsController, type: :controller do
   let!(:current_account) { create(:account, role: 'admin') }
+  let!(:discarded_account) { create(:account, discarded_at: 1.hour.ago) }
   before { login_as current_account }
 
   describe 'GET #index' do
@@ -77,8 +78,13 @@ describe Admin::AccountsController, type: :controller do
     context 'when account is other account' do
       let!(:account) { create(:account) }
 
-      it 'destroy an account' do
-        expect { do_request }.to change(Account, :count).by(-1)
+      it 'does not destroy an account' do
+        expect { do_request }.to_not change(Account, :count)
+        expect(response).to redirect_to(admin_accounts_url)
+      end
+
+      it 'makes an account as discarded' do
+        expect { do_request }.to change { account.reload.discarded_at }.to be
         expect(response).to redirect_to(admin_accounts_url)
       end
     end

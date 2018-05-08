@@ -15,7 +15,7 @@ module UserApi
 
         post do
           declared_params = declared(params, include_missing: false)
-          acc = Account.find_by(email: declared_params[:email])
+          acc = Account.kept.find_by(email: declared_params[:email])
 
           return error!('Invalid Email or password.', 401) unless acc
 

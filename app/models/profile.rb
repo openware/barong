@@ -12,6 +12,8 @@ class Profile < ApplicationRecord
   validates :state, inclusion: { in: STATES }
   after_update :set_level_if_state_changed
 
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
+
   def as_json_for_event_api
     {
       account_uid: account.uid,

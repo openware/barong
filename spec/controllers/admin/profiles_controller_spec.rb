@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe Admin::ProfilesController, type: :controller do
   let!(:current_account) { create(:account, role: 'admin') }
+  let!(:discarded_account) { create(:account, discarded_at: 1.hour.ago) }
+  let!(:discarded_profile) { create(:profile, account: discarded_account, state: 'approved') }
   before { login_as current_account }
 
   describe 'GET #index' do

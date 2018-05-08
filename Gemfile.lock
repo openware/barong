@@ -110,6 +110,8 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.3)
+    discard (1.0.0)
+      activerecord (>= 4.2, < 6)
     docile (1.3.0)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
@@ -397,6 +399,7 @@ DEPENDENCIES
   chromedriver-helper (~> 1.1)
   countries
   devise (~> 4.4)
+  discard (~> 1.0)
   doorkeeper (~> 4.2.6)
   doorkeeper-jwt!
   factory_bot_rails (~> 4.8)

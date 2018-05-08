@@ -2,28 +2,33 @@
 
 module Admin
   class AccountsController < ModuleController
+    before_action :find_account, except: :index
+
     def index
-      @accounts = Account.page(params[:page])
+      @accounts = Account.kept.page(params[:page])
     end
 
     def edit
-      @account = Account.find(params[:id])
       @roles = %w[admin compliance member]
     end
 
     def update
-      Account.find(params[:id]).update!(account_params)
+      @account.update!(account_params)
       redirect_to admin_accounts_url
     end
 
     def destroy
-      Account.find(params[:id]).destroy!
+      @account.discard
       respond_to do |format|
-        format.html { redirect_to admin_accounts_url, notice: 'Successfully destroyed.' }
+        format.html { redirect_to admin_accounts_url, notice: 'Account is marked as discarded' }
       end
     end
 
   private
+
+    def find_account
+      @account = Account.kept.find(params[:id])
+    end
 
     def account_params
       params.require(:account).permit(:role)

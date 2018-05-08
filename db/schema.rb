@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426105942) do
+ActiveRecord::Schema.define(version: 20180508095253) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -35,9 +35,11 @@ ActiveRecord::Schema.define(version: 20180426105942) do
     t.integer "level", default: 0, null: false
     t.boolean "otp_enabled", default: false
     t.string "state", default: "pending", null: false
+    t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token", unique: true
+    t.index ["discarded_at"], name: "index_accounts_on_discarded_at"
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_accounts_on_uid", unique: true

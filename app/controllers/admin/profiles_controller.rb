@@ -4,19 +4,19 @@ module Admin
   class ProfilesController < ModuleController
     def index
       params[:filter] = params[:filter] || 'pending'
-      @profiles = Profile.all
+      @profiles = profile_scope
       @profiles = @profiles.where(state: params[:filter]) if params[:filter].present?
       @profiles = @profiles.page(params[:page])
     end
 
     def show
-      @profile = Profile.find(params[:id])
+      @profile = profile_scope.find(params[:id])
       @documents = @profile.account.documents
       @labels = @profile.account.labels
     end
 
     def change_state
-      @profile = Profile.find(params[:id])
+      @profile = profile_scope.find(params[:id])
       if @profile.update(state: params[:state])
         redirect_to admin_profile_path(@profile), notice: 'Profile was successfully updated.'
       else
@@ -24,5 +24,10 @@ module Admin
       end
     end
 
+  private
+
+    def profile_scope
+      Profile.kept
+    end
   end
 end
