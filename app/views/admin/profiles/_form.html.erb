@@ -1,0 +1,47 @@
+<%= form_with(model: [:admin, @account, @profile]) do |form| %>
+  <% if profile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(profile.errors.count, "error") %> prohibited this profile from being saved:</h2>
+
+      <ul>
+        <% profile.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <%= form.label :first_name, class: 'control-label'%>
+  <%= form.text_field :first_name, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :last_name, class: 'control-label'%>
+  <%= form.text_field :last_name, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :dob, class: 'control-label'%>
+  <%= form.text_field :dob, class: 'form-control col-sm-10'%>
+  <br>
+  
+  <%= form.label :address, class: 'control-label'%>
+  <%= form.text_field :address, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :postcode, class: 'control-label'%>
+  <%= form.text_field :postcode, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :city, class: 'control-label'%>
+  <%= form.text_field :city, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.label :country, class: 'control-label'%>
+  <%= form.text_field :country, class: 'form-control col-sm-10'%>
+  <br>
+
+  <%= form.submit 'Submit', class: 'btn btn-primary' %>
+
+  <br>
+  <br>
+  
+<% end %>
