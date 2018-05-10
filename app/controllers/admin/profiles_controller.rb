@@ -2,15 +2,13 @@
 
 module Admin
   class ProfilesController < ModuleController
-    def index
-      @profiles = Profile.all.page(params[:page])
-    end
+    before_action :find_profile
 
     def show
-      @profile = Profile.find(params[:id])
       @documents = @profile.account.documents
       @labels = @profile.account.labels
-      @document_label_value = @profile.account.labels.find_by(key: 'document', scope: 'private')&.value
+      @document_label_value = @profile.account.labels.find_by(key: 'document',
+                                                              scope: 'private')&.value
     end
 
     def document_label
@@ -22,5 +20,10 @@ module Admin
       end
     end
 
+  private
+
+    def find_profile
+      @profile = Profile.find(params[:id])
+    end
   end
 end
