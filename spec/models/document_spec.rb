@@ -9,18 +9,17 @@ RSpec.describe Document, type: :model do
   context 'Document creation' do
     let!(:current_account) { create(:account) }
     let(:create_document) { create :document, account: current_account }
+    let(:document_label) { current_account.labels.first }
 
     context 'when it is first document' do
       it 'adds new document label' do
-        expect(current_account.labels).to be_empty
-        create_document
-        expect(current_account.labels).to_not be_empty
+        expect { create_document }.to change { current_account.reload.labels.count }.from(0).to(1)
       end
 
       it 'new document label is document: pending' do
         create_document
-        expect(current_account.labels.first.key).to eq 'document'
-        expect(current_account.labels.first.value).to eq 'pending'
+        expect(document_label.key).to eq 'document'
+        expect(document_label.value).to eq 'pending'
       end
     end
 
@@ -34,8 +33,7 @@ RSpec.describe Document, type: :model do
       end
 
       it 'does not add new label' do
-        create_document
-        expect(current_account.labels.count).to eq 1
+        expect { create_document }.to_not change { Label.count }
       end
 
       it 'changes label value to pending' do
@@ -54,13 +52,11 @@ RSpec.describe Document, type: :model do
       end
 
       it 'does not add new label' do
-        create_document
-        expect(current_account.labels.count).to eq 1
+        expect { create_document }.to_not change { Label.count }
       end
 
       it 'remains value verified' do
-        create_document
-        expect(current_account.labels.first.value).to eq 'verified'
+        expect { create_document }.to_not change { document_label }
       end
     end
   end

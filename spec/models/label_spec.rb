@@ -92,7 +92,7 @@ RSpec.describe Label, type: :model do
 
     context 'document label changes' do
       let!(:account) { create(:account) }
-      let(:mailer_deliveries) { ActionMailer::Base.deliveries }
+      let(:last_mailer_delivery) { ActionMailer::Base.deliveries.last }
       let!(:document_label) do
         create(
           :label,
@@ -106,16 +106,16 @@ RSpec.describe Label, type: :model do
       context 'when label value is verified' do
         it 'sends notification email' do
           document_label.update(value: 'verified')
-          expect(mailer_deliveries.last.to).to eq [account.email]
-          expect(mailer_deliveries.last.subject).to eq 'Your identity was approved'
+          expect(last_mailer_delivery.to).to eq [account.email]
+          expect(last_mailer_delivery.subject).to eq 'Your identity was approved'
         end
       end
 
       context 'when label value is rejected' do
         it 'sends notification email' do
           document_label.update(value: 'rejected')
-          expect(mailer_deliveries.last.to).to eq [account.email]
-          expect(mailer_deliveries.last.subject).to eq 'Your identity was rejected'
+          expect(last_mailer_delivery.to).to eq [account.email]
+          expect(last_mailer_delivery.subject).to eq 'Your identity was rejected'
         end
       end
     end
@@ -140,8 +140,7 @@ RSpec.describe Label, type: :model do
 
       context 'can be created with different scopes' do
         it 'account has both labels' do
-          expect(account.labels.first).to eq label_public
-          expect(account.labels.second).to eq label_private
+          expect(account.labels).to eq [label_public, label_private]
         end
 
         it 'account has level 1' do
@@ -166,7 +165,7 @@ RSpec.describe Label, type: :model do
       end
     end
 
-    context 'with public labels duplicating levels' do
+    context 'when account has all required labels for level 4 in wrong scope' do
       let!(:account) { create(:account) }
       let!(:label_email_public) do
         create :label,

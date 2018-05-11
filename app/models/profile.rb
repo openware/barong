@@ -9,6 +9,9 @@ class Profile < ApplicationRecord
   serialize :metadata, JSON
   validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 
   def as_json_for_event_api
     {

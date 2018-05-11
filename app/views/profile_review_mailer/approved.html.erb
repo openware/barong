@@ -4,7 +4,7 @@
     <% if @profile.nil? %>
       <p> Hello! </p>
     <% else %>
-      <p> Hello, <%= @profile.first_name %> <%= @profile.last_name %>!</p>
+      <p> Hello <%= @profile.full_name %>!</p>
     <% end %>
     <p>Thank you for signing up with <%= @app_name %>!</p>
     <p>Your <%= @app_name %> account has been reviewed and approved.</p>
