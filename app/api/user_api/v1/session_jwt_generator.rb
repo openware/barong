@@ -2,18 +2,18 @@
 
 module UserApi
   module V1
-    class SessionJwtGenerator
+    class SessionJWTGenerator
       ALGORITHM = 'RS256'
 
-      def initialize(jwt_token:, key_uid:)
-        @key_uid = key_uid
+      def initialize(jwt_token:, kid:)
+        @kid = kid
         @jwt_token = jwt_token
-        @api_key = APIKey.active.find_by!(uid: key_uid)
+        @api_key = APIKey.active.find_by!(uid: kid)
       end
 
       def verify_payload
         payload, = decode_payload
-        payload['key_uid'] == @key_uid
+        payload.present?
       end
 
       def generate_session_jwt
@@ -30,7 +30,7 @@ module UserApi
           role:  account.role,
           level: account.level,
           state: account.state,
-          api_key_uid: @api_key.uid
+          api_kid: @api_key.uid
         }
 
         JWT.encode(payload, secret_key, ALGORITHM)

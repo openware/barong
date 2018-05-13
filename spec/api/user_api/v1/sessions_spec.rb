@@ -66,14 +66,14 @@ describe 'Session create test' do
       it 'renders an error' do
         do_request
         expect_status.to eq 400
-        expect_body.to eq(error: 'key_uid is missing, key_uid is empty, jwt_token is missing, jwt_token is empty')
+        expect_body.to eq(error: 'kid is missing, kid is empty, jwt_token is missing, jwt_token is empty')
       end
     end
 
     context 'when key is not found' do
       let(:params) do
         {
-          key_uid: 'invalid',
+          kid: 'invalid',
           jwt_token: 'invalid_token'
         }
       end
@@ -87,7 +87,7 @@ describe 'Session create test' do
     context 'when payload is invalid' do
       let(:params) do
         {
-          key_uid: api_key.uid,
+          kid: api_key.uid,
           jwt_token: 'invalid_token'
         }
       end
@@ -98,25 +98,11 @@ describe 'Session create test' do
       end
     end
 
-    context 'when payload is valid but does not contain required fields' do
-      let(:params) do
-        {
-          key_uid: api_key.uid,
-          jwt_token: encode_api_key_payload({})
-        }
-      end
-      it 'renders an error' do
-        do_request
-        expect_status.to eq 401
-        expect(json_body[:error]).to include('Payload is invalid')
-      end
-    end
-
     context 'when payload is valid' do
       let(:params) do
         {
-          key_uid: api_key.uid,
-          jwt_token: encode_api_key_payload(key_uid: api_key.uid)
+          kid: api_key.uid,
+          jwt_token: encode_api_key_payload({})
         }
       end
       let(:expected_payload) do
