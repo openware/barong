@@ -5,7 +5,7 @@ plugins:
   rubocop:
     enabled: true
   reek:
-    enabled: true
+    enabled: false
     checks:
       FeatureEnvy:
         enabled: false
