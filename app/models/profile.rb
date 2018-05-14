@@ -19,14 +19,14 @@ class Profile < ApplicationRecord
       account_uid: account.uid,
       first_name: first_name,
       last_name: last_name,
-      dob: dob&.iso8601,
+      dob: format_iso8601_time(dob),
       address: address,
       postcode: postcode,
       city: city,
       country: country,
       metadata: metadata,
-      created_at: created_at&.iso8601,
-      updated_at: updated_at&.iso8601
+      created_at: format_iso8601_time(created_at),
+      updated_at: format_iso8601_time(updated_at)
     }
   end
 
