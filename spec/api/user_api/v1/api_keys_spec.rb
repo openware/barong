@@ -179,12 +179,19 @@ describe 'Api::V1::APIKeys' do
       let(:params) do
         {
           public_key: Faker::Crypto.sha256,
-          expires_in: 1.hour.to_i
+          expires_in: 1.hour.to_i,
+          state: 'inactive'
         }
       end
 
       it 'Updates an api key' do
         expect { do_request }.to change { api_key.reload.public_key }.to(params[:public_key])
+        expect(response.status).to eq(200)
+      end
+
+      it 'Updates a state' do
+        expect { do_request }.to change { api_key.reload.state }
+          .from('active').to('inactive')
         expect(response.status).to eq(200)
       end
 

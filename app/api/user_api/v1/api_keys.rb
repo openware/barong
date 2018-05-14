@@ -66,6 +66,8 @@ module UserApi
           optional :expires_in, type: String,
                                 allow_blank: false,
                                 desc: 'expires_in duration in seconds'
+          optional :state, type: String, desc: 'State of API Key. "active" state means key is active and can be used for auth',
+                           allow_blank: false
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         patch ':uid' do
