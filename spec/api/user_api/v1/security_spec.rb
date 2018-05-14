@@ -185,7 +185,7 @@ describe 'Api::V1::Security' do
     let(:params) { { email: email } }
 
     context 'when email is unknown' do
-      let(:email) { 'unknown@example.com' }
+      let(:email) { 'unknown@gmail.com' }
 
       it 'renders not found error' do
         expect(Devise::Mailer).to_not receive(:reset_password_instructions)
@@ -196,7 +196,7 @@ describe 'Api::V1::Security' do
 
     context 'when account is found by email' do
       let!(:account) { create(:account, email: email) }
-      let(:email) { 'email@example.com' }
+      let(:email) { 'email@gmail.com' }
       let(:fake_mailer) { double(deliver: '') }
 
       it 'sends reset password instructions' do
@@ -230,7 +230,7 @@ describe 'Api::V1::Security' do
 
     context 'when reset_password_token is invalid' do
       let(:reset_password_token) { 'invalid' }
-      let(:password) { 'password' }
+      let(:password) { 'Password1' }
 
       it 'renders 404 error' do
         do_request
@@ -242,7 +242,7 @@ describe 'Api::V1::Security' do
     context 'when reset_password_token is valid' do
       let!(:account) { create(:account) }
       let(:reset_password_token) { account.send_reset_password_instructions }
-      let(:password) { 'password' }
+      let(:password) { 'Password1' }
 
       it 'resets a password' do
         expect { do_request }.to change { account.reload.encrypted_password }

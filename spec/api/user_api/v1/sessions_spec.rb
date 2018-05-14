@@ -2,8 +2,8 @@
 
 describe 'Session create test' do
   describe 'POST /api/v1/sessions' do
-    let!(:email) { 'user@barong.io' }
-    let!(:password) { 'testpassword111' }
+    let!(:email) { 'user@gmail.com' }
+    let!(:password) { 'testPassword111' }
     let(:uri) { '/api/v1/sessions' }
     let(:check_uri) { '/api/v1/security/renew' }
     let!(:application) { create :doorkeeper_application }
