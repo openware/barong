@@ -2,7 +2,7 @@
 
 module Entities
   class APIKey < Grape::Entity
-    format_with(:iso_timestamp, &:iso8601)
+    format_with(:iso_timestamp) { |d| d.utc.iso8601 }
 
     expose :uid, documentation: { type: 'String' }
     expose :public_key, documentation: { type: 'String' }

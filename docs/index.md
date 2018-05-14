@@ -447,7 +447,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-05-07'
+dob: '2018-05-15'
 address: string
 postcode: string
 city: string
@@ -1659,7 +1659,7 @@ Validates client jwt and generates peatio session jwt
 
 
 ```yaml
-key_uid: string
+kid: string
 jwt_token: string
 
 
@@ -1672,7 +1672,7 @@ jwt_token: string
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|No description|
-|» key_uid|body|string|true|No description|
+|» kid|body|string|true|API Key uid|
 |» jwt_token|body|string|true|No description|
 
 
@@ -2201,7 +2201,7 @@ Operations about api_keys
 
 
 ```http
-DELETE //localhost:3000/api/v1/api_keys/{uid} HTTP/1.1
+DELETE //localhost:3000/api/v1/api_keys/{uid}?totp_code=string HTTP/1.1
 Host: null
 
 
@@ -2210,7 +2210,7 @@ Host: null
 
 ```shell
 # You can also use wget
-curl -X DELETE //localhost:3000/api/v1/api_keys/{uid}
+curl -X DELETE //localhost:3000/api/v1/api_keys/{uid}?totp_code=string
 
 
 ```
@@ -2222,6 +2222,7 @@ curl -X DELETE //localhost:3000/api/v1/api_keys/{uid}
 $.ajax({
   url: '//localhost:3000/api/v1/api_keys/{uid}',
   method: 'delete',
+  data: '?totp_code=string',
 
 
   success: function(data) {
@@ -2247,7 +2248,8 @@ Delete an api key
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|uid|path|string|true|API key uid|
+|uid|path|string|true|No description|
+|totp_code|query|string|true|Code from Google Authenticator|
 
 
 <h3 id="deleteV1ApiKeysUid-responses">Responses</h3>
@@ -2329,6 +2331,8 @@ Updates an api key
 public_key: string
 scopes: string
 expires_in: string
+state: string
+totp_code: string
 
 
 ```
@@ -2339,11 +2343,13 @@ expires_in: string
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|uid|path|string|true|API key uid|
+|uid|path|string|true|No description|
 |body|body|object|false|No description|
-|» public_key|body|string|false|API key public_key|
-|» scopes|body|string|false|API key comma separated scopes|
-|» expires_in|body|string|false|API key expires_in duration in seconds|
+|» public_key|body|string|false|No description|
+|» scopes|body|string|false|comma separated scopes|
+|» expires_in|body|string|false|expires_in duration in seconds|
+|» state|body|string|false|State of API Key. "active" state means key is active and can be used for auth|
+|» totp_code|body|string|true|Code from Google Authenticator|
 
 
 <h3 id="patchV1ApiKeysUid-responses">Responses</h3>
@@ -2369,7 +2375,7 @@ This operation does not require authentication
 
 
 ```http
-GET //localhost:3000/api/v1/api_keys/{uid} HTTP/1.1
+GET //localhost:3000/api/v1/api_keys/{uid}?totp_code=string HTTP/1.1
 Host: null
 
 
@@ -2378,7 +2384,7 @@ Host: null
 
 ```shell
 # You can also use wget
-curl -X GET //localhost:3000/api/v1/api_keys/{uid}
+curl -X GET //localhost:3000/api/v1/api_keys/{uid}?totp_code=string
 
 
 ```
@@ -2390,6 +2396,7 @@ curl -X GET //localhost:3000/api/v1/api_keys/{uid}
 $.ajax({
   url: '//localhost:3000/api/v1/api_keys/{uid}',
   method: 'get',
+  data: '?totp_code=string',
 
 
   success: function(data) {
@@ -2404,10 +2411,10 @@ $.ajax({
 `GET /v1/api_keys/{uid}`
 
 
-*Return a api key by uid*
+*Return an api key by uid*
 
 
-Return a api key by uid
+Return an api key by uid
 
 
 <h3 id="getV1ApiKeysUid-parameters">Parameters</h3>
@@ -2415,7 +2422,8 @@ Return a api key by uid
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|uid|path|string|true|API key uid|
+|uid|path|string|true|No description|
+|totp_code|query|string|true|Code from Google Authenticator|
 
 
 <h3 id="getV1ApiKeysUid-responses">Responses</h3>
@@ -2423,7 +2431,7 @@ Return a api key by uid
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return a api key by uid|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return an api key by uid|None|
 
 
 <aside class="success">
@@ -2497,6 +2505,7 @@ Create an api key
 public_key: string
 scopes: string
 expires_in: string
+totp_code: string
 
 
 ```
@@ -2508,9 +2517,10 @@ expires_in: string
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|No description|
-|» public_key|body|string|true|API key public_key|
-|» scopes|body|string|false|API key comma separated scopes|
-|» expires_in|body|string|false|API key expires_in duration in seconds|
+|» public_key|body|string|true|No description|
+|» scopes|body|string|false|comma separated scopes|
+|» expires_in|body|string|false|expires_in duration in seconds|
+|» totp_code|body|string|true|Code from Google Authenticator|
 
 
 <h3 id="postV1ApiKeys-responses">Responses</h3>
@@ -2536,7 +2546,7 @@ This operation does not require authentication
 
 
 ```http
-GET //localhost:3000/api/v1/api_keys HTTP/1.1
+GET //localhost:3000/api/v1/api_keys?totp_code=string HTTP/1.1
 Host: null
 
 
@@ -2545,7 +2555,7 @@ Host: null
 
 ```shell
 # You can also use wget
-curl -X GET //localhost:3000/api/v1/api_keys
+curl -X GET //localhost:3000/api/v1/api_keys?totp_code=string
 
 
 ```
@@ -2557,6 +2567,7 @@ curl -X GET //localhost:3000/api/v1/api_keys
 $.ajax({
   url: '//localhost:3000/api/v1/api_keys',
   method: 'get',
+  data: '?totp_code=string',
 
 
   success: function(data) {
@@ -2575,6 +2586,14 @@ $.ajax({
 
 
 List all api keys for current account.
+
+
+<h3 id="getV1ApiKeys-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|totp_code|query|string|true|Code from Google Authenticator|
 
 
 <h3 id="getV1ApiKeys-responses">Responses</h3>
