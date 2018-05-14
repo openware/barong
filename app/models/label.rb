@@ -25,7 +25,7 @@ class Label < ApplicationRecord
   validates :key,
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ },
-            uniqueness: { scope: [:account_id, :scope] }
+            uniqueness: { scope: %i[account_id scope] }
 
   validates :value,
             length: 3..255,

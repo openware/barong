@@ -13,10 +13,13 @@ module Admin
       @documents = @account.documents
       @labels = @account.labels
       @phones = @account.phones
+      @document_label_value = @profile.account
+                                      .labels
+                                      .find_by(key: 'document', scope: 'private')
+                                      &.value
     end
 
     def edit
-      @roles = %w[admin compliance member]
     end
 
     def update

@@ -5,7 +5,7 @@
   <%= form_for([:admin, @account], method: :put) do |f| %>
     <div class="form-group">
       <%= f.label :role, class: 'control-label' %><br />
-      <%= f.select :role, @roles, {}, class: 'form-control col-sm-2' %>
+      <%= f.select :role, Account::ROLES, {}, class: 'form-control col-sm-2' %>
     </div>
     <div class="actions">
       <%= f.submit 'Submit', class: 'btn btn-primary' %>

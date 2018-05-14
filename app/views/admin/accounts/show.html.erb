@@ -1,10 +1,32 @@
 <div class="container">
-  <h4 class="text-center"> Profile </h4>
+  <h4 class="text-center">Account</h4>
   <ul class="list-group">
     <li class="list-group-item">
      <b> E-mail: </b>
       <%= @account.email%>
     </li >
+
+    <li class="list-group-item">
+     <b> Role: </b>
+      <%= @account.role %>
+    </li >
+
+    <li class="list-group-item">
+     <b> Level: </b>
+      <%= @account.level %>
+    </li >
+
+    <li class="list-group-item">
+     <b> 2FA enabled?: </b>
+      <%= @account.otp_enabled %>
+    </li >
+  </ul>
+  <br/>
+  
+</br/>
+
+  <h4 class="text-center"> Profile </h4>
+  <ul class="list-group">
     <% if @profile %>
       <li class="list-group-item">
         <b> First Name: </b>
@@ -35,24 +57,16 @@
         <b> Country: </b>
         <%= @profile.country%>
       </li>
-    
+
+      <% if @document_label_value %>
+        <%= render 'document_label' %>
+      <% end %>
       <li class="list-group-item">
-        <b> State: </b>
-        <div class="dropdown show">
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= @profile.state.upcase_first %>
-          </a>
-          <div class="dropdown-menu">
-            <% Profile::STATES.each do |state|%>
-              <%= link_to(state.upcase_first, change_state_admin_profile_path(@account.profile, state: state), method: :put, class: 'dropdown-item') unless @account.profile.state == state%>
-            <% end %>
-          </div>
-        </div>
+        <% if can? :update, Profile %>
+          <%= link_to 'Edit', edit_admin_profile_path(@account.profile), class: 'btn btn-primary btn-sm' %>
+        <% end %>
       </li>
-      <li class="list-group-item"> 
-        <%= link_to 'Edit',  edit_admin_profile_path(@account.profile), class: 'btn btn-primary btn-sm' %>
-      </li>
-    <% end %>  
+    <% end %>
   </ul>
   <br>
   <h4 class="text-center"> Phones </h4>
@@ -103,7 +117,10 @@
     </tbody>
   </table>
   <br>
-  <%= link_to 'New Label', new_admin_account_label_path(@account.id), class: 'btn btn-success' %>
+
+  <% if can? :create, Label %>
+    <%= link_to 'New Label', new_admin_account_label_path(@account.id), class: 'btn btn-success' %>
+  <% end %>
   <br>
   <h4 class="text-center"> Labels </h4>
   <table class="table table-bordered table-striped table-hover table-sm text-center">
@@ -122,8 +139,16 @@
         <td><%= label.key %></td>
         <td><%= label.value %></td>
         <td><%= label.scope %></td>
-        <td><%= link_to 'Edit', edit_admin_account_label_path(id: label.id, account_id: @account.id), class: 'btn btn-primary btn-sm' %></td>
-        <td><%= link_to 'Delete', admin_account_label_path(id: label.id, account_id: @account.id), class: 'btn btn-danger btn-sm', method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <td>
+          <% if can? :update, Label %>
+            <%= link_to 'Edit', edit_admin_account_label_path(id: label.id, account_id: @account.id), class: 'btn btn-primary btn-sm' %>
+          <% end %>
+        </td>
+        <td>
+          <% if can? :destroy, Label %>
+            <%= link_to 'Delete', admin_account_label_path(id: label.id, account_id: @account.id), class: 'btn btn-danger btn-sm', method: :delete, data: {confirm: 'Are you sure?'} %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
     </tbody>

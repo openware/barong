@@ -28,7 +28,7 @@ Rails.application.routes.draw do
       resources :labels, except: %i[index show]
     end
     resources :websites
-    resources :profiles, only: %i[index show] do
+    resources :profiles, only: %i[edit update] do
       put :document_label, on: :member
     end
   end
