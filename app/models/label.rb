@@ -31,7 +31,7 @@ class Label < ApplicationRecord
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ }
 
-  after_commit :update_level_if_label_defined, on: [:create, :update]
+  after_commit :update_level_if_label_defined, on: %i[create update]
   after_destroy :update_level_if_label_defined
 
 private
