@@ -13,7 +13,7 @@ module PhoneUtils
     def valid?(unsafe_phone)
       number = sanitize(unsafe_phone)
       phone  = Phonelib.parse(number)
-      phone.valid? && phone.international(false) == number
+      phone.valid?
     end
 
     def send_confirmation_sms(phone)

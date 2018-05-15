@@ -32,11 +32,20 @@ describe 'Api::V1::Accounts' do
     before { do_request }
 
     context 'when email is invalid' do
-      let(:params) { { email: 'bad_format', password: 'password' } }
+      let(:params) { { email: 'bad_format', password: 'Password1' } }
 
       it 'renders an error' do
         expect_status_to_eq 422
         expect_body.to eq(error: ['Email is invalid'])
+      end
+    end
+
+    context 'when password is invalid' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'password' } }
+
+      it 'renders an error' do
+        expect_status_to_eq 422
+        expect_body.to eq(error: ['Password must contain big, small letters and digits'])
       end
     end
 
@@ -50,7 +59,7 @@ describe 'Api::V1::Accounts' do
     end
 
     context 'when email is blank' do
-      let(:params) { { email: '', password: 'password' } }
+      let(:params) { { email: '', password: 'Password1' } }
 
       it 'renders an error' do
         expect_status_to_eq 400
@@ -59,7 +68,7 @@ describe 'Api::V1::Accounts' do
     end
 
     context 'when email is valid' do
-      let(:params) { { email: Faker::Internet.email, password: 'password' } }
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'Password1' } }
 
       it 'creates an account' do
         expect_status_to_eq 201
@@ -69,26 +78,26 @@ describe 'Api::V1::Accounts' do
 
   describe 'PUT /api/v1/accounts/password' do
     let(:url) { '/api/v1/accounts/password' }
-    let!(:password0) { 'testpassword111' }
-    let!(:password1) { 'testpassword123' }
+    let!(:password0) { 'Testpassword111' }
+    let!(:password1) { 'Testpassword123' }
     let(:params0) do
       {
-        old_password: password0,
-        new_password: password1
+        old_password: 'Password0',
+        new_password: 'Password1'
       }
     end
 
     let(:params1) do
       {
-        old_password: password1,
-        new_password: password0
+        old_password: 'Password1',
+        new_password: 'Password0'
       }
     end
 
     subject!(:acc) do
       create :account,
-             password: password0,
-             password_confirmation: password0
+             password: 'Password0',
+             password_confirmation: 'Password0'
     end
 
     let!(:access_token) do

@@ -7,7 +7,7 @@ class Account < ApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
+         :recoverable, :rememberable, :trackable, :secure_validatable,
          :confirmable, :lockable
 
   acts_as_eventable prefix: 'account', on: %i[create update]
@@ -16,9 +16,11 @@ class Account < ApplicationRecord
   has_many :phones, dependent: :destroy
   has_many :documents, dependent: :destroy
   has_many :labels
+  has_many :api_keys, class_name: 'APIKey'
 
   before_validation :assign_uid
 
+  validates :email, email: true
   validates :email, uniqueness: true
   validates :uid, presence: true, uniqueness: true
 
