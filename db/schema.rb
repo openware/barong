@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503073934) do
+ActiveRecord::Schema.define(version: 20180507095118) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20180503073934) do
     t.string "doc_type"
     t.string "doc_number"
     t.date "doc_expire"
+    t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_documents_on_account_id"

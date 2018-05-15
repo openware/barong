@@ -19,9 +19,25 @@ describe 'Documents API test' do
       }
     end
 
+    let!(:optional_params) do
+      {
+        metadata: {
+          country: Faker::Address.country
+        }
+      }
+    end
+
     it 'Checks if params are ok and returns success' do
       post '/api/v1/documents', headers: headers, params: params
       expect(response.status).to eq(201)
+    end
+
+    it 'Creates document with optional params and returns success' do
+      post '/api/v1/documents', headers: headers, params: params.merge(optional_params)
+      expect(response.status).to eq(201)
+      document = Document.last
+      expect(document).to be
+      expect(document.metadata.symbolize_keys).to eq(optional_params[:metadata])
     end
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
