@@ -12,6 +12,7 @@ class Document < ApplicationRecord
   scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
 
   belongs_to :account
+  serialize :metadata, JSON
   validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
   validates :doc_type, inclusion: { in: TYPES }
 
@@ -35,18 +36,19 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180402122730
+# Schema version: 20180507095118
 #
 # Table name: documents
 #
 #  id         :integer          not null, primary key
+#  account_id :integer
 #  upload     :string(255)
 #  doc_type   :string(255)
 #  doc_number :string(255)
 #  doc_expire :date
+#  metadata   :text(65535)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  account_id :integer
 #
 # Indexes
 #
