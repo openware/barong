@@ -250,4 +250,38 @@ describe 'Api::V1::Security' do
       end
     end
   end
+
+  describe 'POST /api/v1/security/verify_api_key' do
+    let!(:account) { create(:account) }
+    let!(:api_key) { create(:api_key, account: account) }
+    let(:do_request) do
+      post '/api/v1/security/verify_api_key', params: params, headers: auth_header
+    end
+
+    let(:params) { { uid: api_key.uid } }
+
+    context 'when key is found' do
+      it 'responses with api_key state' do
+        do_request
+        expect(response.status).to eq(200)
+        expect_body.to eq(state: api_key.state)
+      end
+
+      context 'when account_id provided' do
+        it 'responses with api_key state' do
+          params[:account_uid] = account.uid
+          do_request
+          expect(response.status).to eq(200)
+          expect_body.to eq(state: api_key.state)
+        end
+
+        it 'renders an error' do
+          params[:account_uid] = 'invalid'
+          do_request
+          expect(response.status).to eq(422)
+          expect_body.to eq(error: 'Account has no api key with provided uid')
+        end
+      end
+    end
+  end
 end

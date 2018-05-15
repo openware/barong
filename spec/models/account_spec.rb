@@ -30,4 +30,23 @@ RSpec.describe Account, type: :model do
 
     after(:all) { Account.destroy_all }
   end
+
+  describe 'Iso8601TimeFormat' do
+    let!(:account) { create(:account) }
+    around(:each) { |example| Time.use_zone('Pacific/Midway') { example.run } }
+
+    it 'parses time in utc and iso8601' do
+      expect(account.format_iso8601_time(account.created_at)).to \
+        eq account.created_at.utc.iso8601
+    end
+
+    it 'skips nil' do
+      expect(account.format_iso8601_time(nil)).to eq nil
+    end
+
+    it 'parses date to iso8601' do
+      expect(account.format_iso8601_time(account.created_at.to_date)).to \
+        eq account.created_at.to_date.iso8601
+    end
+  end
 end

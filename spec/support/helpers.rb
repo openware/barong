@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module APITestHelpers
   extend Memoist
 
@@ -20,37 +21,59 @@ module APITestHelpers
   end
 
   def post_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
     post destination,
-         params: params,
+         params: build_body(body),
          headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
   def put_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
-
     put destination,
-        params: params,
+        params: build_body(body),
         headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
-  def delete_json(destination, body, headers = {})
-    params = String === body ? body : body.to_json
-
-    delete destination,
-           params: params,
-           headers: headers.reverse_merge('Content-Type' => 'application/json')
+  def build_body(body)
+    body.is_a?(String) ? body : body.to_json
   end
 
   def jwt_keypair_encoded
     require 'openssl'
     require 'base64'
-    OpenSSL::PKey::RSA.generate(2048).yield_self do |p|
-      { public:  Base64.urlsafe_encode64(p.public_key.to_pem),
-        private: Base64.urlsafe_encode64(p.to_pem) }
-    end.tap { |p| ENV['JWT_PUBLIC_KEY'] = p[:public] }
+    result = OpenSSL::PKey::RSA.generate(2048).yield_self do |p|
+      {
+        public:  Base64.urlsafe_encode64(p.public_key.to_pem),
+        private: Base64.urlsafe_encode64(p.to_pem)
+      }
+    end
+
+    ENV['JWT_PUBLIC_KEY'] = result[:public]
+    result
   end
   memoize :jwt_keypair_encoded
+
+  def build_ssl_pkey(key)
+    OpenSSL::PKey.read(Base64.urlsafe_decode64(key))
+  end
+
+  def jwt_encode(payload)
+    build_ssl_pkey(jwt_keypair_encoded[:private]).yield_self do |key|
+      JWT.encode(payload, key, 'RS256')
+    end
+  end
+
+  def jwt_decode(token)
+    build_ssl_pkey(jwt_keypair_encoded[:public]).yield_self do |key|
+      JWT.decode(token, key, true, algorithm: 'RS256')
+    end
+  end
+
+  def encode_api_key_payload(data)
+    jwt_encode data.reverse_merge(iat: Time.current.to_i,
+                                  exp: 30.seconds.from_now.to_i,
+                                  sub: 'api_key_jwt',
+                                  iss: 'external',
+                                  jti: SecureRandom.hex(12).upcase)
+  end
 
   def multisig_jwt(payload, keychain, signers, algorithms)
     JWT::Multisig.generate_jwt(payload, keychain.slice(*signers), algorithms)
@@ -104,5 +127,6 @@ module APITestHelpers
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
 
 RSpec.configure { |config| config.include APITestHelpers }
