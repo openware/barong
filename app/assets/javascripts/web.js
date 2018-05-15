@@ -16,7 +16,7 @@ window.onload = function () {
       headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') },
       method:  'POST',
       data:    { number: number },
-      url:     'verification',
+      url:     '/phones/verification',
       success: function(result){
          if (result.success){
            $('.loader').css("display", "none");

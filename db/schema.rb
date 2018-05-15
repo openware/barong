@@ -44,6 +44,17 @@ ActiveRecord::Schema.define(version: 20180507095118) do
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
   end
 
+  create_table "api_keys", primary_key: "uid", id: :string, limit: 36, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text "public_key", null: false
+    t.string "scopes"
+    t.integer "expires_in", null: false
+    t.string "state", default: "active", null: false
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_api_keys_on_account_id"
+  end
+
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "account_id"
     t.string "upload"
@@ -157,6 +168,7 @@ ActiveRecord::Schema.define(version: 20180507095118) do
     t.index ["domain"], name: "index_websites_on_domain", unique: true
   end
 
+  add_foreign_key "api_keys", "accounts"
   add_foreign_key "documents", "accounts"
   add_foreign_key "labels", "accounts", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
