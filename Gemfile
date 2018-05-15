@@ -34,7 +34,7 @@ gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
 gem 'public_suffix'
 gem 'devise-security'
-gem 'rails_email_validator'
+gem 'email_validator', require: 'email_validator/strict'
 
 gem 'doorkeeper-jwt', git: 'https://github.com/rubykube/doorkeeper-jwt.git'
 gem 'memoist', '~> 0.16'
