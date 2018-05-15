@@ -11,6 +11,8 @@ class Account < ApplicationRecord
          :recoverable, :rememberable, :trackable, :secure_validatable,
          :confirmable, :lockable
 
+  ROLES = %w[admin compliance member].freeze
+
   acts_as_eventable prefix: 'account', on: %i[create update]
 
   has_one :profile, dependent: :destroy

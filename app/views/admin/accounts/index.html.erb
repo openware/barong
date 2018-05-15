@@ -20,7 +20,7 @@
       <% @accounts.each do |account| %>
         <tr class=<%= 'table-danger' if account.unlock_token? %>>
           <td><%= account.id %></td>
-          <td><%= account.email %></td>
+          <td><%= link_to account.email, admin_account_path(account.id) %></td>
           <td><span class=" badge <%= badge_by_role(account.role) %>"> <%= account.role %> </span></td>
           <td><%= account.level %></td>
           <td><%= label_tags(account) %></td>

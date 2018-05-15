@@ -34,7 +34,6 @@ describe Admin::AccountsController, type: :controller do
         do_request
         expect(response).to be_success
         expect(assigns(:account)).to eq account
-        expect(assigns(:roles)).to eq %w[admin compliance member]
       end
     end
   end

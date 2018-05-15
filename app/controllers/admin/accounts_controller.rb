@@ -8,8 +8,15 @@ module Admin
       @accounts = Account.kept.page(params[:page])
     end
 
+    def show
+      @profile = @account.profile
+      @documents = @account.documents
+      @labels = @account.labels
+      @phones = @account.phones
+      @document_label_value = document_label&.value
+    end
+
     def edit
-      @roles = %w[admin compliance member]
     end
 
     def update
@@ -28,6 +35,10 @@ module Admin
 
     def find_account
       @account = Account.kept.find(params[:id])
+    end
+
+    def document_label
+      @account.labels.find_by(key: 'document', scope: 'private')
     end
 
     def account_params
