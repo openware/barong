@@ -6,29 +6,6 @@ describe Admin::ProfilesController, type: :controller do
   let!(:current_account) { create(:account, role: 'admin') }
   before { login_as current_account }
 
-  describe 'GET #index' do
-    let!(:profile1) { create(:profile) }
-    let!(:profile2) { create(:profile) }
-
-    it 'returns a pending profiles by default' do
-      get :index
-      expect(response).to be_success
-      expect(assigns(:profiles)).to eq [profile1, profile2]
-    end
-  end
-
-  describe 'GET #show' do
-    let!(:profile) { create(:profile) }
-    let!(:document) { create(:document, account: profile.account) }
-
-    it 'returns a success response' do
-      get :show, params: { id: profile.id }
-      expect(response).to be_success
-      expect(assigns(:profile)).to eq profile
-      expect(assigns(:documents)).to eq [document]
-    end
-  end
-
   context 'PUT #document_label' do
     let!(:profile) { create(:profile) }
     let!(:label) do
@@ -52,12 +29,12 @@ describe Admin::ProfilesController, type: :controller do
 
         it 'updates a value' do
           expect { do_request }.to change { label.reload.value }.to(value)
-          expect(response).to redirect_to admin_profile_path
+          expect(response).to redirect_to admin_account_path(profile.account)
         end
 
         it 'changes level to 4' do
           expect { do_request }.to change { profile.account.reload.level }.to(4)
-          expect(response).to redirect_to admin_profile_path
+          expect(response).to redirect_to admin_account_path(profile.account)
         end
       end
 
@@ -79,12 +56,12 @@ describe Admin::ProfilesController, type: :controller do
 
         it 'updates a label' do
           expect { do_request }.to change { label.reload.value }.to(value)
-          expect(response).to redirect_to admin_profile_path
+          expect(response).to redirect_to admin_account_path(profile.account)
         end
 
         it 'change level to 3' do
           expect { do_request }.to change { profile.account.reload.level }.to(3)
-          expect(response).to redirect_to admin_profile_path
+          expect(response).to redirect_to admin_account_path(profile.account)
         end
       end
     end
@@ -98,12 +75,12 @@ describe Admin::ProfilesController, type: :controller do
 
       it 'updates a label' do
         expect { do_request }.to change { label.reload.value }.to(value)
-        expect(response).to redirect_to admin_profile_path
+        expect(response).to redirect_to admin_account_path(profile.account)
       end
 
       it 'does not change the level' do
         expect { do_request }.to_not change { profile.account.reload.level }
-        expect(response).to redirect_to admin_profile_path
+        expect(response).to redirect_to admin_account_path(profile.account)
       end
     end
   end
