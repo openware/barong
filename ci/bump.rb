@@ -2,6 +2,7 @@ require "rubygems/version"
 require "net/http"
 require "json"
 require "uri"
+require "cgi"
 
 #
 # Returns bot's username in GitHub.
@@ -130,7 +131,7 @@ end
 #
 # @return [Array<Gem::Version>]
 def versions
-  @versions ||= github_api_authenticated_get("/repos/#{repository_slug}/tags").map do |x|
+  @versions ||= github_api_load_collection("/repos/#{repository_slug}/tags").map do |x|
     Gem::Version.new(x.fetch("name"))
   end.sort
 end
@@ -141,7 +142,7 @@ end
 # @return [Hash]
 #   Key is commit's SHA-1 hash, value is instance of Gem::Version.
 def tagged_commits_mapping
-  @commits ||= github_api_authenticated_get("/repos/#{repository_slug}/tags").each_with_object({}) do |x, memo|
+  @commits ||= github_api_load_collection("/repos/#{repository_slug}/tags").each_with_object({}) do |x, memo|
     memo[x.fetch("commit").fetch("sha")] = Gem::Version.new(x.fetch("name"))
   end
 end
@@ -152,7 +153,7 @@ end
 # @return [Array<Hash>]
 #   Array of hashes each containing "name" & "version" keys.
 def version_specific_branches
-  @branches ||= github_api_authenticated_get("/repos/#{repository_slug}/branches").map do |x|
+  @branches ||= github_api_load_collection("/repos/#{repository_slug}/branches").map do |x|
     if x.fetch("name") =~ /\A(\d)-(\d)-\w+\z/
       { name: x["name"], version: Gem::Version.new($1 + "." + $2) }
     end
@@ -164,16 +165,35 @@ end
 #
 # @param path [String]
 #   Request path.
-# @return [Hash]
-def github_api_authenticated_get(path)
+# @param query [Hash]
+#   Query parameters.
+# @return [Hash, Array]
+def github_api_authenticated_get(path, query = {})
   http         = Net::HTTP.new("api.github.com", 443)
   http.use_ssl = true
-  response     = http.get path, "Authorization" => %[token #{ENV.fetch("GITHUB_API_KEY")}]
+  query_string = query.map { |(k, v)| "#{CGI.escape(k.to_s)}=#{CGI.escape(v.to_s)}" }.join("&")
+  response     = http.get "#{path}?#{query_string}", "Authorization" => %[token #{ENV.fetch("GITHUB_API_KEY")}]
   if response.code.to_i == 200
     JSON.load(response.body)
   else
     raise StandardError, %[HTTP #{response.code}: "#{response.body}".]
   end
+end
+
+# Fetches full collection using GitHub API (performs pagination under the hood).
+#
+# @param path [String]
+#   The collection request path.
+# @return [Array]
+def github_api_load_collection(path)
+  objects = []
+  page    = 0
+  loop do
+    loaded   = github_api_authenticated_get(path, page: page += 1, per_page: 100)
+    objects += loaded
+    break if loaded.empty?
+  end
+  objects
 end
 
 #
