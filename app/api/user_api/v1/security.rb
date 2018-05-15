@@ -56,7 +56,7 @@ module UserApi
           requires :email, type: String, desc: 'account email', allow_blank: false
         end
         post '/reset_password' do
-          account = Account.find_by!(declared(params))
+          account = Account.kept.find_by!(declared(params))
           account.send_reset_password_instructions
 
           if account.errors.any?

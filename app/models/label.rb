@@ -15,6 +15,8 @@ class Label < ApplicationRecord
     end
   end
 
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
+
   scope :with_private_scope, -> { where(scope: 'private') }
 
   validates :account_id, :key, :value, :scope, presence: true
@@ -25,7 +27,7 @@ class Label < ApplicationRecord
   validates :key,
             length: 3..255,
             format: { with: /\A[A-Za-z0-9_-]+\z/ },
-            uniqueness: { scope: :account_id }
+            uniqueness: { scope: %i[account_id scope] }
 
   validates :value,
             length: 3..255,
@@ -37,13 +39,24 @@ class Label < ApplicationRecord
 private
 
   def update_level_if_label_defined
-    return unless Level.exists?(key: key)
+    return unless scope == 'private'
     account.reload.update_level
+    send_document_review_notification if key == 'document'
+  end
+
+  def send_document_review_notification
+    if value == 'verified'
+      ProfileReviewMailer.approved(account).deliver_now
+      EventAPI.notify('system.document.verified', account_uid: account.uid)
+    elsif value == 'rejected'
+      ProfileReviewMailer.rejected(account).deliver_now
+      EventAPI.notify('system.document.rejected', account_uid: account.uid)
+    end
   end
 end
 
 # == Schema Information
-# Schema version: 20180402133658
+# Schema version: 20180507162420
 #
 # Table name: labels
 #
@@ -58,7 +71,7 @@ end
 # Indexes
 #
 #  index_labels_on_account_id                    (account_id)
-#  index_labels_on_key_and_value_and_account_id  (key,value,account_id) UNIQUE
+#  index_labels_on_key_and_scope_and_account_id  (key,scope,account_id) UNIQUE
 #
 # Foreign Keys
 #

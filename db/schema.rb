@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507095118) do
+ActiveRecord::Schema.define(version: 20180508095253) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -35,9 +35,11 @@ ActiveRecord::Schema.define(version: 20180507095118) do
     t.integer "level", default: 0, null: false
     t.boolean "otp_enabled", default: false
     t.string "state", default: "pending", null: false
+    t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_accounts_on_confirmation_token", unique: true
+    t.index ["discarded_at"], name: "index_accounts_on_discarded_at"
     t.index ["email"], name: "index_accounts_on_email", unique: true
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_accounts_on_uid", unique: true
@@ -75,7 +77,7 @@ ActiveRecord::Schema.define(version: 20180507095118) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_labels_on_account_id"
-    t.index ["key", "value", "account_id"], name: "index_labels_on_key_and_value_and_account_id", unique: true
+    t.index ["key", "scope", "account_id"], name: "index_labels_on_key_and_scope_and_account_id", unique: true
   end
 
   create_table "levels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -147,7 +149,6 @@ ActiveRecord::Schema.define(version: 20180507095118) do
     t.string "postcode"
     t.string "city"
     t.string "country"
-    t.string "state", default: "pending", null: false
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -16,7 +16,7 @@ seeds['accounts'].each do |seed|
   logger.info '---'
 
   # Skip existing accounts
-  if Account.find_by(email: seed['account']['email']).present?
+  if Account.kept.find_by(email: seed['account']['email']).present?
     logger.info "Account '#{seed['account']['email']}' already exists"
     result[:accounts].push(email: seed['account']['email'])
     next

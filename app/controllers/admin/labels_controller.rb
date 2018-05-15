@@ -13,7 +13,7 @@ module Admin
       @label = @account.labels.new(label_params)
 
       if @label.save
-        redirect_to admin_profile_path(@account.profile), notice: 'Label was successfully created.'
+        redirect_to admin_account_path(@account), notice: 'Label was successfully created.'
       else
         render :new
       end
@@ -24,7 +24,7 @@ module Admin
 
     def update
       if @label.update(label_params)
-        redirect_to admin_profile_path(@account.profile), notice: 'Label was successfully updated.'
+        redirect_to admin_account_path(@account), notice: 'Label was successfully updated.'
       else
         render :edit
       end
@@ -32,13 +32,13 @@ module Admin
 
     def destroy
       @label.destroy!
-      redirect_to admin_profile_path(@account.profile), notice: 'Label was successfully destroyed.'
+      redirect_to admin_account_path(@account), notice: 'Label was successfully destroyed.'
     end
 
   private
 
     def find_account
-      @account = Account.find(params[:account_id])
+      @account = Account.kept.find(params[:account_id])
     end
 
     def find_label
