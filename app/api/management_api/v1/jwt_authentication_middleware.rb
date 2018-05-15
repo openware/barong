@@ -36,27 +36,27 @@ module ManagementAPI
       memoize :jwt
 
       def check_request_method!
-        unless request.post? || request.put?
-          raise Exceptions::Authentication, \
-                message: 'Only POST and PUT verbs are allowed.',
-                status:  405
-        end
+        return if request.post? || request.put?
+
+        raise Exceptions::Authentication, \
+              message: 'Only POST and PUT verbs are allowed.',
+              status:  405
       end
 
       def check_query_parameters!
-        unless request.GET.empty?
-          raise Exceptions::Authentication, \
-                message: 'Query parameters are not allowed.',
-                status:  400
-        end
+        return if request.GET.empty?
+
+        raise Exceptions::Authentication, \
+              message: 'Query parameters are not allowed.',
+              status:  400
       end
 
       def check_content_type!
-        unless request.content_type == 'application/json'
-          raise Exceptions::Authentication, \
-                message: 'Only JSON body is accepted.',
-                status:  400
-        end
+        return if request.content_type == 'application/json'
+
+        raise Exceptions::Authentication, \
+              message: 'Only JSON body is accepted.',
+              status:  400
       end
 
       def check_jwt!(jwt)

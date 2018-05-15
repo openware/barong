@@ -84,6 +84,22 @@ module UserApi
             error!(account.errors.full_messages.to_sentence, 422)
           end
         end
+
+        desc 'Verify API key'
+        params do
+          requires :uid, type: String, desc: 'API Key uid', allow_blank: false
+          optional :account_uid, type: String, desc: 'Account uid', allow_blank: false
+        end
+        post '/verify_api_key' do
+          status 200
+          api_key = APIKey.find_by!(uid: params[:uid])
+
+          if params[:account_uid].present? && api_key.account.uid != params[:account_uid]
+            error!('Account has no api key with provided uid', 422)
+          end
+
+          { state: api_key.state }
+        end
       end
     end
   end
