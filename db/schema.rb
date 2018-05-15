@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426105942) do
+ActiveRecord::Schema.define(version: 20180503073934) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -42,6 +42,17 @@ ActiveRecord::Schema.define(version: 20180426105942) do
     t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_accounts_on_uid", unique: true
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
+  end
+
+  create_table "api_keys", primary_key: "uid", id: :string, limit: 36, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text "public_key", null: false
+    t.string "scopes"
+    t.integer "expires_in", null: false
+    t.string "state", default: "active", null: false
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_api_keys_on_account_id"
   end
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -156,6 +167,7 @@ ActiveRecord::Schema.define(version: 20180426105942) do
     t.index ["domain"], name: "index_websites_on_domain", unique: true
   end
 
+  add_foreign_key "api_keys", "accounts"
   add_foreign_key "documents", "accounts"
   add_foreign_key "labels", "accounts", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
