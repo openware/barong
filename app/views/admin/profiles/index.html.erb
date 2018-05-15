@@ -2,25 +2,10 @@
 
   <h1>Profiles</h1>
 
-  <li class="list-group-item">
-    <b> Filter by state: </b>
-    <div class="dropdown show">
-      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <%= params[:filter]&.upcase_first || 'Select' %>
-      </a>
-      <div class="dropdown-menu">
-        <% Profile::STATES.each do |state|%>
-            <%= link_to(state.upcase_first, admin_profiles_path(filter: state), class: 'dropdown-item') unless params[:filter] == state%>
-        <% end %>
-      </div>
-    </div>
-  </li>
-
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>
         <th>ID</th>
-        <th>State</th>
         <th>First name</th>
         <th>Last name</th>
         <th>Country</th>
@@ -31,7 +16,6 @@
       <% @profiles.each do |profile| %>
         <tr>
           <td><%= profile.id %></td>
-          <td><span class="badge badge-<%=badge_by_state(profile.state)%>"><%= profile.state %></span></td>
           <td><%= profile.first_name %></td>
           <td><%= profile.last_name %></td>
           <td><%= profile.country %></td>

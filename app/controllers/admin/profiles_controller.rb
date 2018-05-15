@@ -3,22 +3,20 @@
 module Admin
   class ProfilesController < ModuleController
     def index
-      params[:filter] = params[:filter] || 'pending'
-      @profiles = Profile.all
-      @profiles = @profiles.where(state: params[:filter]) if params[:filter].present?
-      @profiles = @profiles.page(params[:page])
+      @profiles = Profile.all.page(params[:page])
     end
 
     def show
       @profile = Profile.find(params[:id])
       @documents = @profile.account.documents
       @labels = @profile.account.labels
+      @document_label_value = @profile.account.labels.find_by(key: 'document', scope: 'private')&.value
     end
 
-    def change_state
-      @profile = Profile.find(params[:id])
-      if @profile.update(state: params[:state])
-        redirect_to admin_profile_path(@profile), notice: 'Profile was successfully updated.'
+    def document_label
+      account = @profile.account
+      if account.add_level_label(:document, params[:state])
+        redirect_to admin_profile_path(@profile), notice: 'Document label was successfully updated.'
       else
         redirect_to admin_profiles_path
       end

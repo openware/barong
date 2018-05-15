@@ -37,14 +37,14 @@
     </li>
 
     <li class="list-group-item">
-      <b> State: </b>
+      <b> Document: </b>
       <div class="dropdown show">
         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <%= @profile.state.upcase_first %>
+          <%= @document_label_value %>
         </a>
         <div class="dropdown-menu">
-          <% Profile::STATES.each do |state|%>
-            <%= link_to(state.upcase_first, change_state_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @profile.state == state%>
+          <% Document::STATES.each do |state|%>
+            <%= link_to(state.upcase_first, document_label_admin_profile_path(@profile, state: state), method: :put, class: 'dropdown-item') unless @document_label_value == state %>
           <% end %>
         </div>
       </div>
