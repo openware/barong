@@ -13,6 +13,8 @@ class Profile < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
+
   def as_json_for_event_api
     {
       account_uid: account.uid,

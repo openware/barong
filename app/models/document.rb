@@ -9,6 +9,8 @@ class Document < ApplicationRecord
   TYPES = %w[Passport Identity card Driver license].freeze
   STATES = %w[verified pending rejected].freeze
 
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
+
   belongs_to :account
   validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
   validates :doc_type, inclusion: { in: TYPES }

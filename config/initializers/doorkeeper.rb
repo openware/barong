@@ -118,7 +118,7 @@ Doorkeeper::JWT.configure do
   # Set the payload for the JWT token. This should contain unique information
   # about the account.
   token_payload do |opts|
-    account = Account.find(opts[:resource_owner_id])
+    account = Account.kept.find(opts[:resource_owner_id])
     {
       iat: Time.now.to_i,
       exp: opts[:expires_in].to_i.seconds.from_now.to_i,

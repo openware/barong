@@ -3,6 +3,12 @@
 module ManagementAPI
   module V1
     class Labels < Grape::API
+      helpers do
+        def account
+          @account ||= Account.kept.find_by!(uid: params[:account_uid])
+        end
+      end
+
       desc 'Label related routes'
       resource :labels do
         desc "Create a label with 'private' scope and assigns to account" do
@@ -15,7 +21,6 @@ module ManagementAPI
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
         end
         post do
-          account = Account.find_by!(uid: params[:account_uid])
           label = account.labels.create(key: params[:key],
                                         value: params[:value],
                                         scope: 'private')
@@ -36,7 +41,6 @@ module ManagementAPI
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
         end
         put do
-          account = Account.find_by!(uid: params[:account_uid])
           label = account.labels.find_by!(key: params[:key], scope: 'private')
           label.update(value: params[:value])
 
@@ -56,7 +60,6 @@ module ManagementAPI
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
         end
         post '/delete' do
-          account = Account.find_by!(uid: params[:account_uid])
           label = account.labels.find_by!(key: params[:key], scope: 'private')
           label.destroy
           status 204

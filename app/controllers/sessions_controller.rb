@@ -28,6 +28,6 @@ private
   end
 
   def account_by_email
-    Account.find_by_email(resource_params[:email])
+    Account.kept.find_by_email(resource_params[:email])
   end
 end

@@ -13,6 +13,7 @@ class Phone < ApplicationRecord
   after_initialize :generate_code
 
   scope :verified, -> { where.not(validated_at: nil) }
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
 
   def number_exists?
     Phone.verified.exists?(number: number)

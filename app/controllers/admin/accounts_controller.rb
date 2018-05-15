@@ -2,10 +2,10 @@
 
 module Admin
   class AccountsController < ModuleController
-    before_action :find_account, except: %i[index]
+    before_action :find_account, except: :index
 
     def index
-      @accounts = Account.page(params[:page])
+      @accounts = Account.kept.page(params[:page])
     end
 
     def show
@@ -13,10 +13,7 @@ module Admin
       @documents = @account.documents
       @labels = @account.labels
       @phones = @account.phones
-      @document_label_value = @profile.account
-                                      .labels
-                                      .find_by(key: 'document', scope: 'private')
-                                      &.value
+      @document_label_value = document_label&.value
     end
 
     def edit
@@ -28,16 +25,20 @@ module Admin
     end
 
     def destroy
-      @account.destroy!
+      @account.discard
       respond_to do |format|
-        format.html { redirect_to admin_accounts_url, notice: 'Successfully destroyed.' }
+        format.html { redirect_to admin_accounts_url, notice: 'Account is marked as discarded' }
       end
     end
 
   private
 
     def find_account
-      @account = Account.find(params[:id])
+      @account = Account.kept.find(params[:id])
+    end
+
+    def document_label
+      @account.labels.find_by(key: 'document', scope: 'private')
     end
 
     def account_params

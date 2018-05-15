@@ -38,7 +38,7 @@ module Admin
   private
 
     def find_account
-      @account = Account.find(params[:account_id])
+      @account = Account.kept.find(params[:account_id])
     end
 
     def find_label

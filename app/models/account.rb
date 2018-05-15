@@ -4,6 +4,7 @@
 # Class Account
 #
 class Account < ApplicationRecord
+  include Discard::Model
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -25,6 +26,10 @@ class Account < ApplicationRecord
   validates :email, email: true
   validates :email, uniqueness: true
   validates :uid, presence: true, uniqueness: true
+
+  def active_for_authentication?
+    super && !discarded_at
+  end
 
   def role
     super.inquiry
@@ -87,7 +92,7 @@ class Account < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180404153832
+# Schema version: 20180508095253
 #
 # Table name: accounts
 #
@@ -114,12 +119,14 @@ end
 #  level                  :integer          default(0), not null
 #  otp_enabled            :boolean          default(FALSE)
 #  state                  :string(255)      default("pending"), not null
+#  discarded_at           :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
 # Indexes
 #
 #  index_accounts_on_confirmation_token    (confirmation_token) UNIQUE
+#  index_accounts_on_discarded_at          (discarded_at)
 #  index_accounts_on_email                 (email) UNIQUE
 #  index_accounts_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_accounts_on_uid                   (uid) UNIQUE

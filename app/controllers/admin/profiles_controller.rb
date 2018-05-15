@@ -9,7 +9,8 @@ module Admin
 
     def update
       if @profile.update(profile_params)
-        redirect_to admin_account_path(@profile.account), notice: 'Profile was successfully updated.'
+        redirect_to admin_account_path(@profile.account),
+                    notice: 'Profile was successfully updated.'
       else
         render :edit
       end
@@ -27,7 +28,7 @@ module Admin
   private
 
     def find_profile
-      @profile = Profile.find(params[:id])
+      @profile = Profile.kept.find(params[:id])
     end
 
     def profile_params
