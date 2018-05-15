@@ -2,10 +2,10 @@
 
 ## How does it work?
 
-To be available to send requiests to the [peatio api](https://github.com/rubykube/peatio/blob/master/docs/api/member_api_v2.md) you need to send proper jwt signed by Barong.
-Only Barong knows how to sign valid signature.
+To be available to send requests to the [peatio api](https://github.com/rubykube/peatio/blob/master/docs/api/member_api_v2.md) you need to send proper jwt (JSON Web Token) signed by Barong.
+Only Barong can sign valid token.
 
-Account must enable 2FA before use API Keys.
+The user must have 2FA enabled before using API Keys.
 You need to provide valid TOTP code on api key access.
 
 ### API Key flow:
@@ -16,7 +16,7 @@ You need to provide valid TOTP code on api key access.
 4. Barong read `kid`, select public key and verify your request
 5. If payload is valid, Barong generates peatio jwt
 6. Use peatio jwt to access to peatio api
-7. Peatio jwt token will be expired after `expired_in` time
+7. Peatio jwt will be expired after `expired_in` time
 8. Go to step 3 and repeat next steps again
 
 To create an api key, please use [POST /api/v1/api_keys](https://github.com/rubykube/barong/blob/master/docs/index.md#postv1apikeys)
