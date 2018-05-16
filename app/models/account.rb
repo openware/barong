@@ -85,6 +85,9 @@ class Account < ApplicationRecord
       reset_password_token: reset_password_token,
       reset_password_sent_at: format_iso8601_time(reset_password_sent_at),
       state: state,
+      failed_attempts: failed_attempts,
+      unlock_token: unlock_token,
+      locked_at: locked_at,
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)
     }
