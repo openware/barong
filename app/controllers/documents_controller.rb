@@ -11,7 +11,7 @@ class DocumentsController < ApplicationController
   def create
     @document = current_account.documents.new(document_params)
     if @document.save
-      redirect_to index_path, notice: 'Document was successfully created.'
+      redirect_to index_path, notice: 'Document was successfully uploaded.'
     else
       flash[:alert] = 'Some fields are empty or invalid'
       render :new
