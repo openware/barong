@@ -199,4 +199,14 @@ RSpec.describe Label, type: :model do
       it { expect(account.reload.level).to eq 0 }
     end
   end
+
+  context 'downcase fields' do
+    let(:label) { build(:label, key: 'PhoNe', value: 'VeRifiEd') }
+
+    it 'downcases key and value before save' do
+      label.save
+      expect(label.reload.key).to eq 'phone'
+      expect(label.reload.value).to eq 'verified'
+    end
+  end
 end
