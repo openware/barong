@@ -24,13 +24,6 @@ module ApplicationHelper
     end
   end
 
-  def generate_qr_code
-    url = current_account.create_otp.data[:url]
-    RQRCode::QRCode.new(url, size: 8, level: :l).as_html
-  rescue StandardError => e
-    e.message
-  end
-
   def domain_html_tag(text)
     text&.html_safe
   end
