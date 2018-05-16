@@ -49,7 +49,7 @@ module Admin
 
     def website_params
       params.require(:website)
-            .permit(:domain, :title, :logo, :stylesheet,
+            .permit(:domain, :title, :logo, :stylesheet, :favicon,
                     :header, :footer, :redirect_url, :state)
     end
   end

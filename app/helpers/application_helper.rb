@@ -24,6 +24,16 @@ module ApplicationHelper
     end
   end
 
+  def domain_favicon_tag
+    url = domain_asset :favicon
+
+    if url.blank?
+      return favicon_link_tag asset_path('favicon.png'), rel: 'icon', type:  'image/png'
+    end
+
+    content_tag :link, nil, rel: 'icon', href: url
+  end
+
   def domain_html_tag(text)
     text&.html_safe
   end
