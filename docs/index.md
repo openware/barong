@@ -42,6 +42,279 @@ Base URLs:
 Operations about accounts
 
 
+## postV1AccountsSendUnlockInstructions
+
+
+<a id="opIdpostV1AccountsSendUnlockInstructions"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/send_unlock_instructions HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/send_unlock_instructions \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/send_unlock_instructions',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/send_unlock_instructions`
+
+
+*Send unlock instructions*
+
+
+Send unlock instructions
+
+
+> Body parameter
+
+
+```yaml
+email: string
+
+
+```
+
+
+<h3 id="postV1AccountsSendUnlockInstructions-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[postV1AccountsSendUnlockInstructions](#schemapostv1accountssendunlockinstructions)|false|No description|
+|» email|body|string|true|Account email|
+
+
+<h3 id="postV1AccountsSendUnlockInstructions-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send unlock instructions|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## postV1AccountsUnlock
+
+
+<a id="opIdpostV1AccountsUnlock"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/unlock HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/unlock \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/unlock',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/unlock`
+
+
+*Unlocks a locked account*
+
+
+Unlocks a locked account
+
+
+> Body parameter
+
+
+```yaml
+unlock_token: string
+
+
+```
+
+
+<h3 id="postV1AccountsUnlock-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» unlock_token|body|string|true|Token from email|
+
+
+<h3 id="postV1AccountsUnlock-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Unlocks a locked account|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
+## postV1AccountsSendConfirmationInstructions
+
+
+<a id="opIdpostV1AccountsSendConfirmationInstructions"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/send_confirmation_instructions HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/send_confirmation_instructions \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/send_confirmation_instructions',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/send_confirmation_instructions`
+
+
+*Send confirmations instructions*
+
+
+Send confirmations instructions
+
+
+> Body parameter
+
+
+```yaml
+email: string
+
+
+```
+
+
+<h3 id="postV1AccountsSendConfirmationInstructions-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[postV1AccountsSendUnlockInstructions](#schemapostv1accountssendunlockinstructions)|false|No description|
+|» email|body|string|true|Account email|
+
+
+<h3 id="postV1AccountsSendConfirmationInstructions-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send confirmations instructions|None|
+
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+
 ## postV1AccountsConfirm
 
 

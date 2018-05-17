@@ -186,5 +186,104 @@ describe 'Api::V1::Accounts' do
         expect_status_to_eq 201
       end
     end
+
+    describe 'POST /api/v1/accounts/send_confirmation_instructions' do
+      let!(:account) { create(:account, confirmed_at: confirmed_at) }
+
+      let(:do_request) do
+        post '/api/v1/accounts/send_confirmation_instructions',
+             params: { email: account.email }
+      end
+
+      context 'when account is confirmed' do
+        let(:confirmed_at) { 1.minute.ago }
+
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 422
+          expect_body.to eq(error: 'Email was already confirmed, please try signing in')
+        end
+      end
+
+      context 'when account is not confirmed' do
+        let(:confirmed_at) { nil }
+
+        it 'sends instructions' do
+          do_request
+          expect_status_to_eq 201
+          expect_body.to eq(message: 'Confirmation instructions was sent successfully')
+        end
+      end
+    end
+
+    describe 'POST /api/v1/accounts/unlock' do
+      let(:do_request) do
+        post '/api/v1/accounts/unlock',
+             params: { unlock_token: unlock_token }
+      end
+
+      context 'when token is blank' do
+        let(:unlock_token) { '' }
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 400
+          expect_body.to eq(error: 'unlock_token is empty')
+        end
+      end
+
+      context 'when token is invalid' do
+        let(:unlock_token) { 'invalid' }
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 422
+          expect_body.to eq(error: 'Unlock token is invalid')
+        end
+      end
+
+      context 'when account is locked' do
+        let!(:account) do
+          create(:account, locked_at: Time.current,
+                           unlock_token: tokens.last)
+        end
+        let(:unlock_token) { tokens.first }
+        let(:tokens) do
+          Devise.token_generator.generate(Account, :unlock_token)
+        end
+
+        it 'unlocks an account' do
+          do_request
+          expect_status_to_eq 201
+        end
+      end
+    end
+
+    describe 'POST /api/v1/accounts/send_unlock_instructions' do
+      let!(:account) { create(:account, locked_at: locked_at) }
+
+      let(:do_request) do
+        post '/api/v1/accounts/send_unlock_instructions',
+             params: { email: account.email }
+      end
+
+      context 'when account is unlocked' do
+        let(:locked_at) { nil }
+
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 422
+          expect_body.to eq(error: 'Email was not locked')
+        end
+      end
+
+      context 'when account is locked' do
+        let(:locked_at) { 1.minute.ago }
+
+        it 'sends instructions' do
+          do_request
+          expect_status_to_eq 201
+          expect_body.to eq(message: 'Unlock instructions was sent successfully')
+        end
+      end
+    end
   end
 end
