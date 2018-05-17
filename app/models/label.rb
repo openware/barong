@@ -39,7 +39,7 @@ class Label < ApplicationRecord
 private
 
   def update_level_if_label_defined
-    return unless scope == 'private'
+    return unless scope == 'private' || previous_changes[:scope]&.include?('private')
     account.reload.update_level
     send_document_review_notification if key == 'document'
   end
