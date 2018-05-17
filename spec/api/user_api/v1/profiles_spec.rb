@@ -19,7 +19,7 @@ describe 'Api::V1::Profiles' do
         last_name: Faker::Name.last_name,
         first_name: Faker::Name.first_name,
         dob: Faker::Date.birthday,
-        country: Faker::Address.country,
+        country: Faker::Address.country_code_long,
         city: Faker::Address.city,
         address: Faker::Address.street_address,
         postcode: Faker::Address.zip_code
@@ -55,6 +55,12 @@ describe 'Api::V1::Profiles' do
       expect(profile).to be
       expect(profile.metadata.symbolize_keys).to eq(optional_params[:metadata])
     end
+
+    it 'renders an error when field is invalid' do
+      post url, params: request_params.merge(first_name: 'A'), headers: auth_header
+      expect_status.to eq(422)
+      expect_body.to eq(error: 'First name is too short (minimum is 2 characters)')
+    end
   end
 
   describe 'GET /api/v1/profiles/me' do
@@ -67,7 +73,7 @@ describe 'Api::V1::Profiles' do
         address: Faker::Address.street_address,
         postcode: Faker::Address.zip_code,
         city: Faker::Address.city,
-        country: Faker::Address.country
+        country: Faker::Address.country_code_long
       }
     end
 
