@@ -69,6 +69,21 @@ module UserApi
             error!(account.errors.full_messages.to_sentence, 422)
           end
         end
+
+        desc 'Send confirmations instructions'
+        params do
+          requires :email, type: String,
+                           desc: 'Account email',
+                           allow_blank: false
+        end
+        post '/send_confirmation_instructions' do
+          account = Account.send_confirmation_instructions declared(params)
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+
+          { message: 'Confirmation instructions was sent successfully' }
+        end
       end
     end
   end

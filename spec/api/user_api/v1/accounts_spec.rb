@@ -186,5 +186,34 @@ describe 'Api::V1::Accounts' do
         expect_status_to_eq 201
       end
     end
+
+    describe 'POST /api/v1/accounts/send_confirmation_instructions' do
+      let!(:account) { create(:account, confirmed_at: confirmed_at) }
+
+      let(:do_request) do
+        post '/api/v1/accounts/send_confirmation_instructions',
+             params: { email: account.email }
+      end
+
+      context 'when account is confirmed' do
+        let(:confirmed_at) { 1.minute.ago }
+
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 422
+          expect_body.to eq(error: 'Email was already confirmed, please try signing in')
+        end
+      end
+
+      context 'when account is not confirmed' do
+        let(:confirmed_at) { nil }
+
+        it 'sends instructions' do
+          do_request
+          expect_status_to_eq 201
+          expect_body.to eq(message: 'Confirmation instructions was sent successfully')
+        end
+      end
+    end
   end
 end
