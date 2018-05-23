@@ -32,7 +32,7 @@ module UserApi
         end
 
         if Phone.verified.exists?(number: phone_number)
-          error!('Phone number is already exists', 400)
+          error!('Phone number already exists', 400)
           return false
         end
         true
