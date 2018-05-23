@@ -7,5 +7,11 @@ FactoryBot.define do
     password_confirmation 'B@rong2018'
     confirmed_at { Time.current }
     state { 'active' }
+
+    trait :with_profile do
+      after(:create) do |account, _|
+        create(:profile, account: account)
+      end
+    end
   end
 end

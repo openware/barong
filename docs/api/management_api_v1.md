@@ -85,6 +85,25 @@ Management API is server-to-server API with high privileges
 | ---- | ----------- | ------ |
 | 201 | Create a label with 'private' scope and assigns to account | [Label](#label) |
 
+### /management_api/v1/accounts/get
+---
+##### ***POST***
+**Summary:** Get account and profile information
+
+**Description:** Get account and profile information
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | Account uid | Yes | string |
+
+**Responses**
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get account and profile information | [AccountWithProfile](#accountwithprofile) |
+
 ### /management_api/v1/timestamp
 ---
 ##### ***POST***
@@ -110,3 +129,28 @@ Management API is server-to-server API with high privileges
 | scope | string | Label scope: 'public' or 'private' | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+
+### AccountWithProfile
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | integer |  | No |
+| role | string |  | No |
+| otp_enabled | boolean | is 2FA enabled for account | No |
+| state | string |  | No |
+| profile | [Profile](#profile) |  | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+### Profile
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| first_name | string |  | No |
+| last_name | string |  | No |
+| dob | date | Birthday date | No |
+| address | string |  | No |
+| postcode | string |  | No |
+| city | string |  | No |
+| country | string |  | No |
+| metadata | object | Profile additional fields | No |
