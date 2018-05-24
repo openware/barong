@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+RAILS_ENV=development
+
+if [ -f tmp/pids/server.pid ]; then
+  kill $(cat tmp/pids/server.pid)
+fi
+
+if [ -n "${V}" ]; then
+cat > lib/barong/version.rb << EOF
+module Barong
+  VERSION = '${V}'
+end
+EOF
+fi
+
+bundle install
+bundle exec rake yarn:install db:drop db:create db:migrate
+bundle exec rails s -d
+while [ ! -f tmp/pids/server.pid ]
+do
+  sleep 1
+done
+sleep 5 # Wait additional time until Rails starts listen port.
+kill $(cat tmp/pids/server.pid)
