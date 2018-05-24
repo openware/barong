@@ -50,6 +50,19 @@ module UserApi
                                   title: 'Barong',
                                   description: 'API for barong OAuth server '
                                 },
+                                security_definitions: {
+                                  "BearerToken": {
+                                    description: 'Bearer Token authentication',
+                                    type: 'apiKey',
+                                    name: 'Authorization',
+                                    in: 'header'
+                                  }
+                                },
+                                models: [
+                                  Entities::Label,
+                                  Entities::APIKey
+                                ],
+                                security: [{ "BearerToken": [] }],
                                 api_version: 'v1',
                                 doc_version: Barong::VERSION,
                                 hide_format: true,

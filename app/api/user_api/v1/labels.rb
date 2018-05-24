@@ -5,25 +5,36 @@ module UserApi
     # Responsible for CRUD for labes
     class Labels < Grape::API
       resource :labels do
-        desc 'List all labels for current account.'
+        desc 'List all labels for current account.',
+             failure: [
+               { code: 401, message: 'Invalid bearer token' }
+             ]
         get do
           present current_account.labels, with: Entities::Label
         end
 
-        desc 'Return a label by key.'
+        desc 'Return a label by key.',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
         end
         route_param :key do
           get do
-            label = current_account.labels.find_by(key: params[:key])
-            return error!('Couldn\'t find Label', 404) if label.blank?
-
+            label = current_account.labels.find_by!(key: params[:key])
             present label, with: Entities::Label
           end
         end
 
-        desc "Create a label with 'public' scope."
+        desc "Create a label with 'public' scope.",
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
@@ -42,27 +53,37 @@ module UserApi
           end
         end
 
-        desc "Update a label with 'public' scope."
+        desc "Update a label with 'public' scope.",
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
         end
         patch ':key' do
-          label = current_account.labels.find_by(key: params[:key])
-          return error!('Couldn\'t find Label', 404) if label.blank?
+          label = current_account.labels.find_by!(key: params[:key])
           return error!('Can\'t update Label.', 400) if label.private?
 
           label.update(value: params[:value])
           present label, with: Entities::Label
         end
 
-        desc "Delete a label  with 'public' scope."
+        desc "Delete a label  with 'public' scope.",
+             success: { code: 204, message: 'Succefully deleted' },
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
         end
         delete ':key' do
-          label = current_account.labels.find_by(key: params[:key])
-          return error!('Couldn\'t find Label', 404) if label.blank?
+          label = current_account.labels.find_by!(key: params[:key])
           return error!('Can\'t update Label.', 400) if label.private?
 
           label.destroy
