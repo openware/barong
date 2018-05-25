@@ -44,7 +44,7 @@ describe 'Api::V1::Phones' do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: 'Phone number is already exists')
+          expect_body.to eq(error: 'Phone number already exists')
           expect_status.to eq 400
         end
       end
@@ -55,7 +55,7 @@ describe 'Api::V1::Phones' do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: 'Phone number is already exists')
+          expect_body.to eq(error: 'Phone number already exists')
           expect_status.to eq 400
         end
       end
@@ -123,7 +123,7 @@ describe 'Api::V1::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'Phone number is already exists')
+        expect_body.to eq(error: 'Phone number already exists')
         expect_status.to eq 400
       end
     end
