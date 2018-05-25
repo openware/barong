@@ -82,12 +82,23 @@ seeds['applications'].each do |seed|
   result[:applications].push(app.as_json(only: %i[name redirect_uri uid secret]))
 end
 
+# Example env: 'phone:verified,email:verifed,document:verified,identity:verified'
 logger.info '---'
 logger.info 'Seeding levels'
-seeds['levels'].each do |level_data|
-  next if Level.exists?(level_data)
-  Level.create!(level_data)
+levels = ENV['LEVELS']
+if levels.nil?
+  seeds['levels'].each do |level_data|
+    next if Level.exists?(level_data)
+    Level.create!(level_data)
+  end
+else
+  levels = levels.split(',')
+  levels.each do |level|
+    level_data = level.split(':')
+    Level.create(key: level_data[0], value: level_data[1])
+  end
 end
+
 
 # print well-formated json to stderr (easy to read in the commant output)
 logger.info "Result:\n#{JSON.pretty_generate(result)}"

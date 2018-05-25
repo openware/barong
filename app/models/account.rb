@@ -48,9 +48,9 @@ class Account < ApplicationRecord
                  .map { |l| [l.key, l.value].join ':' }
     levels = Level.all.order(id: :asc)
 
-    levels.each do |lvl|
+    levels.each_with_index do |lvl, index|
       break unless tags.include?(lvl.key + ':' + lvl.value)
-      account_level = lvl.id
+      account_level = index + 1
     end
 
     update(level: account_level)

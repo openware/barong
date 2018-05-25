@@ -2,7 +2,7 @@
 
 # Label level mapping model
 class Level < ApplicationRecord
-  validates :key, :value, :description, presence: true
+  validates :key, :value, presence: true
   validates :value, uniqueness: { scope: :key }
 end
 
