@@ -66,7 +66,7 @@ logger.info '---'
 logger.info 'Seeding applications'
 seeds['applications'].each do |seed|
   logger.info '---'
-  if Doorkeeper::Application.find_by(uid: seed['name']).present?
+  if Doorkeeper::Application.find_by(uid: seed['uid']).present?
     logger.info "Application '#{seed['name']}' already exists"
     next
   end
