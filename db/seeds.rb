@@ -29,14 +29,17 @@ seeds['accounts'].each do |seed|
     logger.info "Created account for '#{admin.email}'"
 
     # Confirm the email
-    admin.update(confirmed_at: Time.now, level: 1) && logger.info("Confirmed email for '#{admin.email}'")
+    if admin.update(confirmed_at: Time.current)
+      admin.add_level_label('email')
+      logger.info("Confirmed email for '#{admin.email}'")
+    end
 
     # Create a Profile using defaults where values are not set in seeds.yml
     if seed['phone']
       phone = Phone.new(seed['phone'])
       phone.account = admin
 
-      if phone.save && phone.update(validated_at: Time.now)
+      if phone.save && phone.update(validated_at: Time.current)
         logger.info "Created phone for '#{admin.email}'"
       else
         logger.error "Can't create phone for '#{admin.email}': #{phone.errors.full_messages.join('; ')}"
@@ -66,7 +69,7 @@ logger.info '---'
 logger.info 'Seeding applications'
 seeds['applications'].each do |seed|
   logger.info '---'
-  if Doorkeeper::Application.find_by(uid: seed['uid']).present?
+  if Doorkeeper::Application.find_by(name: seed['name']).present?
     logger.info "Application '#{seed['name']}' already exists"
     next
   end
@@ -85,7 +88,11 @@ end
 logger.info '---'
 logger.info 'Seeding levels'
 seeds['levels'].each do |level_data|
-  next if Level.exists?(level_data)
+  logger.info '---'
+  if Level.find_by(key: level_data['key'], value: level_data['value']).present?
+    logger.info "Level '#{level_data['key']}:#{level_data['value']}' already exists"
+    next
+  end
   Level.create!(level_data)
 end
 
