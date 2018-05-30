@@ -11,11 +11,15 @@ module UserApi
           end
 
           unless Vault::TOTP.validate?(current_account.uid, params[:totp_code])
-            error!('Your code is invalid', 422)
+            error!('OTP code is invalid', 422)
           end
         end
 
-        desc 'List all api keys for current account.'
+        desc 'List all api keys for current account.',
+             failure: [
+               { code: 400, message: 'Require 2FA and totp code' },
+               { code: 401, message: 'Invalid bearer token' }
+             ]
         params do
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
@@ -23,7 +27,12 @@ module UserApi
           present current_account.api_keys, with: Entities::APIKey
         end
 
-        desc 'Return an api key by uid'
+        desc 'Return an api key by uid',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :uid, type: String, allow_blank: false
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
@@ -33,7 +42,12 @@ module UserApi
           present api_key, with: Entities::APIKey
         end
 
-        desc 'Create an api key'
+        desc 'Create an api key',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :public_key, type: String,
                                 allow_blank: false
@@ -55,7 +69,13 @@ module UserApi
           present api_key, with: Entities::APIKey
         end
 
-        desc 'Updates an api key'
+        desc 'Updates an api key',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :uid, type: String, allow_blank: false
           optional :public_key, type: String,
@@ -80,7 +100,13 @@ module UserApi
           present api_key, with: Entities::APIKey
         end
 
-        desc 'Delete an api key'
+        desc 'Delete an api key',
+             success: { code: 204, message: 'Succefully deleted' },
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :uid, type: String, allow_blank: false
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false

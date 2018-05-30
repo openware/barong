@@ -4,9 +4,9 @@ require 'spec_helper'
 
 describe 'Documents API test' do
   include_context 'doorkeeper authentication'
+  let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
 
   describe 'POST /api/v1/documents/' do
-    let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
     let(:params) do
       {
         doc_type: 'Passport',
@@ -39,25 +39,25 @@ describe 'Documents API test' do
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
       post '/api/v1/documents', params: params.except(:doc_type), headers: auth_header
-      expect(response.body).to eq('{"error":"doc_type is missing"}')
+      expect_body.to eq(error: 'doc_type is missing, doc_type is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:doc_expire), headers: auth_header
-      expect(response.body).to eq('{"error":"doc_expire is missing"}')
+      expect_body.to eq(error: 'doc_expire is missing, doc_expire is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:doc_number), headers: auth_header
-      expect(response.body).to eq('{"error":"doc_number is missing"}')
+      expect_body.to eq(error: 'doc_number is missing, doc_number is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:upload), headers: auth_header
-      expect(response.body).to eq('{"error":"upload is missing"}')
+      expect_body.to eq(error: 'upload is missing, upload is empty')
       expect(response.status).to eq(400)
 
       params0 = params
       params0[:upload] = Faker::Avatar.image
       post '/api/v1/documents', params: params0, headers: auth_header
-      expect(response.body).to eq('{"error":"Upload can\'t be blank"}')
+      expect_body.to eq(error: "upload is invalid")
       expect(response.status).to eq(400)
     end
 
@@ -77,11 +77,11 @@ describe 'Documents API test' do
 
     it 'Returns error, cause token is not valid' do
       post '/api/v1/documents', params: params
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'The access token is invalid')
       expect(response.status).to eq(401)
 
       get '/api/v1/documents', params: params
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'The access token is invalid')
       expect(response.status).to eq(401)
     end
     after(:all) { Account.destroy_all }

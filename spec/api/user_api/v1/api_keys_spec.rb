@@ -46,7 +46,7 @@ describe 'Api::V1::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(error: 'Your code is invalid')
+        expect_body.to eq(error: 'OTP code is invalid')
       end
     end
   end
@@ -88,7 +88,7 @@ describe 'Api::V1::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(error: 'Your code is invalid')
+        expect_body.to eq(error: 'OTP code is invalid')
       end
     end
   end
@@ -148,7 +148,7 @@ describe 'Api::V1::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(error: 'Your code is invalid')
+          expect_body.to eq(error: 'OTP code is invalid')
         end
       end
     end
@@ -217,7 +217,7 @@ describe 'Api::V1::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(error: 'Your code is invalid')
+          expect_body.to eq(error: 'OTP code is invalid')
         end
       end
     end
@@ -265,7 +265,7 @@ describe 'Api::V1::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(error: 'Your code is invalid')
+        expect_body.to eq(error: 'OTP code is invalid')
       end
     end
   end
