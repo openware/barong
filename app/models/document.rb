@@ -6,7 +6,7 @@
 class Document < ApplicationRecord
   mount_uploader :upload, UploadUploader
 
-  TYPES = %w[Passport Identity card Driver license].freeze
+  TYPES = ['Passport', 'Identity card', 'Driver license'].freeze
   STATES = %w[verified pending rejected].freeze
 
   scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
