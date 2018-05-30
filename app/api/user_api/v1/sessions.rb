@@ -5,7 +5,12 @@ module UserApi
     class Sessions < Grape::API
       desc 'Session related routes'
       resource :sessions do
-        desc 'Start a new session'
+        desc 'Start a new session',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :email
           requires :password
@@ -29,7 +34,12 @@ module UserApi
           end
         end
 
-        desc 'Validates client jwt and generates peatio session jwt'
+        desc 'Validates client jwt and generates peatio session jwt',
+             success: { code: 200, message: 'Session is generated' },
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'JWT is invalid' }
+             ]
         params do
           requires :kid, type: String, allow_blank: false, desc: 'API Key uid'
           requires :jwt_token, type: String, allow_blank: false

@@ -13,7 +13,7 @@ RSpec.describe SecurityController, type: :controller do
       it 'redirect to index_path' do
         do_request
         expect(response).to redirect_to index_path
-        expect(flash[:alert]).to eq 'You are already enabled 2FA'
+        expect(flash[:alert]).to eq '2FA has been enabled for this account'
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe SecurityController, type: :controller do
       it 'redirect to index_path' do
         do_request
         expect(response).to redirect_to index_path
-        expect(flash[:alert]).to eq 'You are already enabled 2FA'
+        expect(flash[:alert]).to eq '2FA has been enabled for this account'
       end
     end
 

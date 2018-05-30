@@ -29,6 +29,6 @@ private
 
   def check_otp_enabled
     return unless current_account.otp_enabled
-    redirect_to(index_path, alert: 'You are already enabled 2FA')
+    redirect_to(index_path, alert: '2FA has been enabled for this account')
   end
 end
