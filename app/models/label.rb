@@ -26,17 +26,23 @@ class Label < ApplicationRecord
 
   validates :key,
             length: 3..255,
-            format: { with: /\A[A-Za-z0-9_-]+\z/ },
+            format: { with: /\A[a-z0-9_-]+\z/ },
             uniqueness: { scope: %i[account_id scope] }
 
   validates :value,
             length: 3..255,
-            format: { with: /\A[A-Za-z0-9_-]+\z/ }
+            format: { with: /\A[a-z0-9_-]+\z/ }
 
   after_commit :update_level_if_label_defined, on: %i[create update]
   after_destroy :update_level_if_label_defined
+  before_validation :downcase_fields
 
 private
+
+  def downcase_fields
+    self.key = key&.downcase
+    self.value = value&.downcase
+  end
 
   def update_level_if_label_defined
     return unless scope == 'private'
