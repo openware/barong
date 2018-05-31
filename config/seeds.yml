@@ -32,9 +32,6 @@ levels:
   - key: phone
     value: verified
     description: "User entered a valid code from sms"
-  - key: identity
-    value: verified
-    description: "User identity is not in sanction list"
   - key: document
     value: verified
     description: "User personal documents have been verified"
