@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Barong
-  VERSION = '1.9.0.alpha'
+  VERSION = '1.8.4'
 end
