@@ -78,6 +78,17 @@ describe 'Api::V1::Phones' do
         expect_body.to eq(message: 'Code was sent successfully')
       end
     end
+
+    context 'when phone is on national format with zero' do
+      let(:phone_number) { '+44 07418084106' }
+      let(:expected_phone) { '447418084106' }
+
+      it 'creates a phone and send sms' do
+        do_request
+        expect_status.to eq 201
+        expect(Phone.last.number).to eq(expected_phone)
+      end
+    end
   end
 
   describe 'POST /api/v1/phones/verify' do

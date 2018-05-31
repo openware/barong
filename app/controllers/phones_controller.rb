@@ -24,7 +24,7 @@ class PhonesController < ApplicationController
   end
 
   def verify
-    number = PhoneUtils.sanitize(phone_params[:number])
+    number = PhoneUtils.international(phone_params[:number])
     phone = current_account.phones.new(number: number)
 
     return render json: { error: 'Phone has already been used' } if phone.number_exists?
@@ -63,7 +63,7 @@ private
   def extract_phone_number_from_params
     country_code = phone_params.fetch(:country_code, '')
     number = phone_params.fetch(:number, '')
-    PhoneUtils.sanitize(country_code + number)
+    PhoneUtils.international(country_code + number)
   end
 
   def save_session(phone)
