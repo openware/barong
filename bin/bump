@@ -8,6 +8,8 @@ if [ -f tmp/pids/server.pid ]; then
   kill $(cat tmp/pids/server.pid)
 fi
 
+echo "BreackPoint 1"
+
 if [ -n "${V}" ]; then
 cat > lib/barong/version.rb << EOF
 module Barong
@@ -16,12 +18,25 @@ end
 EOF
 fi
 
+echo "BreackPoint 1"
+
 bundle install
 bundle exec rake yarn:install db:drop db:create db:migrate
 bundle exec rails s -d
+
+echo "BreackPoint 2"
+
 while [ ! -f tmp/pids/server.pid ]
 do
   sleep 1
 done
+
+echo "BreackPoint 3"
+
 sleep 5 # Wait additional time until Rails starts listen port.
+
+echo "BreackPoint 4"
+
 kill $(cat tmp/pids/server.pid)
+
+echo "BreackPoint 5"
