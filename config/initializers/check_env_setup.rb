@@ -1,4 +1,4 @@
-if Rails.env.production?
+if Rails.env.production? && !ENV['CI']
   specs_path = Rails.root.join('config', 'env_specs.yml')
 
   if File.exists?(specs_path)
