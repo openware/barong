@@ -1,3 +1,6 @@
+# encoding: UTF-8
+# frozen_string_literal: true
+
 require "rubygems/version"
 require "net/http"
 require "json"
@@ -63,7 +66,7 @@ def bump_from_master_branch
 
   # Increment patch version number, tag, and push.
   candidate_version = Gem::Version.new(latest_version.segments.dup.tap { |s| s[2] += 1 }.join("."))
-  tag_n_push(candidate_version.to_s, name: 'master') unless versions.include?(candidate_version)
+  tag_n_push(candidate_version.to_s, name: "master") unless versions.include?(candidate_version)
 end
 
 #
@@ -97,26 +100,17 @@ end
 #
 # @param tag [String]
 def tag_n_push(tag, branch)
-  File.open "lib/barong/version.rb", "w" do |f|
-    f.write <<-RUBY
-module Barong
-  VERSION = '#{tag}'
-end
-    RUBY
-  end
-
-  [
+  [ %( V="#{tag}" bin/bump ),
     %( git config --global user.email "#{bot_email}" ),
     %( git config --global user.name "#{bot_name}" ),
     %( git remote add authenticated-origin https://#{bot_username}:#{ENV.fetch("GITHUB_API_KEY")}@github.com/#{repository_slug} ),
     %( git checkout -b release ),
-    %( git add lib/barong/version.rb ),
+    %( git add lib/ ),
     %( git commit -m "[ci skip] Bump #{tag}." ),
     %( git push authenticated-origin release:#{branch.fetch(:name)} ),
     %( git tag #{tag} -a -m "Automatically generated tag from TravisCI build #{ENV.fetch("TRAVIS_BUILD_NUMBER")}." ),
     %( git push authenticated-origin #{tag} )
-  ].each do |command|
-    command.strip!
+  ].map(&:strip).each do |command|
     unless Kernel.system(command)
       # Prevent GitHub API key from being published.
       command.gsub!(ENV["GITHUB_API_KEY"], "(secret)")
@@ -179,6 +173,7 @@ def github_api_authenticated_get(path, query = {})
   end
 end
 
+#
 # Fetches full collection using GitHub API (performs pagination under the hood).
 #
 # @param path [String]
@@ -204,38 +199,36 @@ def generic_semver?(version)
   version.segments.count == 3 && version.segments.all? { |segment| segment.match?(/\A[0-9]+\z/) }
 end
 
-def check_eligible
-  begin
-    raise ArgumentError, 'Build must not run on a fork.' \
-      if ENV["TRAVIS_REPO_SLUG"] != repository_slug
-
-    raise ArgumentError, 'Skip pull requests.' \
-      if ENV["TRAVIS_PULL_REQUEST"] == "true"
-
-    raise ArgumentError, 'Build must run on branch' \
-      if ENV["TRAVIS_BRANCH"].to_s.empty?
-
-    raise ArgumentError, 'GitHub API key must be available.' \
-      if ENV["GITHUB_API_KEY"].to_s.empty?
-
-    raise ArgumentError, 'Build must not run on tag' \
-      unless ENV["TRAVIS_TAG"].to_s.empty?
-
-    raise ArgumentError, 'Ensure this commit is not tagged.' \
-      if tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
-
-    rescue ArgumentError => e
-      puts "Build not eligible: #{e.message}"
-      return false
-  end
-  return true
+unless ENV["TRAVIS_REPO_SLUG"] == repository_slug
+  Kernel.abort "Bumping version aborted: invalid repository (expected #{repository_slug}, got #{ENV["TRAVIS_REPO_SLUG"]})."
 end
 
-if check_eligible
-  puts 'Going to bump for: ' + ENV["TRAVIS_BRANCH"]
-  if ENV["TRAVIS_BRANCH"] == "master"
-    bump_from_master_branch if ENV["INCREMENT_PATCH_LEVEL_ON_MASTER"]
+unless ENV["TRAVIS_PULL_REQUEST"] == "false"
+  Kernel.abort "Bumping version aborted: GitHub pull request detected."
+end
+
+if ENV["TRAVIS_BRANCH"].to_s.empty?
+  Kernel.abort "Bumping version aborted: could not detect Git branch."
+end
+
+if ENV["GITHUB_API_KEY"].to_s.empty?
+  Kernel.abort "Bumping version aborted: GitHub API key is missing."
+end
+
+unless ENV["TRAVIS_TAG"].to_s.empty?
+  Kernel.abort "Bumping version aborted: the build has been triggered by Git tag."
+end
+
+if tagged_commits_mapping.key?(ENV["TRAVIS_COMMIT"])
+  Kernel.abort "Bumping version aborted: commit #{ENV["TRAVIS_COMMIT"]} is already tagged."
+end
+
+if ENV["TRAVIS_BRANCH"] == "master"
+  if ENV["INCREMENT_PATCH_LEVEL_ON_MASTER"]
+    bump_from_master_branch
   else
-    bump_from_version_specific_branch(ENV["TRAVIS_BRANCH"])
+    Kernel.abort "Bumping version aborted: bumping disabled for master branch."
   end
+else
+  bump_from_version_specific_branch(ENV["TRAVIS_BRANCH"])
 end
