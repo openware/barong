@@ -45,7 +45,7 @@ describe 'Api::V1::Accounts' do
 
       it 'renders an error' do
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Password must contain big, small letters and digits'])
+        expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.'])
       end
     end
 
