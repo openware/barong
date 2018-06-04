@@ -6,7 +6,9 @@ class SecurityController < ApplicationController
 
   def enable
     @otp = Vault::TOTP.create(current_account.uid, current_account.email)
+    Rails.logger.debug { "Vault TOTP data #{@otp.inspect}" }
     @otp_secret = Vault::TOTP.otp_secret(@otp)
+    Rails.logger.debug { "TOTP secret #{@otp_secret.inspect}" }
   end
 
   def confirm
