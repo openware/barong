@@ -57,7 +57,7 @@ describe 'Documents API test' do
       params0 = params
       params0[:upload] = Faker::Avatar.image
       post '/api/v1/documents', params: params0, headers: auth_header
-      expect_body.to eq(error: "upload is invalid")
+      expect_body.to eq(error: 'upload is invalid')
       expect(response.status).to eq(400)
     end
 

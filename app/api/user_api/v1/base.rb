@@ -36,6 +36,8 @@ module UserApi
         error!('Something went wrong', 500)
       end
 
+      use UserApi::V1::CORS::Middleware
+
       mount UserApi::V1::Accounts
       mount UserApi::V1::Profiles
       mount UserApi::V1::Security
