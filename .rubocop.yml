@@ -4,6 +4,7 @@ AllCops:
     - ci/bump.rb
     - bin/*
     - config/**/*
+    - lib/barong/version.rb
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
