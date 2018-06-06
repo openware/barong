@@ -3,6 +3,12 @@
 module UserApi
   module V1
     class Sessions < Grape::API
+      helpers do
+        def create_access_token(expires_in:, account:, application:)
+          Barong::Security::AccessToken.create expires_in, account.id, application
+        end
+      end
+
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
@@ -16,22 +22,43 @@ module UserApi
           requires :password
           requires :application_id
           optional :expires_in, allow_blank: false
+          optional :otp_code, type: String,
+                              desc: 'Code from Google Authenticator'
         end
 
         post do
           declared_params = declared(params, include_missing: false)
-          acc = Account.kept.find_by(email: declared_params[:email])
+          account = Account.kept.find_by(email: declared_params[:email])
+          error!('Invalid Email or Password', 401) unless account
 
-          return error!('Invalid Email or Password', 401) unless acc
+          application = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
+          error!('Wrong Application ID', 401) unless application
 
-          app = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          return error!('Wrong Application ID', 401) unless app
-          if acc.valid_password? declared_params[:password]
-            return error!('You have to confirm your email address before continuing.', 401) unless acc.active_for_authentication?
-            Barong::Security::AccessToken.create declared_params[:expires_in], acc.id, app
-          else
+          unless account.valid_password? declared_params[:password]
             error!('Invalid Email or Password', 401)
           end
+
+          unless account.active_for_authentication?
+            error!('You have to confirm your email address before continuing', 401)
+          end
+
+          unless account.otp_enabled
+            return create_access_token expires_in: declared_params[:expires_in],
+                                       account: account,
+                                       application: application
+          end
+
+          if declared_params[:otp_code].blank?
+            error!('The account has enabled 2FA but OTP code is missing', 403)
+          end
+
+          unless Vault::TOTP.validate?(account.uid, declared_params[:otp_code])
+            error!('OTP code is invalid', 403)
+          end
+
+          create_access_token expires_in: declared_params[:expires_in],
+                              account: account,
+                              application: application
         end
 
         desc 'Validates client jwt and generates peatio session jwt',
