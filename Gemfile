@@ -19,7 +19,6 @@ gem 'grape-entity', '~> 0.7.1'
 gem 'sneakers',     '~> 2.6'
 gem 'grape-swagger', '~> 0.28'
 gem 'grape-swagger-entity', '~> 0.2'
-gem 'rack-cors',    '~> 1.0.2', require: 'rack/cors'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
 
