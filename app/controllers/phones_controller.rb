@@ -26,7 +26,6 @@ class PhonesController < ApplicationController
   def verify
     number = PhoneUtils.international(phone_params[:number])
     phone = current_account.phones.new(number: number)
-
     return render json: { error: 'Phone has already been used' } if phone.number_exists?
 
     if PhoneUtils.valid?(phone.number)
