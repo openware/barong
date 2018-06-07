@@ -10,7 +10,7 @@ The exchange name consists of three parts:
 
   2) fixed keyword `events`.
 
-  3) category of event, like `model` (the attributes of some record were updated).
+  3) category of event, like `model` (the attributes of some record were updated) and `system` (system events)
 
 The routing key looks like `account.updated`, `profile.created`.
 The event name matches the routing key but with event category appended at the beginning, like `model.account.updated`, `model.profile.created`.
@@ -70,7 +70,6 @@ The field `event[:name]` contains event name (same as routing key).
 The fields `foo`, `bar`, `qux` (just for example) are fields which carry useful information.
 
 ## Format of `account.created` event
-  (Format of `account.updated` event the same)
 
 ```ruby
 event: {
@@ -107,6 +106,9 @@ event: {
     confirmed_at: '2018-04-12T18:16:06+03:00',
     confirmation_sent_at: '2018-04-12T17:16:06+03:00',
     state: 'active',
+    failed_attempts: 5,
+    unlock_token: 'n1Ytj6Hy57YpfueA2vtmnwJQs583bpYn7Wsfr',
+    locked_at: '2018-05-17T17:16:06+03:00',
     created_at: '2018-04-12T17:16:06+03:00',
     updated_at: '2018-04-12T17:16:06+03:00'
   },
@@ -178,6 +180,28 @@ event: {
 | ---------- | ------------------------------------------------ |
 | `record`   | The up-to-date profile attributes.               |
 | `changes`  | The changed profile attributes and their values. |
+
+## Format of `system.document.verified` event
+
+```ruby
+event: {
+  name: "system.document.verified",
+  record: {
+    account_uid: "ID092B2AF8E87",
+  }
+}
+```
+
+## Format of `system.document.rejected` event
+
+```ruby
+event: {
+  name: "system.document.rejected",
+  record: {
+    account_uid: "ID092B2AF8E87",
+  }
+}
+```
 
 ## Producing events using Ruby
 

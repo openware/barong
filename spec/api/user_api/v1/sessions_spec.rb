@@ -52,15 +52,19 @@ describe 'Session create test' do
           expect(response.status).to eq(400)
         end
 
-        it 'when password is wrong' do
-          post uri, params: { email: email, password: 'password', application_id: application.uid }
-          expect(response.body).to eq('{"error":"Invalid Email or password."}')
-          expect(response.status).to eq(401)
-        end
-
         it 'when application_id is wrong' do
           post uri, params: { email: email, password: password, application_id: 'application.uid' }
           expect(response.body).to eq('{"error":"Wrong application id"}')
+          expect(response.status).to eq(401)
+        end
+
+        it 'when password is wrong' do
+          post uri, params: {
+            email: email,
+            password: 'invalid',
+            application_id: application.uid
+          }
+          expect(response.body).to eq('{"error":"Invalid Email or password."}')
           expect(response.status).to eq(401)
         end
       end
@@ -79,6 +83,29 @@ describe 'Session create test' do
           post uri, params: { email: another_email, password: password, application_id: application.uid }
           expect(response.body).to eq('{"error":"You have to confirm your email address before continuing."}')
           expect(response.status).to eq(401)
+        end
+      end
+
+      context 'lockable' do
+        let!(:account) { create :account }
+        let(:params) do
+          {
+            email: account.email,
+            password: 'invalid',
+            application_id: application.uid
+          }
+        end
+
+        it 'when password is wrong by 4 times' do
+          4.times { post uri, params: params }
+          expect(response.status).to eq(401)
+          expect_body.to eq(error: 'You have one more attempt before your account is locked.')
+        end
+
+        it 'when password is wrong by 5 times' do
+          5.times { post uri, params: params }
+          expect(response.status).to eq(401)
+          expect_body.to eq(error: 'Your account is locked.')
         end
       end
     end

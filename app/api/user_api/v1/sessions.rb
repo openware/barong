@@ -3,6 +3,58 @@
 module UserApi
   module V1
     class Sessions < Grape::API
+      helpers do
+        def find_account!(email)
+          account = Account.kept.find_by(email: email)
+          error!('Invalid Email or password.', 401) unless account
+          account
+        end
+
+        def find_application!(uid)
+          application = Doorkeeper::Application.find_by(uid: uid)
+          error!('Wrong application id', 401) unless application
+          application
+        end
+
+        def create_token(application:, account:, expires_in:)
+          Barong::Security::AccessToken.create expires_in, account.id, application
+        end
+
+        def handle_lockable(account)
+          return unless account.lock_strategy_enabled?(:failed_attempts)
+          account.unlock_access! if account.send :lock_expired?
+          account.increment_failed_attempts
+
+          if account.send :attempts_exceeded?
+            account.lock_access! unless account.access_locked?
+          else
+            account.save(validate: false)
+          end
+        end
+
+        def show_last_attempt_message(account)
+          return unless account.lock_strategy_enabled?(:failed_attempts)
+          return unless Account.last_attempt_warning
+
+          if account.send(:last_attempt?)
+            error!('You have one more attempt before your account is locked.', 401)
+          end
+        end
+
+        def check_password_and_lock_status(account:, password:)
+          unless account.valid_password?(password)
+            handle_lockable(account)
+            error!('Your account is locked.', 401) if account.access_locked?
+            show_last_attempt_message(account)
+            error!('Invalid Email or password.', 401)
+          end
+
+          unless account.active_for_authentication?
+            error!(I18n.t(account.inactive_message, scope: 'devise.failure'), 401)
+          end
+        end
+      end
+
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
@@ -20,18 +72,15 @@ module UserApi
 
         post do
           declared_params = declared(params, include_missing: false)
-          acc = Account.kept.find_by(email: declared_params[:email])
+          account = find_account!(declared_params[:email])
+          application = find_application!(declared_params[:application_id])
 
-          return error!('Invalid Email or password.', 401) unless acc
+          check_password_and_lock_status(account: account,
+                                         password: declared_params[:password])
 
-          app = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          return error!('Wrong application id', 401) unless app
-          if acc.valid_password? declared_params[:password]
-            return error!('You have to confirm your email address before continuing.', 401) unless acc.active_for_authentication?
-            Barong::Security::AccessToken.create declared_params[:expires_in], acc.id, app
-          else
-            error!('Invalid Email or password.', 401)
-          end
+          create_token expires_in: declared_params[:expires_in],
+                       account: account,
+                       application: application
         end
 
         desc 'Validates client jwt and generates peatio session jwt',
