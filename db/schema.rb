@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508095253) do
+ActiveRecord::Schema.define(version: 20180516142429) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(version: 20180508095253) do
     t.string "domain"
     t.string "title"
     t.string "logo"
+    t.string "favicon"
     t.string "stylesheet"
     t.text "header"
     t.text "footer"
