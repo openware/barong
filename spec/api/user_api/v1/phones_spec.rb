@@ -18,7 +18,7 @@ describe 'Api::V1::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'phone_number is empty')
+        expect_body.to eq(error: 'Phone Number is empty')
         expect_status.to eq 400
       end
     end
@@ -100,7 +100,7 @@ describe 'Api::V1::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'phone_number is empty, verification_code is empty')
+        expect_body.to eq(error: 'Phone Number is empty, Verification Code is empty')
         expect_status.to eq 400
       end
     end

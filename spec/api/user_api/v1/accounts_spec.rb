@@ -40,7 +40,7 @@ describe 'Api::V1::Accounts' do
       end
     end
 
-    context 'when password is invalid' do
+    context 'when Password is invalid' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'password' } }
 
       it 'renders an error' do
@@ -54,7 +54,7 @@ describe 'Api::V1::Accounts' do
 
       it 'renders an error' do
         expect_status_to_eq 400
-        expect_body.to eq(error: 'email is missing, email is empty, password is missing, password is empty')
+        expect_body.to eq(error: 'Email is missing, Email is empty, Password is missing, Password is empty')
       end
     end
 
@@ -63,7 +63,7 @@ describe 'Api::V1::Accounts' do
 
       it 'renders an error' do
         expect_status_to_eq 400
-        expect_body.to eq(error: 'email is empty')
+        expect_body.to eq(error: 'Email is empty')
       end
     end
 
@@ -117,27 +117,27 @@ describe 'Api::V1::Accounts' do
       expect(response.status).to eq(200)
     end
 
-    it 'renders 401 when old password is invalid' do
+    it 'renders 401 when old Password is invalid' do
       put url, params: params1, headers: headers
-      expect(response.body).to eq('{"error":"Invalid password."}')
+      expect_body.to eq(error: 'Invalid password')
       expect(response.status).to eq(401)
     end
 
     it 'renders 401 without auth header' do
       put url, params: params0
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'The access token is invalid')
       expect(response.status).to eq(401)
     end
 
-    it 'renders 400 when new password is missing' do
+    it 'renders 400 when new Password is missing' do
       put url, params: params0.except(:new_password), headers: headers
-      expect(response.body).to eq('{"error":"new_password is missing"}')
+      expect_body.to eq(error: 'New Password is missing')
       expect(response.status).to eq(400)
     end
 
-    it 'renders 400 is old password is missing' do
+    it 'renders 400 is old Password is missing' do
       put url, params: params0.except(:old_password), headers: headers
-      expect(response.body).to eq('{"error":"old_password is missing"}')
+      expect_body.to eq(error: 'Old Password is missing')
       expect(response.status).to eq(400)
     end
   end
@@ -152,7 +152,7 @@ describe 'Api::V1::Accounts' do
       it 'renders an error' do
         do_request
         expect_status_to_eq 400
-        expect_body.to eq(error: 'confirmation_token is empty')
+        expect_body.to eq(error: 'Confirmation Token is empty')
       end
     end
 

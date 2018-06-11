@@ -39,25 +39,25 @@ describe 'Documents API test' do
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
       post '/api/v1/documents', params: params.except(:doc_type), headers: auth_header
-      expect_body.to eq(error: 'doc_type is missing, doc_type is empty')
+      expect_body.to eq(error: 'Document Type is missing, Document Type is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:doc_expire), headers: auth_header
-      expect_body.to eq(error: 'doc_expire is missing, doc_expire is empty')
+      expect_body.to eq(error: 'Document Expire is missing, Document Expire is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:doc_number), headers: auth_header
-      expect_body.to eq(error: 'doc_number is missing, doc_number is empty')
+      expect_body.to eq(error: 'Document Number is missing, Document Number is empty')
       expect(response.status).to eq(400)
 
       post '/api/v1/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(error: 'upload is missing, upload is empty')
+      expect_body.to eq(error: 'Image is missing, Image is empty')
       expect(response.status).to eq(400)
 
       params0 = params
       params0[:upload] = Faker::Avatar.image
       post '/api/v1/documents', params: params0, headers: auth_header
-      expect_body.to eq(error: 'upload is invalid')
+      expect_body.to eq(error: 'Image is invalid')
       expect(response.status).to eq(400)
     end
 
