@@ -82,11 +82,9 @@ class Account < ApplicationRecord
       confirmation_token: confirmation_token,
       confirmed_at: format_iso8601_time(confirmed_at),
       confirmation_sent_at: format_iso8601_time(confirmation_sent_at),
-      reset_password_token: reset_password_token,
       reset_password_sent_at: format_iso8601_time(reset_password_sent_at),
       state: state,
       failed_attempts: failed_attempts,
-      unlock_token: unlock_token,
       locked_at: locked_at,
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)
