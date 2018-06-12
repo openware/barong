@@ -151,8 +151,8 @@ describe 'Session create test' do
       end
 
       before do
-        expect(Rails.application.secrets).to \
-          receive(:jwt_shared_secret_key) { jwt_keypair_encoded[:private] }
+        expect(Barong::Security).to \
+          receive(:private_key) { build_ssl_pkey jwt_keypair_encoded[:private] }
         do_request
       end
 

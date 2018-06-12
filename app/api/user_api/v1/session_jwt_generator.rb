@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'barong/security/access_token'
+
 module UserApi
   module V1
     class SessionJWTGenerator
@@ -33,21 +35,10 @@ module UserApi
           api_kid: @api_key.uid
         }
 
-        JWT.encode(payload, secret_key, ALGORITHM)
+        JWT.encode(payload, Barong::Security.private_key, ALGORITHM)
       end
 
     private
-
-      def secret_key
-        key_path = ENV['JWT_PRIVATE_KEY_PATH']
-        private_key = if key_path.present?
-                        File.read(key_path)
-                      else
-                        Base64.urlsafe_decode64(Rails.application.secrets.jwt_shared_secret_key)
-                      end
-
-        OpenSSL::PKey.read private_key
-      end
 
       def decode_payload
         public_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(@api_key.public_key))
