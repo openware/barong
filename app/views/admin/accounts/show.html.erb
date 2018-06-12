@@ -17,8 +17,22 @@
     </li >
 
     <li class="list-group-item">
-     <b> 2FA enabled?: </b>
-      <%= @account.otp_enabled %>
+      <% if @account.otp_enabled %>
+        2FA is enabled
+
+        <% if can? :disable_2fa, @account %>
+          <%= link_to 'Disable 2FA',
+                      disable_2fa_admin_account_path(@account),
+                      class: 'btn btn-primary btn-sm',
+                      data: {
+                        method: :post,
+                        confirm: "Are you sure? You need to verify that user owns his account before disabling 2FA"
+                      }
+          %>
+        <% end %>
+      <% else %>
+        2FA is disabled
+      <% end %>
     </li >
   </ul>
   <br/>
