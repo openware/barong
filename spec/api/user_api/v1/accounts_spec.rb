@@ -13,7 +13,8 @@ describe 'Api::V1::Accounts' do
         email: current_account.email,
         level: current_account.level,
         role: current_account.role,
-        state: current_account.state
+        state: current_account.state,
+        otp_enabled: current_account.otp_enabled
       }
     end
 
