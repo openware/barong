@@ -18,14 +18,16 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
   has_many :documents, dependent: :destroy
-  has_many :labels
-  has_many :api_keys, class_name: 'APIKey'
+  has_many :labels, dependent: :destroy
+  has_many :api_keys, class_name: 'APIKey', dependent: :destroy
 
   before_validation :assign_uid
 
   validates :email, email: true
   validates :email, uniqueness: true
   validates :uid, presence: true, uniqueness: true
+
+  scope :active, -> { where(state: 'active') }
 
   def active_for_authentication?
     super && !discarded_at

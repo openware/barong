@@ -2,7 +2,28 @@ Management API v1
 =================
 Management API is server-to-server API with high privileges
 
-**Version:** 1.8.0
+**Version:** 1.8.11
+
+### /management_api/v1/otp/sign
+---
+##### ***POST***
+**Summary:** Sign request with barong signature
+
+**Description:** Sign request with barong signature
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| account_uid | formData | Account UID | Yes | string |
+| otp_code | formData | Code from Google Authenticator | Yes | integer |
+| jwt | formData | RFC 7516 jwt with applogic signature | Yes | Hash |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Sign request with barong signature |
 
 ### /management_api/v1/labels/delete
 ---

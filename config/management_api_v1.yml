@@ -49,5 +49,6 @@ jwt: {}
 #
 # The available scopes include:
 #   – write_labels
+#   - otp_sign
 #
 scopes: {}
