@@ -36,7 +36,11 @@ module UserApi
         error!('Something went wrong', 500)
       end
 
+      require 'action_dispatch/middleware/remote_ip.rb'
+
+      use ActionDispatch::RemoteIp
       use UserApi::V1::CORS::Middleware
+      use UserApi::V1::Middlewares::DeviceActivityMiddleware
 
       mount UserApi::V1::Accounts
       mount UserApi::V1::Profiles
