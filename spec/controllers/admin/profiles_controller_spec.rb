@@ -10,7 +10,7 @@ describe Admin::ProfilesController, type: :controller do
   before { login_as current_account }
 
   context 'PUT #document_label' do
-    let!(:profile) { create(:profile) }
+    let!(:profile) { build(:profile).tap {|a| p a; a.save!} }
     let!(:label) do
       create(
         :label,

@@ -19,7 +19,7 @@ class Document < ApplicationRecord
   validates :upload, length: { maximum: 10.megabytes }
   validates :doc_number, length: { maximum: 128 }
   validates_format_of :doc_expire,
-                      with: /\d{4}\-\d{2}\-\d{2}/,
+                      with: /\A\d{4}\-\d{2}\-\d{2}\z/,
                       message: 'Date must be in the following format: yyyy-mm-dd'
   after_commit :create_or_update_document_label, on: :create
 
