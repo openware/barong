@@ -30,4 +30,40 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  grape:
+    errors:
+      attributes:
+        new_password: New Password
+        old_password: Old Password
+        email: Email
+        password: Password
+        confirmation_token: Confirmation Token
+        reset_password_token: Reset Password Token
+        totp_code: TOTP Code
+        uid: UID
+        account_uid: Account UID
+        public_key: Public Key
+        scopes: Scopes
+        expires_in: Expires In
+        doc_expire: Document Expire
+        doc_type: Document Type
+        doc_number: Document Number
+        upload: Image
+        metadata: Metadata
+        key: Key
+        value: Value
+        phone_number: Phone Number
+        verification_code: Verification Code
+        first_name: First Name
+        last_name: Last Name
+        dob: Birthday
+        address: Address
+        postcode: Postcode
+        city: City
+        country: Country
+        jwt_token: JWT Token
+        kid: KID
+        application_id: Application ID
+        code: Code
+        otp_code: OTP code
+        jwt: JWT

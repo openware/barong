@@ -75,6 +75,10 @@ module APITestHelpers
                                   jti: SecureRandom.hex(12).upcase)
   end
 
+  def applogic_signed_jwt(payload)
+    multisig_jwt(payload, management_api_v1_keychain, :james, management_api_v1_algorithms)
+  end
+
   def multisig_jwt(payload, keychain, signers, algorithms)
     JWT::Multisig.generate_jwt(payload, keychain.slice(*signers), algorithms)
   end

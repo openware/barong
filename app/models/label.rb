@@ -35,17 +35,17 @@ class Label < ApplicationRecord
 
   after_commit :update_level_if_label_defined, on: %i[create update]
   after_destroy :update_level_if_label_defined
-  before_validation :downcase_fields
+  before_validation :normalize_fields
 
 private
 
-  def downcase_fields
-    self.key = key&.downcase
-    self.value = value&.downcase
+  def normalize_fields
+    self.key = key.to_s.downcase.squish
+    self.value = value.to_s.downcase.squish
   end
 
   def update_level_if_label_defined
-    return unless scope == 'private'
+    return unless scope == 'private' || previous_changes[:scope]&.include?('private')
     account.reload.update_level
     send_document_review_notification if key == 'document'
   end

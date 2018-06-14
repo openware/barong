@@ -28,15 +28,15 @@ describe 'Api::V1::Profiles' do
 
     it 'throws an error, cause some of the required params are absent' do
       post url, params: request_params.except(:dob), headers: auth_header
-      expect(response.body).to eq('{"error":"dob is missing"}')
+      expect_body.to eq(error: 'Birthday is missing')
       expect(response.status).to eq(400)
 
       post url, params: request_params.except(:first_name), headers: auth_header
-      expect(response.body).to eq('{"error":"first_name is missing"}')
+      expect_body.to eq(error: 'First Name is missing')
       expect(response.status).to eq(400)
 
       post url, headers: auth_header
-      expect(response.body).to eq('{"error":"first_name is missing, last_name is missing, dob is missing, address is missing, postcode is missing, city is missing, country is missing"}')
+      expect_body.to eq(error: 'First Name is missing, Last Name is missing, Birthday is missing, Address is missing, Postcode is missing, City is missing, Country is missing')
       expect(response.status).to eq(400)
     end
 

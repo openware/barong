@@ -120,6 +120,27 @@ RSpec.describe Label, type: :model do
       end
     end
 
+    context 'when label scope is changed from private to public and reverse' do
+      let!(:account) { create(:account) }
+
+      before do
+        create_label_with_level(account, email_verified_level)
+        create_label_with_level(account, phone_verified_level)
+        create_label_with_level(account, identity_verified_level)
+        create_label_with_level(account, document_verified_level)
+      end
+
+      it 'updates level' do
+        expect do
+          account.labels.last.update(scope: :public)
+        end.to change { account.reload.level }.from(4).to(3)
+
+        expect do
+          account.labels.last.update(scope: :private)
+        end.to change { account.reload.level }.from(3).to(4)
+      end
+    end
+
     context '2 labels with same keys' do
       let!(:account) { create(:account) }
       let!(:label_public) do

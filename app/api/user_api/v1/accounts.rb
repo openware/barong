@@ -11,7 +11,7 @@ module UserApi
                { code: 401, message: 'Invalid bearer token' }
              ]
         get '/me' do
-          current_account.as_json(only: %i[uid email level role state])
+          current_account.as_json(only: %i[uid email level role state otp_enabled])
         end
 
         desc 'Change account password',
@@ -29,11 +29,11 @@ module UserApi
           declared_params = declared(params)
 
           unless account.valid_password? declared_params[:old_password]
-            return error!('Invalid password.', 401)
+            return error!('Invalid password', 401)
           end
 
           account.password = declared_params[:new_password]
-          return error!('Invalid password.', 400) unless declared_params[:new_password]
+          return error!('Invalid password', 400) unless declared_params[:new_password]
           return error!(account.errors.full_messages.to_sentence) unless account.save
         end
 
@@ -68,6 +68,21 @@ module UserApi
           if account.errors.any?
             error!(account.errors.full_messages.to_sentence, 422)
           end
+        end
+
+        desc 'Send confirmations instructions'
+        params do
+          requires :email, type: String,
+                           desc: 'Account email',
+                           allow_blank: false
+        end
+        post '/send_confirmation_instructions' do
+          account = Account.send_confirmation_instructions declared(params)
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+
+          { message: 'Confirmation instructions was sent successfully' }
         end
       end
     end

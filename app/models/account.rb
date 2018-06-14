@@ -18,14 +18,16 @@ class Account < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :phones, dependent: :destroy
   has_many :documents, dependent: :destroy
-  has_many :labels
-  has_many :api_keys, class_name: 'APIKey'
+  has_many :labels, dependent: :destroy
+  has_many :api_keys, class_name: 'APIKey', dependent: :destroy
 
   before_validation :assign_uid
 
   validates :email, email: true
   validates :email, uniqueness: true
   validates :uid, presence: true, uniqueness: true
+
+  scope :active, -> { where(state: 'active') }
 
   def active_for_authentication?
     super && !discarded_at
@@ -82,11 +84,9 @@ class Account < ApplicationRecord
       confirmation_token: confirmation_token,
       confirmed_at: format_iso8601_time(confirmed_at),
       confirmation_sent_at: format_iso8601_time(confirmation_sent_at),
-      reset_password_token: reset_password_token,
       reset_password_sent_at: format_iso8601_time(reset_password_sent_at),
       state: state,
       failed_attempts: failed_attempts,
-      unlock_token: unlock_token,
       locked_at: locked_at,
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)

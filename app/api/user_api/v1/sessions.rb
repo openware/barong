@@ -22,15 +22,15 @@ module UserApi
           declared_params = declared(params, include_missing: false)
           acc = Account.kept.find_by(email: declared_params[:email])
 
-          return error!('Invalid Email or password.', 401) unless acc
+          return error!('Invalid Email or Password', 401) unless acc
 
           app = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          return error!('Wrong application id', 401) unless app
+          return error!('Wrong Application ID', 401) unless app
           if acc.valid_password? declared_params[:password]
             return error!('You have to confirm your email address before continuing.', 401) unless acc.active_for_authentication?
             Barong::Security::AccessToken.create declared_params[:expires_in], acc.id, app
           else
-            error!('Invalid Email or password.', 401)
+            error!('Invalid Email or Password', 401)
           end
         end
 
