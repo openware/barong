@@ -8,12 +8,14 @@ class AccountMailer < Devise::Mailer
   end
 
   def reset_password_instructions(record, token, opts = {})
-    EventAPI.notify('system.notification.account', reset_password_token: token)
+    EventAPI.notify('system.account.reset_password_token',
+      uid: record.uid, token: token)
     send_email_if_enabled { super }
   end
 
   def unlock_instructions(record, token, opts = {})
-    EventAPI.notify('system.notification.account', unlock_token: token)
+    EventAPI.notify('system.account.unlock_token',
+      uid: record.uid, token: token)
     send_email_if_enabled { super }
   end
 

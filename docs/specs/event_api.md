@@ -182,34 +182,36 @@ event: {
 ```ruby
 event: {
   name: "system.document.verified",
-  account_uid: "ID092B2AF8E87"
+  uid: "ID092B2AF8E87"
 }
 ```
 
-## Format of `system.document.verified` event
+## Format of `system.document.rejected` event
 
 ```ruby
 event: {
   name: "system.document.rejected",
-  account_uid: "ID092B2AF8E87"
+  uid: "ID092B2AF8E87"
 }
 ```
 
-## Format of `system.notification.account` event
+## Format of `system.account.reset_password_token` event
 
 ```ruby
 event: {
-  name: "system.notification.account",
-  reset_password_token: "token"
+  name: "system.account.reset_password_token",
+  uid: "ID092B2AF8E87",
+  token: "token"
 }
 ```
 
-or
+## Format of `system.account.unlock_token` event
 
 ```ruby
 event: {
-  name: "system.notification.account",
-  unlock_token: "token"
+  name: "system.account.unlock_token",
+  uid: "ID092B2AF8E87",
+  token: "token"
 }
 ```
 
