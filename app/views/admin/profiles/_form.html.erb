@@ -20,7 +20,8 @@
   <br>
 
   <%= form.label :dob, class: 'control-label'%>
-  <%= form.text_field :dob, class: 'form-control col-sm-10'%>
+  <%= form.text_field :dob, class: 'form-control datepicker-toggle col-sm-10',
+                            'data-date-format': 'yyyy-mm-dd', 'data-date-end-date': '-1d'%>
   <br>
 
   <%= form.label :address, class: 'control-label'%>
@@ -35,9 +36,12 @@
   <%= form.text_field :city, class: 'form-control col-sm-10'%>
   <br>
 
-  <%= form.label :country, class: 'control-label'%>
-  <%= form.text_field :country, class: 'form-control col-sm-10'%>
+  <%= form.label :country, class: 'control-label' %>
+  <%= display_country(selected_country: form.object.country, classes: 'form-control col-sm-10') %>
   <br>
+
+  <!-- <%= form.label :country, class: 'control-label'%> -->
+  <!-- <%= form.text_field :country, class: 'form-control col-sm-10'%> -->
 
   <%= form.submit 'Submit', class: 'btn btn-primary' %>
 
