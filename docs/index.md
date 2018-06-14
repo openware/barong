@@ -1,5 +1,5 @@
 ---
-title: Barong v1.8.0.alpha
+title: Barong v1.8.12
 language_tabs:
   - http: HTTP
   - shell: Curl
@@ -14,7 +14,7 @@ headingLevel: 2
 ---
 
 
-<h1 id="Barong">Barong v1.8.0.alpha</h1>
+<h1 id="Barong">Barong v1.8.12</h1>
 
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
@@ -29,10 +29,109 @@ Base URLs:
 * <a href="//localhost:3000/api">//localhost:3000/api</a>
 
 
+# Authentication
+
+
+* API Key (BearerToken)
+    - Parameter Name: **Authorization**, in: header. Bearer Token authentication
+
+
 <h1 id="Barong-accounts">accounts</h1>
 
 
 Operations about accounts
+
+
+## postV1AccountsSendConfirmationInstructions
+
+
+<a id="opIdpostV1AccountsSendConfirmationInstructions"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/send_confirmation_instructions HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/send_confirmation_instructions \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/send_confirmation_instructions',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/send_confirmation_instructions`
+
+
+*Send confirmations instructions*
+
+
+Send confirmations instructions
+
+
+> Body parameter
+
+
+```yaml
+email: string
+
+
+```
+
+
+<h3 id="postV1AccountsSendConfirmationInstructions-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» email|body|string|true|Account email|
+
+
+<h3 id="postV1AccountsSendConfirmationInstructions-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send confirmations instructions|None|
+
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
+</aside>
 
 
 ## postV1AccountsConfirm
@@ -88,10 +187,10 @@ $.ajax({
 `POST /v1/accounts/confirm`
 
 
-*Confirms new account*
+*Confirms an account(no auth)*
 
 
-Confirms new account
+Confirms an account(no auth)
 
 
 > Body parameter
@@ -118,11 +217,14 @@ confirmation_token: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Confirms new account|None|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Confirms an account|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are missing|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -179,10 +281,10 @@ $.ajax({
 `POST /v1/accounts`
 
 
-*Creates new account*
+*Creates new account(no auth)*
 
 
-Creates new account
+Creates new account(no auth)
 
 
 > Body parameter
@@ -212,10 +314,13 @@ password: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Creates new account|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are missing|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -272,10 +377,10 @@ $.ajax({
 `PUT /v1/accounts/password`
 
 
-*Change user's password*
+*Change account password*
 
 
-Change user's password
+Change account password
 
 
 > Body parameter
@@ -304,11 +409,15 @@ new_password: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Change user's password|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Change account password|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are missing|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid password or bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -369,10 +478,12 @@ Return information about current resource owner
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return information about current resource owner|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -447,7 +558,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-05-15'
+dob: '2018-06-11'
 address: string
 postcode: string
 city: string
@@ -478,10 +589,15 @@ country: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Create a profile for current_account|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|Profile already exists|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -542,10 +658,13 @@ Return profile of current resource owner
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return profile of current resource owner|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Account has no profile|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -640,11 +759,15 @@ account_uid: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Verify API key|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|API key is valid|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -701,10 +824,10 @@ $.ajax({
 `PUT /v1/security/reset_password`
 
 
-*Sets new account password*
+*Sets new account password(no auth)*
 
 
-Sets new account password
+Sets new account password(no auth)
 
 
 > Body parameter
@@ -733,11 +856,15 @@ password: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Sets new account password|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Sets new account password(no auth)|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -794,10 +921,10 @@ $.ajax({
 `POST /v1/security/reset_password`
 
 
-*Send reset password instructions*
+*Send reset password instructions(no auth)*
 
 
-Send reset password instructions
+Send reset password instructions(no auth)
 
 
 > Body parameter
@@ -824,11 +951,15 @@ email: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send reset password instructions|None|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send reset password instructions(no auth)|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Email is missing|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -916,10 +1047,14 @@ code: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Verify 2FA code|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|2FA has not been enabled for this account or code is missing|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1007,10 +1142,14 @@ code: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Enable 2FA|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|2FA has been enabled for this account or code is missing|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1071,10 +1210,13 @@ Generate qr code for 2FA
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Generate qr code for 2FA|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|2FA has been enabled for this account|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1135,10 +1277,12 @@ Renews JWT if current JWT is valid
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Renews JWT if current JWT is valid|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1211,7 +1355,7 @@ Upload a new document for current user
 
 
 ```yaml
-doc_expire: string
+doc_expire: '2018-06-11'
 doc_type: string
 doc_number: string
 upload: string
@@ -1226,10 +1370,10 @@ upload: string
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|No description|
-|» doc_expire|body|string|true|No description|
-|» doc_type|body|string|true|No description|
-|» doc_number|body|string|true|No description|
-|» upload|body|string|true|No description|
+|» doc_expire|body|string(date)|true|Document expiration date|
+|» doc_type|body|string|true|Document type|
+|» doc_number|body|string|true|Document number|
+|» upload|body|string(binary)|true|Uploaded file|
 
 
 <h3 id="postV1Documents-responses">Responses</h3>
@@ -1237,11 +1381,15 @@ upload: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Upload a new document for current user|None|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Document is uploaded|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1302,10 +1450,12 @@ Return current user documents list
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return current user documents list|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1401,10 +1551,14 @@ verification_code: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Verify a phone|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1492,10 +1646,15 @@ phone_number: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Resend activation code|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1583,10 +1742,15 @@ phone_number: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Add new phone|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1681,11 +1845,14 @@ jwt_token: string
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Validates client jwt and generates peatio session jwt|None|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Session is generated|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|JWT is invalid|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1779,10 +1946,14 @@ expires_in: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Start a new session|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1856,11 +2027,15 @@ Delete a label  with 'public' scope.
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Delete a label  with 'public' scope.|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Succefully deleted|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -1949,10 +2124,15 @@ value: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Update a label with 'public' scope.|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2021,10 +2201,14 @@ Return a label by key.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return a label by key.|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2114,10 +2298,14 @@ value: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Create a label with 'public' scope.|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2178,10 +2366,12 @@ List all labels for current account.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List all labels for current account.|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2257,11 +2447,15 @@ Delete an api key
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Delete an api key|None|
+|204|[No Content](https://tools.ietf.org/html/rfc7231#section-6.3.5)|Succefully deleted|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2358,10 +2552,15 @@ totp_code: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Updates an api key|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2432,10 +2631,14 @@ Return an api key by uid
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Return an api key by uid|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|404|[Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4)|Record is not found|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2529,10 +2732,14 @@ totp_code: string
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Create an api key|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are empty|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
 
 
@@ -2602,11 +2809,79 @@ List all api keys for current account.
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|List all api keys for current account.|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Require 2FA and totp code|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
 
 
-<aside class="success">
-This operation does not require authentication
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
 </aside>
+
+
+# Schemas
+
+
+<h2 id="tocSlabel">Label</h2>
+
+
+<a id="schemalabel"></a>
+
+
+```json
+{
+  "key": "string",
+  "value": "string",
+  "scope": "string",
+  "created_at": "string",
+  "updated_at": "string"
+}
+```
+
+
+### Properties
+
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|key|string|false|Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.|
+|value|string|false|Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.|
+|scope|string|false|Label scope: 'public' or 'private'|
+|created_at|string|false|No description|
+|updated_at|string|false|No description|
+
+
+<h2 id="tocSapikey">APIKey</h2>
+
+
+<a id="schemaapikey"></a>
+
+
+```json
+{
+  "uid": "string",
+  "public_key": "string",
+  "scopes": "string",
+  "expires_in": "string",
+  "state": "string",
+  "created_at": "string",
+  "updated_at": "string"
+}
+```
+
+
+### Properties
+
+
+|Name|Type|Required|Description|
+|---|---|---|---|
+|uid|string|false|No description|
+|public_key|string|false|No description|
+|scopes|string|false|comma separated scopes|
+|expires_in|string|false|expires_in duration in seconds. Min 30 seconds, Max 86400 seconds|
+|state|string|false|No description|
+|created_at|string|false|No description|
+|updated_at|string|false|No description|
 
 
 <script type="application/ld+json">

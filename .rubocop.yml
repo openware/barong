@@ -4,6 +4,8 @@ AllCops:
     - ci/bump.rb
     - bin/*
     - config/**/*
+    - lib/barong/version.rb
+    - config/routes.rb
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
@@ -11,6 +13,10 @@ Style/StringLiterals:
 Metrics/LineLength:
   Enabled: false
   Max: 110
+
+Metrics/ClassLength:
+  Exclude:
+    - "app/api/user_api/**/*"
 
 Style/IfUnlessModifier:
   Enabled: false

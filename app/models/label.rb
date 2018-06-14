@@ -26,20 +26,26 @@ class Label < ApplicationRecord
 
   validates :key,
             length: 3..255,
-            format: { with: /\A[A-Za-z0-9_-]+\z/ },
+            format: { with: /\A[a-z0-9_-]+\z/ },
             uniqueness: { scope: %i[account_id scope] }
 
   validates :value,
             length: 3..255,
-            format: { with: /\A[A-Za-z0-9_-]+\z/ }
+            format: { with: /\A[a-z0-9_-]+\z/ }
 
   after_commit :update_level_if_label_defined, on: %i[create update]
   after_destroy :update_level_if_label_defined
+  before_validation :normalize_fields
 
 private
 
+  def normalize_fields
+    self.key = key.to_s.downcase.squish
+    self.value = value.to_s.downcase.squish
+  end
+
   def update_level_if_label_defined
-    return unless scope == 'private'
+    return unless scope == 'private' || previous_changes[:scope]&.include?('private')
     account.reload.update_level
     send_document_review_notification if key == 'document'
   end

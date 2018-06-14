@@ -5,7 +5,13 @@ module UserApi
     class Phones < Grape::API
       desc 'Phone related routes'
       resource :phones do
-        desc 'Add new phone'
+        desc 'Add new phone',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',
@@ -22,7 +28,13 @@ module UserApi
           { message: 'Code was sent successfully' }
         end
 
-        desc 'Resend activation code'
+        desc 'Resend activation code',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',
@@ -43,7 +55,12 @@ module UserApi
           { message: 'Code was sent successfully' }
         end
 
-        desc 'Verify a phone'
+        desc 'Verify a phone',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',

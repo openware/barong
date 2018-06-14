@@ -19,6 +19,7 @@ module ManagementAPI
 
       use ManagementAPI::V1::JWTAuthenticationMiddleware
 
+      mount ManagementAPI::V1::OTP
       mount ManagementAPI::V1::Labels
       mount ManagementAPI::V1::Tools
 

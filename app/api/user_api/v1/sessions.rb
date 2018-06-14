@@ -5,7 +5,12 @@ module UserApi
     class Sessions < Grape::API
       desc 'Session related routes'
       resource :sessions do
-        desc 'Start a new session'
+        desc 'Start a new session',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :email
           requires :password
@@ -17,19 +22,24 @@ module UserApi
           declared_params = declared(params, include_missing: false)
           acc = Account.kept.find_by(email: declared_params[:email])
 
-          return error!('Invalid Email or password.', 401) unless acc
+          return error!('Invalid Email or Password', 401) unless acc
 
           app = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          return error!('Wrong application id', 401) unless app
+          return error!('Wrong Application ID', 401) unless app
           if acc.valid_password? declared_params[:password]
             return error!('You have to confirm your email address before continuing.', 401) unless acc.active_for_authentication?
             Barong::Security::AccessToken.create declared_params[:expires_in], acc.id, app
           else
-            error!('Invalid Email or password.', 401)
+            error!('Invalid Email or Password', 401)
           end
         end
 
-        desc 'Validates client jwt and generates peatio session jwt'
+        desc 'Validates client jwt and generates peatio session jwt',
+             success: { code: 200, message: 'Session is generated' },
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'JWT is invalid' }
+             ]
         params do
           requires :kid, type: String, allow_blank: false, desc: 'API Key uid'
           requires :jwt_token, type: String, allow_blank: false

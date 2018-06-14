@@ -50,7 +50,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect(json_body).to eq(error: 'You are already enabled 2FA')
+        expect(json_body).to eq(error: '2FA has been enabled for this account')
       end
     end
 
@@ -76,7 +76,7 @@ describe 'Api::V1::Security' do
 
       it 'renders an error' do
         do_request
-        expect(json_body).to eq(error: 'code is empty')
+        expect(json_body).to eq(error: 'Code is empty')
         expect(response.status).to eq(400)
       end
     end
@@ -87,7 +87,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect(json_body).to eq(error: 'You are already enabled 2FA')
+        expect(json_body).to eq(error: '2FA has been enabled for this account')
       end
     end
 
@@ -100,7 +100,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect(json_body).to eq(error: 'Your code is invalid')
+        expect(json_body).to eq(error: 'OTP code is invalid')
       end
     end
 
@@ -138,7 +138,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect(json_body).to eq(error: 'code is empty')
+        expect(json_body).to eq(error: 'Code is empty')
       end
     end
 
@@ -148,7 +148,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect(json_body).to eq(error: 'You need to enable 2FA first')
+        expect(json_body).to eq(error: '2FA has not been enabled for this account')
       end
     end
 
@@ -161,7 +161,7 @@ describe 'Api::V1::Security' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect(json_body).to eq(error: 'Your code is invalid')
+        expect(json_body).to eq(error: 'OTP code is invalid')
       end
     end
 
@@ -224,11 +224,11 @@ describe 'Api::V1::Security' do
       it 'renders 400 error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(error: 'reset_password_token is empty, password is empty')
+        expect_body.to eq(error: 'Reset Password Token is empty, Password is empty')
       end
     end
 
-    context 'when reset_password_token is invalid' do
+    context 'when Reset Password Token is invalid' do
       let(:reset_password_token) { 'invalid' }
       let(:password) { 'Password1' }
 
@@ -239,7 +239,7 @@ describe 'Api::V1::Security' do
       end
     end
 
-    context 'when reset_password_token is valid' do
+    context 'when Reset Password Token is valid' do
       let!(:account) { create(:account) }
       let(:reset_password_token) { account.send_reset_password_instructions }
       let(:password) { 'Password1' }

@@ -1,7 +1,23 @@
 # frozen_string_literal: true
 
 module Barong
+  # Security module
   module Security
+    class << self
+      extend Memoist
+
+      def private_key
+        key_path = ENV['JWT_PRIVATE_KEY_PATH']
+        raw_private_key = if key_path.present?
+                            File.read(key_path)
+                          else
+                            Base64.urlsafe_decode64(Rails.application.secrets.jwt_shared_secret_key)
+                          end
+        OpenSSL::PKey.read raw_private_key
+      end
+      memoize :private_key
+    end
+
     # Helpers for JWT
     module AccessToken
       class <<self

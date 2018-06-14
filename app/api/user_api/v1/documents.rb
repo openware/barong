@@ -7,14 +7,26 @@ module UserApi
 
       desc 'Documents related routes'
       resource :documents do
-        desc 'Return current user documents list'
+        desc 'Return current user documents list',
+             failure: [
+               { code: 401, message: 'Invalid bearer token' }
+             ]
         get '/' do
           current_account.documents.as_json(only: %i[upload doc_type doc_number doc_expire])
         end
 
-        desc 'Upload a new document for current user'
+        desc 'Upload a new document for current user',
+             success: { code: 201, message: 'Document is uploaded' },
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
-          requires :doc_expire, :doc_type, :doc_number, :upload
+          requires :doc_expire, type: Date, allow_blank: false, desc: 'Document expiration date'
+          requires :doc_type, type: String, allow_blank: false, desc: 'Document type'
+          requires :doc_number, type: String, allow_blank: false, desc: 'Document number'
+          requires :upload, type: File, allow_blank: false, desc: 'Uploaded file'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 

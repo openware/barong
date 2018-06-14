@@ -137,8 +137,7 @@ Doorkeeper::JWT.configure do
     }
   end
 
-  # Set the encryption secret. It's public key would be shared with any other
-  # applications that should be able to verify the payload of the token.
+  # Set the encryption secret. It's a private key and must not be shared with anybody
   ENV['JWT_PRIVATE_KEY_PATH'].tap do |pem_key|
     raise unless OpenSSL::PKey::RSA.new(File.read(pem_key)).private?
     secret_key_path pem_key
