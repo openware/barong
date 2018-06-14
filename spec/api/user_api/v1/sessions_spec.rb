@@ -11,18 +11,54 @@ describe 'Session create test' do
       create :account,
              email: email,
              password: password,
-             password_confirmation: password
+             password_confirmation: password,
+             otp_enabled: otp_enabled
     end
+    let(:otp_enabled) { false }
 
     context 'With valid params' do
+      let(:do_request) { post uri, params: params }
+      let(:params) do
+        {
+          email: email,
+          password: password,
+          application_id: application.uid
+        }
+      end
+
       it 'Checks current credentials and returns valid JWT' do
-        post uri, params: { email: email, password: password, application_id: application.uid }
-        expect(response.status).to eq(201)
+        do_request
+        expect_status.to eq(201)
         response_jwt = JSON.parse(response.body)
 
         post check_uri,
              headers: { Authorization: "Bearer #{response_jwt}" }
         expect(response.status).to eq(201)
+      end
+
+      context 'when account has enabled 2FA' do
+        let(:otp_enabled) { true }
+
+        it 'renders an error when code is missing' do
+          do_request
+          expect_status.to eq(403)
+          expect_body.to eq(error: 'The account has enabled 2FA but OTP code is missing')
+        end
+
+        it 'renders an error when code is wrong' do
+          params[:otp_code] = '1111'
+          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          do_request
+          expect_status.to eq(403)
+          expect_body.to eq(error: 'OTP code is invalid')
+        end
+
+        it 'returns valid JWT when code is valid' do
+          params[:otp_code] = '1111'
+          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { true }
+          do_request
+          expect_status.to eq(201)
+        end
       end
     end
 
@@ -77,7 +113,7 @@ describe 'Session create test' do
 
         it 'returns error' do
           post uri, params: { email: another_email, password: password, application_id: application.uid }
-          expect_body.to eq(error: 'You have to confirm your email address before continuing.')
+          expect_body.to eq(error: 'You have to confirm your email address before continuing')
           expect(response.status).to eq(401)
         end
       end
