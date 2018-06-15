@@ -7,7 +7,7 @@ class Website < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180508095253
+# Schema version: 20180516142429
 #
 # Table name: websites
 #
@@ -15,6 +15,7 @@ end
 #  domain       :string(255)
 #  title        :string(255)
 #  logo         :string(255)
+#  favicon      :string(255)
 #  stylesheet   :string(255)
 #  header       :text(65535)
 #  footer       :text(65535)

@@ -7,6 +7,16 @@ module UserApi
         def create_access_token(expires_in:, account:, application:)
           Barong::Security::AccessToken.create expires_in, account.id, application
         end
+
+        def create_device_activity!(account_id:, status:, action: 'sign_in')
+          DeviceActivity.create!(
+            env['user_device_activity'].merge(
+              action: 'sign_in',
+              status: status,
+              account_id: account_id
+            )
+          )
+        end
       end
 
       desc 'Session related routes'
@@ -35,27 +45,33 @@ module UserApi
           error!('Wrong Application ID', 401) unless application
 
           unless account.valid_password? declared_params[:password]
+            create_device_activity!(account_id: account.id, status: 'failed')
             error!('Invalid Email or Password', 401)
           end
 
           unless account.active_for_authentication?
+            create_device_activity!(account_id: account.id, status: 'email is not confirmed')
             error!('You have to confirm your email address before continuing', 401)
           end
 
           unless account.otp_enabled
+            create_device_activity!(account_id: account.id, status: 'success')
             return create_access_token expires_in: declared_params[:expires_in],
                                        account: account,
                                        application: application
           end
 
           if declared_params[:otp_code].blank?
+            create_device_activity!(account_id: account.id, status: 'missing OTP')
             error!('The account has enabled 2FA but OTP code is missing', 403)
           end
 
           unless Vault::TOTP.validate?(account.uid, declared_params[:otp_code])
+            create_device_activity!(account_id: account.id, status: 'invalid OTP')
             error!('OTP code is invalid', 403)
           end
 
+          create_device_activity!(account_id: account.id, status: 'success')
           create_access_token expires_in: declared_params[:expires_in],
                               account: account,
                               application: application
@@ -74,9 +90,9 @@ module UserApi
         post 'generate_jwt' do
           status 200
           declared_params = declared(params).symbolize_keys
-          generator = SessionJWTGenerator.new declared_params
-          error!('Payload is invalid', 401) unless generator.verify_payload
+          generator = SessionJWTGenerator.new(declared_params)
 
+          error!('Payload is invalid', 401) unless generator.verify_payload
           { token: generator.generate_session_jwt }
         rescue JWT::DecodeError => e
           error! "Failed to decode and verify JWT: #{e.inspect}", 401

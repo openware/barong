@@ -8,11 +8,11 @@ module UserApi
 
         def before
           env['user_device_activity'] = {
-            ip: remote_ip,
+            user_ip: remote_ip,
             country: country_by_ip(remote_ip),
             user_agent: request.user_agent,
-            user_browser: "#{request.browser} #{request.browser_version}",
-            user_os: "#{request.os}"
+            user_browser: request.browser,
+            user_os: request.os
           }
         end
 
