@@ -31,9 +31,9 @@ RSpec.describe PhonesController, type: :controller do
 
   describe '#create' do
     let(:do_request) { post :create, params: params }
-    let(:params) { {} }
 
     context 'when account level is not passed' do
+      let(:params) { {} }
       let!(:current_account) { create(:account) }
       let!(:level) { 0 }
 
@@ -48,9 +48,11 @@ RSpec.describe PhonesController, type: :controller do
       let(:verification_code) { '123456' }
 
       context 'when params are blank' do
+        let(:params) { {} }
+
         it 'renders new action' do
           do_request
-          expect(flash.now[:alert]).to eq('Confirmation code was sent to another number')
+          expect(flash.now[:alert]).to eq('Verification code is invalid')
           expect(response).to render_template(:new)
         end
       end

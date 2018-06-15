@@ -11,8 +11,6 @@ describe 'Api::V1::Phones' do
     end
     let(:params) { { phone_number: phone_number } }
 
-    before { do_request }
-
     context 'when phone is missing' do
       let(:phone_number) { nil }
 
@@ -65,6 +63,9 @@ describe 'Api::V1::Phones' do
 
         it 'assigns a phone to account and send sms' do
           do_request
+          expect_status.to eq 201
+          expect(FakeSMS.messages.last.to).to eq "+#{phone_number}"
+          expect_body.to eq(message: 'Code was sent successfully')
         end
       end
     end
@@ -75,7 +76,34 @@ describe 'Api::V1::Phones' do
       it 'creates a phone and send sms' do
         do_request
         expect_status.to eq 201
+        expect(FakeSMS.messages.last.to).to eq "+#{phone_number}"
         expect_body.to eq(message: 'Code was sent successfully')
+      end
+    end
+
+    context 'when phone is on national format with zero' do
+      let(:phone_number) { '+44 07418084106' }
+      let(:international_phone) { '447418084106' }
+
+      it 'creates a phone and send sms' do
+        do_request
+        expect_status.to eq 201
+        expect(FakeSMS.messages.last.to).to eq "+#{international_phone}"
+        expect(Phone.last.number).to eq(international_phone)
+      end
+    end
+
+    context 'when phone exists on international format' do
+      let(:phone_number) { '+44 07418084106' }
+      let(:international_phone) { '447418084106' }
+      let!(:phone) do
+        create(:phone, validated_at: 1.minute.ago, number: international_phone)
+      end
+
+      it 'renders an error' do
+        do_request
+        expect_body.to eq error: 'Phone number already exists'
+        expect_status.to eq 400
       end
     end
   end
@@ -91,8 +119,6 @@ describe 'Api::V1::Phones' do
       }
     end
     let(:verification_code) { '12345' }
-
-    before { do_request }
 
     context 'when phone is missing and code is missing' do
       let(:phone_number) { nil }
@@ -120,6 +146,20 @@ describe 'Api::V1::Phones' do
         create(:phone, validated_at: 1.minutes.ago)
       end
       let(:phone_number) { phone.number }
+
+      it 'renders an error' do
+        do_request
+        expect_body.to eq(error: 'Phone number already exists')
+        expect_status.to eq 400
+      end
+    end
+
+    context 'when phone exists in international format' do
+      let!(:phone) do
+        create(:phone, validated_at: 1.minutes.ago, number: international_phone)
+      end
+      let(:phone_number) { '+44 07418084106' }
+      let(:international_phone) { '447418084106' }
 
       it 'renders an error' do
         do_request
