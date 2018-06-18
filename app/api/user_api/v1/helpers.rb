@@ -35,7 +35,7 @@ module UserApi
         return unless action == 'sign_in'
 
         if previous_ip && previous_ip != env['user_device_activity'][:user_ip]
-          EventAPI.notify('system.session.different_ip',
+          EventAPI.notify('system.device_activity.ip_changed',
             old_ip: previous_ip,
             new_ip: env['user_device_activity'][:user_ip])
         end

@@ -8,6 +8,20 @@ class DeviceActivity < ApplicationRecord
 
   validates :account_id, :action, :status, presence: true
   belongs_to :account
+
+  acts_as_eventable prefix: 'device_activity', on: %i[create]
+
+  def as_json_for_event_api
+    {
+      uid: account.uid,
+      user_ip: user_ip,
+      user_os: user_os,
+      country: country,
+      action: action,
+      status: status,
+      created_at: format_iso8601_time(created_at),
+    }
+  end
 end
 
 # == Schema Information
