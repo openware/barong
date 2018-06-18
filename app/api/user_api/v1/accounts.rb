@@ -14,6 +14,14 @@ module UserApi
           current_account.as_json(only: %i[uid email level role state otp_enabled])
         end
 
+        desc 'Account activity',
+             failure: [
+               { code: 401, message: 'Invalid bearer token' }
+             ]
+        get '/activity' do
+          present current_account.device_activity, with: Entities::DeviceActivity
+        end
+
         desc 'Change account password',
              failure: [
                { code: 400, message: 'Required params are missing' },

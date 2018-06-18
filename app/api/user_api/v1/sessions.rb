@@ -35,7 +35,7 @@ module UserApi
           error!('Wrong Application ID', 401) unless application
 
           unless account.valid_password? declared_params[:password]
-            create_device_activity!(account_id: account.id, status: 'failed')
+            create_device_activity!(account_id: account.id, status: 'error')
             error!('Invalid Email or Password', 401)
           end
 
