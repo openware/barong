@@ -7,6 +7,7 @@ class DeviceActivity < ApplicationRecord
   self.table_name = :device_activity
 
   validates :account_id, :action, :status, presence: true
+  belongs_to :account
 end
 
 # == Schema Information
