@@ -58,7 +58,10 @@ group :test do
   gem 'shoulda-matchers',    '~> 3.1.2'
   gem 'rails-controller-testing'
   gem 'capybara-screenshot'
-  gem 'simplecov', require: false
+  gem 'simplecov'
+  gem "simplecov-bamboo"
+  gem "simplecov-json"
+  gem "simplecov-rcov"
 end
 
 group :development do

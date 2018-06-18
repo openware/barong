@@ -348,7 +348,16 @@ GEM
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
+    simplecov-bamboo (0.1.0)
+      nokogiri
+      simplecov
+      simplecov-html
     simplecov-html (0.10.2)
+    simplecov-json (0.2)
+      json
+      simplecov
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
     sixarm_ruby_unaccent (1.2.0)
     sneakers (2.6.0)
       bunny (~> 2.7.0)
@@ -441,6 +450,9 @@ DEPENDENCIES
   sentry-raven (~> 2.7)
   shoulda-matchers (~> 3.1.2)
   simplecov
+  simplecov-bamboo
+  simplecov-json
+  simplecov-rcov
   sneakers (~> 2.6)
   twilio-ruby (~> 5.6.0)
   uglifier (~> 4)
