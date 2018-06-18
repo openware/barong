@@ -7,16 +7,6 @@ module UserApi
         def create_access_token(expires_in:, account:, application:)
           Barong::Security::AccessToken.create expires_in, account.id, application
         end
-
-        def create_device_activity!(account_id:, status:, action: 'sign_in')
-          DeviceActivity.create!(
-            env['user_device_activity'].merge(
-              action: 'sign_in',
-              status: status,
-              account_id: account_id
-            )
-          )
-        end
       end
 
       desc 'Session related routes'

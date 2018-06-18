@@ -63,9 +63,15 @@ module UserApi
           declared_params = declared(params, include_missing: false).except(:totp_code)
           api_key = current_account.api_keys.create(declared_params)
           if api_key.errors.any?
+            create_device_activity!(account_id: current_account.id,
+                                    status: 'error',
+                                    action: 'api_key_create')
             error!(api_key.errors.full_messages.to_sentence, 422)
           end
 
+          create_device_activity!(account_id: current_account.id,
+                                  status: 'success',
+                                  action: 'api_key_create')
           present api_key, with: Entities::APIKey
         end
 
@@ -94,9 +100,15 @@ module UserApi
           declared_params = declared(params, include_missing: false).except(:totp_code)
           api_key = current_account.api_keys.find_by!(uid: params[:uid])
           unless api_key.update(declared_params)
+            create_device_activity!(account_id: current_account.id,
+                                    status: 'error',
+                                    action: 'api_key_update')
             error!(api_key.errors.full_messages.to_sentence, 422)
           end
 
+          create_device_activity!(account_id: current_account.id,
+                                  status: 'success',
+                                  action: 'api_key_update')
           present api_key, with: Entities::APIKey
         end
 
@@ -114,6 +126,9 @@ module UserApi
         delete ':uid' do
           api_key = current_account.api_keys.find_by!(uid: params[:uid])
           api_key.destroy
+          create_device_activity!(account_id: current_account.id,
+                                  status: 'success',
+                                  action: 'api_key_delete')
           status 204
         end
       end
