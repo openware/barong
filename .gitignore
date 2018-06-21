@@ -29,6 +29,7 @@
 
 /config/database.yml
 /config/application.yml
+/config/management_api_v1.yml
 
 # Plugins
 /config/plugins.yml
