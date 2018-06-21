@@ -16,14 +16,23 @@ class Document < ApplicationRecord
   validates :doc_type, :doc_number, :doc_expire, :upload, presence: true
   validates :doc_type, inclusion: { in: TYPES }
 
-  validates :upload, length: { maximum: 10.megabytes }
-  validates :doc_number, length: { maximum: 128 }
+  validates :doc_number, length: { maximum: 128 },
+                          format: {
+                            with: /\A[A-Za-z0-9\-\s]+\z/,
+                            message: 'only allows letters and digits'
+                          }, if: proc { |a| a.doc_number.present? }
   validates_format_of :doc_expire,
                       with: /\A\d{4}\-\d{2}\-\d{2}\z/,
                       message: 'Date must be in the following format: yyyy-mm-dd'
+  validate :doc_expire_not_in_the_past
   after_commit :create_or_update_document_label, on: :create
 
 private
+
+  def doc_expire_not_in_the_past
+    return if doc_expire.blank?
+    errors.add(:doc_expire, :invalid) if doc_expire < Date.current
+  end
 
   def create_or_update_document_label
     account_document_label = account.labels.find_by(key: :document)
