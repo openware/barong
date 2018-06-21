@@ -11,6 +11,7 @@ cache:
 env:
   - RAILS_ENV=test
     RAKE_ENV=test
+    COVERAGE=true
     DISPLAY=:0.0
     BOT_USERNAME=kite-bot
     BOT_NAME="Kite Bot"
