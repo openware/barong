@@ -201,6 +201,7 @@ event: {
 event: {
   name: "system.account.reset_password_token",
   uid: "ID092B2AF8E87",
+  email: 'email@example.com',
   token: "token"
 }
 ```
@@ -211,6 +212,7 @@ event: {
 event: {
   name: "system.account.unlock_token",
   uid: "ID092B2AF8E87",
+  email: 'email@example.com',
   token: "token"
 }
 ```
