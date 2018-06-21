@@ -84,6 +84,22 @@ module UserApi
 
           { message: 'Confirmation instructions was sent successfully' }
         end
+
+        desc 'Send unlock instructions'
+        params do
+          requires :email, type: String,
+                           desc: 'Account email',
+                           allow_blank: false
+        end
+
+        post '/send_unlock_instructions' do
+          account = Account.send_unlock_instructions declared(params)
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+
+          { message: 'Unlock instructions was sent successfully' }
+        end
       end
     end
   end

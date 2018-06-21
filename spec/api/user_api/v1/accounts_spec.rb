@@ -216,5 +216,34 @@ describe 'Api::V1::Accounts' do
         end
       end
     end
+
+    describe 'POST /api/v1/accounts/send_unlock_instructions' do
+      let!(:account) { create(:account, locked_at: locked_at) }
+
+      let(:do_request) do
+        post '/api/v1/accounts/send_unlock_instructions',
+             params: { email: account.email }
+      end
+
+      context 'when account is not locked' do
+        let(:locked_at) { nil }
+
+        it 'renders an error' do
+          do_request
+          expect_status_to_eq 422
+          expect_body.to eq(error: 'Email was not locked')
+        end
+      end
+
+      context 'when account is locked' do
+        let(:locked_at) { Time.now }
+
+        it 'sends instructions' do
+          do_request
+          expect_status_to_eq 201
+          expect_body.to eq(message: 'Unlock instructions was sent successfully')
+        end
+      end
+    end
   end
 end
