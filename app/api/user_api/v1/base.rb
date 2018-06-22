@@ -31,13 +31,16 @@ module UserApi
         error!(error.message, 400)
       end
 
+      rescue_from(::Services::AuthService::Error) do |error|
+        error!(error.message, error.status)
+      end
+
       rescue_from(:all) do |error|
         Rails.logger.error "#{error.class}: #{error.message}"
         error!('Something went wrong', 500)
       end
 
       use UserApi::V1::CORS::Middleware
-
       mount UserApi::V1::Accounts
       mount UserApi::V1::Profiles
       mount UserApi::V1::Security

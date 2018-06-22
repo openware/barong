@@ -2,12 +2,17 @@
 
 describe 'Session create test' do
   describe 'POST /api/v1/sessions' do
+    let(:device_uid) { '' }
+    let!(:device) do
+      create(:device, account: current_account,
+                      last_sign_in: 1.day.ago)
+    end
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
     let(:uri) { '/api/v1/sessions' }
     let(:check_uri) { '/api/v1/security/renew' }
     let!(:application) { create :doorkeeper_application }
-    subject!(:acc) do
+    subject!(:current_account) do
       create :account,
              email: email,
              password: password,
@@ -15,14 +20,19 @@ describe 'Session create test' do
              otp_enabled: otp_enabled
     end
     let(:otp_enabled) { false }
+    before do
+      cookies[:device_uid] = device_uid
+    end
 
     context 'With valid params' do
       let(:do_request) { post uri, params: params }
+      let(:remember_me) { nil }
       let(:params) do
         {
           email: email,
           password: password,
-          application_id: application.uid
+          application_id: application.uid,
+          remember_me: remember_me
         }
       end
 
@@ -36,33 +46,137 @@ describe 'Session create test' do
         expect(response.status).to eq(201)
       end
 
+      it 'does not create any device by default' do
+        expect { do_request }.to_not change { Device.count }
+      end
+
+      context 'when params has remember_me option' do
+        let(:remember_me) { 'true' }
+
+        it 'creates a device by default and saves a session' do
+          expect { do_request }.to change { Device.count }.by(1)
+          expect(response.status).to eq(201)
+        end
+
+        context 'when device is already exists' do
+          let(:device_uid) { device.uid }
+
+          it 'does not create any device' do
+            expect { do_request }.to_not change { Device.count }
+            expect(response.status).to eq(201)
+          end
+        end
+      end
+
+      context 'when session has valid device_uid' do
+        let(:device_uid) { device.uid }
+
+        it 'updates last_sign_in' do
+          expect { do_request }.to change { device.reload.last_sign_in }
+          expect(response.status).to eq(201)
+        end
+      end
+
       context 'when account has enabled 2FA' do
+        before do
+          allow(Vault::TOTP).to receive(:validate?)
+            .with(current_account.uid, valid_code) { true }
+
+          allow(Vault::TOTP).to receive(:validate?)
+            .with(current_account.uid, invalid_code) { false }
+        end
+
+        let(:valid_code) { '12345' }
+        let(:invalid_code) { '11111' }
         let(:otp_enabled) { true }
 
         it 'renders an error when code is missing' do
-          do_request
+          expect { do_request }.to_not change { Device.count }
           expect_status.to eq(403)
           expect_body.to eq(error: 'The account has enabled 2FA but OTP code is missing')
         end
 
         it 'renders an error when code is wrong' do
-          params[:otp_code] = '1111'
-          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
-          do_request
+          params[:otp_code] = invalid_code
+          expect { do_request }.to_not change { Device.count }
           expect_status.to eq(403)
           expect_body.to eq(error: 'OTP code is invalid')
         end
 
         it 'returns valid JWT when code is valid' do
-          params[:otp_code] = '1111'
-          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { true }
-          do_request
+          params[:otp_code] = valid_code
+          expect { do_request }.to_not change { Device.count }
           expect_status.to eq(201)
+        end
+
+        context 'when params has remember_me option' do
+          let(:remember_me) { 'true' }
+
+          it 'creates a device by default and saves a session' do
+            params[:otp_code] = valid_code
+            expect { do_request }.to change { Device.count }.by(1)
+            expect(response.status).to eq(201)
+          end
+
+          context 'when device is already exists' do
+            let(:device_uid) { device.uid }
+
+            it 'does not create any device' do
+              params[:otp_code] = valid_code
+              expect { do_request }.to_not change { Device.count }
+              expect(response.status).to eq(201)
+            end
+
+            it 'updates a check_otp_time' do
+              params[:otp_code] = valid_code
+              expect { do_request }.to change { device.reload.check_otp_time }
+              expect(response.status).to eq(201)
+            end
+          end
+        end
+
+        context 'when session has valid device_uid' do
+          let!(:device) do
+            create(:device, account: current_account,
+                            check_otp_time: check_otp_time,
+                            last_sign_in: 1.day.ago)
+          end
+          let(:device_uid) { device.uid }
+
+          context 'when check_otp_time in future' do
+            let(:check_otp_time) { 1.days.from_now }
+
+            it 'does not check otp ' do
+              params[:otp_code] = nil
+              expect { do_request }.to change { device.reload.last_sign_in }
+              expect(response.status).to eq(201)
+            end
+          end
+
+          context 'when check_otp_time is current time' do
+            let(:check_otp_time) { Time.current }
+
+            it 'checks an otp' do
+              params[:otp_code] = nil
+              expect { do_request }.to_not change { device.reload.last_sign_in }
+              expect(response.status).to eq(403)
+            end
+          end
+
+          # it 'updates check_otp_time' do
+          #   params[:otp_code] = valid_code
+          #   expect { do_request }.to change { device.reload.check_otp_time }
+          #   expect(response.status).to eq(201)
+          # end
+        end
+
+        context 'when check otp time exists' do
+          let(:device_uid) { device.uid }
         end
 
         it 'locks account when OTP is wrong for a 5 times' do
           params[:otp_code] = '1111'
-          allow(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          allow(Vault::TOTP).to receive(:validate?).with(current_account.uid, '1111') { false }
           5.times do
             post uri, params: params
           end
@@ -78,10 +192,10 @@ describe 'Session create test' do
         end
 
         it 'refreshes failed_attempts count' do
-          expect(acc.reload.failed_attempts).to eq(1)
+          expect(current_account.reload.failed_attempts).to eq(1)
           do_request
           expect_status.to eq(201)
-          expect(acc.reload.failed_attempts).to eq(0)
+          expect(current_account.reload.failed_attempts).to eq(0)
         end
       end
     end
@@ -129,6 +243,12 @@ describe 'Session create test' do
             post uri, params: { email: email,  password: password, application_id: application.uid }
             expect_body.to eq(error:  'Your account was locked!')
           end
+        end
+
+        it 'when email is wrong' do
+          post uri, params: { email: 'wrong@email.com', password: 'password', application_id: application.uid }
+          expect_body.to eq(error: 'Invalid Email or Password')
+          expect(response.status).to eq(401)
         end
 
         it 'when Application ID is wrong' do
