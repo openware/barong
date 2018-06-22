@@ -100,6 +100,24 @@ module UserApi
 
           { message: 'Unlock instructions was sent successfully' }
         end
+
+        desc 'Unlocks an account(no auth)',
+             success: { code: 201, message: 'Unlocks an account' },
+             failure: [
+               { code: 400, message: 'Required params are missing' },
+               { code: 422, message: 'Validation errors' }
+             ]
+        params do
+          requires :unlock_token, type: String,
+                                  desc: 'Token from email',
+                                  allow_blank: false
+        end
+        post '/unlock' do
+          account = Account.unlock_access_by_token(params[:unlock_token])
+          if account.errors.any?
+            error!(account.errors.full_messages.to_sentence, 422)
+          end
+        end
       end
     end
   end
