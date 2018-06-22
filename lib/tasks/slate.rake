@@ -11,7 +11,7 @@ namespace :slate do
         host = ENV.fetch('URL_HOST', 'localhost:3000')
         "#{protocol}://#{host}/api/v1/swagger_doc"
       end
-    outfile = Rails.root.join('docs', 'index.md').to_s
+    outfile = Rails.root.join('docs', 'api', 'api.md').to_s
     config_file = Rails.root.join('.widdershins.json').to_s
     executable = 'node node_modules/widdershins/widdershins'
 
