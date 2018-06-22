@@ -7,7 +7,7 @@ describe 'Session create test' do
     let(:uri) { '/api/v1/sessions' }
     let(:check_uri) { '/api/v1/security/renew' }
     let!(:application) { create :doorkeeper_application }
-    subject!(:acc) do
+    subject!(:current_account) do
       create :account,
              email: email,
              password: password,
@@ -15,6 +15,9 @@ describe 'Session create test' do
              otp_enabled: otp_enabled
     end
     let(:otp_enabled) { false }
+    let(:user_agent) do
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'
+    end
 
     context 'With valid params' do
       let(:do_request) { post uri, params: params }
@@ -29,7 +32,7 @@ describe 'Session create test' do
       it 'Checks current credentials and returns valid JWT' do
         do_request
         expect_status.to eq(201)
-        response_jwt = JSON.parse(response.body)
+        response_jwt = JSON.parse(response.body)['token']
 
         post check_uri,
              headers: { Authorization: "Bearer #{response_jwt}" }
@@ -37,6 +40,16 @@ describe 'Session create test' do
       end
 
       context 'when account has enabled 2FA' do
+        before do
+          allow(Vault::TOTP).to receive(:validate?)
+            .with(current_account.uid, valid_code) { true }
+
+          allow(Vault::TOTP).to receive(:validate?)
+            .with(current_account.uid, invalid_code) { false }
+        end
+
+        let(:valid_code) { '12345' }
+        let(:invalid_code) { '11111' }
         let(:otp_enabled) { true }
 
         it 'renders an error when code is missing' do
@@ -46,23 +59,21 @@ describe 'Session create test' do
         end
 
         it 'renders an error when code is wrong' do
-          params[:otp_code] = '1111'
-          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          params[:otp_code] = invalid_code
           do_request
           expect_status.to eq(403)
           expect_body.to eq(error: 'OTP code is invalid')
         end
 
         it 'returns valid JWT when code is valid' do
-          params[:otp_code] = '1111'
-          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { true }
+          params[:otp_code] = valid_code
           do_request
           expect_status.to eq(201)
         end
 
         it 'locks account when OTP is wrong for a 5 times' do
           params[:otp_code] = '1111'
-          allow(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          allow(Vault::TOTP).to receive(:validate?).with(current_account.uid, '1111') { false }
           5.times do
             post uri, params: params
           end
@@ -78,10 +89,10 @@ describe 'Session create test' do
         end
 
         it 'refreshes failed_attempts count' do
-          expect(acc.reload.failed_attempts).to eq(1)
+          expect(current_account.reload.failed_attempts).to eq(1)
           do_request
           expect_status.to eq(201)
-          expect(acc.reload.failed_attempts).to eq(0)
+          expect(current_account.reload.failed_attempts).to eq(0)
         end
       end
     end
@@ -129,6 +140,12 @@ describe 'Session create test' do
             post uri, params: { email: email,  password: password, application_id: application.uid }
             expect_body.to eq(error:  'Your account was locked!')
           end
+        end
+
+        it 'when email is wrong' do
+          post uri, params: { email: 'wrong@email.com', password: 'password', application_id: application.uid }
+          expect_body.to eq(error: 'Invalid Email or Password')
+          expect(response.status).to eq(401)
         end
 
         it 'when Application ID is wrong' do

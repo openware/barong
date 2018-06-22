@@ -1,5 +1,5 @@
 ---
-title: Barong v1.8.19
+title: Barong v1.9.0.alpha
 language_tabs:
   - http: HTTP
   - shell: Curl
@@ -14,7 +14,7 @@ headingLevel: 2
 ---
 
 
-<h1 id="Barong">Barong v1.8.19</h1>
+<h1 id="Barong">Barong v1.9.0.alpha</h1>
 
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
@@ -40,6 +40,100 @@ Base URLs:
 
 
 Operations about accounts
+
+
+## postV1AccountsUnlock
+
+
+<a id="opIdpostV1AccountsUnlock"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/unlock HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/unlock \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/unlock',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/unlock`
+
+
+*Unlocks an account(no auth)*
+
+
+Unlocks an account(no auth)
+
+
+> Body parameter
+
+
+```yaml
+unlock_token: string
+
+
+```
+
+
+<h3 id="postV1AccountsUnlock-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|false|No description|
+|» unlock_token|body|string|true|Token from email|
+
+
+<h3 id="postV1AccountsUnlock-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Unlocks an account|None|
+|400|[Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1)|Required params are missing|None|
+|422|[Unprocessable Entity](https://tools.ietf.org/html/rfc2518#section-10.3)|Validation errors|None|
+
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
+</aside>
 
 
 ## postV1AccountsSendUnlockInstructions
@@ -513,6 +607,72 @@ BearerToken
 </aside>
 
 
+## getV1AccountsDevices
+
+
+<a id="opIdgetV1AccountsDevices"></a>
+
+
+> Code samples
+
+
+```http
+GET //localhost:3000/api/v1/accounts/devices HTTP/1.1
+Host: null
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X GET //localhost:3000/api/v1/accounts/devices
+
+
+```
+
+
+```javascript
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/devices',
+  method: 'get',
+
+
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`GET /v1/accounts/devices`
+
+
+*Account devices*
+
+
+Account devices
+
+
+<h3 id="getV1AccountsDevices-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Account devices|None|
+|401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid bearer token|None|
+
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
+</aside>
+
+
 ## getV1AccountsMe
 
 
@@ -650,7 +810,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-06-22'
+dob: '2018-07-04'
 address: string
 postcode: string
 city: string
@@ -1447,7 +1607,7 @@ Upload a new document for current user
 
 
 ```yaml
-doc_expire: '2018-06-22'
+doc_expire: '2018-07-04'
 doc_type: string
 doc_number: string
 upload: string
@@ -2014,6 +2174,7 @@ Start a new session
 email: string
 password: string
 application_id: string
+remember_me: true
 expires_in: string
 otp_code: string
 
@@ -2030,6 +2191,7 @@ otp_code: string
 |» email|body|string|true|No description|
 |» password|body|string|true|No description|
 |» application_id|body|string|true|No description|
+|» remember_me|body|boolean|false|No description|
 |» expires_in|body|string|false|No description|
 |» otp_code|body|string|false|Code from Google Authenticator|
 

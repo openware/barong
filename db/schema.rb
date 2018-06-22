@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516142429) do
+ActiveRecord::Schema.define(version: 20180612084542) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "uid", null: false
@@ -55,6 +55,24 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_api_keys_on_account_id"
+  end
+
+  create_table "devices", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "uuid"
+    t.string "action", null: false
+    t.text "result", null: false
+    t.string "ip"
+    t.string "os"
+    t.string "user_agent"
+    t.string "browser"
+    t.string "country"
+    t.string "otp"
+    t.datetime "expire_at"
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_devices_on_account_id"
+    t.index ["action"], name: "index_devices_on_action"
   end
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -171,6 +189,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
   end
 
   add_foreign_key "api_keys", "accounts"
+  add_foreign_key "devices", "accounts"
   add_foreign_key "documents", "accounts"
   add_foreign_key "labels", "accounts", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

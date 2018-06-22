@@ -20,6 +20,7 @@ class Account < ApplicationRecord
   has_many :documents, dependent: :destroy
   has_many :labels, dependent: :destroy
   has_many :api_keys, class_name: 'APIKey', dependent: :destroy
+  has_many :devices, dependent: :destroy
 
   before_validation :assign_uid
 
@@ -125,7 +126,6 @@ end
 #  remember_created_at    :datetime
 #  sign_in_count          :integer          default(0), not null
 #  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
 #  confirmation_token     :string(255)

@@ -83,6 +83,42 @@
     <% end %>
   </ul>
   <br>
+  <h4 class="text-center">Devices</h4>
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
+    <thead>
+    <tr>
+      <th>UUID</th>
+      <th>Action</th>
+      <th>Result</th>
+      <th>OTP</th>
+      <th>IP</th>
+      <th>OS</th>
+      <th>User Agent</th>
+      <th>Browser</th>
+      <th>Country</th>
+      <th>Created At</th>
+      <th>Expired At</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.uuid %></td>
+        <td><%= device.action %></td>
+        <td><%= device.result %></td>
+        <td><%= device.otp %></td>
+        <td><%= device.ip %></td>
+        <td><%= device.os %></td>
+        <td><%= device.user_agent %></td>
+        <td><%= device.browser %></td>
+        <td><%= device.country %></td>
+        <td><%= device.created_at %></td>
+        <td><%= device.expire_at %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <br />
   <h4 class="text-center"> Phones </h4>
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
