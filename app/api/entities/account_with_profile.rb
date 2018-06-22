@@ -6,7 +6,7 @@ module Entities
 
     expose :email, documentation: { type: 'String' }
     expose :role, documentation: { type: 'String' }
-    expose :email, documentation: { type: 'Integer' }
+    expose :level, documentation: { type: 'Integer' }
     expose :otp_enabled, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
     expose :state, documentation: { type: 'String' }
     expose :profile, using: Entities::Profile

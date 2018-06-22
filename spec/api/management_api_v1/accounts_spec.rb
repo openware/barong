@@ -32,7 +32,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
     it 'reads account info' do
       do_request
       expect(response.status).to eq 201
-      expect(json_body.keys).to eq %i[email role otp_enabled state profile created_at updated_at]
+      expect(json_body.keys).to eq %i[email role level otp_enabled state profile created_at updated_at]
     end
 
     it 'denies access unless enough signatures are supplied' do
