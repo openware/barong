@@ -53,10 +53,10 @@ private
   def send_document_review_notification
     if value == 'verified'
       ProfileReviewMailer.approved(account).deliver_now
-      EventAPI.notify('system.document.verified', uid: account.uid)
+      EventAPI.notify('system.document.verified', uid: account.uid, email: account.email)
     elsif value == 'rejected'
       ProfileReviewMailer.rejected(account).deliver_now
-      EventAPI.notify('system.document.rejected', uid: account.uid)
+      EventAPI.notify('system.document.rejected', uid: account.uid, email: account.email)
     end
   end
 end

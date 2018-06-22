@@ -182,7 +182,8 @@ event: {
 ```ruby
 event: {
   name: "system.document.verified",
-  uid: "ID092B2AF8E87"
+  uid: "ID092B2AF8E87",
+  email: "email@example.com"
 }
 ```
 
@@ -191,7 +192,8 @@ event: {
 ```ruby
 event: {
   name: "system.document.rejected",
-  uid: "ID092B2AF8E87"
+  uid: "ID092B2AF8E87",
+  email: "email@example.com"
 }
 ```
 
@@ -201,6 +203,7 @@ event: {
 event: {
   name: "system.account.reset_password_token",
   uid: "ID092B2AF8E87",
+  email: "email@example.com",
   token: "token"
 }
 ```
@@ -211,6 +214,7 @@ event: {
 event: {
   name: "system.account.unlock_token",
   uid: "ID092B2AF8E87",
+  email: "email@example.com",
   token: "token"
 }
 ```
