@@ -14,6 +14,7 @@ module Admin
       @labels = @account.labels
       @phones = @account.phones
       @document_label_value = document_label&.value
+      @device_activity = @account.device_activity
     end
 
     def edit

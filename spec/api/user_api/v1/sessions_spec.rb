@@ -15,14 +15,29 @@ describe 'Session create test' do
              otp_enabled: otp_enabled
     end
     let(:otp_enabled) { false }
+    let(:user_agent) do
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'
+    end
 
     context 'With valid params' do
-      let(:do_request) { post uri, params: params }
+      let(:do_request) { post uri, params: params, headers: { 'HTTP_USER_AGENT' => user_agent } }
       let(:params) do
         {
           email: email,
           password: password,
           application_id: application.uid
+        }
+      end
+      let(:expected_device_activity) do
+        {
+          action: 'sign_in',
+          status: 'success',
+          account_id: anything,
+          user_ip: '127.0.0.1',
+          country: 'unknown',
+          user_agent: user_agent,
+          user_browser: 'Chrome',
+          user_os: 'Linux'
         }
       end
 
@@ -35,6 +50,12 @@ describe 'Session create test' do
              headers: { Authorization: "Bearer #{response_jwt}" }
         expect(response.status).to eq(201)
       end
+
+      it 'creates a device activity' do
+        expect { do_request }.to change { DeviceActivity.count }.by(1)
+        expect(DeviceActivity.first.attributes.symbolize_keys).to include expected_device_activity
+      end
+
 
       context 'when account has enabled 2FA' do
         let(:otp_enabled) { true }

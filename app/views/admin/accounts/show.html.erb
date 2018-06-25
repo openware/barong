@@ -83,6 +83,36 @@
     <% end %>
   </ul>
   <br>
+  <h4 class="text-center">Device Activity</h4>
+  <table class="table table-bordered table-striped table-hover table-sm text-center">
+    <thead>
+    <tr>
+      <th>Device UID</th>
+      <th>IP</th>
+      <th>OS</th>
+      <th>User Agent</th>
+      <th>Browser</th>
+      <th>Country</th>
+      <th>Action</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @device_activity.each do |activity| %>
+      <tr>
+        <td><%= activity.device_uid %></td>
+        <td><%= activity.user_ip %></td>
+        <td><%= activity.user_os %></td>
+        <td><%= activity.user_agent %></td>
+        <td><%= activity.user_browser %></td>
+        <td><%= activity.country %></td>
+        <td><%= activity.action %></td>
+        <td><%= activity.status %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <br />
   <h4 class="text-center"> Phones </h4>
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>

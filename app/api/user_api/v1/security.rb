@@ -42,12 +42,22 @@ module UserApi
           error!('2FA has been enabled for this account', 400) if current_account.otp_enabled
 
           unless Vault::TOTP.validate?(current_account.uid, declared(params)[:code])
+            create_device_activity!(account_id: current_account.id,
+                                    status: 'error',
+                                    action: 'enable_2fa')
             error!('OTP code is invalid', 422)
           end
 
           unless current_account.update(otp_enabled: true)
+            create_device_activity!(account_id: current_account.id,
+                                    status: 'error',
+                                    action: 'enable_2fa')
             error!(current_account.errors.full_messages.to_sentence, 422)
           end
+
+          create_device_activity!(account_id: current_account.id,
+                                  status: 'success',
+                                  action: 'enable_2fa')
         end
 
         desc 'Verify 2FA code',
@@ -108,8 +118,15 @@ module UserApi
           raise ActiveRecord::RecordNotFound unless account.persisted?
 
           if account.errors.any?
+            create_device_activity!(account_id: account.id,
+                                    status: 'error',
+                                    action: 'reset_password')
             error!(account.errors.full_messages.to_sentence, 422)
           end
+
+          create_device_activity!(account_id: account.id,
+                                  status: 'success',
+                                  action: 'reset_password')
         end
 
         desc 'Verify API key',

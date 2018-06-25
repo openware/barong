@@ -14,6 +14,14 @@ module UserApi
           current_account.as_json(only: %i[uid email level role state otp_enabled])
         end
 
+        desc 'Account activity',
+             failure: [
+               { code: 401, message: 'Invalid bearer token' }
+             ]
+        get '/activity' do
+          present current_account.device_activity, with: Entities::DeviceActivity
+        end
+
         desc 'Change account password',
              failure: [
                { code: 400, message: 'Required params are missing' },
@@ -29,12 +37,25 @@ module UserApi
           declared_params = declared(params)
 
           unless account.valid_password? declared_params[:old_password]
-            return error!('Invalid password', 401)
+            create_device_activity!(account_id: account.id,
+                                    status: 'error',
+                                    action: 'change_password')
+            error!('Invalid password', 401)
           end
 
           account.password = declared_params[:new_password]
-          return error!('Invalid password', 400) unless declared_params[:new_password]
-          return error!(account.errors.full_messages.to_sentence) unless account.save
+          error!('Invalid password', 400) unless declared_params[:new_password]
+
+          unless account.save
+            create_device_activity!(account_id: account.id,
+                                    status: 'error',
+                                    action: 'change_password')
+            error!(account.errors.full_messages.to_sentence)
+          end
+
+          create_device_activity!(account_id: account.id,
+                                  status: 'success',
+                                  action: 'change_password')
         end
 
         desc 'Creates new account(no auth)',

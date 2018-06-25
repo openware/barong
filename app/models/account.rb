@@ -20,6 +20,7 @@ class Account < ApplicationRecord
   has_many :documents, dependent: :destroy
   has_many :labels, dependent: :destroy
   has_many :api_keys, class_name: 'APIKey', dependent: :destroy
+  has_many :device_activity, dependent: :destroy
 
   before_validation :assign_uid
 

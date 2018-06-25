@@ -23,6 +23,24 @@ module UserApi
         doorkeeper_token.application
       end
 
+      def create_device_activity!(account_id:, status:, action: 'sign_in')
+        DeviceActivity.create!(
+          env['user_device_activity'].merge(
+            action: action,
+            status: status,
+            account_id: account_id
+          )
+        )
+        previous_ip = DeviceActivity.where(account_id: account_id).last&.user_ip
+        return unless action == 'sign_in'
+
+        if previous_ip && previous_ip != env['user_device_activity'][:user_ip]
+          EventAPI.notify('system.device_activity.ip_changed',
+            old_ip: previous_ip,
+            new_ip: env['user_device_activity'][:user_ip])
+        end
+      end
+
       def phone_valid?(phone_number)
         phone_number = PhoneUtils.international(phone_number)
 
