@@ -11,14 +11,14 @@ class Profile < ApplicationRecord
 
   validates :first_name, length: 2..255,
                          format: {
-                           with: /\A[A-Za-z\s]+\z/,
-                           message: 'only allows letters and space'
+                           with: /\A[A-Za-z\s'-]+\z/,
+                           message: 'only allows letters "-", "\'", and space'
                          },
                          if: proc { |a| a.first_name.present? }
   validates :last_name, length: 2..255,
                         format: {
-                          with: /\A[A-Za-z\s']+\z/,
-                          message: 'only allows letters and space'
+                          with: /\A[A-Za-z\s'-]+\z/,
+                          message: 'only allows letters "-", "\'" and space'
                         },
                         if: proc { |a| a.last_name.present? }
   validates :city, length: 2..255,
@@ -28,7 +28,7 @@ class Profile < ApplicationRecord
                    if: proc { |a| a.city.present? }
   validates :country, length: 2..255,
                       format: {
-                        with: /\A[A-Z]+\z/,
+                        with: /\A[A-Za-z]+\z/,
                         message: 'only allows letters'
                       },
                       if: proc { |a| a.country.present? }

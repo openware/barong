@@ -59,6 +59,30 @@ describe 'Session create test' do
           do_request
           expect_status.to eq(201)
         end
+
+        it 'locks account when OTP is wrong for a 5 times' do
+          params[:otp_code] = '1111'
+          allow(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          5.times do
+            post uri, params: params
+          end
+          do_request
+          expect_body.to eq(error: 'Your account was locked!')
+          expect_status.to eq(401)
+        end
+      end
+
+      context 'when user has less than 5 failed attempts' do
+        before do
+          post uri, params: { email: email, password: 'password', application_id: application.uid }
+        end
+
+        it 'refreshes failed_attempts count' do
+          expect(acc.reload.failed_attempts).to eq(1)
+          do_request
+          expect_status.to eq(201)
+          expect(acc.reload.failed_attempts).to eq(0)
+        end
       end
     end
 
@@ -88,10 +112,23 @@ describe 'Session create test' do
           expect(response.status).to eq(400)
         end
 
-        it 'when Password is wrong' do
-          post uri, params: { email: email, password: 'password', application_id: application.uid }
-          expect_body.to eq(error: 'Invalid Email or Password')
-          expect(response.status).to eq(401)
+        context 'when Password is wrong' do
+          it 'returns errror' do
+            post uri, params: { email: email, password: 'password', application_id: application.uid }
+            expect_body.to eq(error: 'Invalid Email or Password')
+            expect(response.status).to eq(401)
+          end
+
+          it 'locks account if user has 5 failed attempts' do
+            5.times do
+              post uri, params: { email: email,  password: 'password', application_id: application.uid }
+              expect_body.to eq(error: 'Invalid Email or Password')
+            end
+            post uri, params: { email: email,  password: 'password', application_id: application.uid }
+            expect_body.to eq(error:  'Your account was locked!')
+            post uri, params: { email: email,  password: password, application_id: application.uid }
+            expect_body.to eq(error:  'Your account was locked!')
+          end
         end
 
         it 'when Application ID is wrong' do
