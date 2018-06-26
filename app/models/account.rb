@@ -29,6 +29,8 @@ class Account < ApplicationRecord
 
   scope :active, -> { where(state: 'active') }
 
+  after_update :lock_if_attempts_count_exceeded
+
   def active_for_authentication?
     super && !discarded_at
   end
@@ -75,6 +77,14 @@ class Account < ApplicationRecord
     "ID#{SecureRandom.hex(5).upcase}"
   end
 
+  def add_failed_attempt
+    update(failed_attempts: self.failed_attempts += 1)
+  end
+
+  def refresh_failed_attempts
+    update(failed_attempts: 0)
+  end
+
   def as_json_for_event_api
     {
       uid: uid,
@@ -91,6 +101,13 @@ class Account < ApplicationRecord
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)
     }
+  end
+
+private
+
+  def lock_if_attempts_count_exceeded
+    return unless saved_changes.key? 'failed_attempts'
+    lock_access! if failed_attempts >= ENV.fetch('MAX_LOGIN_ATTEMPTS', 5) && locked_at.nil?
   end
 end
 

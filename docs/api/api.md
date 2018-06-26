@@ -1,5 +1,5 @@
 ---
-title: Barong v1.8.12
+title: Barong v1.8.19
 language_tabs:
   - http: HTTP
   - shell: Curl
@@ -14,7 +14,7 @@ headingLevel: 2
 ---
 
 
-<h1 id="Barong">Barong v1.8.12</h1>
+<h1 id="Barong">Barong v1.8.19</h1>
 
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
@@ -40,6 +40,98 @@ Base URLs:
 
 
 Operations about accounts
+
+
+## postV1AccountsSendUnlockInstructions
+
+
+<a id="opIdpostV1AccountsSendUnlockInstructions"></a>
+
+
+> Code samples
+
+
+```http
+POST //localhost:3000/api/v1/accounts/send_unlock_instructions HTTP/1.1
+Host: null
+Content-Type: application/x-www-form-urlencoded
+
+
+```
+
+
+```shell
+# You can also use wget
+curl -X POST //localhost:3000/api/v1/accounts/send_unlock_instructions \
+  -H 'Content-Type: application/x-www-form-urlencoded'
+
+
+```
+
+
+```javascript
+var headers = {
+  'Content-Type':'application/x-www-form-urlencoded'
+
+
+};
+
+
+$.ajax({
+  url: '//localhost:3000/api/v1/accounts/send_unlock_instructions',
+  method: 'post',
+
+
+  headers: headers,
+  success: function(data) {
+    console.log(JSON.stringify(data));
+  }
+})
+
+
+```
+
+
+`POST /v1/accounts/send_unlock_instructions`
+
+
+*Send unlock instructions*
+
+
+Send unlock instructions
+
+
+> Body parameter
+
+
+```yaml
+email: string
+
+
+```
+
+
+<h3 id="postV1AccountsSendUnlockInstructions-parameters">Parameters</h3>
+
+
+|Parameter|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[postV1AccountsSendUnlockInstructions](#schemapostv1accountssendunlockinstructions)|false|No description|
+|» email|body|string|true|Account email|
+
+
+<h3 id="postV1AccountsSendUnlockInstructions-responses">Responses</h3>
+
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|Send unlock instructions|None|
+
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+BearerToken
+</aside>
 
 
 ## postV1AccountsSendConfirmationInstructions
@@ -116,7 +208,7 @@ email: string
 
 |Parameter|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|object|false|No description|
+|body|body|[postV1AccountsSendUnlockInstructions](#schemapostv1accountssendunlockinstructions)|false|No description|
 |» email|body|string|true|Account email|
 
 
@@ -558,7 +650,7 @@ Create a profile for current_account
 ```yaml
 first_name: string
 last_name: string
-dob: '2018-06-11'
+dob: '2018-06-22'
 address: string
 postcode: string
 city: string
@@ -1355,7 +1447,7 @@ Upload a new document for current user
 
 
 ```yaml
-doc_expire: '2018-06-11'
+doc_expire: '2018-06-22'
 doc_type: string
 doc_number: string
 upload: string
@@ -1923,6 +2015,7 @@ email: string
 password: string
 application_id: string
 expires_in: string
+otp_code: string
 
 
 ```
@@ -1938,6 +2031,7 @@ expires_in: string
 |» password|body|string|true|No description|
 |» application_id|body|string|true|No description|
 |» expires_in|body|string|false|No description|
+|» otp_code|body|string|false|Code from Google Authenticator|
 
 
 <h3 id="postV1Sessions-responses">Responses</h3>

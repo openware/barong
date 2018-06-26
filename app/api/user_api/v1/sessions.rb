@@ -33,8 +33,10 @@ module UserApi
 
           application = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
           error!('Wrong Application ID', 401) unless application
+          error!('Your account was locked!', 401) unless account.locked_at.nil?
 
           unless account.valid_password? declared_params[:password]
+            account.add_failed_attempt
             error!('Invalid Email or Password', 401)
           end
 
@@ -43,19 +45,23 @@ module UserApi
           end
 
           unless account.otp_enabled
+            account.refresh_failed_attempts
             return create_access_token expires_in: declared_params[:expires_in],
                                        account: account,
                                        application: application
           end
 
           if declared_params[:otp_code].blank?
+            account.add_failed_attempt
             error!('The account has enabled 2FA but OTP code is missing', 403)
           end
 
           unless Vault::TOTP.validate?(account.uid, declared_params[:otp_code])
+            account.add_failed_attempt
             error!('OTP code is invalid', 403)
           end
 
+          account.refresh_failed_attempts
           create_access_token expires_in: declared_params[:expires_in],
                               account: account,
                               application: application
