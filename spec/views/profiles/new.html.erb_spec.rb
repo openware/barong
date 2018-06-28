@@ -13,7 +13,7 @@ RSpec.describe 'profiles/new', type: :view do
                        city: 'MyString',
                        country: 'MyString',
                        dob: '01-01-2001'
-    ))
+                     ))
   end
 
   it 'renders new profile form' do
