@@ -7,12 +7,23 @@ module UserApi
     class Profiles < Grape::API
       desc 'Profile related routes'
       resource :profiles do
-        desc 'Return profile of current resource owner'
+        desc 'Return profile of current resource owner',
+             failure: [
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Account has no profile' }
+             ]
         get '/me' do
+          error!('Account has no profile', 404) unless current_account.profile
           current_account.profile.as_json(only: %i[first_name last_name dob address country city postcode state metadata])
         end
 
-        desc 'Create a profile for current_account'
+        desc 'Create a profile for current_account',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 409, message: 'Profile already exists' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :first_name, type: String
           requires :last_name, type: String
@@ -26,8 +37,8 @@ module UserApi
 
         post do
           return error!('Profile already exists', 409) unless current_account.profile.nil?
-          current_account.profile = Profile.new(declared(params, include_missing: false))
-          error!(current_account.errors.full_messages.to_sentence, 422) unless current_account.save
+          profile = current_account.create_profile(declared(params, include_missing: false))
+          error!(profile.errors.full_messages.to_sentence, 422) if profile.errors.any?
         end
       end
     end

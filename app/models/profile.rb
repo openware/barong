@@ -2,18 +2,49 @@
 
 # Profile model
 class Profile < ApplicationRecord
-
   acts_as_eventable prefix: 'profile', on: %i[create update]
 
   belongs_to :account
   serialize :metadata, JSON
-  validates :first_name, :last_name, :dob, :address, :city, :country, presence: true
+  validates :first_name, :last_name, :dob, :address,
+            :city, :country, :postcode, presence: true
+
+  validates :first_name, length: 2..255,
+                         format: {
+                           with: /\A[A-Za-z\s'-]+\z/,
+                           message: 'only allows letters "-", "\'", and space'
+                         },
+                         if: proc { |a| a.first_name.present? }
+  validates :last_name, length: 2..255,
+                        format: {
+                          with: /\A[A-Za-z\s'-]+\z/,
+                          message: 'only allows letters "-", "\'" and space'
+                        },
+                        if: proc { |a| a.last_name.present? }
+  validates :city, length: 2..255,
+                   format: {
+                     with: /\A[A-Za-z\s'-]+\z/
+                   },
+                   if: proc { |a| a.city.present? }
+  validates :country, length: 2..255,
+                      format: {
+                        with: /\A[A-Za-z]+\z/,
+                        message: 'only allows letters'
+                      },
+                      if: proc { |a| a.country.present? }
+  validates :postcode, length: 2..255,
+                       format: { with: /\A[A-Z\d\s-]+\z/ },
+                       if: proc { |a| a.postcode.present? }
+
+  validates :address, format: { with: /\A[A-Za-z\d\s\.,']+\z/ },
+                      if: proc { |a| a.address.present? }
+
+  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
+  before_validation :squish_spaces
 
   def full_name
     "#{first_name} #{last_name}"
   end
-
-  scope :kept, -> { joins(:account).where(accounts: { discarded_at: nil }) }
 
   def as_json_for_event_api
     {
@@ -29,6 +60,15 @@ class Profile < ApplicationRecord
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)
     }
+  end
+
+private
+
+  def squish_spaces
+    first_name&.squish!
+    last_name&.squish!
+    city&.squish!
+    postcode&.squish!
   end
 end
 # == Schema Information

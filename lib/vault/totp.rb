@@ -22,6 +22,8 @@ module Vault
       end
 
       def create(uid, email)
+        Rails.logger.debug { "Generate vault TOTP for key #{totp_key(uid).inspect}" }
+
         write_data(totp_key(uid),
                    generate: true,
                    issuer: ENV.fetch('APP_NAME', 'Barong'),
@@ -30,12 +32,22 @@ module Vault
       end
 
       def exist?(uid)
-        read_data(totp_key(uid)).present?
+        result = read_data(totp_key(uid)).present?
+        Rails.logger.debug { "Vault TOTP key #{totp_key(uid).inspect} exists? #{result.inspect}" }
+        result
       end
 
       def validate?(uid, code)
         return false unless exist?(uid)
-        write_data(totp_code_key(uid), code: code).data[:valid]
+        Rails.logger.debug { "Validate TOTP code: key #{totp_code_key(uid)}, code: #{code}" }
+        result = write_data(totp_code_key(uid), code: code).data[:valid]
+
+        unless result
+          code = read_data(totp_code_key(uid)).data[:code]
+          Rails.logger.debug { "Code is not valid, it should be #{code}" }
+        end
+
+        result
       end
 
       def delete(uid)

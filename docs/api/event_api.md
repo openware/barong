@@ -10,7 +10,7 @@ The exchange name consists of three parts:
 
   2) fixed keyword `events`.
 
-  3) category of event, like `model` (the attributes of some record were updated).
+  3) category of event, like `model` (the attributes of some record were updated) and `system`.
 
 The routing key looks like `account.updated`, `profile.created`.
 The event name matches the routing key but with event category appended at the beginning, like `model.account.updated`, `model.profile.created`.
@@ -80,7 +80,6 @@ event: {
     email: 'email@example.com',
     level: 0,
     otp_enabled: false,
-    confirmation_token: 'n1Ytj6Hy57YpfueA2vtmnwJQs583bpYn7Wsfr',
     confirmation_sent_at: '2018-04-12T17:16:06+03:00',
     state: 'pending',
     created_at: '2018-04-12T17:16:06+03:00',
@@ -103,7 +102,6 @@ event: {
     email: 'email@example.com',
     level: 1,
     otp_enabled: false,
-    confirmation_token: 'n1Ytj6Hy57YpfueA2vtmnwJQs583bpYn7Wsfr',
     confirmed_at: '2018-04-12T18:16:06+03:00',
     confirmation_sent_at: '2018-04-12T17:16:06+03:00',
     state: 'active',
@@ -178,6 +176,48 @@ event: {
 | ---------- | ------------------------------------------------ |
 | `record`   | The up-to-date profile attributes.               |
 | `changes`  | The changed profile attributes and their values. |
+
+## Format of `system.document.verified` event
+
+```ruby
+event: {
+  name: "system.document.verified",
+  uid: "ID092B2AF8E87",
+  email: "email@example.com"
+}
+```
+
+## Format of `system.document.rejected` event
+
+```ruby
+event: {
+  name: "system.document.rejected",
+  uid: "ID092B2AF8E87",
+  email: "email@example.com"
+}
+```
+
+## Format of `system.account.reset_password_token` event
+
+```ruby
+event: {
+  name: "system.account.reset_password_token",
+  uid: "ID092B2AF8E87",
+  email: "email@example.com",
+  token: "token"
+}
+```
+
+## Format of `system.account.unlock_token` event
+
+```ruby
+event: {
+  name: "system.account.unlock_token",
+  uid: "ID092B2AF8E87",
+  email: "email@example.com",
+  token: "token"
+}
+```
 
 ## Producing events using Ruby
 

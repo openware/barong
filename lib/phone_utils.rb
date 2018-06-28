@@ -9,11 +9,16 @@ module PhoneUtils
       unsafe_phone.to_s.gsub(/\D/, '')
     end
 
-    # Phone MUST contain international country code.
+    def parse(unsafe_phone)
+      Phonelib.parse sanitize(unsafe_phone)
+    end
+
     def valid?(unsafe_phone)
-      number = sanitize(unsafe_phone)
-      phone  = Phonelib.parse(number)
-      phone.valid?
+      parse(unsafe_phone).valid?
+    end
+
+    def international(unsafe_phone)
+      parse(unsafe_phone).international(false)
     end
 
     def send_confirmation_sms(phone)

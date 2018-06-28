@@ -6,7 +6,9 @@ class SecurityController < ApplicationController
 
   def enable
     @otp = Vault::TOTP.create(current_account.uid, current_account.email)
+    Rails.logger.debug { "Vault TOTP data #{@otp.inspect}" }
     @otp_secret = Vault::TOTP.otp_secret(@otp)
+    Rails.logger.debug { "TOTP secret #{@otp_secret.inspect}" }
   end
 
   def confirm
@@ -29,6 +31,6 @@ private
 
   def check_otp_enabled
     return unless current_account.otp_enabled
-    redirect_to(index_path, alert: 'You are already enabled 2FA')
+    redirect_to(index_path, alert: '2FA has been enabled for this account')
   end
 end

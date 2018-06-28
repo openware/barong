@@ -2,12 +2,22 @@
 
 if ENV['COVERAGE']
   require 'simplecov'
+  require 'simplecov-bamboo'
+  require 'simplecov-json'
+  require 'simplecov-rcov'
+
+  SimpleCov.formatters = [
+    SimpleCov::Formatter::BambooFormatter,
+    SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov::Formatter::JSONFormatter,
+    SimpleCov::Formatter::RcovFormatter
+  ]
+
   SimpleCov.start 'rails' do
-    add_group 'API', 'app/controllers/api'
+    add_group 'API', 'app/api'
     add_filter 'app/channels'
     add_filter 'app/uploaders'
-    add_filter 'lib/barong/version.rb'
-    add_filter 'app/jobs/application_job.rb'
+    add_filter 'app/jobs'
     add_filter 'app/helpers'
     add_filter 'app/mailers'
   end

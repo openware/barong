@@ -74,6 +74,7 @@ describe Vault::TOTP do
   describe '.validate?' do
     before do
       allow(described_class).to receive(:write_data) { double(data: data) }
+      allow(described_class).to receive(:read_data) { double(data: data) }
     end
     let(:data) { { valid: true } }
 

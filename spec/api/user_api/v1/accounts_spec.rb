@@ -13,7 +13,8 @@ describe 'Api::V1::Accounts' do
         email: current_account.email,
         level: current_account.level,
         role: current_account.role,
-        state: current_account.state
+        state: current_account.state,
+        otp_enabled: current_account.otp_enabled
       }
     end
 
@@ -40,12 +41,12 @@ describe 'Api::V1::Accounts' do
       end
     end
 
-    context 'when password is invalid' do
+    context 'when Password is invalid' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'password' } }
 
       it 'renders an error' do
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Password must contain big, small letters and digits'])
+        expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.'])
       end
     end
 
@@ -54,7 +55,7 @@ describe 'Api::V1::Accounts' do
 
       it 'renders an error' do
         expect_status_to_eq 400
-        expect_body.to eq(error: 'email is missing, email is empty, password is missing, password is empty')
+        expect_body.to eq(error: 'Email is missing, Email is empty, Password is missing, Password is empty')
       end
     end
 
@@ -63,7 +64,7 @@ describe 'Api::V1::Accounts' do
 
       it 'renders an error' do
         expect_status_to_eq 400
-        expect_body.to eq(error: 'email is empty')
+        expect_body.to eq(error: 'Email is empty')
       end
     end
 
@@ -117,27 +118,27 @@ describe 'Api::V1::Accounts' do
       expect(response.status).to eq(200)
     end
 
-    it 'renders 401 when old password is invalid' do
+    it 'renders 401 when old Password is invalid' do
       put url, params: params1, headers: headers
-      expect(response.body).to eq('{"error":"Invalid password."}')
+      expect_body.to eq(error: 'Invalid password')
       expect(response.status).to eq(401)
     end
 
     it 'renders 401 without auth header' do
       put url, params: params0
-      expect(response.body).to eq('{"error":"The access token is invalid"}')
+      expect_body.to eq(error: 'The access token is invalid')
       expect(response.status).to eq(401)
     end
 
-    it 'renders 400 when new password is missing' do
+    it 'renders 400 when new Password is missing' do
       put url, params: params0.except(:new_password), headers: headers
-      expect(response.body).to eq('{"error":"new_password is missing"}')
+      expect_body.to eq(error: 'New Password is missing')
       expect(response.status).to eq(400)
     end
 
-    it 'renders 400 is old password is missing' do
+    it 'renders 400 is old Password is missing' do
       put url, params: params0.except(:old_password), headers: headers
-      expect(response.body).to eq('{"error":"old_password is missing"}')
+      expect_body.to eq(error: 'Old Password is missing')
       expect(response.status).to eq(400)
     end
   end
@@ -152,7 +153,7 @@ describe 'Api::V1::Accounts' do
       it 'renders an error' do
         do_request
         expect_status_to_eq 400
-        expect_body.to eq(error: 'confirmation_token is empty')
+        expect_body.to eq(error: 'Confirmation Token is empty')
       end
     end
 
@@ -184,6 +185,110 @@ describe 'Api::V1::Accounts' do
       it 'confirms an account' do
         do_request
         expect_status_to_eq 201
+      end
+    end
+  end
+
+  describe 'POST /api/v1/accounts/send_confirmation_instructions' do
+    let!(:account) { create(:account, confirmed_at: confirmed_at) }
+
+    let(:do_request) do
+      post '/api/v1/accounts/send_confirmation_instructions',
+           params: { email: account.email }
+    end
+
+    context 'when account is confirmed' do
+      let(:confirmed_at) { 1.minute.ago }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Email was already confirmed, please try signing in')
+      end
+    end
+
+    context 'when account is not confirmed' do
+      let(:confirmed_at) { nil }
+
+      it 'sends instructions' do
+        do_request
+        expect_status_to_eq 201
+        expect_body.to eq(message: 'Confirmation instructions was sent successfully')
+      end
+    end
+  end
+
+  describe 'POST /api/v1/accounts/unlock' do
+    let(:do_request) do
+      post '/api/v1/accounts/unlock', params: { unlock_token: unlock_token }
+    end
+
+    context 'when token is blank' do
+      let(:unlock_token) { '' }
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(error: 'unlock_token is empty')
+      end
+    end
+
+    context 'when token is invalid' do
+      let(:unlock_token) { 'invalid' }
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Unlock token is invalid')
+      end
+    end
+
+    context 'when account is not locked' do
+      let!(:account) { create(:account, locked_at: nil) }
+      let(:unlock_token) { 'some_token' }
+
+      it 'renders an error' do
+        account.confirm
+        do_request
+        expect_body.to eq(error: 'Unlock token is invalid')
+        expect_status_to_eq 422
+      end
+    end
+
+    context 'when account is locked' do
+      let!(:account) { create(:account) }
+      let(:unlock_token) { account.lock_access! }
+
+      it 'unlocks an account' do
+        do_request
+        expect_status_to_eq 201
+      end
+    end
+  end
+
+  describe 'POST /api/v1/accounts/send_unlock_instructions' do
+    let!(:account) { create(:account, locked_at: locked_at) }
+
+    let(:do_request) do
+      post '/api/v1/accounts/send_unlock_instructions',
+           params: { email: account.email }
+    end
+
+    context 'when account is not locked' do
+      let(:locked_at) { nil }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Email was not locked')
+      end
+    end
+
+    context 'when account is locked' do
+      let(:locked_at) { Time.now }
+
+      it 'sends instructions' do
+        do_request
+        expect_status_to_eq 201
+        expect_body.to eq(message: 'Unlock instructions was sent successfully')
       end
     end
   end

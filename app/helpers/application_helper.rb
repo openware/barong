@@ -24,14 +24,23 @@ module ApplicationHelper
     end
   end
 
-  def generate_qr_code
-    url = current_account.create_otp.data[:url]
-    RQRCode::QRCode.new(url, size: 8, level: :l).as_html
-  rescue StandardError => e
-    e.message
+  def domain_favicon_tag
+    url = domain_asset :favicon
+
+    if url.blank?
+      return favicon_link_tag asset_path('favicon.png'), rel: 'icon', type:  'image/png'
+    end
+
+    content_tag :link, nil, rel: 'icon', href: url
   end
 
   def domain_html_tag(text)
     text&.html_safe
+  end
+
+  def show_level_mapping
+    Level.all.map do |lvl|
+      "#{lvl.key}:#{lvl.value} scope \"private\"=> account level #{lvl.id}"
+    end.join("\n")
   end
 end

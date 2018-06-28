@@ -5,7 +5,13 @@ module UserApi
     class Phones < Grape::API
       desc 'Phone related routes'
       resource :phones do
-        desc 'Add new phone'
+        desc 'Add new phone',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',
@@ -15,14 +21,21 @@ module UserApi
           declared_params = declared(params)
           return unless phone_valid?(declared_params[:phone_number])
 
-          phone = current_account.phones.create(number: declared_params[:phone_number])
+          phone_number = PhoneUtils.international(declared_params[:phone_number])
+          phone = current_account.phones.create(number: phone_number)
           error!(phone.errors, 422) if phone.errors.any?
 
           PhoneUtils.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
         end
 
-        desc 'Resend activation code'
+        desc 'Resend activation code',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' },
+               { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',
@@ -32,18 +45,20 @@ module UserApi
           declared_params = declared(params)
           return unless phone_valid?(declared_params[:phone_number])
 
-          phone_number = PhoneUtils.sanitize(declared_params[:phone_number])
+          phone_number = PhoneUtils.international(declared_params[:phone_number])
           phone = current_account.phones.find_by!(number: phone_number)
-
-          unless phone.regenerate_code
-            return error!(phone.errors, 422)
-          end
+          error!(phone.errors, 422) unless phone.regenerate_code
 
           PhoneUtils.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
         end
 
-        desc 'Verify a phone'
+        desc 'Verify a phone',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :phone_number, type: String,
                                   desc: 'Phone number with country code',
@@ -56,7 +71,7 @@ module UserApi
           declared_params = declared(params)
           return unless phone_valid?(declared_params[:phone_number])
 
-          phone_number = PhoneUtils.sanitize(declared_params[:phone_number])
+          phone_number = PhoneUtils.international(declared_params[:phone_number])
           phone = current_account.phones.find_by(number: phone_number,
                                                  code: declared_params[:verification_code])
 

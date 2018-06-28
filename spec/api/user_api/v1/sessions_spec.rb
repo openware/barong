@@ -11,18 +11,78 @@ describe 'Session create test' do
       create :account,
              email: email,
              password: password,
-             password_confirmation: password
+             password_confirmation: password,
+             otp_enabled: otp_enabled
     end
+    let(:otp_enabled) { false }
 
     context 'With valid params' do
+      let(:do_request) { post uri, params: params }
+      let(:params) do
+        {
+          email: email,
+          password: password,
+          application_id: application.uid
+        }
+      end
+
       it 'Checks current credentials and returns valid JWT' do
-        post uri, params: { email: email, password: password, application_id: application.uid }
-        expect(response.status).to eq(201)
+        do_request
+        expect_status.to eq(201)
         response_jwt = JSON.parse(response.body)
 
         post check_uri,
              headers: { Authorization: "Bearer #{response_jwt}" }
         expect(response.status).to eq(201)
+      end
+
+      context 'when account has enabled 2FA' do
+        let(:otp_enabled) { true }
+
+        it 'renders an error when code is missing' do
+          do_request
+          expect_status.to eq(403)
+          expect_body.to eq(error: 'The account has enabled 2FA but OTP code is missing')
+        end
+
+        it 'renders an error when code is wrong' do
+          params[:otp_code] = '1111'
+          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          do_request
+          expect_status.to eq(403)
+          expect_body.to eq(error: 'OTP code is invalid')
+        end
+
+        it 'returns valid JWT when code is valid' do
+          params[:otp_code] = '1111'
+          expect(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { true }
+          do_request
+          expect_status.to eq(201)
+        end
+
+        it 'locks account when OTP is wrong for a 5 times' do
+          params[:otp_code] = '1111'
+          allow(Vault::TOTP).to receive(:validate?).with(acc.uid, '1111') { false }
+          5.times do
+            post uri, params: params
+          end
+          do_request
+          expect_body.to eq(error: 'Your account was locked!')
+          expect_status.to eq(401)
+        end
+      end
+
+      context 'when user has less than 5 failed attempts' do
+        before do
+          post uri, params: { email: email, password: 'password', application_id: application.uid }
+        end
+
+        it 'refreshes failed_attempts count' do
+          expect(acc.reload.failed_attempts).to eq(1)
+          do_request
+          expect_status.to eq(201)
+          expect(acc.reload.failed_attempts).to eq(0)
+        end
       end
     end
 
@@ -30,37 +90,50 @@ describe 'Session create test' do
       context 'Checks current credentials and returns error' do
         it 'when email, password and application_id are missing' do
           post uri
-          expect(response.body).to eq('{"error":"email is missing, password is missing, application_id is missing"}')
+          expect_body.to eq(error: 'Email is missing, Password is missing, Application ID is missing')
           expect(response.status).to eq(400)
         end
 
-        it 'when application_id is missing' do
+        it 'when Application ID is missing' do
           post uri, params: { email: 'rick@morty.io', password: 'season1' }
-          expect(response.body).to eq('{"error":"application_id is missing"}')
+          expect_body.to eq(error: 'Application ID is missing')
           expect(response.status).to eq(400)
         end
 
-        it 'when password and application_id is missing' do
+        it 'when password and Application ID is missing' do
           post uri, params: { email: email }
-          expect(response.body).to eq('{"error":"password is missing, application_id is missing"}')
+          expect_body.to eq(error: 'Password is missing, Application ID is missing')
           expect(response.status).to eq(400)
         end
 
-        it 'when application_id is missing' do
+        it 'when Application ID is missing' do
           post uri, params: { email: email, password: password }
-          expect(response.body).to eq('{"error":"application_id is missing"}')
+          expect_body.to eq(error: 'Application ID is missing')
           expect(response.status).to eq(400)
         end
 
-        it 'when password is wrong' do
-          post uri, params: { email: email, password: 'password', application_id: application.uid }
-          expect(response.body).to eq('{"error":"Invalid Email or password."}')
-          expect(response.status).to eq(401)
+        context 'when Password is wrong' do
+          it 'returns errror' do
+            post uri, params: { email: email, password: 'password', application_id: application.uid }
+            expect_body.to eq(error: 'Invalid Email or Password')
+            expect(response.status).to eq(401)
+          end
+
+          it 'locks account if user has 5 failed attempts' do
+            5.times do
+              post uri, params: { email: email,  password: 'password', application_id: application.uid }
+              expect_body.to eq(error: 'Invalid Email or Password')
+            end
+            post uri, params: { email: email,  password: 'password', application_id: application.uid }
+            expect_body.to eq(error:  'Your account was locked!')
+            post uri, params: { email: email,  password: password, application_id: application.uid }
+            expect_body.to eq(error:  'Your account was locked!')
+          end
         end
 
-        it 'when application_id is wrong' do
+        it 'when Application ID is wrong' do
           post uri, params: { email: email, password: password, application_id: 'application.uid' }
-          expect(response.body).to eq('{"error":"Wrong application id"}')
+          expect_body.to eq(error: 'Wrong Application ID')
           expect(response.status).to eq(401)
         end
       end
@@ -77,7 +150,7 @@ describe 'Session create test' do
 
         it 'returns error' do
           post uri, params: { email: another_email, password: password, application_id: application.uid }
-          expect(response.body).to eq('{"error":"You have to confirm your email address before continuing."}')
+          expect_body.to eq(error: 'You have to confirm your email address before continuing')
           expect(response.status).to eq(401)
         end
       end
@@ -99,7 +172,7 @@ describe 'Session create test' do
       it 'renders an error' do
         do_request
         expect_status.to eq 400
-        expect_body.to eq(error: 'kid is missing, kid is empty, jwt_token is missing, jwt_token is empty')
+        expect_body.to eq(error: 'KID is missing, KID is empty, JWT Token is missing, JWT Token is empty')
       end
     end
 
@@ -151,8 +224,8 @@ describe 'Session create test' do
       end
 
       before do
-        expect(Rails.application.secrets).to \
-          receive(:jwt_shared_secret_key) { jwt_keypair_encoded[:private] }
+        expect(Barong::Security).to \
+          receive(:private_key) { build_ssl_pkey jwt_keypair_encoded[:private] }
         do_request
       end
 

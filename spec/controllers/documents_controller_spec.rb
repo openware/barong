@@ -59,7 +59,7 @@ RSpec.describe DocumentsController, type: :controller do
 
       it 'redirects to index page' do
         post :create, params: { document: valid_attributes }
-        expect(flash[:notice]).to eq('Document was successfully created.')
+        expect(flash[:notice]).to eq('Document was successfully uploaded.')
         expect(response).to redirect_to(index_path)
       end
     end

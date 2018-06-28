@@ -19,7 +19,9 @@ module ManagementAPI
 
       use ManagementAPI::V1::JWTAuthenticationMiddleware
 
+      mount ManagementAPI::V1::OTP
       mount ManagementAPI::V1::Labels
+      mount ManagementAPI::V1::Accounts
       mount ManagementAPI::V1::Tools
 
       add_swagger_documentation base_path: '/management_api',
@@ -34,7 +36,7 @@ module ManagementAPI
                                 mount_path: '/swagger_doc'
 
       route :any, '*path' do
-        raise StandardError, 'Unable to find endpoint'
+        error! 'Unable to find endpoint', 404
       end
     end
   end

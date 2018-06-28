@@ -9,7 +9,8 @@
     <%= stylesheet_link_tag    'web', media: 'all' %>
     <%= domain_stylesheet_tag(domain_asset :stylesheet) %>
     <%= javascript_include_tag 'web' %>
-    <%= favicon_link_tag asset_path('favicon.png'), :rel => 'icon', :type =>  'image/png' %>
+
+    <%= domain_favicon_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body class="devise">

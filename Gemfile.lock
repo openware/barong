@@ -246,7 +246,7 @@ GEM
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     orm_adapter (0.5.0)
-    phonelib (0.6.19)
+    phonelib (0.6.22)
     popper_js (1.12.9)
     pry (0.11.3)
       coderay (~> 1.1.0)
@@ -259,7 +259,6 @@ GEM
     rack (2.0.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
-    rack-cors (1.0.2)
     rack-test (0.8.2)
       rack (>= 1.0, < 3)
     rails (5.1.4)
@@ -349,7 +348,16 @@ GEM
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
+    simplecov-bamboo (0.1.0)
+      nokogiri
+      simplecov
+      simplecov-html
     simplecov-html (0.10.2)
+    simplecov-json (0.2)
+      json
+      simplecov
+    simplecov-rcov (0.2.3)
+      simplecov (>= 0.4.1)
     sixarm_ruby_unaccent (1.2.0)
     sneakers (2.6.0)
       bunny (~> 2.7.0)
@@ -434,7 +442,6 @@ DEPENDENCIES
   pry-byebug (~> 3.5)
   public_suffix
   puma (~> 3.7)
-  rack-cors (~> 1.0.2)
   rails (~> 5.1.4)
   rails-controller-testing
   rspec-rails (~> 3.7.1)
@@ -443,6 +450,9 @@ DEPENDENCIES
   sentry-raven (~> 2.7)
   shoulda-matchers (~> 3.1.2)
   simplecov
+  simplecov-bamboo
+  simplecov-json
+  simplecov-rcov
   sneakers (~> 2.6)
   twilio-ruby (~> 5.6.0)
   uglifier (~> 4)

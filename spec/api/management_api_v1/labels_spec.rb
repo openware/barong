@@ -59,7 +59,7 @@ describe ManagementAPI::V1::Labels, type: :request do
       it 'renders errors' do
         do_request
         expect(response.status).to eq 422
-        expect_body.to eq(error: 'account_uid is missing, account_uid is empty, key is missing, key is empty, value is missing, value is empty')
+        expect_body.to eq(error: 'Account UID is missing, Account UID is empty, Key is missing, Key is empty, Value is missing, Value is empty')
       end
     end
   end
@@ -106,7 +106,7 @@ describe ManagementAPI::V1::Labels, type: :request do
       it 'renders errors' do
         do_request
         expect(response.status).to eq 422
-        expect_body.to eq(error: 'account_uid is missing, account_uid is empty, key is missing, key is empty, value is missing, value is empty')
+        expect_body.to eq(error: 'Account UID is missing, Account UID is empty, Key is missing, Key is empty, Value is missing, Value is empty')
       end
     end
   end

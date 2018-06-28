@@ -13,7 +13,7 @@ RSpec.describe 'admin/websites/new', type: :view do
                        footer: 'MyText',
                        redirect_url: 'MyString',
                        state: 'MyString'
-    ))
+                     ))
   end
 
   it 'renders new admin_website form' do

@@ -31,6 +31,11 @@ module Admin
       end
     end
 
+    def disable_2fa
+      @account.update!(otp_enabled: false)
+      redirect_to action: :show
+    end
+
   private
 
     def find_account

@@ -68,6 +68,7 @@ module ManagementAPI
                      .each_with_object({}) { |(k, v), memo| memo[k] = v.fetch(:value) }
           result   = JWT::Multisig.verify_jwt(jwt, keychain, security_configuration.fetch(:jwt, {}))
         rescue StandardError => e
+          Rails.logger.error "ManagementAPI check_jwt error: #{e.inspect}"
           raise Exceptions::Authentication, \
                 message:       'Failed to verify JWT.',
                 debug_message: e.inspect,
