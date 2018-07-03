@@ -6,6 +6,20 @@ RSpec.describe Document, type: :model do
   ## Test of relationships
   it { should belong_to(:account) }
 
+  describe 'validation' do
+    let!(:document) { build :document, doc_expire: doc_expire }
+    subject { document.valid?; document.errors.messages }
+    let(:doc_expire) { Date.current.to_s }
+    it { is_expected.to be_blank }
+
+    context 'when doc_expire is expired' do
+      let(:doc_expire) { 1.day.ago.to_s }
+
+      it { is_expected.to eq(doc_expire: ['is invalid']) }
+    end
+  end
+
+
   context 'Document creation' do
     let!(:current_account) { create(:account) }
     let(:create_document) { create :document, account: current_account }
