@@ -16,6 +16,10 @@ module ManagementAPI
       rescue_from(ManagementAPI::V1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
       rescue_from(Grape::Exceptions::ValidationErrors) { |e| error!(e.message, 422) }
       rescue_from(ActiveRecord::RecordNotFound) { error!('Record is not found', 404) }
+      rescue_from(Vault::VaultError) do |error|
+        Rails.logger.error "#{error.class}: #{error.message}"
+        error!('Something wrong with 2FA', 422)
+      end
 
       use ManagementAPI::V1::JWTAuthenticationMiddleware
 

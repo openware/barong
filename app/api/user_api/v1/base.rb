@@ -17,9 +17,8 @@ module UserApi
 
       rescue_from(ActiveRecord::RecordNotFound) { |_e| error!('Record is not found', 404) }
       rescue_from(Vault::VaultError) do |error|
-        error_message = error.message
-        Rails.logger.error "#{error.class}: #{error_message}"
-        error!(error_message, 500)
+        Rails.logger.error "#{error.class}: #{error.message}"
+        error!('Something wrong with 2FA', 422)
       end
 
       rescue_from(Twilio::REST::RestError) do |error|
