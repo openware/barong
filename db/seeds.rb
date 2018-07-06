@@ -11,6 +11,17 @@ seeds = YAML.safe_load(
 logger = Logger.new(STDERR, progname: 'db:seed')
 result = { accounts: [], applications: [] }
 
+logger.info 'Seeding levels'
+seeds['levels'].each do |level_data|
+  logger.info '---'
+  if Level.find_by(key: level_data['key'], value: level_data['value']).present?
+    logger.info "Level '#{level_data['key']}:#{level_data['value']}' already exists"
+    next
+  end
+  Level.create!(level_data)
+end
+
+logger.info '---'
 logger.info 'Seeding accounts'
 seeds['accounts'].each do |seed|
   logger.info '---'
@@ -27,6 +38,11 @@ seeds['accounts'].each do |seed|
 
   if admin.save
     logger.info "Created account for '#{admin.email}'"
+
+    # Set correct level with labels
+    Level.where(id: 1..admin.level).find_each do |level|
+      admin.add_level_label(level.key, level.value)
+    end
 
     # Confirm the email
     if admin.update(confirmed_at: Time.current)
@@ -58,7 +74,7 @@ seeds['accounts'].each do |seed|
       end
     end
 
-    result[:accounts].push(email: admin.email, password: admin.password)
+    result[:accounts].push(email: admin.email, password: admin.password, level: admin.level)
   else
     logger.error "Can't create admin '#{admin.email}': #{admin.errors.full_messages.join('; ')}"
   end
@@ -83,17 +99,6 @@ seeds['applications'].each do |seed|
 
   logger.info "Created application '#{app.name}'"
   result[:applications].push(app.as_json(only: %i[name redirect_uri uid secret]))
-end
-
-logger.info '---'
-logger.info 'Seeding levels'
-seeds['levels'].each do |level_data|
-  logger.info '---'
-  if Level.find_by(key: level_data['key'], value: level_data['value']).present?
-    logger.info "Level '#{level_data['key']}:#{level_data['value']}' already exists"
-    next
-  end
-  Level.create!(level_data)
 end
 
 # print well-formated json to stderr (easy to read in the commant output)
