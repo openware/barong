@@ -8,7 +8,10 @@ RSpec.describe Document, type: :model do
 
   describe 'validation' do
     let!(:document) { build :document, doc_expire: doc_expire }
-    subject { document.valid?; document.errors.messages }
+    subject do
+      document.valid?
+      document.errors.messages
+    end
     let(:doc_expire) { Date.current.to_s }
     it { is_expected.to be_blank }
 
@@ -18,7 +21,6 @@ RSpec.describe Document, type: :model do
       it { is_expected.to eq(doc_expire: ['is invalid']) }
     end
   end
-
 
   context 'Document creation' do
     let!(:current_account) { create(:account) }

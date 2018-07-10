@@ -59,9 +59,9 @@ group :test do
   gem 'rails-controller-testing'
   gem 'capybara-screenshot'
   gem 'simplecov', require: false
-  gem "simplecov-bamboo", require: false
-  gem "simplecov-json", require: false
-  gem "simplecov-rcov", require: false
+  gem 'simplecov-bamboo', require: false
+  gem 'simplecov-json', require: false
+  gem 'simplecov-rcov', require: false
 end
 
 group :development do
