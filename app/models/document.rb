@@ -17,10 +17,10 @@ class Document < ApplicationRecord
   validates :doc_type, inclusion: { in: TYPES }
 
   validates :doc_number, length: { maximum: 128 },
-                          format: {
-                            with: /\A[A-Za-z0-9\-\s]+\z/,
-                            message: 'only allows letters and digits'
-                          }, if: proc { |a| a.doc_number.present? }
+                         format: {
+                           with: /\A[A-Za-z0-9\-\s]+\z/,
+                           message: 'only allows letters and digits'
+                         }, if: proc { |a| a.doc_number.present? }
   validates_format_of :doc_expire,
                       with: /\A\d{4}\-\d{2}\-\d{2}\z/,
                       message: 'Date must be in the following format: yyyy-mm-dd'

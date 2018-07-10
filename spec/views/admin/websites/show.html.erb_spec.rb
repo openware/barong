@@ -13,7 +13,7 @@ RSpec.describe 'admin/websites/show', type: :view do
                                         footer: 'MyText',
                                         redirect_url: 'Redirect Url',
                                         state: 'State'
-    ))
+                                      ))
   end
 
   it 'renders attributes in <p>' do

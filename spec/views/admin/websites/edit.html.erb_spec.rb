@@ -13,7 +13,7 @@ RSpec.describe 'admin/websites/edit', type: :view do
                                         footer: 'MyText',
                                         redirect_url: 'MyString',
                                         state: 'MyString'
-    ))
+                                      ))
   end
 
   it 'renders the edit admin_website form' do

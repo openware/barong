@@ -11,7 +11,7 @@ RSpec.describe 'documents/new', type: :view do
                         doc_type: 'MyString',
                         doc_number: 'MyString',
                         doc_expire: '01-01-2020'
-    ))
+                      ))
   end
 
   it 'renders new document form' do
