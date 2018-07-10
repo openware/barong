@@ -13,6 +13,7 @@ module CountryHelper
   end
 
   def country_to_alpha3(country_code)
+    return unless country_code
     return Country[country_code]&.alpha3 if country_code.length == 2
     country_code
   end
