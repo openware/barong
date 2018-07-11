@@ -25,6 +25,25 @@ Management API is server-to-server API with high privileges
 | ---- | ----------- |
 | 201 | Sign request with barong signature |
 
+### /management_api/v1/labels/list
+---
+##### ***POST***
+**Summary:** Get all labels assigned to account
+
+**Description:** Get all labels assigned to account
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| account_uid | formData | Account uid | Yes | string |
+
+**Responses**
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get all labels assigned to account | [Label](#label) |
+
 ### /management_api/v1/labels/delete
 ---
 ##### ***POST***
