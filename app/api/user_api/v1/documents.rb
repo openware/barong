@@ -31,6 +31,10 @@ module UserApi
         end
 
         post '/' do
+          if current_account.documents.count >= ENV.fetch("DOCUMENTS_LIMIT", 10)
+            error! 'Maximum number of documents was reached', 400
+          end
+
           doc = current_account.documents.new(declared(params))
           if doc.save
             status 201

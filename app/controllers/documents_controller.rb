@@ -9,6 +9,10 @@ class DocumentsController < ApplicationController
   end
 
   def create
+    if current_account.documents.count >= ENV.fetch("DOCUMENTS_LIMIT", 10)
+      redirect_to index_path, alert: 'Maximum number of documents was reached'
+    end
+
     @document = current_account.documents.new(document_params)
     if @document.save
       redirect_to index_path, notice: 'Document was successfully uploaded.'
