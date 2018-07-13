@@ -26,6 +26,35 @@ describe 'Documents API test' do
 
     let(:last_document) { Document.last }
 
+    it 'saves 10 documents successfully' do
+      10.times do
+        post '/api/v1/documents', headers: auth_header,
+                                  params: {
+                                    doc_type: 'Passport',
+                                    doc_expire: '2020-01-22',
+                                    doc_number: 'AA1234BB',
+                                    upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                  }
+      end
+
+      expect(response.status).to eq(201)
+    end
+
+    it 'renders an error when max documents was reached' do
+      11.times do
+        post '/api/v1/documents', headers: auth_header,
+                                  params: {
+                                    doc_type: 'Passport',
+                                    doc_expire: '2020-01-22',
+                                    doc_number: 'AA1234BB',
+                                    upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                  }
+      end
+
+      expect(response.status).to eq(400)
+      expect_body.to eq(error: 'Maximum number of documents was reached')
+    end
+
     it 'Checks if params are ok and returns success' do
       post '/api/v1/documents', headers: auth_header, params: params
       expect(response.status).to eq(201)
