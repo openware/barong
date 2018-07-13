@@ -6,6 +6,7 @@ describe 'Api::V1::Security' do
   include_context 'doorkeeper authentication'
 
   describe 'POST /api/v1/security/renew' do
+    let(:expires_in) { 1.hours.to_i }
     let(:url) { '/api/v1/security/renew' }
 
     it 'Checks if current JWT is valid and returns new valid JWT' do
@@ -18,10 +19,12 @@ describe 'Api::V1::Security' do
     end
 
     it 'Checks if current JWT is valid and returns JWT with specified liftime' do
-      post url, params: { expires_in: 1000 }, headers: auth_header
-      expect(response.status).to eq(201)
-      new_jwt_payload = JWT.decode JSON.parse(response.body), nil, false
-      expect(new_jwt_payload.first['exp'].to_i).to be <= Time.now.to_i + 1000
+      travel_to Time.now do
+        post url, params: { expires_in: expires_in }, headers: auth_header
+        expect(response.status).to eq(201)
+        new_jwt_payload = JWT.decode JSON.parse(response.body), nil, false
+        expect(new_jwt_payload.first['exp'].to_i).to be <= Time.now.to_i + expires_in
+      end
     end
 
     it 'Checks if current JWT is valid and returns error, cause it is not' do
@@ -30,12 +33,14 @@ describe 'Api::V1::Security' do
     end
 
     it 'Checks if current JWT is valid and returns error, cause it has expired' do
-      post url, params: { expires_in: 1 }, headers: auth_header
+      post url, params: { expires_in: expires_in }, headers: auth_header
       expect(response.status).to eq(201)
       new_jwt = JSON.parse(response.body)
-      sleep(2)
-      post url, headers: { 'Authorization' => "Bearer #{new_jwt}" }
-      expect(response.body).to eq('{"error":"The access token expired"}')
+
+      travel_to (expires_in.seconds + 1).from_now do
+        post url, headers: { 'Authorization' => "Bearer #{new_jwt}" }
+        expect(response.body).to eq('{"error":"The access token expired"}')
+      end
     end
   end
 
