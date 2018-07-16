@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <% @accounts.each do |account| %>
-        <tr class=<%= 'table-danger' if account.unlock_token? %>>
+        <tr class=<%= 'table-danger' if account.locked_at? %>>
           <td><%= account.id %></td>
           <td><%= link_to account.email, admin_account_path(account.id) %></td>
           <td><span class=" badge <%= badge_by_role(account.role) %>"> <%= account.role %> </span></td>

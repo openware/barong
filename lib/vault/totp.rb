@@ -3,6 +3,8 @@
 module Vault
   # Vault::TOTP helper
   module TOTP
+    Error = Class.new(StandardError)
+
     class <<self
       ISSUER_NAME = 'Barong'
 
@@ -22,8 +24,6 @@ module Vault
       end
 
       def create(uid, email)
-        Rails.logger.debug { "Generate vault TOTP for key #{totp_key(uid).inspect}" }
-
         write_data(totp_key(uid),
                    generate: true,
                    issuer: ENV.fetch('APP_NAME', 'Barong'),
@@ -32,26 +32,32 @@ module Vault
       end
 
       def exist?(uid)
-        result = read_data(totp_key(uid)).present?
-        Rails.logger.debug { "Vault TOTP key #{totp_key(uid).inspect} exists? #{result.inspect}" }
-        result
+        read_data(totp_key(uid)).present?
       end
 
       def validate?(uid, code)
         return false unless exist?(uid)
-        Rails.logger.debug { "Validate TOTP code: key #{totp_code_key(uid)}, code: #{code}" }
-        result = write_data(totp_code_key(uid), code: code).data[:valid]
-
-        unless result
-          code = read_data(totp_code_key(uid)).data[:code]
-          Rails.logger.debug { "Code is not valid, it should be #{code}" }
-        end
-
-        result
+        write_data(totp_code_key(uid), code: code).data[:valid]
       end
 
       def delete(uid)
         delete_data(totp_key(uid))
+      end
+
+      def with_human_error
+        raise ArgumentError, 'Block is required' unless block_given?
+        yield
+      rescue Vault::VaultError => e
+        Rails.logger.error { e }
+        if e.message.include?('connection refused')
+          raise Error, "2FA server is under maintenance"
+        end
+
+        if e.message.include?('code already used')
+          raise Error, 'This code was already used. Wait until the next time period'
+        end
+
+        raise e
       end
 
     private
@@ -65,15 +71,21 @@ module Vault
       end
 
       def read_data(key)
-        vault.read(key)
+        with_human_error do
+          vault.read(key)
+        end
       end
 
       def write_data(key, params)
-        vault.write(key, params)
+        with_human_error do
+          vault.write(key, params)
+        end
       end
 
       def delete_data(key)
-        vault.delete(key)
+        with_human_error do
+          vault.delete(key)
+        end
       end
 
       def vault
