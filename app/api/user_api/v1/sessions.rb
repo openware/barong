@@ -5,6 +5,11 @@ module UserApi
     class Sessions < Grape::API
       helpers do
         def create_access_token(expires_in:, account:, application:)
+          if expires_in.present? && (expires_in.to_i < 30.minutes.to_i \
+             || expires_in.to_i >= 24.hours.to_i)
+            error! "expires_in must be from #{30.minutes} to #{24.hours.to_i} seconds", 401
+          end
+
           Barong::Security::AccessToken.create expires_in, account.id, application
         end
       end

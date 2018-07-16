@@ -9,9 +9,19 @@ module UserApi
       resource :security do
         desc 'Renews JWT if current JWT is valid',
              failure: [
-               { code: 401, message: 'Invalid bearer token' }
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Invalid expires_in' }
              ]
+        params do
+          optional :expires_in, type: String, desc: 'Expires in time in seconds',
+                         allow_blank: false
+        end
         post '/renew' do
+          if params[:expires_in].present? && (params[:expires_in].to_i < 30.minutes \
+             || params[:expires_in].to_i > 24.hours.to_i)
+            error! "expires_in must be from #{30.minutes} to #{24.hours.to_i} seconds", 422
+          end
+
           # expiration time will be specified by the request param or taken from ENV, if both are nil, it will be 4 hours
           Barong::Security::AccessToken.create params[:expires_in],
                                                current_account.id,
