@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   alias current_user current_account # CanCanCan expects current_user.
 
+  rescue_from Vault::TOTP::Error, with: :vault_human_exception
   rescue_from Vault::VaultError, with: :vault_exception
 
   helper_method :domain_asset
@@ -19,6 +20,10 @@ class ApplicationController < ActionController::Base
   end
 
 private
+
+  def vault_human_exception(exception)
+    redirect_to index_path, alert: exception.message
+  end
 
   def vault_exception(exception)
     Rails.logger.error "#{exception.class}: #{exception.message}"
