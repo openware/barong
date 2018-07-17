@@ -16,7 +16,7 @@ module UserApi
       do_not_route_options!
 
       rescue_from(ActiveRecord::RecordNotFound) { |_e| error!('Record is not found', 404) }
-      # Error from Vault::TOTP.with_human_error
+      # Known Vault Error from Vault::TOTP.with_human_error
       rescue_from(Vault::TOTP::Error) do |error|
         error!(error.message, 422)
       end
