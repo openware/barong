@@ -17,16 +17,11 @@ EOF
 fi
 
 bundle install
-bin/init_config
 bundle exec rake yarn:install db:drop db:create db:migrate
-npm i -g swagger-markdown
 bundle exec rails s -d
 while [ ! -f tmp/pids/server.pid ]
 do
   sleep 1
 done
 sleep 5 # Wait additional time until Rails starts listen port.
-curl http://localhost:3000/management_api/v1/swagger_doc > tmp/management_api_v1_swagger.json
-swagger-markdown -i tmp/management_api_v1_swagger.json -o docs/api/management_api_v1.md
-bundle exec rake slate:generate
 kill $(cat tmp/pids/server.pid)
