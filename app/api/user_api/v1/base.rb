@@ -12,6 +12,8 @@ module UserApi
       default_format :json
 
       helpers V1::Helpers
+      use V1::AuthenticationMiddleware
+      include V1::RackAttackThrottle
 
       do_not_route_options!
 

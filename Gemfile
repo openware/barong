@@ -41,6 +41,7 @@ gem 'jwt', '~> 2.1'
 gem 'jwt-multisig', '~> 1.0'
 gem 'discard', '~> 1.0'
 gem 'sentry-raven', '~> 2.7', require: false
+gem 'rack-attack', '~> 5.2'
 
 group :development, :test do
   gem 'listen',     '~> 3.1'
