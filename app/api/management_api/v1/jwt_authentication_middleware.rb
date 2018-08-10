@@ -9,7 +9,7 @@ module ManagementAPI
       mattr_accessor :security_configuration
 
       def before
-        return if request.path == '/management_api/v1/swagger_doc'
+        return if request.path == '/management_api/v1/accounts' || request.path == '/management_api/v1/swagger_doc'
         check_request_method!
         check_query_parameters!
         check_content_type!
@@ -87,6 +87,7 @@ module ManagementAPI
       def security_scope
         request.env['api.endpoint'].options.fetch(:route_options).fetch(:scope)
       end
+
     end
   end
 end
