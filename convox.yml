@@ -10,3 +10,4 @@ services:
       - database
     environment:
       - '*'
+      - RAILS_LOG_TO_STDOUT=true
