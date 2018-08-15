@@ -16,4 +16,5 @@ test:
 
 production:
   <<: *default
-  database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
+  url: <%= ENV['DATABASE_URL'] %>
+  database: <%= ENV.fetch('DATABASE_NAME', 'peatio_production') %>
