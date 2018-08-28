@@ -4,7 +4,10 @@
 # Document
 #
 class Document < ApplicationRecord
-  mount_uploader :upload, UploadUploader
+
+  # commented old uploader for reference
+  # mount_uploader :upload, UploadUploader
+  has_one_attached :upload
 
   TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
   STATES = %w[verified pending rejected].freeze

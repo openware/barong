@@ -40,3 +40,5 @@
 .yarnrc
 coverage
 target
+
+storage/

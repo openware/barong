@@ -121,8 +121,8 @@
     <% @documents.each do |document| %>
         <tr>
           <td><%= document.id %></td>
-          <td><%= document.upload.present? ? link_to(image_tag(document.upload.url, width: '100', alt: 'Doc Preview'), asset_path(document.upload), target: '_blank') : ''%></td>
-          <td><%= document.upload&.file&.filename%></td>
+          <td><%= document.upload.attached? ? link_to(image_tag(document.upload, width: '100', alt: 'Doc Preview'), asset_path(document.upload), target: '_blank') : ''%></td>
+          <td><%= document.upload&.filename %></td>
           <td><%= document.doc_type %></td>
           <td><%= document.doc_number %></td>
           <td><%= document.doc_expire %></td>

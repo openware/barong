@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516142429) do
+ActiveRecord::Schema.define(version: 2018_08_28_123422) do
 
-  create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
     t.string "email", null: false
     t.string "encrypted_password", default: "", null: false
@@ -46,7 +46,28 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["unlock_token"], name: "index_accounts_on_unlock_token", unique: true
   end
 
-  create_table "api_keys", primary_key: "uid", id: :string, limit: 36, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "api_keys", primary_key: "uid", id: :string, limit: 36, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "public_key", null: false
     t.string "scopes"
     t.integer "expires_in", null: false
@@ -57,7 +78,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["account_id"], name: "index_api_keys_on_account_id"
   end
 
-  create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "documents", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.string "upload"
     t.string "doc_type"
@@ -69,7 +90,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["account_id"], name: "index_documents_on_account_id"
   end
 
-  create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "labels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.string "key", null: false
     t.string "value", null: false
@@ -80,7 +101,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["key", "scope", "account_id"], name: "index_labels_on_key_and_scope_and_account_id", unique: true
   end
 
-  create_table "levels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "levels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "key"
     t.string "value"
     t.string "description"
@@ -88,7 +109,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "oauth_access_grants", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "oauth_access_grants", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "resource_owner_id", null: false
     t.integer "application_id", null: false
     t.string "token", null: false
@@ -101,7 +122,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
-  create_table "oauth_access_tokens", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "oauth_access_tokens", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "resource_owner_id"
     t.integer "application_id"
     t.string "token", limit: 1024, null: false
@@ -116,7 +137,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
   end
 
-  create_table "oauth_applications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "oauth_applications", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "uid", null: false
     t.string "secret", null: false
@@ -128,7 +149,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "phones", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "phones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "country"
     t.string "number", null: false
     t.datetime "validated_at"
@@ -140,7 +161,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["number"], name: "index_phones_on_number"
   end
 
-  create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "profiles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "account_id"
     t.string "first_name"
     t.string "last_name"
@@ -155,7 +176,7 @@ ActiveRecord::Schema.define(version: 20180516142429) do
     t.index ["account_id"], name: "index_profiles_on_account_id"
   end
 
-  create_table "websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "websites", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "domain"
     t.string "title"
     t.string "logo"
