@@ -6,6 +6,23 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+<% if 'Google'.casecmp(ENV['STORAGE_PROVIDER']) %>
+google:
+  service: GCS
+  project: <%= ENV.fetch('STORAGE_PROJECT') %>
+  credentials: <%= ENV.fetch('STORAGE_CREDENTIALS_PATH') %>
+  bucket: <%= ENV.fetch('STORAGE_BUCKET_NAME') %>
+<% end %>
+
+<% if 'AWS'.casecmp(ENV['STORAGE_PROVIDER']) %>
+amazon:
+  service: S3
+  access_key_id: <%= ENV.fetch('STORAGE_SECRET_KEY')%>
+  secret_access_key: <%= ENV.fetch('STORAGE_ASSES_KEY') %>
+  region: <%= ENV.fetch('STORAGE_REGION') %>
+  bucket: <%= ENV.fetch('STORAGE_BUCKET_NAME') %>
+<% end %>
+
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3
