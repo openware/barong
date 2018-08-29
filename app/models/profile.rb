@@ -49,6 +49,7 @@ class Profile < ApplicationRecord
   def as_json_for_event_api
     {
       account_uid: account.uid,
+      uid: account.uid,
       first_name: first_name,
       last_name: last_name,
       dob: format_iso8601_time(dob),

@@ -6,6 +6,7 @@ module UserApi
   module V1
     module Helpers
       include Doorkeeper::Grape::Helpers
+      extend Memoist
 
       def current_account
         @current_account ||= begin
@@ -17,6 +18,7 @@ module UserApi
           end
         end
       end
+      memoize :current_account
 
       def current_application
         doorkeeper_authorize! unless doorkeeper_token
@@ -36,6 +38,20 @@ module UserApi
           return false
         end
         true
+      end
+
+      def create_device!(action:, result:, otp: false, account: current_account)
+        matched_device = account.devices.find_by uuid: env['device_uuid']
+
+        account.devices.create!(
+          env['device_params'].merge(
+            action: action,
+            result: result,
+            uuid: matched_device&.uuid,
+            otp: otp,
+            expire_at: matched_device&.expire_at
+          )
+        )
       end
     end
   end

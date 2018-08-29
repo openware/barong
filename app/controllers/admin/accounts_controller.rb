@@ -14,6 +14,7 @@ module Admin
       @labels = @account.labels
       @phones = @account.phones
       @document_label_value = document_label&.value
+      @devices = @account.devices
     end
 
     def edit
@@ -33,6 +34,12 @@ module Admin
 
     def disable_2fa
       @account.update!(otp_enabled: false)
+      Device.create!(
+        action: '2fa_disabled',
+        status: 'success',
+        account_id: @account.id,
+        metadata: { disabled_by: current_user.uid }
+      )
       redirect_to action: :show
     end
 

@@ -31,12 +31,20 @@ module UserApi
         error!(error.message, 400)
       end
 
+      rescue_from(::Services::AuthService::Error) do |error|
+        error!(error.message, error.status)
+      end
+
       rescue_from(:all) do |error|
         Rails.logger.error "#{error.class}: #{error.message}"
         error!('Something went wrong', 500)
       end
 
+      require 'action_dispatch/middleware/remote_ip.rb'
+
+      use ActionDispatch::RemoteIp
       use UserApi::V1::CORS::Middleware
+      use UserApi::V1::Middlewares::DeviceMiddleware
 
       mount UserApi::V1::Accounts
       mount UserApi::V1::Profiles
