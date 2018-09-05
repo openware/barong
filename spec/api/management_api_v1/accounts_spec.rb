@@ -57,4 +57,38 @@ describe ManagementAPI::V1::Accounts, type: :request do
       end
     end
   end
+
+  describe 'POST /api/v1/accounts' do
+    let(:do_request) do
+      post '/api/v1/accounts', params: params
+    end
+
+    before { do_request }
+
+    context 'when email is valid' do
+      let(:params) { { email: 'valid.email@gmail.com', password: 'Password1' } }
+
+      it 'creates an account' do
+        expect_status_to_eq 201
+      end
+    end
+
+    context 'denies when email or password is invalid' do
+      let(:params) { { email: 'email@gmail.com', password: 'password' } }
+
+      it 'renders an error' do
+        expect_status_to_eq 422
+        expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.'])
+      end
+    end
+
+    context 'denies when email and password are absent' do
+      let(:params) {}
+
+      it 'renders an error' do
+        expect_status_to_eq 400
+        expect_body.to eq(error: 'Email is missing, Email is empty, Password is missing, Password is empty')
+      end
+    end
+  end
 end
