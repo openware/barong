@@ -9,7 +9,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    if current_account.documents.count >= ENV.fetch("DOCUMENTS_LIMIT", 10)
+    if current_account.documents.count >= ENV.fetch('DOCUMENTS_LIMIT', 10)
       redirect_to index_path, alert: 'Maximum number of documents was reached'
     end
 

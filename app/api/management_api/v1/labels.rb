@@ -11,7 +11,7 @@ module ManagementAPI
 
       desc 'Label related routes'
       resource :labels do
-        desc "Get all labels assigned to account" do
+        desc 'Get all labels assigned to account' do
           @settings[:scope] = :read_labels
           success Entities::Label
         end
