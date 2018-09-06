@@ -50,7 +50,7 @@ module Vault
       rescue Vault::VaultError => e
         Rails.logger.error { e }
         if e.message.include?('connection refused')
-          raise Error, "2FA server is under maintenance"
+          raise Error, '2FA server is under maintenance'
         end
 
         if e.message.include?('code already used')

@@ -36,8 +36,9 @@ describe 'Api::V1::Security' do
       post url, params: { expires_in: expires_in }, headers: auth_header
       expect(response.status).to eq(201)
       new_jwt = JSON.parse(response.body)
+      travel_to_time = (expires_in.seconds + 1).from_now
 
-      travel_to (expires_in.seconds + 1).from_now do
+      travel_to travel_to_time do
         post url, headers: { 'Authorization' => "Bearer #{new_jwt}" }
         expect(response.body).to eq('{"error":"The access token expired"}')
       end

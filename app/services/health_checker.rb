@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Check for services health from Kubernetes
 module HealthChecker
   LIVENESS_CHECKS = %i[check_db check_vault].freeze
   READINESS_CHECKS = %i[check_db].freeze
@@ -19,7 +20,7 @@ module HealthChecker
       false
     end
 
-    private
+  private
 
     def check!(checks)
       checks.all? { |m| send(m) }

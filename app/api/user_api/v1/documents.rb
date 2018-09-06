@@ -31,7 +31,7 @@ module UserApi
         end
 
         post '/' do
-          if current_account.documents.count >= ENV.fetch("DOCUMENTS_LIMIT", 10)
+          if current_account.documents.count >= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error! 'Maximum number of documents was reached', 400
           end
 
