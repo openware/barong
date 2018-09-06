@@ -19,7 +19,7 @@ describe Vault::TOTP do
           raise Vault::VaultError, 'Message code already used message'
         end
       end.to raise_error(described_class::Error,
-        'This code was already used. Wait until the next time period')
+                         'This code was already used. Wait until the next time period')
     end
 
     it 'renders error when called without block' do
