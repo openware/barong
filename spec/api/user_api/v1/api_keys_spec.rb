@@ -113,7 +113,7 @@ describe 'Api::V1::APIKeys' do
           uid: instance_of(String),
           public_key: params[:public_key],
           state: 'active',
-          scopes: params[:scopes],
+          scopes: params[:scopes].split(',').to_json,
           expires_in: 1.day.to_i
         }
       end
