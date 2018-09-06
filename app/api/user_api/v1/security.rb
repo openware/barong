@@ -14,7 +14,7 @@ module UserApi
              ]
         params do
           optional :expires_in, type: String, desc: 'Expires in time in seconds',
-                         allow_blank: false
+                                allow_blank: false
         end
         post '/renew' do
           if params[:expires_in].present? && (params[:expires_in].to_i < 30.minutes \
