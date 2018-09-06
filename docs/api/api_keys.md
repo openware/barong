@@ -9,38 +9,57 @@ The user must have 2FA enabled before using API Keys.
 You need to provide valid TOTP code on api key access.
 
 ### API Key flow:
-1. Create an api key with a `public key`, `scopes` and `expired_in`. `Expired_in` is an optional. Default value is 24 hours.
-2. Save private key and api key uid to your script
-3. Sign request with your private key
-4. Send request to Barong with `jwt_token` and `kid`
-4. Barong read `kid`, select public key and verify your request
-5. If payload is valid, Barong generates peatio jwt
-6. Use peatio jwt to access to peatio api
-7. Peatio jwt will be expired after `expired_in` time
-8. Go to step 3 and repeat next steps again
+1. Create an api key with a `public key`, `scopes` and `expired_in`. `expired_in` is an optional. Default value is 24 hours. To generate keypair with your public and private key, please use this command
 
-To create an api key, please use [POST /api/v1/api_keys](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1apikeys)
-To send signed request and generate jwt, please use [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt)
+   ```bash
+   # You can generate keypair using:
+   ruby -e "require 'openssl'; require 'base64'; OpenSSL::PKey::RSA.generate(2048).tap { |p| puts '', 'PRIVATE RSA KEY (URL-safe Base64 encoded, PEM):', '', Base64.urlsafe_encode64(p.to_pem), '', 'PUBLIC RSA KEY (URL-safe Base64 encoded, PEM):', '', Base64.urlsafe_encode64(p.public_key.to_pem) }"
+   ```
 
-## Configuration
+   To create an api key, you need to use [POST /api/v1/api_keys](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1apikeys)
 
-```yml
-# JWT configuration.
-# You can generate keypair using:
-#
-#   ruby -e "require 'openssl'; require 'base64'; OpenSSL::PKey::RSA.generate(2048).tap { |p| puts '', 'PRIVATE RSA KEY (URL-safe Base64 encoded, PEM):', '', Base64.urlsafe_encode64(p.to_pem), '', 'PUBLIC RSA KEY (URL-safe Base64 encoded, PEM):', '', Base64.urlsafe_encode64(p.public_key.to_pem) }"
-#
-```
+   Example:
 
-You can encode payload with folowing ruby code:
-```
-secret_key = OpenSSL::PKey.read(Base64.urlsafe_decode64('private_key))
-payload = {
-  iat: Time.current.to_i,
-  exp: 20.minutes.from_now.to_i,
-  sub: 'api_key_jwt',
-  iss: 'external',
-  jti: SecureRandom.hex(12).upcase
-}
-jwt_token = JWT.encode(payload, secret_key, 'RS256')
-```
+   ```bash
+   curl -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer {jwt_access_token}" -d '{"public_key":"", "totp_code":"...", "scopes":"..."}' https://localhost:3000/api/v1/api_keys
+   ```
+
+2. To generate Peatio jwt access token you need to encode you private key (private key from step 1) with valid payload and send request with [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt) 
+
+   Example:
+
+   ```bash
+   curl -X POST -H 'Content-Type: application/json' -d '{"kid":"...", "jwt_token":"..."}' http://localhost:3000/api/v1/sessions/generate_jwt
+   ```
+
+   Parameters:
+
+   ```yaml
+   'kid': uid of the api_key
+   'jwt_token': encode private key and payload 
+   ```
+
+   To encode private key and paylaod  and get jwt_token you can use next example.
+
+   ```ruby
+   require 'openssl'
+   require 'base64'
+   require 'json'
+   require 'securerandom'
+   require 'jwt'
+   require 'active_support/time'
+   
+   secret_key = OpenSSL::PKey.read(Base64.urlsafe_decode64('private_key))
+   payload = {
+     iat: Time.current.to_i,
+     exp: 20.minutes.from_now.to_i,
+     sub: 'api_key_jwt',
+     iss: 'external',
+     jti: SecureRandom.hex(12).upcase
+   }
+   jwt_token = JWT.encode(payload, secret_key, 'RS256')
+   ```
+
+3. When you send request to Barong with `jwt_token` and `kid`, Barong read `kid`, select public key and verify your request. If payload is valid, Barong generates peatio jwt.
+
+4. Use peatio jwt to access to peatio api. Peatio jwt will be expired after `expired_in` time. After that you can generate new Peatio jwt, go to step 2 and repeat next steps again.
