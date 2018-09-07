@@ -20,6 +20,25 @@ module Barong
 
     # Helpers for JWT
     module AccessToken
+      module Blacklist
+        class <<self
+          def push(payload)
+            redis.set(payload['jti'], 0)
+            redis.expireat(payload['jti'], payload['exp'])
+          end
+
+          def include?(jti)
+            redis.exists(jti)
+          end
+
+        private
+
+          def redis
+            Rails.application.config.blacklist_redis
+          end
+        end
+      end
+
       class <<self
         def create(expires_in, acc_id, application)
           # Doorkeeper method, which creates the JWT for the current user with scope 'peatio' and expiration time specified earlier
@@ -33,6 +52,23 @@ module Barong
             expires_in || Doorkeeper.configuration.access_token_expires_in,
             false
           ).token
+        end
+
+        def expire(token)
+          Blacklist.push(decode(token))
+        end
+
+        def blacklisted?(token)
+          Blacklist.include?(decode(token)['jti'])
+        end
+
+      private
+
+        def decode(token)
+          JWT.decode(token,
+                     Barong::Security.private_key.public_key,
+                     true,
+                     algorithm: 'RS256').first
         end
       end
     end

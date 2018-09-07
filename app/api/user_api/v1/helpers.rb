@@ -7,9 +7,14 @@ module UserApi
     module Helpers
       include Doorkeeper::Grape::Helpers
 
+      def authorize!
+        doorkeeper_authorize!
+        error!('Unauthorized', 401) if token_blacklisted?(doorkeeper_token.token)
+      end
+
       def current_account
         @current_account ||= begin
-          doorkeeper_authorize!
+          authorize!
           Account.kept
                  .find_by(id: doorkeeper_token.resource_owner_id)
                  .tap do |account|
@@ -19,8 +24,12 @@ module UserApi
       end
 
       def current_application
-        doorkeeper_authorize! unless doorkeeper_token
+        authorize! unless doorkeeper_token
         doorkeeper_token.application
+      end
+
+      def token_blacklisted?(token)
+        Barong::Security::AccessToken.blacklisted?(token)
       end
 
       def phone_valid?(phone_number)

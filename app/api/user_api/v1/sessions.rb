@@ -87,6 +87,18 @@ module UserApi
         rescue JWT::DecodeError => e
           error! "Failed to decode and verify JWT: #{e.inspect}", 401
         end
+
+        resource do
+          before { authorize! }
+
+          desc 'Immidiately expire the current JWT',
+            success: { code: 200 },
+            security: []
+          delete do
+            status 200
+            Barong::Security::AccessToken.expire(doorkeeper_token.token)
+          end
+        end
       end
     end
   end
