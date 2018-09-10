@@ -60,7 +60,9 @@ module UserApi
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         post do
-          declared_params = declared(params, include_missing: false).except(:totp_code)
+          declared_params = declared(params, include_missing: false)
+                            .except(:totp_code)
+                            .merge(scopes: params[:scopes]&.split(','))
           api_key = current_account.api_keys.create(declared_params)
           if api_key.errors.any?
             error!(api_key.errors.full_messages.to_sentence, 422)
@@ -91,7 +93,9 @@ module UserApi
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         patch ':uid' do
-          declared_params = declared(params, include_missing: false).except(:totp_code)
+          declared_params = declared(params, include_missing: false)
+                            .except(:totp_code)
+                            .merge(scopes: params[:scopes]&.split(','))
           api_key = current_account.api_keys.find_by!(uid: params[:uid])
           unless api_key.update(declared_params)
             error!(api_key.errors.full_messages.to_sentence, 422)

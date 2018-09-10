@@ -6,7 +6,7 @@ module Entities
 
     expose :uid, documentation: { type: 'String' }
     expose :public_key, documentation: { type: 'String' }
-    expose :scopes, documentation: { type: 'String', desc: 'comma separated scopes' }
+    expose :scopes, documentation: { type: 'Array', desc: 'array of scopes' }
     expose :expires_in, documentation: { type: 'String', desc: 'expires_in duration in seconds. Min 30 seconds, Max 86400 seconds' }
     expose :state, documentation: { type: 'String' }
 
