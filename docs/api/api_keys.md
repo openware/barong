@@ -24,7 +24,8 @@ You need to provide valid TOTP code on api key access.
    curl -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer {jwt_access_token}" -d '{"public_key":"", "totp_code":"...", "scopes":"..."}' https://localhost:3000/api/v1/api_keys
    ```
 
-2. To generate Peatio jwt access token you need to encode you private key (private key from step 1) with valid payload and send request with [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt) 
+2. To retrieve an access token a valid payload should be sent to barong, it must be signed with the private key
+ Request is [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt) 
 
    Example:
 
@@ -39,8 +40,8 @@ You need to provide valid TOTP code on api key access.
    'jwt_token': encode private key and payload 
    ```
 
-   To encode private key and paylaod  and get jwt_token you can use next example.
-
+   Example of prapring a signed payload:
+   
    ```ruby
    require 'openssl'
    require 'base64'
@@ -60,6 +61,6 @@ You need to provide valid TOTP code on api key access.
    jwt_token = JWT.encode(payload, secret_key, 'RS256')
    ```
 
-3. When you send request to Barong with `jwt_token` and `kid`, Barong read `kid`, select public key and verify your request. If payload is valid, Barong generates peatio jwt.
+3. Send this signature (as `jwt_token` parameter) to barong with the associated API key id (`kid`), Barong returns a valid JWT.
 
-4. Use peatio jwt to access to peatio api. Peatio jwt will be expired after `expired_in` time. After that you can generate new Peatio jwt, go to step 2 and repeat next steps again.
+4. Use the JWT to access to peatio API. The token will be expired after `expired_in` time. After that you can generate a new JWT folloings steps from 2.
