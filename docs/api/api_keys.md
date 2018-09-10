@@ -2,7 +2,7 @@
 
 ## How does it work?
 
-To be available to send requests to the [peatio api](https://github.com/rubykube/peatio/blob/1-8-stable/docs/api/member_api_v2.md) you need to send proper jwt (JSON Web Token) signed by Barong.
+To be available to send requests to the [peatio api](https://github.com/rubykube/peatio/blob/1-8-stable/docs/api/member_api_v2.md) you need to send proper JWT (JSON Web Token) signed by Barong.
 Only Barong can sign valid token.
 
 The user must have 2FA enabled before using API Keys.
@@ -25,7 +25,7 @@ You need to provide valid TOTP code on api key access.
    ```
 
 2. To retrieve an access token a valid payload should be sent to barong, it must be signed with the private key
- Request is [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt) 
+ The request is a [POST /api/v1/sessions/generate_jwt](https://github.com/rubykube/barong/blob/1-8-stable/docs/api/api.md#postv1sessionsgeneratejwt)
 
    Example:
 
@@ -37,7 +37,7 @@ You need to provide valid TOTP code on api key access.
 
    ```yaml
    'kid': uid of the api_key
-   'jwt_token': encode private key and payload 
+   'jwt_token': payload with signature
    ```
 
    Example of prapring a signed payload:
