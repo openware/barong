@@ -64,7 +64,6 @@ module UserApi
                                   Entities::Label,
                                   Entities::APIKey
                                 ],
-                                security: [{ "BearerToken": [] }],
                                 api_version: 'v1',
                                 doc_version: Barong::VERSION,
                                 hide_format: true,
