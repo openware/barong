@@ -6,6 +6,7 @@ module UserApi
       desc 'Phone related routes'
       resource :phones do
         desc 'Add new phone',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -30,6 +31,7 @@ module UserApi
         end
 
         desc 'Resend activation code',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -54,6 +56,7 @@ module UserApi
         end
 
         desc 'Verify a phone',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
