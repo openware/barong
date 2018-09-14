@@ -72,6 +72,26 @@ module UserApi
                               application: application
         end
 
+        desc 'Generates jwt by user session',
+             success: { code: 200, message: 'Session is generated' },
+             failure: [
+               { code: 401, message: 'Session is invalid' }
+             ]
+        post 'jwt' do
+          error!('Session is invalid', 401) if warden_account.nil?
+          application = Doorkeeper::Application.first
+          error!('Your account was locked!', 401) unless warden_account.locked_at.nil?
+
+          unless warden_account.active_for_authentication?
+            error!('You have to confirm your email address before continuing', 401)
+          end
+
+          warden_account.refresh_failed_attempts
+          create_access_token expires_in: Doorkeeper.configuration.access_token_expires_in,
+                              account: warden_account,
+                              application: application
+        end
+
         desc 'Validates client jwt and generates peatio session jwt',
              success: { code: 200, message: 'Session is generated' },
              failure: [
