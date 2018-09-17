@@ -32,7 +32,7 @@ class Account < ApplicationRecord
   after_update :lock_if_attempts_count_exceeded
 
   def active_for_authentication?
-    super && !discarded_at
+    super && !discarded_at && state == 'active'
   end
 
   def role
