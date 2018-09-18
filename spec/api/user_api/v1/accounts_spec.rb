@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Api::V1::Accounts' do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
 
   describe 'GET /api/v1/accounts/me' do
     let(:do_request) { get '/api/v1/accounts/me', headers: auth_header }
@@ -152,19 +152,14 @@ describe 'Api::V1::Accounts' do
       }
     end
 
-    subject!(:acc) do
+    subject!(:current_account) do
       create :account,
              password: 'faezu6Te',
              password_confirmation: 'faezu6Te'
     end
 
-    let!(:access_token) do
-      create :doorkeeper_token,
-             resource_owner_id: acc.id
-    end
-
     let(:headers) do
-      { Authorization: "Bearer #{access_token.token}" }
+      { Authorization: "Bearer #{jwt_token}" }
     end
 
     it 'Checks if provided credentials are valid and changes password to the new one' do
@@ -183,7 +178,7 @@ describe 'Api::V1::Accounts' do
 
     it 'renders 401 without auth header' do
       put url, params: params0
-      expect_body.to eq(error: 'The access token is invalid')
+      expect_body.to eq(error: 'Authorization is required')
       expect(response.status).to eq(401)
     end
 

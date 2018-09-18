@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Documents API test' do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
   let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
 
   describe 'POST /api/v1/documents/' do
@@ -104,13 +104,13 @@ describe 'Documents API test' do
       expect(response.status).to eq(200)
     end
 
-    it 'Returns error, cause token is not valid' do
+    it 'Returns error without token' do
       post '/api/v1/documents', params: params
-      expect_body.to eq(error: 'The access token is invalid')
+      expect_body.to eq(error: 'Authorization is required')
       expect(response.status).to eq(401)
 
       get '/api/v1/documents', params: params
-      expect_body.to eq(error: 'The access token is invalid')
+      expect_body.to eq(error: 'Authorization is required')
       expect(response.status).to eq(401)
     end
     after(:all) { Account.destroy_all }

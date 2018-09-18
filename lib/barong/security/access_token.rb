@@ -16,6 +16,21 @@ module Barong
         OpenSSL::PKey.read raw_private_key
       end
       memoize :private_key
+
+      def public_key
+        key_path = ENV['JWT_PUBLIC_KEY_PATH']
+        raw_public_key = if key_path.present?
+                           File.read(key_path)
+                         else
+                           Base64.urlsafe_decode64(Rails.application.secrets.jwt_public_key)
+                         end
+        OpenSSL::PKey.read(raw_public_key).tap do |key|
+          if key.private?
+            raise ArgumentError, 'Key was set to private key, however it should be public.'
+          end
+        end
+      end
+      memoize :private_key
     end
 
     # Helpers for JWT
