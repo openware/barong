@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'Api::V1::APIKeys' do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
   let!(:current_account) do
     create(:account, otp_enabled: otp_enabled)
   end

@@ -24,7 +24,7 @@ RSpec.describe PhonesController, type: :controller do
     context 'when account level is passed' do
       it 'returns a success response' do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

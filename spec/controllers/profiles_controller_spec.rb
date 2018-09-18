@@ -52,7 +52,7 @@ RSpec.describe ProfilesController, type: :controller do
     context 'when account has no profile' do
       it 'returns a success response' do
         get :new, params: {}
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe ProfilesController, type: :controller do
     context 'with invalid params' do
       it "returns a success response (i.e. to display the 'new' template)" do
         post :create, params: { profile: invalid_attributes }
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

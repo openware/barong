@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-require 'doorkeeper/grape/helpers'
-
 module UserApi
   module V1
     module Helpers
-      include Doorkeeper::Grape::Helpers
-
       def warden
         env['warden']
       end
@@ -17,18 +13,35 @@ module UserApi
 
       def current_account
         @current_account ||= begin
-          doorkeeper_authorize!
-          Account.kept
-                 .find_by(id: doorkeeper_token.resource_owner_id)
-                 .tap do |account|
+          if headers['Authorization'].blank?
+            error!('Authorization is required', 401)
+          end
+
+          token = headers['Authorization'].split(' ').last
+          payload, = jwt_decode(token)
+
+          Account.kept.find_by(uid: payload['uid']).tap do |account|
             error!('Account does not exist', 401) unless account
           end
         end
       end
 
-      def current_application
-        doorkeeper_authorize! unless doorkeeper_token
-        doorkeeper_token.application
+      def jwt_decode(token)
+        options = {
+          verify_expiration: true,
+          verify_iat: true,
+          verify_jti: true,
+          sub: 'session',
+          verify_sub: true,
+          iss: 'barong',
+          verify_iss: true,
+          algorithm: 'RS256'
+        }.freeze
+
+        JWT.decode(token, Barong::Security.public_key, true, options)
+      rescue StandardError => e
+        Rails.logger.error "JWT is invalid: #{e.inspect}"
+        error!('JWT is invalid', 401)
       end
 
       def phone_valid?(phone_number)

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :phone do
-    number '12345678911'
+    number { '12345678911' }
     account
   end
 end

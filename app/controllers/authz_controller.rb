@@ -2,44 +2,30 @@
 
 class AuthzController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_account!, unless: :public_route?
 
   PUBLIC_PATHS = [
+    'diag',
+    'ambassador',
     'accounts/sign_in',
     'accounts/sign_out',
     'accounts/sign_up',
     'health/alive',
     'health/ready'
-  ]
+  ].freeze
 
   def verify
-    p current_account
-    p account_signed_in?
-
-    return head(:ok) if public_route?
-    return invalid_login_attempt unless authenticate_account!
-
-    response.set_header('Authorization', "Bearer #{create_token}")
+    jwt_token = JWT.encode(jwt_payload, Barong::Security.private_key, 'RS256')
+    response.set_header('Authorization', "Bearer #{jwt_token}")
     head :ok
   end
 
-  private
-
-  def create_token
-    # JWT.encode(jwt_payload, Barong::Security.private_key, 'RS256')
-
-    Doorkeeper::AccessToken.find_or_create_for(
-      Doorkeeper::Application.first,
-      current_account.id,
-      Doorkeeper.configuration.scopes.to_s,
-      2.minutes,
-      false
-    ).token
-  end
+private
 
   def jwt_payload
     {
       iat: Time.current.to_i,
-      exp: 2.minutes.to_i,
+      exp: 2.minutes.from_now.to_i,
       sub: 'session',
       iss: 'barong',
       aud: 'peatio barong',
@@ -55,10 +41,5 @@ class AuthzController < ApplicationController
   def public_route?
     logger.info "Authz request #{params.inspect}"
     PUBLIC_PATHS.any? { |path| params[:path].include?(path) }
-  end
-
-  def invalid_login_attempt
-    warden.custom_failure!
-    render json: {message: "Require Authentication"}, status: 401
   end
 end

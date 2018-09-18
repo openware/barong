@@ -10,7 +10,7 @@ describe Admin::AccountsController, type: :controller do
   describe 'GET #index' do
     it 'returns a success response' do
       get :index, params: {}
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:accounts).count).to eq 1
     end
   end
@@ -32,7 +32,7 @@ describe Admin::AccountsController, type: :controller do
 
       it 'returns a success response' do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:account)).to eq account
       end
     end

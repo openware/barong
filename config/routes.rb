@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   get 'health/alive', to: 'health#alive'
   get 'health/ready', to: 'health#ready'
-  match 'authz/*path', to: 'authz#verify', via: [:get, :post, :patch, :put, :delete]
+  match 'authz/*path', to: 'authz#verify', via: %i[get post patch put delete]
 
   resources :phones,    only: %i[new create]
   resources :profiles,  only: %i[new create]

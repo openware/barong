@@ -4,6 +4,6 @@ FactoryBot.define do
   factory :api_key, class: 'APIKey' do
     account
     public_key { Faker::Crypto.sha256 }
-    scopes 'trade'
+    scopes { %w[trade] }
   end
 end
