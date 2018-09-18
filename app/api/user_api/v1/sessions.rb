@@ -4,13 +4,27 @@ module UserApi
   module V1
     class Sessions < Grape::API
       helpers do
-        def create_access_token(expires_in:, account:, application:)
+        def create_access_token(expires_in:, account:)
           if expires_in.present? && (expires_in.to_i < 30.minutes.to_i \
              || expires_in.to_i >= 24.hours.to_i)
             error! "expires_in must be from #{30.minutes} to #{24.hours.to_i} seconds", 401
           end
 
-          Barong::Security::AccessToken.create expires_in, account.id, application
+          expires_in ||= 4.hours
+
+          JWT.encode({
+                       iat: Time.current.to_i,
+                       exp: expires_in.from_now.to_i,
+                       sub: 'session',
+                       iss: 'barong',
+                       aud: 'peatio barong',
+                       jti: SecureRandom.hex(12).upcase,
+                       uid:   account.uid,
+                       email: account.email,
+                       role:  account.role,
+                       level: account.level,
+                       state: account.state
+                     }, Barong::Security.private_key, 'RS256')
         end
       end
 
@@ -25,7 +39,7 @@ module UserApi
         params do
           requires :email
           requires :password
-          requires :application_id
+          optional :application_id
           optional :expires_in, allow_blank: false
           optional :otp_code, type: String,
                               desc: 'Code from Google Authenticator'
@@ -36,8 +50,6 @@ module UserApi
           account = Account.kept.find_by(email: declared_params[:email])
           error!('Invalid Email or Password', 401) unless account
 
-          application = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
-          error!('Wrong Application ID', 401) unless application
           error!('Your account was locked!', 401) unless account.locked_at.nil?
 
           unless account.valid_password? declared_params[:password]
@@ -52,8 +64,7 @@ module UserApi
           unless account.otp_enabled
             account.refresh_failed_attempts
             return create_access_token expires_in: declared_params[:expires_in],
-                                       account: account,
-                                       application: application
+                                       account: account
           end
 
           if declared_params[:otp_code].blank?
@@ -68,8 +79,7 @@ module UserApi
 
           account.refresh_failed_attempts
           create_access_token expires_in: declared_params[:expires_in],
-                              account: account,
-                              application: application
+                              account: account
         end
 
         desc 'Generates jwt by user session',
@@ -79,7 +89,6 @@ module UserApi
              ]
         post 'jwt' do
           error!('Session is invalid', 401) if warden_account.nil?
-          application = Doorkeeper::Application.first
           error!('Your account was locked!', 401) unless warden_account.locked_at.nil?
 
           unless warden_account.active_for_authentication?
@@ -87,9 +96,8 @@ module UserApi
           end
 
           warden_account.refresh_failed_attempts
-          create_access_token expires_in: Doorkeeper.configuration.access_token_expires_in,
-                              account: warden_account,
-                              application: application
+          create_access_token expires_in: ENV['JWT_LIFETIME'],
+                              account: warden_account
         end
 
         desc 'Validates client jwt and generates peatio session jwt',

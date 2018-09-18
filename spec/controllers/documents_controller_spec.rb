@@ -36,7 +36,7 @@ RSpec.describe DocumentsController, type: :controller do
 
     it 'returns a success response' do
       get :new, params: {}
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe DocumentsController, type: :controller do
       it "returns a success response (i.e. to display the 'new' template)" do
         post :create, params: { document: invalid_attributes }
         expect(flash[:alert]).to eq('Some fields are empty or invalid')
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

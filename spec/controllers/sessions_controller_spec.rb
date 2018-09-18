@@ -15,7 +15,7 @@ RSpec.describe SessionsController, type: :controller do
 
       it 'renders confirm template' do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:otp_enabled)).to eq false
         expect(response).to render_template(:confirm)
       end
@@ -24,7 +24,7 @@ RSpec.describe SessionsController, type: :controller do
     context 'when otp is enabled' do
       it 'renders confirm template' do
         do_request
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:otp_enabled)).to eq true
         expect(response).to render_template(:confirm)
       end

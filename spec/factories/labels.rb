@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :label do
     key { ::Faker::Internet.slug(nil, '-') }
     value { ::Faker::Internet.slug(nil, '-') }
-    scope 'public'
+    scope { 'public' }
     account { create(:account) }
   end
 end

@@ -75,7 +75,7 @@ module UserApi
                                 mount_path: '/swagger_doc'
 
       route :any, '*path' do
-        raise StandardError, 'Unable to find endpoint'
+        error! 'Rouite is not found', 404
       end
     end
   end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Api::V1::Phones' do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
 
   describe 'POST /api/v1/phones' do
     let(:do_request) do

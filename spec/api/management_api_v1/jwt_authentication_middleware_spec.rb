@@ -14,12 +14,12 @@ describe ManagementAPI::V1::JWTAuthenticationMiddleware, type: :request do
 
   it 'works in standard conditions' do
     post_json '/management_api/v1/timestamp', multisig_jwt_management_api_v1({}, :alex)
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 
   it 'allows GET and doesn\'t require authentication for documentation' do
     get '/management_api/v1/swagger_doc'
-    expect(response).to be_success
+    expect(response).to be_successful
   end
 
   it 'allows only POST, PUT' do
@@ -66,7 +66,7 @@ describe ManagementAPI::V1::JWTAuthenticationMiddleware, type: :request do
     before { config[:jwt].merge!(iss: 'qux') }
     it 'validates issuer' do
       post_json '/management_api/v1/timestamp', multisig_jwt_management_api_v1({ iss: 'qux' }, :alex)
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -85,7 +85,7 @@ describe ManagementAPI::V1::JWTAuthenticationMiddleware, type: :request do
     before { config[:jwt].merge!(aud: 'qux') }
     it 'validates audience' do
       post_json '/management_api/v1/timestamp', multisig_jwt_management_api_v1({ aud: 'qux' }, :alex)
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
