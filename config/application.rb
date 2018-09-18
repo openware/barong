@@ -22,8 +22,14 @@ module Barong
     config.generators.tests  = false
     config.generators.test_framework :rspec
     config.eager_load_paths += %W[#{config.root}/lib]
+
     # Add rack-attack middleware to prevent denial of service
     config.middleware.use Rack::Attack
+
+    # Configure relative url root by setting URL_ROOT_PATH environment variable.
+    # Used by workbench with API Gateway.
+    config.relative_url_root = ENV.fetch('URL_ROOT_PATH', '/')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
