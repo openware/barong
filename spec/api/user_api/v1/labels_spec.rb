@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'Labels API.' do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
 
   let!(:label) { create :label, account: current_account }
 

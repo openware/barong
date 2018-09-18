@@ -47,6 +47,7 @@ module APITestHelpers
     end
 
     ENV['JWT_PUBLIC_KEY'] = result[:public]
+    Rails.application.secrets[:jwt_public_key] = result[:public]
     result
   end
   memoize :jwt_keypair_encoded

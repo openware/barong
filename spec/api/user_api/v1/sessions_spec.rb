@@ -5,8 +5,6 @@ describe 'Session create test' do
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
     let(:uri) { '/api/v1/sessions' }
-    let(:check_uri) { '/api/v1/security/renew' }
-    let!(:application) { create :doorkeeper_application }
     subject!(:acc) do
       create :account,
              email: email,
@@ -21,8 +19,7 @@ describe 'Session create test' do
       let(:params) do
         {
           email: email,
-          password: password,
-          application_id: application.uid
+          password: password
         }
       end
 
@@ -31,9 +28,9 @@ describe 'Session create test' do
         expect_status.to eq(201)
         response_jwt = JSON.parse(response.body)
 
-        post check_uri,
+        get '/api/v1/accounts/me',
              headers: { Authorization: "Bearer #{response_jwt}" }
-        expect(response.status).to eq(201)
+        expect(response.status).to eq(200)
       end
 
       context 'when account has enabled 2FA' do
@@ -74,7 +71,7 @@ describe 'Session create test' do
 
       context 'when user has less than 5 failed attempts' do
         before do
-          post uri, params: { email: email, password: 'password', application_id: application.uid }
+          post uri, params: { email: email, password: 'password' }
         end
 
         it 'refreshes failed_attempts count' do
@@ -88,53 +85,35 @@ describe 'Session create test' do
 
     context 'With Invalid params' do
       context 'Checks current credentials and returns error' do
-        it 'when email, password and application_id are missing' do
+        it 'when email, password' do
           post uri
-          expect_body.to eq(error: 'Email is missing, Password is missing, Application ID is missing')
+          expect_body.to eq(error: 'Email is missing, Password is missing')
           expect(response.status).to eq(400)
         end
 
-        it 'when Application ID is missing' do
-          post uri, params: { email: 'rick@morty.io', password: 'season1' }
-          expect_body.to eq(error: 'Application ID is missing')
-          expect(response.status).to eq(400)
-        end
-
-        it 'when password and Application ID is missing' do
+        it 'when password is missing' do
           post uri, params: { email: email }
-          expect_body.to eq(error: 'Password is missing, Application ID is missing')
-          expect(response.status).to eq(400)
-        end
-
-        it 'when Application ID is missing' do
-          post uri, params: { email: email, password: password }
-          expect_body.to eq(error: 'Application ID is missing')
+          expect_body.to eq(error: 'Password is missing')
           expect(response.status).to eq(400)
         end
 
         context 'when Password is wrong' do
           it 'returns errror' do
-            post uri, params: { email: email, password: 'password', application_id: application.uid }
+            post uri, params: { email: email, password: 'password' }
             expect_body.to eq(error: 'Invalid Email or Password')
             expect(response.status).to eq(401)
           end
 
           it 'locks account if user has 5 failed attempts' do
             5.times do
-              post uri, params: { email: email,  password: 'password', application_id: application.uid }
+              post uri, params: { email: email,  password: 'password' }
               expect_body.to eq(error: 'Invalid Email or Password')
             end
-            post uri, params: { email: email,  password: 'password', application_id: application.uid }
+            post uri, params: { email: email,  password: 'password' }
             expect_body.to eq(error:  'Your account was locked!')
-            post uri, params: { email: email,  password: password, application_id: application.uid }
+            post uri, params: { email: email,  password: password }
             expect_body.to eq(error:  'Your account was locked!')
           end
-        end
-
-        it 'when Application ID is wrong' do
-          post uri, params: { email: email, password: password, application_id: 'application.uid' }
-          expect_body.to eq(error: 'Wrong Application ID')
-          expect(response.status).to eq(401)
         end
       end
 
@@ -149,7 +128,7 @@ describe 'Session create test' do
         end
 
         it 'returns error' do
-          post uri, params: { email: another_email, password: password, application_id: application.uid }
+          post uri, params: { email: another_email, password: password }
           expect_body.to eq(error: 'You have to confirm your email address before continuing')
           expect(response.status).to eq(401)
         end

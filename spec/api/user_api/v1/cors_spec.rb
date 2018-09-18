@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'CORS', type: :request do
-  include_context 'doorkeeper authentication'
+  include_context 'bearer authentication'
 
   def expect_valid_cors(response)
     expect(response.headers['Access-Control-Allow-Origin']).to eq('https://frontend.barong.io')
