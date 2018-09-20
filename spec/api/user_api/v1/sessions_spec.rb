@@ -36,6 +36,94 @@ describe 'Session create test' do
         expect(response.status).to eq(201)
       end
 
+      context 'when captcha is enabled' do
+        before do
+          ENV['CAPTCHA_ENABLED'] = 'true'
+        end
+        after do
+          ENV['CAPTCHA_ENABLED'] = nil
+        end
+
+        let(:captcha_attempts) { 3 }
+        let(:params) do
+          {
+            email: email,
+            password: 'invalid',
+            application_id: application.uid,
+            recaptcha_response: recaptcha_response
+          }
+        end
+
+        let(:recaptcha_response) { nil }
+        let(:valid_response) { 'valid' }
+        let(:invalid_response) { 'invalid' }
+
+        before do
+          allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
+                                                  .with(model: acc,
+                                                        skip_remote_ip: true,
+                                                        response: valid_response) { true }
+
+          allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
+                                                  .with(model: acc,
+                                                        skip_remote_ip: true,
+                                                        response: invalid_response) { raise StandardError }
+        end
+
+        context 'when account is not reached captcha attempts' do
+          it 'expects to get captcha error' do
+            captcha_attempts.times do
+              post uri, params: params
+              expect_status_to_eq 401
+            end
+
+            post uri, params: params
+            expect(json_body[:error]).to eq('recaptcha_response is required')
+            expect_status_to_eq 420
+          end
+        end
+
+        context 'when account is reached captcha attempts' do
+          before { acc.update!(failed_attempts: captcha_attempts) }
+
+          context 'when captcha response is blank' do
+            it 'renders an error' do
+              post uri, params: params
+              expect(json_body[:error]).to eq('recaptcha_response is required')
+              expect_status_to_eq 420
+            end
+          end
+
+          context 'when captcha response is not valid' do
+            let(:recaptcha_response) { invalid_response }
+
+            it 'renders an error' do
+              post uri, params: params
+              expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+              expect_status_to_eq 420
+
+              post uri, params: params
+              expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+              expect_status_to_eq 420
+            end
+          end
+
+          context 'when captcha response is valid' do
+            let(:recaptcha_response) { invalid_response }
+
+            it 'resets failed attempts' do
+              post uri, params: params.merge(recaptcha_response: valid_response)
+              expect(json_body[:error]).to eq('Invalid Email or Password')
+              expect_status_to_eq 401
+
+              post uri, params: params
+              expect(json_body[:error]).to eq('Invalid Email or Password')
+              expect_status_to_eq 401
+            end
+          end
+        end
+      end
+
       context 'when account has enabled 2FA' do
         let(:otp_enabled) { true }
 
