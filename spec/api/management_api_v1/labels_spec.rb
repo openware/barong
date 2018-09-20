@@ -5,11 +5,38 @@ describe ManagementAPI::V1::Labels, type: :request do
     defaults_for_management_api_v1_security_configuration!
     management_api_v1_security_configuration.merge! \
       scopes: {
-        write_labels:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] }
+        write_labels:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] },
+        read_labels:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] }
       }
   end
 
   let!(:account) { create(:account) }
+
+  describe '#list' do
+    let!(:private_label) do
+      create(:label, scope: 'private', account: account)
+    end
+    let!(:public_label) do
+      create(:label, scope: 'public', account: account)
+    end
+    let(:data) do
+      {
+        account_uid: account.uid
+      }
+    end
+    let(:signers) { %i[alex] }
+
+    let(:do_request) do
+      post_json '/management_api/v1/labels/list',
+                multisig_jwt_management_api_v1({ data: data }, *signers)
+    end
+
+    it 'get list of account labels' do
+      do_request
+      expect(response.status).to eq 201
+      expect(json_body.size).to eq 2
+    end
+  end
 
   describe 'create label' do
     let(:data) do
