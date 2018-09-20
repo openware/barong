@@ -1,11 +1,29 @@
 # frozen_string_literal: true
 
+
 module UserApi
   module V1
     class Accounts < Grape::API
-
       desc 'Account related routes'
       resource :accounts do
+        helpers do
+          def check_captcha_if_enabled(account:, response:)
+            return unless ENV.fetch("CAPTCHA_ENABLED", false)
+            captcha_error_message = 'reCAPTCHA verification failed, please try again.'
+
+            if params['recaptcha_response'].blank?
+              error!('recaptcha_response is required', 400)
+            end
+            return if RecaptchaVerifier.new(request: request)
+                                       .verify_recaptcha(model: account,
+                                                         skip_remote_ip: true,
+                                                         response: response)
+            error!(captcha_error_message, 422)
+          rescue StandardError
+            error!(captcha_error_message, 422)
+          end
+        end
+
         desc 'Return information about current resource owner',
              failure: [
                { code: 401, message: 'Invalid bearer token' }
@@ -46,10 +64,14 @@ module UserApi
         params do
           requires :email, type: String, desc: 'Account Email', allow_blank: false
           requires :password, type: String, desc: 'Account Password', allow_blank: false
+          optional :recaptcha_response, type: String
         end
         post do
-          account = Account.create(declared(params))
-          error!(account.errors.full_messages, 422) unless account.persisted?
+          account = Account.new(params.slice('email', 'password'))
+          check_captcha_if_enabled(account: account,
+                                   response: params['recaptcha_response'])
+
+          error!(account.errors.full_messages, 422) unless account.save
         end
 
         desc 'Confirms an account(no auth)',
