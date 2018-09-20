@@ -30,12 +30,11 @@ describe 'Api::V1::Accounts' do
       post '/api/v1/accounts', params: params
     end
 
-    before { do_request }
-
     context 'when email is invalid' do
       let(:params) { { email: 'bad_format', password: 'Password1' } }
 
       it 'renders an error' do
+        do_request
         expect_status_to_eq 422
         expect_body.to eq(error: ['Email is invalid'])
       end
@@ -45,6 +44,7 @@ describe 'Api::V1::Accounts' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'password' } }
 
       it 'renders an error' do
+        do_request
         expect_status_to_eq 422
         expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.'])
       end
@@ -54,6 +54,7 @@ describe 'Api::V1::Accounts' do
       let(:params) {}
 
       it 'renders an error' do
+        do_request
         expect_status_to_eq 400
         expect_body.to eq(error: 'Email is missing, Email is empty, Password is missing, Password is empty')
       end
@@ -63,6 +64,7 @@ describe 'Api::V1::Accounts' do
       let(:params) { { email: '', password: 'Password1' } }
 
       it 'renders an error' do
+        do_request
         expect_status_to_eq 400
         expect_body.to eq(error: 'Email is empty')
       end
@@ -72,7 +74,62 @@ describe 'Api::V1::Accounts' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'Password1' } }
 
       it 'creates an account' do
+        do_request
         expect_status_to_eq 201
+      end
+    end
+
+    context 'when captcha is enabled' do
+      before { ENV['CAPTCHA_ENABLED'] = 'true' }
+      after { ENV['CAPTCHA_ENABLED'] = nil }
+
+      context 'when captcha response is blank' do
+        let(:params) { { email: 'vadid.email@gmail.com', password: 'Password1' } }
+
+        it 'renders an error' do
+          do_request
+          expect(json_body[:error]).to eq('recaptcha_response is required')
+          expect_status_to_eq 400
+        end
+      end
+
+      context 'when captcha response is not valid' do
+        let(:params) do
+          {
+            email: 'vadid.email@gmail.com',
+            password: 'Password1',
+            recaptcha_response: 'invalid'
+          }
+        end
+
+        before do
+          expect_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha) { false }
+        end
+
+        it 'renders an error' do
+          do_request
+          expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+          expect_status_to_eq 422
+        end
+      end
+
+      context 'when captcha response is valid' do
+        let(:params) do
+          {
+            email: 'vadid.email@gmail.com',
+            password: 'Password1',
+            recaptcha_response: 'invalid'
+          }
+        end
+
+        before do
+          expect_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha) { true }
+        end
+
+        it 'creates an account' do
+          do_request
+          expect_status_to_eq 201
+        end
       end
     end
   end
