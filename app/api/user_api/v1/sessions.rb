@@ -29,6 +29,8 @@ module UserApi
           optional :expires_in, allow_blank: false
           optional :otp_code, type: String,
                               desc: 'Code from Google Authenticator'
+          optional :recaptcha_response, type: String,
+                                        desc: 'Response from Recaptcha widget'
         end
 
         post do
@@ -39,6 +41,17 @@ module UserApi
           application = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
           error!('Wrong Application ID', 401) unless application
           error!('Your account was locked!', 401) unless account.locked_at.nil?
+
+          if ENV.fetch("CAPTCHA_ENABLED", false)
+            captcha_attempts = ENV.fetch('CAPTCHA_ATTEMPTS', 3)
+
+            if account.failed_attempts >= captcha_attempts
+              verify_captcha_if_enabled!(account: account,
+                                         response: params['recaptcha_response'],
+                                         error_statuses: [420, 420])
+              account.refresh_failed_attempts
+            end
+          end
 
           unless account.valid_password? declared_params[:password]
             account.add_failed_attempt
