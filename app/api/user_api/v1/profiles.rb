@@ -8,6 +8,7 @@ module UserApi
       desc 'Profile related routes'
       resource :profiles do
         desc 'Return profile of current resource owner',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' },
                { code: 404, message: 'Account has no profile' }
@@ -18,6 +19,7 @@ module UserApi
         end
 
         desc 'Create a profile for current_account',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },

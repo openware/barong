@@ -6,6 +6,7 @@ module UserApi
     class Labels < Grape::API
       resource :labels do
         desc 'List all labels for current account.',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' }
              ]
@@ -14,6 +15,7 @@ module UserApi
         end
 
         desc 'Return a label by key.',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -30,6 +32,7 @@ module UserApi
         end
 
         desc "Create a label with 'public' scope.",
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -54,6 +57,7 @@ module UserApi
         end
 
         desc "Update a label with 'public' scope.",
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -73,6 +77,7 @@ module UserApi
         end
 
         desc "Delete a label  with 'public' scope.",
+             security: [{ "BearerToken": [] }],
              success: { code: 204, message: 'Succefully deleted' },
              failure: [
                { code: 400, message: 'Required params are empty' },

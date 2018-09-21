@@ -7,6 +7,7 @@ module UserApi
       desc 'Account related routes'
       resource :accounts do
         desc 'Return information about current resource owner',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' }
              ]
@@ -15,6 +16,7 @@ module UserApi
         end
 
         desc 'Change account password',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are missing' },
                { code: 401, message: 'Invalid password or bearer token' },
@@ -37,7 +39,7 @@ module UserApi
           return error!(account.errors.full_messages.to_sentence) unless account.save
         end
 
-        desc 'Creates new account(no auth)',
+        desc 'Creates new account',
              success: { code: 201, message: 'Creates new account' },
              failure: [
                { code: 400, message: 'Required params are missing' },
@@ -52,7 +54,7 @@ module UserApi
           error!(account.errors.full_messages, 422) unless account.persisted?
         end
 
-        desc 'Confirms an account(no auth)',
+        desc 'Confirms an account',
              success: { code: 201, message: 'Confirms an account' },
              failure: [
                { code: 400, message: 'Required params are missing' },
@@ -70,7 +72,8 @@ module UserApi
           end
         end
 
-        desc 'Send confirmations instructions'
+        desc 'Send confirmations instructions',
+             security: [{ "BearerToken": [] }]
         params do
           requires :email, type: String,
                            desc: 'Account email',
@@ -85,7 +88,8 @@ module UserApi
           { message: 'Confirmation instructions was sent successfully' }
         end
 
-        desc 'Send unlock instructions'
+        desc 'Send unlock instructions',
+             security: [{ "BearerToken": [] }]
         params do
           requires :email, type: String,
                            desc: 'Account email',
@@ -101,7 +105,7 @@ module UserApi
           { message: 'Unlock instructions was sent successfully' }
         end
 
-        desc 'Unlocks an account(no auth)',
+        desc 'Unlocks an account',
              success: { code: 201, message: 'Unlocks an account' },
              failure: [
                { code: 400, message: 'Required params are missing' },

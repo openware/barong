@@ -112,4 +112,10 @@ Rails.application.configure do
     enable_starttls:      false,
     enable_starttls_auto: false
   }
+
+  if ENV['ROOT_DOMAIN']
+    config.session_store :cookie_store,
+                         key: '_barong_session',
+                         domain: ".#{ENV.fetch('ROOT_DOMAIN')}"
+  end
 end
