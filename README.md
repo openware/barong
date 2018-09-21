@@ -22,12 +22,22 @@ Prerequisites:
 bundle install
 ```
 
-2. Create database and run migrations
+2. Copy initialisation files
+```
+bin/init_config
+```
+
+3. Create database and run migrations
 ```
 bundle exec rake db:create db:migrate
 ```
 
-3. Start local server
+4. Install JS dependencies
+```
+yarn install
+```
+
+5. Start local server
 ```
 bundle exec rails server
 ```
