@@ -25,7 +25,12 @@ Doorkeeper.configure do
 
   # Access token expiration time (default 2 hours).
   # If you want to disable expiration, set this to nil.
-  access_token_expires_in ENV.fetch('JWT_LIFETIME', 4.hours)
+  expires_in = ENV.fetch('JWT_LIFETIME', 4.hours)
+  if expires_in.to_i < 30.minutes || expires_in.to_i > 24.hours.to_i
+    raise "JWT_LIFETIME must be from #{30.minutes} to #{24.hours.to_i} seconds"
+  end
+
+  access_token_expires_in expires_in
 
   # Assign a custom TTL for implicit grants.
   # custom_access_token_expires_in do |oauth_client|
