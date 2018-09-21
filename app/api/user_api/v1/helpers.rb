@@ -7,6 +7,14 @@ module UserApi
     module Helpers
       include Doorkeeper::Grape::Helpers
 
+      def warden
+        env['warden']
+      end
+
+      def warden_account
+        @warden_account ||= warden.authenticate(scope: :account)
+      end
+
       def current_account
         @current_account ||= begin
           doorkeeper_authorize!

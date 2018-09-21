@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   get  'security',            to: 'security#enable'
   post 'security/confirm',    to: 'security#confirm'
 
+  get 'health/alive', to: 'health#alive'
+  get 'health/ready', to: 'health#ready'
+
   resources :phones,    only: %i[new create]
   resources :profiles,  only: %i[new create]
   resources :documents, only: %i[new create]
