@@ -61,7 +61,7 @@ describe 'Api::V1::APIKeys' do
         uid: api_key.uid,
         public_key: api_key.public_key,
         state: api_key.state,
-        scopes: 'trade'
+        scopes: %w[trade]
       }
     end
     let(:totp_code) { valid_otp_code }
@@ -113,7 +113,7 @@ describe 'Api::V1::APIKeys' do
           uid: instance_of(String),
           public_key: params[:public_key],
           state: 'active',
-          scopes: params[:scopes],
+          scopes: params[:scopes].split(','),
           expires_in: 1.day.to_i
         }
       end
