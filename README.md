@@ -13,7 +13,7 @@ Barong is oAuth server for [peatio.tech][peatio.tech] stack.
 # Development
 
 Prerequisites:
-- Ruby version: `2.5.0`
+- Ruby version: `2.5.1`
 - Bundler preinstalled
 - MySQL preinstalled
 

@@ -26,12 +26,7 @@ class Profile < ApplicationRecord
                      with: /\A[A-Za-z\s'-]+\z/
                    },
                    if: proc { |a| a.city.present? }
-  validates :country, length: 2..255,
-                      format: {
-                        with: /\A[A-Za-z]+\z/,
-                        message: 'only allows letters'
-                      },
-                      if: proc { |a| a.country.present? }
+  validate :validate_country_format
   validates :postcode, length: 2..255,
                        format: { with: /\A[A-Z\d\s-]+\z/ },
                        if: proc { |a| a.postcode.present? }
@@ -63,6 +58,13 @@ class Profile < ApplicationRecord
   end
 
 private
+
+  def validate_country_format
+    return if ISO3166::Country.find_country_by_alpha2(country) ||
+              ISO3166::Country.find_country_by_alpha3(country)
+
+    errors.add(:country, 'must have alpha2 or alpha3 format')
+  end
 
   def squish_spaces
     first_name&.squish!

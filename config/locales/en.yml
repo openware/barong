@@ -39,6 +39,7 @@ en:
         password: Password
         confirmation_token: Confirmation Token
         reset_password_token: Reset Password Token
+        password_hash: Password Hash
         totp_code: TOTP Code
         uid: UID
         account_uid: Account UID

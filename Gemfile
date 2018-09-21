@@ -2,18 +2,18 @@
 
 source 'https://rubygems.org'
 
-gem 'rails',        '~> 5.1.4'
+gem 'rails',        '~> 5.2.1'
 gem 'mysql2',       '~> 0.4'
 gem 'puma',         '~> 3.7'
 gem 'sassc-rails',  '~> 1.3'
 gem 'uglifier',     '~> 4'
 gem 'devise',       '~> 4.4'
-gem 'mini_racer',   '~> 0.1', require: false
+gem 'mini_racer',   '~> 0.2.0', require: false
 gem 'cancancan',    '~> 2.0'
 gem 'bootstrap',    '~> 4.0.0'
 gem 'jquery-rails', '~> 4.3'
 gem 'kaminari',     '~> 1.1.1'
-gem 'doorkeeper',   '~> 4.2.6'
+gem 'doorkeeper',   '~> 4.4.2'
 gem 'grape',        '~> 1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'sneakers',     '~> 2.6'
@@ -41,6 +41,7 @@ gem 'jwt', '~> 2.1'
 gem 'jwt-multisig', '~> 1.0'
 gem 'discard', '~> 1.0'
 gem 'sentry-raven', '~> 2.7', require: false
+gem 'rubyzip',      '~> 1.2.2', require: false
 
 group :development, :test do
   gem 'listen',     '~> 3.1'

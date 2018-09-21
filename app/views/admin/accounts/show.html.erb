@@ -69,7 +69,7 @@
 
       <li class="list-group-item">
         <b> Country: </b>
-        <%= @profile.country%>
+        <%= full_country(@profile.country) %>
       </li>
 
       <% if @document_label_value %>
@@ -97,7 +97,7 @@
     <% @phones.each do |phone| %>
       <tr>
         <td><%= phone.id %></td>
-        <td><%= phone.country %></td>
+        <td><%= full_country(phone.country) %></td>
         <td><%= phone.number %></td>
         <td><%= phone.validated_at %></td>
       </tr>
