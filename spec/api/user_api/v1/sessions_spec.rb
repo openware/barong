@@ -181,8 +181,9 @@ describe 'Session create test' do
     let(:params) { {} }
     let!(:account) { create(:account) }
     let!(:api_key) do
-      create(:api_key, account: account,
-                       public_key: jwt_keypair_encoded[:public])
+      create(:api_key,
+             account: account,
+             public_key: jwt_keypair_encoded[:public])
     end
 
     context 'when required params are missing' do
@@ -222,9 +223,15 @@ describe 'Session create test' do
     end
 
     context 'when payload is valid' do
+      let(:multiple_scopes_api_key) do
+        create(:api_key,
+               account: account,
+               public_key: jwt_keypair_encoded[:public],
+               scopes: %w[read_orders write_orders])
+      end
       let(:params) do
         {
-          kid: api_key.uid,
+          kid: multiple_scopes_api_key.uid,
           jwt_token: encode_api_key_payload({})
         }
       end
@@ -232,7 +239,7 @@ describe 'Session create test' do
         {
           sub: 'session',
           iss: 'barong',
-          aud: api_key.scopes,
+          aud: multiple_scopes_api_key.scopes,
           email: account.email,
           level: account.level,
           role: account.role,
@@ -252,6 +259,13 @@ describe 'Session create test' do
         payload, = jwt_decode(token)
 
         expect(payload.symbolize_keys).to include(expected_payload)
+      end
+
+      it 'generates session jwt with comma separated scopes' do
+        token = json_body[:token]
+        payload, = jwt_decode(token)
+
+        expect(payload['aud']).to eq multiple_scopes_api_key.scopes
       end
     end
   end

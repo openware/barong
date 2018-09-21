@@ -3,6 +3,8 @@
 # -*- SkipSchemaAnnotations
 # model for saving user api key pairs
 class APIKey < ApplicationRecord
+  serialize :scopes, Array
+
   JWT_OPTIONS = {
     verify_expiration: true,
     verify_iat: true,
