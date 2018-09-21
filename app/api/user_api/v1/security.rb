@@ -8,6 +8,7 @@ module UserApi
       desc 'Security related routes'
       resource :security do
         desc 'Renews JWT if current JWT is valid',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' },
                { code: 422, message: 'Invalid expires_in' }
@@ -29,6 +30,7 @@ module UserApi
         end
 
         desc 'Generate qr code for 2FA',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: '2FA has been enabled for this account' },
                { code: 401, message: 'Invalid bearer token' }
@@ -39,6 +41,7 @@ module UserApi
         end
 
         desc 'Enable 2FA',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: '2FA has been enabled for this account or code is missing' },
                { code: 401, message: 'Invalid bearer token' },
@@ -61,6 +64,7 @@ module UserApi
         end
 
         desc 'Verify 2FA code',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: '2FA has not been enabled for this account or code is missing' },
                { code: 401, message: 'Invalid bearer token' },
@@ -78,7 +82,7 @@ module UserApi
           end
         end
 
-        desc 'Send reset password instructions(no auth)',
+        desc 'Send reset password instructions',
              failure: [
                { code: 400, message: 'Email is missing' },
                { code: 404, message: 'Record is not found' },
@@ -96,7 +100,7 @@ module UserApi
           end
         end
 
-        desc 'Sets new account password(no auth)',
+        desc 'Sets new account password',
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 404, message: 'Record is not found' },
@@ -123,6 +127,7 @@ module UserApi
         end
 
         desc 'Verify API key',
+             security: [{ "BearerToken": [] }],
              success: { code: 200, message: 'API key is valid' },
              failure: [
                { code: 400, message: 'Required params are empty' },
