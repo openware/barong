@@ -63,6 +63,9 @@ module UserApi
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         post do
+          if params[:scopes].present?
+            params[:scopes] = params[:scopes].split(',')
+          end
           declared_params = declared(params, include_missing: false).except(:totp_code)
           api_key = current_account.api_keys.create(declared_params)
           if api_key.errors.any?
