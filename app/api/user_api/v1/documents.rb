@@ -8,6 +8,7 @@ module UserApi
       desc 'Documents related routes'
       resource :documents do
         desc 'Return current user documents list',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' }
              ]
@@ -16,6 +17,7 @@ module UserApi
         end
 
         desc 'Upload a new document for current user',
+             security: [{ "BearerToken": [] }],
              success: { code: 201, message: 'Document is uploaded' },
              failure: [
                { code: 400, message: 'Required params are empty' },
