@@ -154,6 +154,23 @@ describe 'Session create test' do
           expect(response.status).to eq(401)
         end
       end
+
+      context 'When user is not active' do
+        let!(:another_email) { 'email@random.com' }
+        let!(:account) do
+          create :account,
+                 email: another_email,
+                 password: password,
+                 password_confirmation: password,
+                 state: 'banned'
+        end
+
+        it 'returns error' do
+          post uri, params: { email: another_email, password: password, application_id: application.uid }
+          expect_body.to eq(error: 'You have to confirm your email address before continuing')
+          expect(response.status).to eq(401)
+        end
+      end
     end
   end
 
