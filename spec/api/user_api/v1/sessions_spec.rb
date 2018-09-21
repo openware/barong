@@ -39,86 +39,112 @@ describe 'Session create test' do
       context 'when captcha is enabled' do
         before do
           ENV['CAPTCHA_ENABLED'] = 'true'
+          ENV['CAPTCHA_ATTEMPTS'] = captcha_attempts.to_s
         end
         after do
           ENV['CAPTCHA_ENABLED'] = nil
+          ENV['CAPTCHA_ATTEMPTS'] = nil
         end
 
         let(:captcha_attempts) { 3 }
-        let(:params) do
-          {
-            email: email,
-            password: 'invalid',
-            application_id: application.uid,
-            recaptcha_response: recaptcha_response
-          }
-        end
-
         let(:recaptcha_response) { nil }
         let(:valid_response) { 'valid' }
         let(:invalid_response) { 'invalid' }
 
         before do
           allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
-                                                  .with(model: acc,
-                                                        skip_remote_ip: true,
-                                                        response: valid_response) { true }
+            .with(model: acc,
+                  skip_remote_ip: true,
+                  response: valid_response) { true }
 
           allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
-                                                  .with(model: acc,
-                                                        skip_remote_ip: true,
-                                                        response: invalid_response) { raise StandardError }
+            .with(model: acc,
+                  skip_remote_ip: true,
+                  response: invalid_response) { raise StandardError }
         end
 
-        context 'when account is not reached captcha attempts' do
-          it 'expects to get captcha error' do
-            captcha_attempts.times do
-              post uri, params: params
-              expect_status_to_eq 401
-            end
+        context 'when password is valid' do
+          let(:params) do
+            {
+              email: email,
+              password: password,
+              application_id: application.uid,
+              recaptcha_response: recaptcha_response
+            }
+          end
 
-            post uri, params: params
-            expect(json_body[:error]).to eq('recaptcha_response is required')
-            expect_status_to_eq 420
+          context 'when account is reached captcha attempts' do
+            before { acc.update!(failed_attempts: captcha_attempts) }
+
+            context 'when captcha response is blank' do
+              it 'signs in an account' do
+                post uri, params: params
+                expect_status_to_eq 201
+              end
+            end
           end
         end
 
-        context 'when account is reached captcha attempts' do
-          before { acc.update!(failed_attempts: captcha_attempts) }
+        context 'when password is invalid' do
+          let(:params) do
+            {
+              email: email,
+              password: 'invalid',
+              application_id: application.uid,
+              recaptcha_response: recaptcha_response
+            }
+          end
 
-          context 'when captcha response is blank' do
-            it 'renders an error' do
+          context 'when account is not reached captcha attempts' do
+            it 'expects to get captcha error' do
+              captcha_attempts.times do
+                post uri, params: params
+                expect_status_to_eq 401
+              end
+
               post uri, params: params
               expect(json_body[:error]).to eq('recaptcha_response is required')
               expect_status_to_eq 420
             end
           end
 
-          context 'when captcha response is not valid' do
-            let(:recaptcha_response) { invalid_response }
+          context 'when account is reached captcha attempts' do
+            before { acc.update!(failed_attempts: captcha_attempts) }
 
-            it 'renders an error' do
-              post uri, params: params
-              expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
-              expect_status_to_eq 420
-
-              post uri, params: params
-              expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
-              expect_status_to_eq 420
+            context 'when captcha response is blank' do
+              it 'renders an error' do
+                post uri, params: params
+                expect(json_body[:error]).to eq('recaptcha_response is required')
+                expect_status_to_eq 420
+              end
             end
-          end
 
-          context 'when captcha response is valid' do
-            let(:recaptcha_response) { invalid_response }
+            context 'when captcha response is not valid' do
+              let(:recaptcha_response) { invalid_response }
 
-            it 'resets failed attempts' do
-              post uri, params: params.merge(recaptcha_response: valid_response)
-              expect(json_body[:error]).to eq('Invalid Email or Password')
-              expect_status_to_eq 401
+              it 'renders an error' do
+                post uri, params: params
+                expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+                expect_status_to_eq 420
 
-              post uri, params: params
-              expect(json_body[:error]).to eq('Invalid Email or Password')
-              expect_status_to_eq 401
+                post uri, params: params
+                expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+                expect_status_to_eq 420
+              end
+            end
+
+            context 'when captcha response is valid' do
+              let(:recaptcha_response) { invalid_response }
+
+              it 'resets failed attempts' do
+                post uri, params: params.merge(recaptcha_response: valid_response)
+                expect(json_body[:error]).to eq('Invalid Email or Password')
+                expect_status_to_eq 401
+
+                post uri, params: params
+                expect(json_body[:error]).to eq('Invalid Email or Password')
+                expect_status_to_eq 401
+              end
             end
           end
         end
@@ -201,6 +227,10 @@ describe 'Session create test' do
         end
 
         context 'when Password is wrong' do
+          before { ENV['MAX_LOGIN_ATTEMPTS'] = max_attempts.to_s }
+          after { ENV['MAX_LOGIN_ATTEMPTS'] = nil }
+          let(:max_attempts) { 10 }
+
           it 'returns errror' do
             post uri, params: { email: email, password: 'password', application_id: application.uid }
             expect_body.to eq(error: 'Invalid Email or Password')
@@ -208,7 +238,7 @@ describe 'Session create test' do
           end
 
           it 'locks account if user has 5 failed attempts' do
-            5.times do
+            max_attempts.times do
               post uri, params: { email: email,  password: 'password', application_id: application.uid }
               expect_body.to eq(error: 'Invalid Email or Password')
             end

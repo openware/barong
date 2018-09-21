@@ -47,14 +47,13 @@ module UserApi
       end
 
       def verify_captcha_if_enabled!(account:, response:, error_statuses: [400, 422])
-        return unless ENV.fetch("CAPTCHA_ENABLED", false)
+        return unless ENV['CAPTCHA_ENABLED'] == 'true'
 
         captcha_error_message = 'reCAPTCHA verification failed, please try again.'
         error!('recaptcha_response is required', error_statuses.first) if response.blank?
-        return if RecaptchaVerifier.new(request: request)
-                                        .verify_recaptcha(model: account,
-                                                          skip_remote_ip: true,
-                                                          response: response)
+        return if RecaptchaVerifier.new(request: request).verify_recaptcha(model: account,
+                                                                           skip_remote_ip: true,
+                                                                           response: response)
         error!(captcha_error_message, error_statuses.last)
       rescue StandardError
         error!(captcha_error_message, error_statuses.last)
