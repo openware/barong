@@ -12,6 +12,16 @@ module UserApi
 
           Barong::Security::AccessToken.create expires_in, account.id, application
         end
+
+        def handle_session_captcha(account:, response:)
+          return unless ENV['CAPTCHA_ENABLED'] == 'true'
+          return if account.failed_attempts < ENV.fetch('CAPTCHA_ATTEMPTS', '3').to_i
+
+          verify_captcha_if_enabled!(account: account,
+                                     response: response,
+                                     error_statuses: [420, 420])
+          account.refresh_failed_attempts
+        end
       end
 
       desc 'Session related routes'
@@ -42,18 +52,9 @@ module UserApi
           error!('Wrong Application ID', 401) unless application
           error!('Your account was locked!', 401) unless account.locked_at.nil?
 
-          if ENV.fetch("CAPTCHA_ENABLED", false)
-            captcha_attempts = ENV.fetch('CAPTCHA_ATTEMPTS', 3)
-
-            if account.failed_attempts >= captcha_attempts
-              verify_captcha_if_enabled!(account: account,
-                                         response: params['recaptcha_response'],
-                                         error_statuses: [420, 420])
-              account.refresh_failed_attempts
-            end
-          end
-
           unless account.valid_password? declared_params[:password]
+            handle_session_captcha(account: account,
+                                   response: params['recaptcha_response'])
             account.add_failed_attempt
             error!('Invalid Email or Password', 401)
           end

@@ -47,7 +47,7 @@ module UserApi
       end
 
       def verify_captcha_if_enabled!(account:, response:, error_statuses: [400, 422])
-        return unless ENV.fetch("CAPTCHA_ENABLED", false)
+        return unless ENV['CAPTCHA_ENABLED'] == 'true'
 
         captcha_error_message = 'reCAPTCHA verification failed, please try again.'
         error!('recaptcha_response is required', error_statuses.first) if response.blank?
