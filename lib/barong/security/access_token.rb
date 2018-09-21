@@ -26,6 +26,11 @@ module Barong
           # Don't be confused by 'find' in method's name,
           # according to source code it returns old token if access_tokens are reusable(can be specified in config)
           return unless acc_id
+
+          if expires_in && (expires_in.to_i < 30.minutes || expires_in.to_i >= 24.hours.to_i)
+            raise "expires_in must be from #{30.minutes} to #{24.hours.to_i} seconds"
+          end
+
           Doorkeeper::AccessToken.find_or_create_for(
             application,
             acc_id,
