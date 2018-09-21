@@ -11,6 +11,17 @@ module ManagementAPI
 
       desc 'Label related routes'
       resource :labels do
+        desc 'Get all labels assigned to account' do
+          @settings[:scope] = :read_labels
+          success Entities::Label
+        end
+        params do
+          requires :account_uid, type: String, allow_blank: false, desc: 'Account uid'
+        end
+        post '/list' do
+          present account.labels, with: Entities::Label
+        end
+
         desc "Create a label with 'private' scope and assigns to account" do
           @settings[:scope] = :write_labels
           success Entities::Label
