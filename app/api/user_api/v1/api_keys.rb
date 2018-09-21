@@ -16,6 +16,7 @@ module UserApi
         end
 
         desc 'List all api keys for current account.',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Require 2FA and totp code' },
                { code: 401, message: 'Invalid bearer token' }
@@ -28,6 +29,7 @@ module UserApi
         end
 
         desc 'Return an api key by uid',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -43,6 +45,7 @@ module UserApi
         end
 
         desc 'Create an api key',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -70,6 +73,7 @@ module UserApi
         end
 
         desc 'Updates an api key',
+             security: [{ "BearerToken": [] }],
              failure: [
                { code: 400, message: 'Required params are empty' },
                { code: 401, message: 'Invalid bearer token' },
@@ -101,6 +105,7 @@ module UserApi
         end
 
         desc 'Delete an api key',
+             security: [{ "BearerToken": [] }],
              success: { code: 204, message: 'Succefully deleted' },
              failure: [
                { code: 400, message: 'Required params are empty' },
