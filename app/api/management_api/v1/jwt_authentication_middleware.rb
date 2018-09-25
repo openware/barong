@@ -10,6 +10,7 @@ module ManagementAPI
 
       def before
         return if request.path == '/management_api/v1/swagger_doc'
+
         check_request_method!
         check_query_parameters!
         check_content_type!

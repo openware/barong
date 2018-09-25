@@ -15,6 +15,7 @@ class SecurityController < ApplicationController
     if Vault::TOTP.validate?(current_account.uid, params[:otp])
       status = current_account.update(otp_enabled: true)
       return redirect_to index_path, notice: '2FA is enabled' if status
+
       redirect_to security_path, alert: current_account.errors.full_messages.to_sentence
     else
       redirect_to security_path, alert: 'Code is invalid'
@@ -31,6 +32,7 @@ private
 
   def check_otp_enabled
     return unless current_account.otp_enabled
+
     redirect_to(index_path, alert: '2FA has been enabled for this account')
   end
 end

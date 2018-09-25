@@ -20,6 +20,7 @@ module Vault
 
       def safe_create(uid, email)
         return if exist?(uid)
+
         create(uid, email)
       end
 
@@ -37,6 +38,7 @@ module Vault
 
       def validate?(uid, code)
         return false unless exist?(uid)
+
         write_data(totp_code_key(uid), code: code).data[:valid]
       end
 
@@ -46,6 +48,7 @@ module Vault
 
       def with_human_error
         raise ArgumentError, 'Block is required' unless block_given?
+
         yield
       rescue Vault::VaultError => e
         Rails.logger.error { e }

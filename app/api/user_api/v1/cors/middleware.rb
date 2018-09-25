@@ -27,7 +27,7 @@ module UserApi
           {}
         end
 
-        private
+      private
 
         def build_headers(origin)
           {

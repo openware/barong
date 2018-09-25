@@ -25,6 +25,7 @@ module ManagementAPI
 
         def create_profile(account:, params:)
           return unless all_profile_fields?(params)
+
           profile = account.create_profile(params)
           error!(profile.errors.full_messages, 422) unless profile.persisted?
         end

@@ -7,6 +7,7 @@ namespace :account do
       acc.level.times do |lvl|
         level = Level.all[lvl]
         raise "Account with id #{acc.id} has a level which is not corresponding the levels database" if level.nil?
+
         Label.find_or_create_by(account: acc, scope: 'private', key: level.key, value: level.value)
       end
     end

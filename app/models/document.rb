@@ -31,6 +31,7 @@ private
 
   def doc_expire_not_in_the_past
     return if doc_expire.blank?
+
     errors.add(:doc_expire, :invalid) if doc_expire < Date.current
   end
 

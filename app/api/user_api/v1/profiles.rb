@@ -39,6 +39,7 @@ module UserApi
 
         post do
           return error!('Profile already exists', 409) unless current_account.profile.nil?
+
           profile = current_account.create_profile(declared(params, include_missing: false))
           error!(profile.errors.full_messages.to_sentence, 422) if profile.errors.any?
         end

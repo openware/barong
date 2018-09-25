@@ -54,6 +54,7 @@ class Account < ApplicationRecord
 
     levels.each do |lvl|
       break unless tags.include?(lvl.key + ':' + lvl.value)
+
       account_level = lvl.id
     end
 
@@ -67,6 +68,7 @@ class Account < ApplicationRecord
 
   def assign_uid
     return unless uid.blank?
+
     loop do
       self.uid = random_uid
       break unless Account.where(uid: uid).any?
@@ -107,6 +109,7 @@ private
 
   def lock_if_attempts_count_exceeded
     return unless saved_changes.key? 'failed_attempts'
+
     lock_access! if failed_attempts >= ENV.fetch('MAX_LOGIN_ATTEMPTS', 5) && locked_at.nil?
   end
 end

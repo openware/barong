@@ -34,6 +34,7 @@ module HealthChecker
     def check_vault
       vault_enabled = ENV.fetch('VAULT_ENABLED', false)
       return true unless vault_enabled
+
       Vault::TOTP.server_available?
     end
   end
