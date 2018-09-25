@@ -45,7 +45,10 @@ Rails.application.configure do
       port: ENV.fetch('SMTP_PORT', 1025)
   }
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  options = { host: ENV.fetch('SMTP_URL_ADDRESS', 'localhost') }
+  options[:port] = 3000 if options[:host] == 'localhost'
+
+  config.action_mailer.default_url_options = options
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
