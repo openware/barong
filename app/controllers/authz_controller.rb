@@ -5,7 +5,6 @@ class AuthzController < ApplicationController
   before_action :authenticate_account!, unless: :public_route?
 
   PUBLIC_PATHS = [
-    'diag',
     'ambassador',
     'accounts/sign_in',
     'accounts/sign_out',
@@ -15,6 +14,8 @@ class AuthzController < ApplicationController
   ].freeze
 
   def verify
+    return head(:ok) if public_route?
+
     jwt_token = JWT.encode(jwt_payload, Barong::Security.private_key, 'RS256')
     response.set_header('Authorization', "Bearer #{jwt_token}")
     head :ok
