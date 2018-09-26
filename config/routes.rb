@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   root to: 'index#index', as: :index
 
+
   post 'phones/verification', to: 'phones#verify'
 
   get  'security',            to: 'security#enable'
@@ -21,8 +22,8 @@ Rails.application.routes.draw do
   get 'health/alive', to: 'health#alive'
   get 'health/ready', to: 'health#ready'
 
-  match 'authz', to: 'authz#verify', via: %i[get post patch put delete]
-  match 'authz/*path', to: 'authz#verify', via: %i[get post patch put delete]
+  match 'authz', to: 'authz#verify', via: :all
+  match 'authz/*path', to: 'authz#verify', via: :all
 
   resources :phones,    only: %i[new create]
   resources :profiles,  only: %i[new create]

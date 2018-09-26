@@ -63,12 +63,12 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180507162420
+# Schema version: 20180907133821
 #
 # Table name: labels
 #
-#  id         :integer          not null, primary key
-#  account_id :integer
+#  id         :bigint(8)        not null, primary key
+#  account_id :bigint(8)
 #  key        :string(255)      not null
 #  value      :string(255)      not null
 #  scope      :string(255)      default("public"), not null
@@ -82,5 +82,5 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (account_id => accounts.id) ON DELETE => cascade
+#  fk_rails_c02659cdf4  (account_id => accounts.id) ON DELETE => cascade
 #

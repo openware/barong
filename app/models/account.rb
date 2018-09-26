@@ -115,11 +115,11 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180508095253
+# Schema version: 20180907133821
 #
 # Table name: accounts
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint(8)        not null, primary key
 #  uid                    :string(255)      not null
 #  email                  :string(255)      not null
 #  encrypted_password     :string(255)      default(""), not null

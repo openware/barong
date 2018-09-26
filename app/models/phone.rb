@@ -41,11 +41,11 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180503073934
+# Schema version: 20180907133821
 #
 # Table name: phones
 #
-#  id           :integer          not null, primary key
+#  id           :bigint(8)        not null, primary key
 #  country      :string(255)
 #  number       :string(255)      not null
 #  validated_at :datetime

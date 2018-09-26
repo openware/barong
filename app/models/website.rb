@@ -7,11 +7,11 @@ class Website < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180516142429
+# Schema version: 20180907133821
 #
 # Table name: websites
 #
-#  id           :integer          not null, primary key
+#  id           :bigint(8)        not null, primary key
 #  domain       :string(255)
 #  title        :string(255)
 #  logo         :string(255)

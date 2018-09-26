@@ -46,12 +46,12 @@ private
 end
 
 # == Schema Information
-# Schema version: 20180507095118
+# Schema version: 20180907133821
 #
 # Table name: documents
 #
-#  id         :integer          not null, primary key
-#  account_id :integer
+#  id         :bigint(8)        not null, primary key
+#  account_id :bigint(8)
 #  upload     :string(255)
 #  doc_type   :string(255)
 #  doc_number :string(255)
@@ -66,5 +66,5 @@ end
 #
 # Foreign Keys
 #
-#  fk_rails_...  (account_id => accounts.id)
+#  fk_rails_dd871098c0  (account_id => accounts.id)
 #
