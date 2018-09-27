@@ -18,7 +18,7 @@ describe Admin::WebsitesController, type: :controller do
 
     it 'returns a success response' do
       get :index, params: {}
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -27,14 +27,14 @@ describe Admin::WebsitesController, type: :controller do
 
     it 'returns a success response' do
       get :show, params: { id: website.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
   describe 'GET #new' do
     it 'returns a success response' do
       get :new, params: {}
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -43,7 +43,7 @@ describe Admin::WebsitesController, type: :controller do
 
     it 'returns a success response' do
       get :edit, params: { id: website.to_param }
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 

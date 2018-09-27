@@ -12,7 +12,7 @@ describe 'CORS', type: :request do
       ENV['API_CORS_ORIGINS'] = nil
 
       get '/api/v1/accounts/me', headers: auth_header.merge(origin_header)
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(response.headers['Access-Control-Allow-Origin']).to eq(nil)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq(nil)
@@ -25,7 +25,7 @@ describe 'CORS', type: :request do
       ENV['API_CORS_ALLOW_INSECURE_ORIGINS'] = 'true'
 
       get '/api/v1/accounts/me', headers: auth_header.merge(origin_header)
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('false')
@@ -43,7 +43,7 @@ describe 'CORS', type: :request do
     it 'does not set CORS headers with OPTIONS' do
       reset! unless integration_session
       integration_session.send :process, 'OPTIONS', '/api/v1/accounts/me', headers: origin_header
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(response.headers['Access-Control-Allow-Origin']).to eq(nil)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq(nil)
@@ -53,7 +53,7 @@ describe 'CORS', type: :request do
 
     it 'does not set CORS headers with GET' do
       get '/api/v1/accounts/me', headers: auth_header.merge(origin_header)
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq(nil)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq(nil)
       expect(response.headers['Access-Control-Allow-Methods']).to eq(nil)
@@ -75,7 +75,7 @@ describe 'CORS', type: :request do
     it 'sends CORS headers when requesting using OPTIONS' do
       reset! unless integration_session
       integration_session.send :process, 'OPTIONS', '/api/v1/accounts/me', headers: origin_header
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
@@ -84,7 +84,7 @@ describe 'CORS', type: :request do
 
     it 'sends CORS headers when requesting using GET' do
       get '/api/v1/accounts/me', headers: auth_header.merge(origin_header)
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')

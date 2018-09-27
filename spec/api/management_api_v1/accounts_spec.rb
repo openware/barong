@@ -194,7 +194,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
       let(:params) do
         {
           email: email,
-          password_hash: password_hash,
+          password_hash: password_hash
         }.merge(profile_params)
       end
 
@@ -251,7 +251,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
         it 'renders an error' do
           expect { do_request }.to_not change { Profile.count }
           expect_status_to_eq 422
-          expect(json_body[:error]).to eq ["Country must have alpha2 or alpha3 format"]
+          expect(json_body[:error]).to eq ['Country must have alpha2 or alpha3 format']
         end
       end
     end
