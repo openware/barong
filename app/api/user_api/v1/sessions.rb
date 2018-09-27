@@ -17,7 +17,7 @@ module UserApi
                        exp: expires_in.from_now.to_i,
                        sub: 'session',
                        iss: 'barong',
-                       aud: 'peatio barong',
+                       aud: [:peatio, :barong],
                        jti: SecureRandom.hex(12).upcase,
                        uid:   account.uid,
                        email: account.email,
