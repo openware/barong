@@ -41,6 +41,6 @@ private
 
   def public_route?
     logger.info "Authz request #{params.inspect}"
-    PUBLIC_PATHS.any? { |path| params[:path].include?(path) }
+    PUBLIC_PATHS.any? { |path| params[:path].to_s.include?(path) }
   end
 end
