@@ -33,7 +33,7 @@ module UserApi
           {
             'Access-Control-Allow-Origin'      => origin,
             'Access-Control-Allow-Methods'     => 'GET, POST, PUT, PATCH, DELETE',
-            'Access-Control-Allow-Headers'     => 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Headers'     => 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Set-Cookie',
             'Access-Control-Allow-Credentials' => ENV['API_CORS_ALLOW_CREDENTIALS'].present?.to_s
           }
         end

@@ -51,6 +51,7 @@ module UserApi
 
           unless account.otp_enabled
             account.refresh_failed_attempts
+            warden.set_user(account, scope: :account)
             return create_access_token expires_in: declared_params[:expires_in],
                                        account: account,
                                        application: application
@@ -67,6 +68,7 @@ module UserApi
           end
 
           account.refresh_failed_attempts
+          warden.set_user(account, scope: :account)
           create_access_token expires_in: declared_params[:expires_in],
                               account: account,
                               application: application
