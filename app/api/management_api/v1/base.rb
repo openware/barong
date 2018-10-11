@@ -11,6 +11,16 @@ module ManagementAPI
       content_type   :json, 'application/json'
       default_format :json
 
+      logger Rails.logger.dup
+      logger.formatter = GrapeLogging::Formatters::Rails.new
+      use GrapeLogging::Middleware::RequestLogger,
+          logger:    logger,
+          log_level: :info,
+          include:   [GrapeLogging::Loggers::Response.new,
+                      GrapeLogging::Loggers::FilterParameters.new,
+                      GrapeLogging::Loggers::ClientEnv.new,
+                      GrapeLogging::Loggers::RequestHeaders.new]
+
       do_not_route_options!
 
       rescue_from(ManagementAPI::V1::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
