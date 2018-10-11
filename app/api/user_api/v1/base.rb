@@ -11,6 +11,16 @@ module UserApi
       content_type   :json, 'application/json'
       default_format :json
 
+      logger Rails.logger.dup
+      logger.formatter = GrapeLogging::Formatters::Rails.new
+      use GrapeLogging::Middleware::RequestLogger,
+          logger:    logger,
+          log_level: :info,
+          include:   [GrapeLogging::Loggers::Response.new,
+                      GrapeLogging::Loggers::FilterParameters.new,
+                      GrapeLogging::Loggers::ClientEnv.new,
+                      GrapeLogging::Loggers::RequestHeaders.new]
+
       helpers V1::Helpers
 
       do_not_route_options!
