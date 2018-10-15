@@ -16,6 +16,7 @@ Devise.setup do |config|
   # with default "from" parameter.
   sender_name = ENV.fetch('SENDER_NAME', 'Barong')
   sender_email = ENV.fetch('SENDER_EMAIL', 'noreply@barong.io')
+  password_min_length = ENV.fetch('PASSWORD_MIN_LENGTH', '6')
   config.mailer_sender = "#{sender_name} <#{sender_email}>"
 
   # Configure the class responsible to send e-mails.
@@ -161,7 +162,7 @@ Devise.setup do |config|
 
   # ==> Configuration for :validatable
   # Range for password length.
-  config.password_length = 6..128
+  config.password_length = password_min_length.to_i..128
 
   # Email regex used to validate email formats. It simply asserts that
   # one (and only one) @ exists in the given string. This is mainly
