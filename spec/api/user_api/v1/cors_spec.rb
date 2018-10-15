@@ -6,6 +6,9 @@ describe 'CORS', type: :request do
   let(:ranger_url) { 'https://ranger.barong.io' }
   let(:frontend_url) { 'https://frontend.barong.io' }
   let(:origin_header) { { 'Origin' => ranger_url } }
+  let(:allowed_headers) do
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization, Set-Cookie'
+  end
 
   context 'when API_CORS_ORIGINS is not set' do
     it 'does not set cors origins' do
@@ -30,7 +33,7 @@ describe 'CORS', type: :request do
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('false')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
-      expect(response.headers['Access-Control-Allow-Headers']).to eq('Origin, X-Requested-With, Content-Type, Accept, Authorization')
+      expect(response.headers['Access-Control-Allow-Headers']).to eq(allowed_headers)
 
       ENV['API_CORS_ALLOW_INSECURE_ORIGINS'] = nil
     end
@@ -79,7 +82,7 @@ describe 'CORS', type: :request do
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
-      expect(response.headers['Access-Control-Allow-Headers']).to eq('Origin, X-Requested-With, Content-Type, Accept, Authorization')
+      expect(response.headers['Access-Control-Allow-Headers']).to eq(allowed_headers)
     end
 
     it 'sends CORS headers when requesting using GET' do
@@ -88,7 +91,7 @@ describe 'CORS', type: :request do
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
-      expect(response.headers['Access-Control-Allow-Headers']).to eq('Origin, X-Requested-With, Content-Type, Accept, Authorization')
+      expect(response.headers['Access-Control-Allow-Headers']).to eq(allowed_headers)
     end
 
     it 'sends CORS headers ever when user is not authenticated' do
@@ -97,7 +100,7 @@ describe 'CORS', type: :request do
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
-      expect(response.headers['Access-Control-Allow-Headers']).to eq('Origin, X-Requested-With, Content-Type, Accept, Authorization')
+      expect(response.headers['Access-Control-Allow-Headers']).to eq(allowed_headers)
     end
 
     it 'sends CORS headers when invalid parameter supplied' do
@@ -106,7 +109,7 @@ describe 'CORS', type: :request do
       expect(response.headers['Access-Control-Allow-Origin']).to eq(ranger_url)
       expect(response.headers['Access-Control-Allow-Credentials']).to eq('true')
       expect(response.headers['Access-Control-Allow-Methods']).to eq('GET, POST, PUT, PATCH, DELETE')
-      expect(response.headers['Access-Control-Allow-Headers']).to eq('Origin, X-Requested-With, Content-Type, Accept, Authorization')
+      expect(response.headers['Access-Control-Allow-Headers']).to eq(allowed_headers)
     end
   end
 end
