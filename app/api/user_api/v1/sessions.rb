@@ -12,6 +12,16 @@ module UserApi
 
           Barong::Security::AccessToken.create expires_in, account.id, application
         end
+
+        def handle_session_captcha(account:, response:)
+          return unless ENV['CAPTCHA_ENABLED'] == 'true'
+          return if account.failed_attempts < ENV.fetch('CAPTCHA_ATTEMPTS', '3').to_i
+
+          verify_captcha_if_enabled!(account: account,
+                                     response: response,
+                                     error_statuses: [420, 420])
+          account.refresh_failed_attempts
+        end
       end
 
       desc 'Session related routes'
@@ -29,6 +39,8 @@ module UserApi
           optional :expires_in, allow_blank: false
           optional :otp_code, type: String,
                               desc: 'Code from Google Authenticator'
+          optional :recaptcha_response, type: String,
+                                        desc: 'Response from Recaptcha widget'
         end
 
         post do
@@ -41,6 +53,8 @@ module UserApi
           error!('Your account was locked!', 401) unless account.locked_at.nil?
 
           unless account.valid_password? declared_params[:password]
+            handle_session_captcha(account: account,
+                                   response: params['recaptcha_response'])
             account.add_failed_attempt
             error!('Invalid Email or Password', 401)
           end
@@ -51,6 +65,7 @@ module UserApi
 
           unless account.otp_enabled
             account.refresh_failed_attempts
+            warden.set_user(account, scope: :account)
             return create_access_token expires_in: declared_params[:expires_in],
                                        account: account,
                                        application: application
@@ -67,6 +82,7 @@ module UserApi
           end
 
           account.refresh_failed_attempts
+          warden.set_user(account, scope: :account)
           create_access_token expires_in: declared_params[:expires_in],
                               account: account,
                               application: application
