@@ -33,7 +33,14 @@ plugins:
     config:
       languages:
         - ruby:
-        - javascript:
+          - javascript:
+checks:
+  method-complexity:
+    config:
+      threshold: 10
+  file-lines:
+    config:
+      threshold: 350
 exclude_patterns:
   - db/
   - ci/bump.rb

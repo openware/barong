@@ -3,7 +3,6 @@
 module UserApi
   module V1
     class Accounts < Grape::API
-
       desc 'Account related routes'
       resource :accounts do
         desc 'Return information about current resource owner',
@@ -48,10 +47,14 @@ module UserApi
         params do
           requires :email, type: String, desc: 'Account Email', allow_blank: false
           requires :password, type: String, desc: 'Account Password', allow_blank: false
+          optional :recaptcha_response, type: String, desc: 'Response from Recaptcha widget'
         end
         post do
-          account = Account.create(declared(params))
-          error!(account.errors.full_messages, 422) unless account.persisted?
+          account = Account.new(params.slice('email', 'password'))
+          verify_captcha_if_enabled!(account: account,
+                                     response: params['recaptcha_response'])
+
+          error!(account.errors.full_messages, 422) unless account.save
         end
 
         desc 'Confirms an account',
