@@ -61,7 +61,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     bcrypt (3.1.11)
-    bootstrap (4.0.0)
+    bootstrap (4.1.2)
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
@@ -407,7 +407,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate (~> 2.7)
-  bootstrap (~> 4.0.0)
+  bootstrap (>= 4.1.2)
   bootstrap-datepicker-rails
   cancancan (~> 2.0)
   capybara (~> 2.17)
@@ -463,4 +463,4 @@ DEPENDENCIES
   vault (~> 0.1)
 
 BUNDLED WITH
-   1.16.3
+   1.16.6
