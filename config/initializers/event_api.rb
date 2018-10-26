@@ -136,7 +136,7 @@ module EventAPI
         }
 
         private_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(ENV.fetch('EVENT_API_JWT_PRIVATE_KEY')))
-        algorithm   = ENV.fetch('EVENT_API_JWT_ALGORITHM')
+        algorithm   = ENV.fetch('EVENT_API_JWT_ALGORITHM', 'RS256')
         jwt         = JWT::Multisig.generate_jwt jwt_payload, \
                                                    { Middlewares.application_name.to_sym => private_key },
                                                  { Middlewares.application_name.to_sym => algorithm }
@@ -193,10 +193,10 @@ module EventAPI
       def rabbitmq_credentials
         return ENV['EVENT_API_RABBITMQ_URL'] if ENV['EVENT_API_RABBITMQ_URL'].present?
 
-        { host:     ENV.fetch('EVENT_API_RABBITMQ_HOST'),
-          port:     ENV.fetch('EVENT_API_RABBITMQ_PORT'),
-          username: ENV.fetch('EVENT_API_RABBITMQ_USERNAME'),
-          password: ENV.fetch('EVENT_API_RABBITMQ_PASSWORD') }
+        { host:     ENV.fetch('EVENT_API_RABBITMQ_HOST','localhost'),
+          port:     ENV.fetch('EVENT_API_RABBITMQ_PORT','5672'),
+          username: ENV.fetch('EVENT_API_RABBITMQ_USERNAME','guest'),
+          password: ENV.fetch('EVENT_API_RABBITMQ_PASSWORD','guest') }
       end
 
       def exchange_name(event_name)

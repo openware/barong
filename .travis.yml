@@ -19,6 +19,7 @@ env:
 
 services:
   - mysql
+  - rabbitmq
 
 addons:
   chrome: stable
