@@ -262,6 +262,8 @@ GEM
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-attack (5.4.1)
+      rack (>= 1.0, < 3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.4)
@@ -448,6 +450,7 @@ DEPENDENCIES
   pry-byebug (~> 3.5)
   public_suffix
   puma (~> 3.7)
+  rack-attack (~> 5.4.1)
   rails (~> 5.1.4)
   rails-controller-testing
   recaptcha
