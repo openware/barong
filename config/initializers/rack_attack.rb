@@ -2,7 +2,7 @@ class Rack::Attack
 
   Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
-  phone_verif_limit = ENV.fetch('PHONE_VERIFICATION_RATE_LIMIT', 5)
+  phone_rate_limit = ENV.fetch('PHONE_VERIFICATION_RATE_LIMIT', 5)
 
   # Limit nubmer of calls from ip per second
   throttle('logins/ip',limit: 10, period: 1.seconds) do |req|
@@ -10,16 +10,14 @@ class Rack::Attack
   end
 
   # Limit number of phone verification calls per number
-  throttle('phone_verification/number', limit: phone_verif_limit , period: 24.hours) do |req|
+  throttle('phone_verification/number', limit: phone_rate_limit , period: 24.hours) do |req|
     case req.path
     when '/phones/verification'
       req.body.string
-    when '/phones'
-      req.cookies['_barong_session']
+    when '/api/v1/phones/verify'
+      req.get_header("HTTP_AUTHORIZATION")
     end
   end
-
-  # TODO: Limit by account id not by barong session 
 
 end
 
