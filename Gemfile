@@ -36,6 +36,7 @@ gem 'public_suffix'
 gem 'devise-security'
 gem 'devise-pwned_password'
 gem 'email_validator', require: 'email_validator/strict'
+gem 'rack-attack',  '~> 5.4.1'
 
 gem 'doorkeeper-jwt', git: 'https://github.com/rubykube/doorkeeper-jwt.git'
 gem 'memoist', '~> 0.16'
