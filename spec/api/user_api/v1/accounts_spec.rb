@@ -36,7 +36,7 @@ describe 'Api::V1::Accounts' do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Email is invalid'])
+        expect_body.to eq(error: ['Email is invalid', 'Password has previously appeared in a data breach and should never be used. Please choose something harder to guess.'])
       end
     end
 
@@ -46,7 +46,7 @@ describe 'Api::V1::Accounts' do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.'])
+        expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.', 'Password has previously appeared in a data breach and should never be used. Please choose something harder to guess.'])
       end
     end
 
@@ -61,7 +61,7 @@ describe 'Api::V1::Accounts' do
     end
 
     context 'when email is blank' do
-      let(:params) { { email: '', password: 'Password1' } }
+      let(:params) { { email: '', password: 'zieV0Kai' } }
 
       it 'renders an error' do
         do_request
@@ -71,7 +71,7 @@ describe 'Api::V1::Accounts' do
     end
 
     context 'when email is valid' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'Password1' } }
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCu' } }
 
       it 'creates an account' do
         do_request
@@ -84,7 +84,7 @@ describe 'Api::V1::Accounts' do
       after { ENV['CAPTCHA_ENABLED'] = nil }
 
       context 'when captcha response is blank' do
-        let(:params) { { email: 'vadid.email@gmail.com', password: 'Password1' } }
+        let(:params) { { email: 'vadid.email@gmail.com', password: 'quooR4ew' } }
 
         it 'renders an error' do
           do_request
@@ -97,7 +97,7 @@ describe 'Api::V1::Accounts' do
         let(:params) do
           {
             email: 'vadid.email@gmail.com',
-            password: 'Password1',
+            password: 'eFo8aesi',
             recaptcha_response: 'invalid'
           }
         end
@@ -117,7 +117,7 @@ describe 'Api::V1::Accounts' do
         let(:params) do
           {
             email: 'vadid.email@gmail.com',
-            password: 'Password1',
+            password: 'Deivoh3a',
             recaptcha_response: 'invalid'
           }
         end
@@ -136,26 +136,26 @@ describe 'Api::V1::Accounts' do
 
   describe 'PUT /api/v1/accounts/password' do
     let(:url) { '/api/v1/accounts/password' }
-    let!(:password0) { 'Testpassword111' }
-    let!(:password1) { 'Testpassword123' }
+    let!(:password0) { 'Aeth7sha' }
+    let!(:password1) { 'Iene0eej' }
     let(:params0) do
       {
-        old_password: 'Password0',
-        new_password: 'Password1'
+        old_password: 'faezu6Te',
+        new_password: 'Aijae7gu'
       }
     end
 
     let(:params1) do
       {
-        old_password: 'Password1',
-        new_password: 'Password0'
+        old_password: 'Aijae7gu',
+        new_password: 'quee2ooV'
       }
     end
 
     subject!(:acc) do
       create :account,
-             password: 'Password0',
-             password_confirmation: 'Password0'
+             password: 'faezu6Te',
+             password_confirmation: 'faezu6Te'
     end
 
     let!(:access_token) do

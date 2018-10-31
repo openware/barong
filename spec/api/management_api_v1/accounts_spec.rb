@@ -72,7 +72,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
         let(:params) do
           {
             email: 'valid_email@example.com',
-            password: 'Password1'
+            password: 'Fai5aeso'
           }
         end
         let!(:application) { create :doorkeeper_application }
@@ -99,7 +99,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
         it 'renders an error' do
           expect { do_request }.to_not change { Account.count }
           expect_status_to_eq 422
-          expect_body.to eq(error: ['Email is invalid'])
+          expect_body.to eq(error: ['Email is invalid', 'Password has previously appeared in a data breach and should never be used. Please choose something harder to guess.'])
         end
       end
 
