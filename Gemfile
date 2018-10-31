@@ -33,6 +33,7 @@ gem 'fontello_rails_converter'
 gem 'bootstrap-datepicker-rails'
 gem 'public_suffix'
 gem 'devise-security'
+gem 'devise-pwned_password'
 gem 'email_validator', require: 'email_validator/strict'
 
 gem 'doorkeeper-jwt', git: 'https://github.com/rubykube/doorkeeper-jwt.git'
