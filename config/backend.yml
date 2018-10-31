@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+
+  gateway:
+    image: quay.io/datawire/ambassador:0.40.0
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./gateway:/ambassador/ambassador-config/:ro
+    entrypoint:
+      - sh
+      - -exc
+      - |
+        # Allow accessing host's 0.0.0.0 so we can connect to a local barong
+        # from the gateway container
+        ip -4 route list match 0/0 | awk '{print $$3" barong.local"}' >> /etc/hosts
+        # Continue with the default entrypoint
+        ./entrypoint.sh
+
+  vault: 
+    image: vault:0.10.2
+    restart: always
+    environment:
+      SKIP_SETCAP: 1
+    ports:
+      - "8200:8200"
+
+volumes:
+  db_data:

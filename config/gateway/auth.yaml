@@ -1,0 +1,9 @@
+---
+apiVersion: ambassador/v0
+kind: AuthService
+name: authentication
+auth_service: barong.local:3000
+path_prefix: /authz
+allowed_headers:
+  - "Authorization"
+

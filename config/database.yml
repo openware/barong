@@ -8,6 +8,7 @@ default: &default
 
 development:
   <<: *default
+  host: <%= ENV.fetch('DATABASE_HOST', '0.0.0.0') %>
   database: <%= ENV.fetch('DATABASE_NAME', 'barong_development') %>
 
 test:
