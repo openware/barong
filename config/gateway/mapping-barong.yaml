@@ -1,0 +1,18 @@
+---
+apiVersion: ambassador/v0
+kind: Mapping
+name: barong_api_mapping
+host: www.app.local:8080
+prefix: /api/barong/v1/
+rewrite: /api/v1/
+service: barong.local:3000
+
+---
+apiVersion: ambassador/v0
+kind: Mapping
+name: barong_app_mapping
+host: barong.app.local:8080
+prefix: /
+rewrite: /
+service: barong.local:3000
+
