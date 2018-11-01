@@ -4,13 +4,15 @@ class CreateAllTables < ActiveRecord::Migration[5.2]
     create_table :users do |t|
       t.string    :uid,                 null: false
       t.string    :email,               null: false
-      t.string    :passwd,              null: false
+      t.string    :password_digest,     null: false
       t.string    :role,                default: "member", null: false
       t.integer   :level,               default: 0, null: false
       t.boolean   :otp,                 default: false
       t.string    :state,               default: "pending", null: false
       t.timestamps
     end
+    add_index :users, :uid, unique: true
+    add_index :users, :email, unique: true
 
     create_table :apikeys do |t|
       t.bigint    :user_id,   null: false, unsigned: true

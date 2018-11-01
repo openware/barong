@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2018_11_01_143041) do
   create_table "apikeys", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false, unsigned: true
     t.string "kid", null: false
+    t.string "algorithm", null: false
     t.string "scope"
     t.string "state", default: "active", null: false
     t.datetime "created_at", null: false
@@ -83,13 +84,15 @@ ActiveRecord::Schema.define(version: 2018_11_01_143041) do
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
     t.string "email", null: false
-    t.string "passwd", null: false
+    t.string "password_digest", null: false
     t.string "role", default: "member", null: false
     t.integer "level", default: 0, null: false
     t.boolean "otp", default: false
     t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
 end
