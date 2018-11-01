@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:4.0
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  vault:
+    image: vault:0.11.4
+    ports:
+      - "8200:8200"
+    environment:
+      SKIP_SETCAP: 1
+      VAULT_TOKEN: changeme
+      VAULT_DEV_ROOT_TOKEN_ID: changeme
+      VAULT_ADDR: http://vault:8200
+
+  gateway:
+    image: quay.io/datawire/ambassador:0.40.0
+    ports:
+      - "8080:80"
+    volumes:
+      - ./gateway:/ambassador/ambassador-config/:ro
+    entrypoint:
+      - sh
+      - -exc
+      - |
+        # Allow accessing host's 0.0.0.0 so we can connect to a local peatio
+        # from the gateway container
+        ip -4 route list match 0/0 | awk '{print $$3" barong.local"}' >> /etc/hosts
+        # Continue with the default entrypoint
+        ./entrypoint.sh
+
+volumes:
+  db_data:
+  redis_data:
