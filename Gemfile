@@ -16,6 +16,11 @@ gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
+# REST-like API framework for Ruby
+gem 'grape',        '~> 1.0'
+gem 'grape-entity', '~> 0.7.1'
+gem 'memoist', '~> 0.16'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -43,19 +48,17 @@ group :development, :test do
 end
 
 group :development do
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '>= 3.0.5', '< 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'grape_on_rails_routes', '~> 0.3.2'
+  gem 'web-console',  '>= 3.3.0'
+  gem 'listen',       '>= 3.0.5', '< 3.2'
+  gem 'annotate',     '~> 2.7'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
-  # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
   gem 'rspec-rails',         '~> 3.8'
   gem 'shoulda-matchers',    '~> 4.0.0.rc1'
