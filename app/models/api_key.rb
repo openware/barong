@@ -17,16 +17,14 @@ class APIKey < ApplicationRecord
   }.freeze
 
   before_create :set_uid
-  before_validation :set_expires_in
-  validates :account_id, :public_key, presence: true
-  validates :expires_in, numericality: {
-    only_integer: true,
-    greater_than_or_equal_to: 30,
-    less_than_or_equal_to: 1.days.to_i
-  }
+  validates :account_id, :kid, presence: true
 
   belongs_to :account
   scope :active, -> { where(state: 'active') }
+
+  def hmac?
+    self.kid.length == 16 && self.algorithm.include?('HS')
+  end
 
 private
 
@@ -34,9 +32,6 @@ private
     self.uid = SecureRandom.uuid
   end
 
-  def set_expires_in
-    self.expires_in ||= 1.days.to_i
-  end
 end
 
 # == Schema Information

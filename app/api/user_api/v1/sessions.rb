@@ -115,15 +115,19 @@ module UserApi
                { code: 401, message: 'JWT is invalid' }
              ]
         params do
-          requires :kid, type: String, allow_blank: false, desc: 'API Key uid'
-          requires :jwt_token, type: String, allow_blank: false
+          optional :kid, type: String, allow_blank: false, desc: 'API Key uniq kid'
+          optional :signature, type: String, allow_blank: false, desc: 'JWT token or HMAC-SHA256 encoded message'
+          optional :nonce, type: Integer, allow_blank: false, desc: 'Random integer number, unix time'
         end
         post 'generate_jwt' do
           status 200
-          declared_params = declared(params).symbolize_keys
+          declared_params = declared(params, include_missing: false).symbolize_keys
           generator = SessionJWTGenerator.new declared_params
-          error!('Payload is invalid', 401) unless generator.verify_payload
-
+          if declared_params[:nonce]
+            error!('Payload is invalid', 401) unless generator.verify_hmac_payload
+          else
+            error!('Payload is invalid', 401) unless generator.verify_rsa_payload
+          end
           { token: generator.generate_session_jwt }
         rescue JWT::DecodeError => e
           error! "Failed to decode and verify JWT: #{e.inspect}", 401

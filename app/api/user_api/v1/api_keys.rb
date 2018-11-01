@@ -4,6 +4,19 @@ module UserApi
   module V1
     # Responsible for CRUD for api keys
     class APIKeys < Grape::API
+
+      helpers do
+        def gen_kid(params)
+          if params[:algorithm].include?('HS')
+            SecureRandom.hex(8)
+          elsif params[:algorithm].include?('RS') && params[:kid]
+            params[:kid]
+          else
+            error!('Unsupported or invalid algorithm')
+          end
+        end
+      end
+
       resource :api_keys do
         before do
           unless current_account.otp_enabled
@@ -52,20 +65,19 @@ module UserApi
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :public_key, type: String,
-                                allow_blank: false
+          requires :algorithm, type: String, allow_blank: false
+          optional :kid, type: String, allow_blank: false
           optional :scopes, type: String,
                             allow_blank: false,
                             desc: 'comma separated scopes'
-          optional :expires_in, type: String,
-                                allow_blank: false,
-                                desc: 'expires_in duration in seconds'
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         post do
+          params[:kid] = gen_kid(params)
           declared_params = declared(params, include_missing: false)
                             .except(:totp_code)
                             .merge(scopes: params[:scopes]&.split(','))
+
           api_key = current_account.api_keys.create(declared_params)
           if api_key.errors.any?
             error!(api_key.errors.full_messages.to_sentence, 422)
@@ -84,14 +96,10 @@ module UserApi
              ]
         params do
           requires :uid, type: String, allow_blank: false
-          optional :public_key, type: String,
-                                allow_blank: false
+          optional :kid, type: String, allow_blank: false
           optional :scopes, type: String,
                             allow_blank: false,
                             desc: 'comma separated scopes'
-          optional :expires_in, type: String,
-                                allow_blank: false,
-                                desc: 'expires_in duration in seconds'
           optional :state, type: String, desc: 'State of API Key. "active" state means key is active and can be used for auth',
                            allow_blank: false
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
@@ -101,6 +109,9 @@ module UserApi
                             .except(:totp_code)
                             .merge(scopes: params[:scopes]&.split(','))
           api_key = current_account.api_keys.find_by!(uid: params[:uid])
+
+          error!('Change of kid is not allowed for HS algorithm') if api_key.hmac? && declared_params[:kid]
+
           unless api_key.update(declared_params)
             error!(api_key.errors.full_messages.to_sentence, 422)
           end
