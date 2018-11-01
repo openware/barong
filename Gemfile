@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bcrypt', '~> 3.1'
 gem 'email_validator', require: 'email_validator/strict'
 gem 'countries', require: 'countries/global'
+gem 'carrierwave', '~> 1.2.2'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
