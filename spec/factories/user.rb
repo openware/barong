@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :user do
-    sequence(:email) { |n| "user#{n}@gmail.com" }
+    email { Faker::Internet.email }
     password { 'B@rong2018' }
     password_confirmation { 'B@rong2018' }
     state { 'active' }

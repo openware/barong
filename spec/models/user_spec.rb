@@ -3,13 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  ## Test of validations
-  it { should validate_presence_of(:email) }
-  it { should validate_presence_of(:password) }
-  it { should have_many(:documents).dependent(:destroy) }
+  context 'User model basic syntax' do
+    ## Test of validations
+    it { should validate_presence_of(:email) }
+    it { should validate_presence_of(:password) }
+    it { should have_many(:documents).dependent(:destroy) }
 
-  ## Test of relationships
-  it { should have_one(:profile).dependent(:destroy) }
+    ## Test of relationships
+    it { should have_one(:profile).dependent(:destroy) }
+
+    it do
+      usr = create(:user)
+      payload = usr.as_payload
+      expect(payload['email']).to eq(usr.email)
+    end
+  end
 
   let(:uploaded_file) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
 

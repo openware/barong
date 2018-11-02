@@ -7,10 +7,10 @@ module API::V2
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 404, message: 'Record is not found' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 404, message: 'Record is not found' }
+        ]
         params do
           requires :email
           requires :password
@@ -28,15 +28,11 @@ module API::V2
           status(200)
         end
 
-        before do
-          session[:_current_user] = @_current_user
-        end
-
         desc 'Destroy current session',
           failure: [
             { code: 400, message: 'Required params are empty' },
             { code: 404, message: 'Record is not found' }
-          ]
+        ]
         params do
         end
         delete do
@@ -46,30 +42,31 @@ module API::V2
 
           status(200)
         end
-      end
 
-      # AuthZ story
-      # desc 'Traffic Authorizer EndPoint',
-      # failure: [
-      #   { code: 400, message: 'Required params are empty' },
-      #   { code: 404, message: 'Record is not found' }
-      # ]
-      # params do
-      #   requires :path
-      # end
-      # head 'authorize/:path' do
-      #   user = User.find_by!(uid: session[:uid])
-      #   # else check for Authorization header
-      #   # 'X-Auth-Apikey': apiKey,
-      #   # 'X-Auth-Nounce': payload,
-      #   # 'X-Auth-Signature': signature
-      #   if user
-      #     #TODO: Generate JWT from peatio
-      #     status(200)
-      #   else
-      #     error!('Invalid Session', 401)
-      #   end
-      # end
+        # AuthZ story
+        desc 'Traffic Authorizer EndPoint',
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 404, message: 'Record is not found' }
+        ]
+        params do
+          requires :path
+        end
+        head 'authorize/:path' do
+          # TODO: check for Authorization header
+          # 'X-Auth-Apikey': apiKey,
+          # 'X-Auth-Nounce': payload,
+          # 'X-Auth-Signature': signature
+          if session[:uid]
+            user = User.find_by!(uid: session[:uid])
+            header 'Authorization', codec.encode(user.as_payload)
+            status(200)
+          else
+            error!('Invalid Session', 401)
+          end
+        end
+      end
     end
+
   end
 end

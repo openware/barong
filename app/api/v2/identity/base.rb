@@ -21,6 +21,10 @@ module API::V2
         def session
           request.session
         end
+
+        def codec
+          @_codec ||= Barong::JWT.new(key: Rails.application.credentials.private_key)
+        end
       end
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
