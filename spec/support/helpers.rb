@@ -34,6 +34,13 @@ module APITestHelpers
   def build_body(body)
     body.is_a?(String) ? body : body.to_json
   end
+
+  def create_label_with_level(user, level, scope: 'private')
+    create(:label, user: user,
+                   key: level.key,
+                   value: level.value,
+                   scope: scope)
+  end
 end
 
 RSpec.configure { |config| config.include APITestHelpers }
