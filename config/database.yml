@@ -16,4 +16,5 @@ test:
   database: barong_test
 
 production:
+  <<: *default
   url: <%= ENV['DATABASE_URL'] %>
