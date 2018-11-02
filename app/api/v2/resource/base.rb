@@ -5,7 +5,8 @@ require_dependency 'barong/middleware/jwt_authenticator'
 module API::V2
   module Resource
     class Base < Grape::API
-      use Barong::Middleware::JWTAuthenticator
+      use Barong::Middleware::JWTAuthenticator, \
+        pubkey: Rails.configuration.x.key.public
 
       version 'v2', using: :path
 
@@ -15,6 +16,8 @@ module API::V2
       content_type   :json, 'application/json'
       default_format :json
 
+      helpers API::V2::Resource::Utils
+
       do_not_route_options!
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
@@ -23,6 +26,15 @@ module API::V2
 
       rescue_from(Grape::Exceptions::ValidationErrors) do |error|
         error!(error.message, 400)
+      end
+
+      rescue_from Peatio::Auth::Error do |e|
+        if Rails.env.production?
+          error!('Permission Denied', 401)
+        else
+          Rails.logger.error "#{e.class}: #{e.message}"
+          error!({ error: { code: e.code, message: e.message } }, 401)
+        end
       end
 
       rescue_from(:all) do |error|

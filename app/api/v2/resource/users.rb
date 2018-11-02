@@ -4,9 +4,9 @@ module API::V2
   module Resource
     class Users < Grape::API
       resource :users do
-        desc 'Test connectivity'
+        desc 'Returns current user'
         get '/me' do
-          env['_current_user']
+          current_user
         end
       end
     end

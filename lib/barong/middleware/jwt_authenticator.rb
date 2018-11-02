@@ -4,34 +4,28 @@ module Barong
   module Middleware
     # Authenticate a user by a bearer token
     class JWTAuthenticator < Grape::Middleware::Base
+
+      def initialize(app, options)
+        super(app, options)
+        raise(Peatio::Auth::Error, 'Public key missing') unless options[:pubkey]
+        @keypub = options[:pubkey]
+      end
+
       def before
-        authenticate(request.headers['Authorization']) if authorization_present?
+        raise(Peatio::Auth::Error, 'Header Authorization missing') \
+          unless authorization_present?
+        token = request.headers['Authorization']
+        env[:current_user] = authenticator.authenticate!(token)
       end
 
       private
-
-      # Exception-safe version of #authenticate!.
-      #
-      # @return [String, Member, NilClass]
-      def authenticate(*args)
-        authenticate!(*args)
-      end
-
-      # Decodes and verifies JWT.
-      # Returns authentic member email or raises an exception.
-      #
-      # @param [string] Authorization header with a Bearer token to decode
-      # @return [String, Member, NilClass]
-      def authenticate!(token)
-        env['_current_user'] = authenticator.authenticate!(token)
-      end
 
       # JWT Authenticator instance from peatio-core
       #
       # @return [Peatio::Auth::JWTAuthenticator]
       def authenticator
         @authenticator ||=
-          Peatio::Auth::JWTAuthenticator.new(Rails.configuration.x.key.public)
+          Peatio::Auth::JWTAuthenticator.new(@keypub)
       end
 
       def authorization_present?
