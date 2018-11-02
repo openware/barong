@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many  :phones,    dependent: :destroy
   has_many  :documents, dependent: :destroy
   has_many  :labels,    dependent: :destroy
-  has_many  :apikeys,   dependent: :destroy, class_name: 'APIKey'
+  # has_many  :apikeys,   dependent: :destroy, class_name: 'APIKey'
 
   validates :email,     email: true, presence: true, uniqueness: true
   validates :uid,       presence: true, uniqueness: true
@@ -19,6 +19,10 @@ class User < ApplicationRecord
   scope :active, -> { where(state: 'active') }
 
   before_validation :assign_uid
+
+  def active?
+    self.state == 'active'
+  end
 
   def role
     super.inquiry

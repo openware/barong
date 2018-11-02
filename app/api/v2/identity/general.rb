@@ -5,13 +5,13 @@ module API::V2
     class General < Grape::API
       desc 'Test connectivity'
       get "/ping" do
-        {ping: 'pong'}
+        { ping: 'pong' }
       end
 
       desc 'Get server current unix timestamp.'
       get "/time" do
         ts = ::Time.now.to_i
-        {time: ts}
+        { time: ts }
       end
     end
   end

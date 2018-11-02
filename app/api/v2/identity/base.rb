@@ -14,6 +14,14 @@ module API::V2
       # helpers API::V2::Helpers
 
       do_not_route_options!
+      # Enable Rails sessions
+      use ActionDispatch::Session::CookieStore
+
+      helpers do
+        def session
+          request.session
+        end
+      end
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
         error!('Record is not found', 404)
@@ -29,6 +37,8 @@ module API::V2
       end
 
       mount Identity::General
+      mount Identity::Sessions
+
       route :any, '*path' do
         error! 'Route is not found', 404
       end
