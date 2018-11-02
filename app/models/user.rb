@@ -68,6 +68,10 @@ class User < ApplicationRecord
     }
   end
 
+  def as_payload
+    as_json(only: %i[uid email role level state])
+  end
+
   private
 
   def assign_uid
