@@ -2,7 +2,7 @@ class User < ApplicationRecord
 
   ROLES = %w[admin accountant compliance member].freeze
 
-  # acts_as_eventable prefix: 'user', on: %i[create update]
+  acts_as_eventable prefix: 'user', on: %i[create update]
 
   has_secure_password
 
@@ -77,11 +77,4 @@ class User < ApplicationRecord
   def random_uid
     "ID#{SecureRandom.hex(5).upcase}"
   end
-
-  def crypt_passwd
-  end
-
-  def clear_passwd
-  end
-
 end

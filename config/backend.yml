@@ -44,6 +44,15 @@ services:
         # Continue with the default entrypoint
         ./entrypoint.sh
 
+  rabbitmq:
+    image: rabbitmq:3.7.6-management
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 volumes:
   db_data:
   redis_data:
+  rabbitmq_data:

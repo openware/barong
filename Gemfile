@@ -20,7 +20,9 @@ gem 'uglifier', '>= 1.3.0'
 gem 'grape',        '~> 1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'memoist', '~> 0.16'
-
+gem 'jwt', '~> 2.1'
+gem 'jwt-multisig', '~> 1.0'
+gem 'bunny'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
