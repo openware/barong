@@ -21,6 +21,9 @@ gem 'peatio', '~> 0.4.4'
 # REST-like API framework for Ruby
 gem 'grape',        '~> 1.0'
 gem 'grape-entity', '~> 0.7.1'
+gem 'grape-swagger', '~> 0.28'
+gem 'grape-swagger-entity', '~> 0.2'
+gem 'grape_logging', '~> 1.8.0'
 gem 'memoist', '~> 0.16'
 gem 'jwt', '~> 2.1'
 gem 'jwt-multisig', '~> 1.0'
@@ -63,7 +66,6 @@ group :development do
   gem 'annotate',     '~> 2.7'
   gem 'spring'
   gem 'pry-rails'
-  gem 'pry-byebug'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 

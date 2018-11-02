@@ -37,17 +37,17 @@ class User < ApplicationRecord
   #FIXME: Clean level micro code
   def update_level
     tags = []
-    account_level = 0
+    user_level = 0
     tags = labels.with_private_scope
                  .map { |l| [l.key, l.value].join ':' }
 
     levels = Level.all.order(id: :asc)
     levels.each do |lvl|
       break unless tags.include?(lvl.key + ':' + lvl.value)
-      account_level = lvl.id
+      user_level = lvl.id
     end
 
-    update(level: account_level)
+    update(level: user_level)
   end
 
   def add_level_label(key, value = 'verified')

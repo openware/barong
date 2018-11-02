@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API::V2
+module API::V2  
   module Entities
     class Profile < Grape::Entity
       expose :first_name, documentation: { type: 'String' }
