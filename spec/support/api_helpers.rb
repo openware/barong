@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module APITestHelpers
+module APIHelpers
   extend Memoist
 
   def json_body
@@ -43,4 +43,4 @@ module APITestHelpers
   end
 end
 
-RSpec.configure { |config| config.include APITestHelpers }
+RSpec.configure { |config| config.include APIHelpers }

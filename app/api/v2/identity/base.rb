@@ -23,7 +23,8 @@ module API::V2
         end
 
         def codec
-          @_codec ||= Barong::JWT.new(key: Rails.application.credentials.private_key)
+          pkey = Rails.application.config.x.keystore.private_key
+          @_codec ||= Barong::JWT.new(key: pkey)
         end
       end
 

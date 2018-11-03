@@ -6,7 +6,7 @@ module API::V2
   module Resource
     class Base < Grape::API
       use Barong::Middleware::JWTAuthenticator, \
-        pubkey: Rails.configuration.x.key.public
+        pubkey: Rails.configuration.x.keystore.public_key
 
       version 'v2', using: :path
 
