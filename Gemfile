@@ -37,6 +37,9 @@ gem 'email_validator', require: 'email_validator/strict'
 gem 'countries', require: 'countries/global'
 gem 'carrierwave', '~> 1.2.2'
 
+# Use gem to verify recatpcha on server side
+gem 'recaptcha'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

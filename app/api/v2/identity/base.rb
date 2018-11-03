@@ -11,22 +11,11 @@ module API::V2
       content_type   :json, 'application/json'
       default_format :json
 
-      # helpers API::V2::Helpers
+      helpers API::V2::Identity::Utils
 
       do_not_route_options!
       # Enable Rails sessions
       use ActionDispatch::Session::CookieStore
-
-      helpers do
-        def session
-          request.session
-        end
-
-        def codec
-          pkey = Rails.application.config.x.keystore.private_key
-          @_codec ||= Barong::JWT.new(key: pkey)
-        end
-      end
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
         error!('Record is not found', 404)
@@ -43,6 +32,7 @@ module API::V2
 
       mount Identity::General
       mount Identity::Sessions
+      mount Identity::Users
 
       route :any, '*path' do
         error! 'Route is not found', 404

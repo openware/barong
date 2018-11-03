@@ -31,8 +31,71 @@ describe API::V2::Identity::Sessions do
         # expect(response.status).to eq(200)
       end
 
-      # context 'when captcha is enabled' do
-      # end
+      let(:recaptcha_response) { nil }
+      let(:valid_response) { 'valid' }
+      let(:invalid_response) { 'invalid' }
+
+      before do
+        allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
+        .with(model: user,
+              skip_remote_ip: true,
+              response: valid_response) { true }
+        
+        allow_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha)
+        .with(model: user,
+              skip_remote_ip: true,
+              response: invalid_response) { raise StandardError }
+      end
+
+      context 'when captcha response is blank' do
+        let(:params) do
+          {
+            email: email,
+            password: password,
+            recaptcha_response: recaptcha_response
+          }
+        end
+        # WIP: need a logic for captcha on signin
+        # it 'renders an error' do
+        #   do_request
+        #   expect(json_body[:error]).to eq('recaptcha_response is required')
+        #   expect_status_to_eq 420
+        # end
+      end
+
+      context 'when captcha response is not valid' do
+        let(:params) do
+          {
+            email: email,
+            password: password,
+            recaptcha_response: invalid_response
+          }
+        end
+
+        before do
+          expect_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha) { false }
+        end
+
+        it 'renders an error' do
+          do_request
+          expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+          expect_status_to_eq 422
+        end
+      end
+
+      context 'when captcha response is valid' do
+        let(:params) do
+          {
+            email: email,
+            password: password,
+            recaptcha_response: valid_response
+          }
+        end
+
+        before do
+          expect_any_instance_of(RecaptchaVerifier).to receive(:verify_recaptcha) { true }
+        end
+      end
 
       # context 'when account has enabled 2FA' do
       # end

@@ -16,17 +16,23 @@ module API::V2
         params do
           requires :email
           requires :password
+          optional :recaptcha_response, type: String,
+                                        desc: 'Response from Recaptcha widget'
           # optional :otp_code, type: String,
           #                     desc: 'Code from Google Authenticator'
         end
         post do
           declared_params = declared(params, include_missing: false)
           user = User.find_by(email: declared_params[:email])
+
+          verify_captcha!(user: user, 
+                          response: params['recaptcha_response']) if declared_params[:recaptcha_response]
+
           error!('Invalid Email or Password', 401) unless user
           error!('Your account is not active', 401) unless user.active?
           error!('Invalid Email or Password', 401) unless user.authenticate(declared_params[:password])
-          session[:uid] = user.uid
 
+          session[:uid] = user.uid
           status(200)
         end
 
@@ -40,8 +46,8 @@ module API::V2
         delete do
           user = User.find_by!(uid: session[:uid])
           error!('Invalid Session', 401) unless user
-          session.destroy
 
+          session.destroy
           status(200)
         end
 

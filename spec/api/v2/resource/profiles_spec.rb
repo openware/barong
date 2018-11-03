@@ -43,7 +43,6 @@ describe 'API::V2::Resource::Profiles' do
 
     it 'creates new profile with only required fields' do
       post url, params: request_params, headers: auth_header
-      pp json_body
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
       expect(profile).to be
