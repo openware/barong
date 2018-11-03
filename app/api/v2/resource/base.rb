@@ -43,6 +43,7 @@ module API::V2
       end
 
       mount Resource::Users
+      mount Resource::Profiles
 
       route :any, '*path' do
         error! 'Route is not found', 404

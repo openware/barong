@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'barong/jwt'
-
 describe 'Api::V1::Profiles' do
   include_context 'bearer authentication'
 

@@ -15,7 +15,7 @@ module Barong
         raise(Peatio::Auth::Error, 'Header Authorization missing') \
           unless authorization_present?
         token = request.headers['Authorization']
-        env[:current_user] = authenticator.authenticate!(token)
+        env[:current_payload] = authenticator.authenticate!(token)
       end
 
       private

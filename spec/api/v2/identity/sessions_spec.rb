@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 describe API::V2::Identity::Sessions do
   describe 'POST /api/v2/sessions' do
     let!(:email) { 'user@gmail.com' }
