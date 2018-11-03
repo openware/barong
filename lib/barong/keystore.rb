@@ -23,13 +23,13 @@ module Barong
     class << self
       def open!(private_key_path)
         pkeyio = File.open(private_key_path)
-        return OpenSSL::PKey.read(pkeyio)
+        return OpenSSL::PKey.read(pkeyio).to_pem
       rescue
         raise Barong::KeyStore::Fatal
       end
 
       def read!(private_key)
-        return OpenSSL::PKey.read(private_key)
+        return OpenSSL::PKey.read(private_key).to_pem
       rescue
         raise Barong::KeyStore::Fatal
       end

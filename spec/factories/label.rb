@@ -5,6 +5,6 @@ FactoryBot.define do
     key { ::Faker::Internet.slug(nil, '-') }
     value { ::Faker::Internet.slug(nil, '-') }
     scope { 'public' }
-    user_id { create(:user) }
+    user { create(:user) }
   end
 end
