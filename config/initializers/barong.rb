@@ -5,7 +5,15 @@
 # 2/ if no check in credentials then validate and set
 # 3/ if no generate display warning, raise error in production, and set
 
+require 'barong/app'
 require 'barong/keystore'
+
+Barong::App.define do |config|
+  config.set(:app_name, 'Barong')
+  config.set(:twilio_phone_number, 'XXX')
+  config.set(:twilio_account_sid, 'XXX')
+  config.set(:twilio_auth_token, 'XXX')
+end
 
 begin
 
@@ -34,3 +42,4 @@ rescue Barong::KeyStore::Fatal
 end
 
 Rails.application.config.x.keystore = Barong::KeyStore.new(pkey)
+Barong::App.config.keystore = Barong::KeyStore.new(pkey)

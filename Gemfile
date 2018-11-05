@@ -25,6 +25,8 @@ gem 'memoist', '~> 0.16'
 gem 'jwt', '~> 2.1'
 gem 'jwt-multisig', '~> 1.0'
 gem 'bunny'
+gem 'phonelib',     '~> 0.6.0'
+gem 'twilio-ruby',  '~> 5.6.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -45,8 +47,8 @@ gem 'carrierwave', '~> 1.2.2'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
+  gem 'pry-byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails',  '~> 4.11'
   gem 'faker',              '~> 1.8'
 end

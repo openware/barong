@@ -45,6 +45,7 @@ module API::V2
       mount Resource::Users
       mount Resource::Profiles
       mount Resource::Documents
+      mount Resource::Phones
 
       route :any, '*path' do
         error! 'Route is not found', 404
