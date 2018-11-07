@@ -12,20 +12,19 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Email is invalid'])
+        expect_body.to eq(error: ['Email is invalid','Password is too weak'])
       end
     end
 
-    # WIP: we doesnt have any password validations yet
-    # context 'when Password is invalid' do
-    #   let(:params) { { email: 'vadid.email@gmail.com', password: 'password', recaptcha_response: 'valid_responce' } }
+    context 'when Password is invalid' do
+     let(:params) { { email: 'vadid.email@gmail.com', password: 'password', recaptcha_response: 'valid_responce' } }
 
-    #   it 'renders an error' do
-    #     do_request
-    #     expect_status_to_eq 422
-    #     expect_body.to eq(error: ['Password does not meet the minimum system requirements. It should be composed of uppercase and lowercase letters, and numbers.', 'Password has previously appeared in a data breach and should never be used. Please choose something harder to guess.'])
-    #   end
-    # end
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: ['Password does not meet the minimum requirements','Password is too weak'])
+      end
+    end
 
     context 'when email and password are absent' do
       let(:params) {}
@@ -48,7 +47,7 @@ describe API::V2::Identity::Users do
     end
 
     context 'when email is valid' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCu', recaptcha_response: 'valid_responce'  } }
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', recaptcha_response: 'valid_responce'  } }
 
       it 'creates an account' do
         do_request

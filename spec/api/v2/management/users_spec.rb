@@ -75,7 +75,7 @@ describe API::V2::Management::Users, type: :request do
           let(:params) do
             {
               email: 'valid_email@example.com',
-              password: 'Fai5aeso'
+              password: 'Fai5aesoLEcx'
             }
           end
           it 'creates an user' do
@@ -100,7 +100,7 @@ describe API::V2::Management::Users, type: :request do
           it 'renders an error' do
             expect { do_request }.to_not change { User.count }
             expect_status_to_eq 422
-            expect_body.to eq(error: ['Email is invalid'])
+            expect_body.to eq(error: ['Email is invalid','Password is too weak'])
           end
         end
 
@@ -108,10 +108,9 @@ describe API::V2::Management::Users, type: :request do
           let(:params) { { email: 'valid_email@example.com', password: 'password' } }
 
           it 'renders an error' do
-            #No password validation implemented yet
-            #expect { do_request }.to_not change { User.count }
-            #expect_status_to_eq 422
-            #expect(json_body[:error].first).to include 'Password does not meet the minimum system requirements'
+            expect { do_request }.to_not change { User.count }
+            expect_status_to_eq 422
+            expect(json_body[:error].first).to include 'Password does not meet the minimum requirements'
           end
         end
       end
@@ -127,7 +126,7 @@ describe API::V2::Management::Users, type: :request do
       end
 
       let!(:email) { 'valid_email@example.com' }
-      let!(:password) { 'Fai5aeso' }
+      let!(:password) { 'Fai5aesoLEcx' }
       let!(:password_digest) do
         User.new(password: password).send(:password_digest)
       end

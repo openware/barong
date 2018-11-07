@@ -19,11 +19,25 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#password' do
+    it { should_not allow_value('Password1').for(:password)}
+    it { should_not allow_value('Password1123').for(:password)}
+    it { should_not allow_value('password').for(:password)}
+    it { should_not allow_value('password1').for(:password)}
+    it { should_not allow_value('Qq123123').for(:password)}
+    it { should_not allow_value('QqQq123123').for (:password)}
+    it { should_not allow_value('X2qL32').for(:password)}
+    it { should_not allow_value('eoV0qu').for(:password)}
+    it { should allow_value('Iequ4geiEWQw').for(:password)}
+    it { should allow_value('Xwqe213PZCXwe').for(:password)}
+    it { should allow_value('Kal31ewwqXrew').for(:password)}
+  end
+
   let(:uploaded_file) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
 
   context 'User with 2 or more documents' do
     it do
-      user = User.create!(email: 'test@gmail.com', password: 'ZahSh8ei')
+      user = User.create!(email: 'test@gmail.com', password: 'KeeKi7zoWExzc')
       expect(User.count).to eq 1
       document1 = user.documents.create!(upload: uploaded_file,
                                             doc_type: 'Passport',
@@ -38,7 +52,7 @@ RSpec.describe User, type: :model do
 
     after(:all) { User.destroy_all }
   end
-
+  
   describe 'Iso8601TimeFormat' do
     let!(:user) { create(:user) }
     around(:each) { |example| Time.use_zone('Pacific/Midway') { example.run } }

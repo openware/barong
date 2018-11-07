@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
   validates :email,     email: true, presence: true, uniqueness: true
   validates :uid,       presence: true, uniqueness: true
-  validates :password,  presence: true
+  validates :password,  presence: true, required_symbols: true, password_strength: {use_dictionary: true, min_entropy: 14}
 
   scope :active, -> { where(state: 'active') }
 

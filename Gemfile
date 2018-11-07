@@ -43,7 +43,8 @@ gem 'carrierwave', '~> 1.2.2'
 
 # Use gem to verify recatpcha on server side
 gem 'recaptcha'
-
+# Password validators
+gem 'strong_password', '~> 0.0.6'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

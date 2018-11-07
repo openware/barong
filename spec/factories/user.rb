@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
-    password { 'B@rong2018' }
-    password_confirmation { 'B@rong2018' }
+    password { 'Tecohvi0' }
+    password_confirmation { 'Tecohvi0' }
     state { 'active' }
 
     trait :with_profile do
