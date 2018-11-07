@@ -162,7 +162,7 @@ describe 'Api::V2::Resources::Phones' do
       let(:phone_number) { '+44 07418084106' }
       let(:international_phone) { '447418084106' }
 
-      it 'renders an error' do:test_user
+      it 'renders an error' do
       do_request
       expect_body.to eq(error: 'Phone number already exists')
       expect_status.to eq 400

@@ -46,11 +46,9 @@ class Phone < ApplicationRecord
     end
 
     def send_sms(number:, content:)
-      sid = Barong::App.config.twilio_account_sid
-      token = Barong::App.config.twilio_auth_token
       from_phone = Barong::App.config.twilio_phone_number
 
-      client = Twilio::REST::Client.new(sid, token)
+      client = Barong::App.config.sms_sender
       client.messages.create(
         from: from_phone,
         to:   '+' + number,

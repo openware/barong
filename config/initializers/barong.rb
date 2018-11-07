@@ -10,9 +10,6 @@ require 'barong/keystore'
 
 Barong::App.define do |config|
   config.set(:app_name, 'Barong')
-  config.set(:twilio_phone_number, 'XXX')
-  config.set(:twilio_account_sid, 'XXX')
-  config.set(:twilio_auth_token, 'XXX')
 end
 
 begin
