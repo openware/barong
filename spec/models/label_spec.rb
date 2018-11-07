@@ -150,7 +150,7 @@ RSpec.describe Label, type: :model do
 
       context 'can be created with different scopes' do
         it 'user has both labels' do
-          expect(user.labels).to eq [label_private, label_public]
+          expect(user.labels).to include(label_private, label_public)
         end
 
         it 'user has level 1' do

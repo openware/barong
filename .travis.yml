@@ -34,7 +34,7 @@ before_install:
 
 # Execute all of the commands which should install application dependencies.
 install:
-  - bundle install --deployment --without production development --jobs=$(nproc) --retry=3
+  - bundle install --without production development --jobs=$(nproc) --retry=3
 
 # Execute all of the commands which need to be executed before running actual tests.
 before_script:
@@ -47,4 +47,4 @@ script:
   - xvfb-run --auto-servernum --server-args="-screen 0 1280x800x16" bundle exec rspec
 
 # Execute all of the commands which need to be executed after the build passed.
-after_success: ruby ci/bump.rb
+# after_success: ruby ci/bump.rb

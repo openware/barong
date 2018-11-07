@@ -34,7 +34,6 @@ module API::V2
         end
 
         post '/' do
-          pp ['HERE']
           if current_user.documents.count >= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error! 'Maximum number of documents was reached', 400
           end
