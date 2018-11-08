@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'barong/jwt'
+
 module API::V2
   module Identity
     class Sessions < Grape::API
@@ -43,30 +45,30 @@ module API::V2
           status(200)
         end
 
-        # AuthZ story
-        desc 'Traffic Authorizer EndPoint',
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' }
-        ]
-        params do
-          requires :path
-        end
-        head 'authorize/:path' do
-          # TODO: check for Authorization header
-          # 'X-Auth-Apikey': apiKey,
-          # 'X-Auth-Nounce': payload,
-          # 'X-Auth-Signature': signature
-          if session[:uid]
+        namespace :authorize do
+          # AuthZ story
+          desc 'Traffic Authorizer EndPoint',
+            failure: [
+              { code: 400, message: 'Request is invalid' },
+              { code: 404, message: 'Destination endpoint is not found' }
+          ]
+          params do
+            requires :path
+          end
+          head '*path' do
+            # TODO: check for Authorization header
+            # 'X-Auth-Apikey': apiKey,
+            # 'X-Auth-Nounce': payload,
+            # 'X-Auth-Signature': signature
+
+            error!('Invalid Session', 401) unless session[:uid]
             user = User.find_by!(uid: session[:uid])
             header 'Authorization', codec.encode(user.as_payload)
+
             status(200)
-          else
-            error!('Invalid Session', 401)
           end
         end
       end
     end
-
   end
 end
