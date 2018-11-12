@@ -3,15 +3,15 @@
 describe 'Api::V1::Profiles' do
   include_context 'bearer authentication'
 
-  describe 'GET /api/v2/users/me' do
+  describe 'GET /api/v2/resource/users/me' do
     it 'should reply permissions denied' do
-      get '/api/v2/users/me'
+      get '/api/v2/resource/users/me'
       expect(json_body[:error][:code]).to eq(2001)
       expect(response.status).to eq(401)
     end
 
     it 'should allow traffic with Authorization' do
-      get '/api/v2/users/me', headers: auth_header
+      get '/api/v2/resource/users/me', headers: auth_header
       expect(json_body[:email]).to eq(test_user.email)
       expect(response.status).to eq(200)
     end

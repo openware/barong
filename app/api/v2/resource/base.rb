@@ -8,8 +8,6 @@ module API::V2
       use Barong::Middleware::JWTAuthenticator, \
         pubkey: Rails.configuration.x.keystore.public_key
 
-      version 'v2', using: :path
-
       cascade false
 
       format         :json

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Users do
-  describe 'POST /api/v2/users' do
+  describe 'POST /api/v2/identity/users' do
     let(:do_request) do
-      post '/api/v2/users', params: params
+      post '/api/v2/identity/users', params: params
     end
 
     context 'when email is invalid' do

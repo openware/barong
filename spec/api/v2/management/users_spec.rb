@@ -28,7 +28,7 @@ describe API::V2::Management::Users, type: :request do
       let(:signers) { %i[alex jeff] }
 
       let(:do_request) do
-        post_json '/api/v2/users/get',
+        post_json '/api/v2/management/users/get',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
 
@@ -66,7 +66,7 @@ describe API::V2::Management::Users, type: :request do
       let(:data) { params.merge(scope: :write_users) }
 
       let(:do_request) do
-        post_json '/api/v2/users',
+        post_json '/api/v2/management/users',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
 
@@ -78,7 +78,6 @@ describe API::V2::Management::Users, type: :request do
               password: 'Fai5aeso'
             }
           end
-        end
           it 'creates an user' do
             expect { do_request }.to change { User.count }.by(1)
             expect_status_to_eq 201
@@ -123,7 +122,7 @@ describe API::V2::Management::Users, type: :request do
       let(:data) { params.merge(scope: :write_users) }
 
       let(:do_request) do
-        post_json '/api/v2/users/import',
+        post_json '/api/v2/management/users/import',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
 

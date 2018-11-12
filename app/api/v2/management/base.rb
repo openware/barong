@@ -1,8 +1,6 @@
 module API::V2
   module Management
     class Base < Grape::API
-      version 'v2', using: :path
-
       cascade false
 
       format         :json

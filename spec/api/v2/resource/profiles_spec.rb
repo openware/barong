@@ -13,8 +13,8 @@ describe 'API::V2::Resource::Profiles' do
     }
   end
 
-  describe 'POST /api/v2/profiles' do
-    let!(:url) { '/api/v2/profiles' }
+  describe 'POST /api/v2/resource/profiles' do
+    let!(:url) { '/api/v2/resource/profiles' }
     let!(:request_params) do
       {
         last_name: Faker::Name.last_name,
@@ -64,8 +64,8 @@ describe 'API::V2::Resource::Profiles' do
     end
   end
 
-  describe 'GET /api/v2/profiles/me' do
-    let!(:url) { '/api/v2/profiles/me' }
+  describe 'GET /api/v2/resource/profiles/me' do
+    let!(:url) { '/api/v2/resource/profiles/me' }
     let!(:request_params) do
       {
         first_name: Faker::Name.first_name,
@@ -79,7 +79,7 @@ describe 'API::V2::Resource::Profiles' do
     end
 
     it 'returns user profile data with metadata' do
-      post '/api/v2/profiles', params: request_params.merge(optional_params),
+      post '/api/v2/resource/profiles', params: request_params.merge(optional_params),
                                headers: auth_header
       expect(response.status).to eq(201)
 

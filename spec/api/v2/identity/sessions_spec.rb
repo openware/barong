@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Sessions do
-  describe 'POST /api/v2/sessions' do
+  describe 'POST /api/v2/identity/sessions' do
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
-    let(:uri) { '/api/v2/sessions' }
+    let(:uri) { '/api/v2/identity/sessions' }
     subject!(:user) do
       create :user,
              email: email,
@@ -158,10 +158,10 @@ describe API::V2::Identity::Sessions do
     end
   end
 
-  describe 'DELETE /api/v2/sessions' do
+  describe 'DELETE /api/v2/identity/sessions' do
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
-    let(:uri) { '/api/v2/sessions' }
+    let(:uri) { '/api/v2/identity/sessions' }
     let(:params) do
       {
         email: email,

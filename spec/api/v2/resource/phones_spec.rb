@@ -4,9 +4,9 @@ describe 'Api::V2::Resources::Phones' do
 
   include_context 'bearer authentication'
 
-  describe 'POST /api/v2/phones' do
+  describe 'POST /api/v2/resource/phones' do
     let(:do_request) do
-      post '/api/v2/phones', params: params, headers: auth_header
+      post '/api/v2/resource/phones', params: params, headers: auth_header
     end
     let(:params) { { phone_number: phone_number } }
     let(:mock_sms) { Barong::MockSMS }
@@ -109,9 +109,9 @@ describe 'Api::V2::Resources::Phones' do
     end
   end
 
-  describe 'POST /api/v2/phones/verify' do
+  describe 'POST /api/v2/resource/phones/verify' do
     let(:do_request) do
-      post '/api/v2/phones/verify', params: params, headers: auth_header
+      post '/api/v2/resource/phones/verify', params: params, headers: auth_header
     end
     let(:params) do
       {

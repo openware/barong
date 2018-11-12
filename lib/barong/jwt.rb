@@ -5,7 +5,7 @@ module Barong
       raise "Missing private key" unless options[:key]
       @options = options.merge({
         algoritm: 'RS256',
-        expire: 10,
+        expire: 6000,
         sub: 'session',
         iss: 'barong',
         aud: %w[peatio barong]

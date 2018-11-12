@@ -30,7 +30,7 @@ describe API::V2::Management::Labels, type: :request do
       let(:signers) { %i[alex] }
   
       let(:do_request) do
-        post_json '/api/v2/labels/list',
+        post_json '/api/v2/management/labels/list',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
   
@@ -62,7 +62,7 @@ describe API::V2::Management::Labels, type: :request do
       let(:signers) { %i[alex jeff] }
   
       let(:do_request) do
-        post_json '/api/v2/labels',
+        post_json '/api/v2/management/labels',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
   
@@ -110,7 +110,7 @@ describe API::V2::Management::Labels, type: :request do
       let(:signers) { %i[alex jeff] }
   
       let(:do_request) do
-        put_json '/api/v2/labels',
+        put_json '/api/v2/management/labels',
                  multisig_jwt_management_api_v1({ data: data }, *signers)
       end
   
@@ -156,7 +156,7 @@ describe API::V2::Management::Labels, type: :request do
       let(:signers) { %i[alex jeff] }
   
       let(:do_request) do
-        post_json '/api/v2/labels/delete',
+        post_json '/api/v2/management/labels/delete',
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
   
