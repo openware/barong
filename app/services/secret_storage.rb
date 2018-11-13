@@ -44,7 +44,7 @@ module SecretStorage
 
     def write!(key, params)
       with_human_error do
-        Vault.logical.write(key, params)
+        Vault.logical.write(key, value: params)
       end
     end
 

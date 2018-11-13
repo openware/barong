@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :apikey, class: 'APIKey' do
+  factory :api_key, class: 'APIKey' do
     user
     kid { Faker::Crypto.sha256 }
     scope { %w[trade] }
-    algorithm { 'RS256' }
+    algorithm { 'HS256' }
   end
 end

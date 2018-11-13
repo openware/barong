@@ -2,8 +2,6 @@
 
 shared_context 'bearer authentication' do
 
-  let!(:current_account) { create(:user) }
-
   let(:test_user) { create(:user) }
 
   let(:jwt_token) do

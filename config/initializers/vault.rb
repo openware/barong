@@ -1,6 +1,6 @@
 Barong::App.define do |config|
-  config.set(:vault_adress, '')
-  config.set(:vault_token, '')
+  config.set(:vault_adress, 'http://localhost:8200')
+  config.set(:vault_token, 'changeme')
 end
 
 Vault.configure do |config|
