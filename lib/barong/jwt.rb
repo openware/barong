@@ -3,6 +3,7 @@ module Barong
 
     def initialize(options)
       raise "Missing private key" unless options[:key]
+      # FIXME: set the same options when verifying key
       @options = options.merge({
         algoritm: 'RS256',
         expire: 6000,

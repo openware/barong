@@ -45,6 +45,7 @@ module API::V2
       mount Resource::Documents
       mount Resource::Phones
       mount Resource::Otp
+      mount Resource::APIKeys
 
       route :any, '*path' do
         error! 'Route is not found', 404

@@ -18,8 +18,8 @@ module API::V2
           requires :password
           optional :recaptcha_response, type: String,
                                         desc: 'Response from Recaptcha widget'
-          # optional :otp_code, type: String,
-          #                     desc: 'Code from Google Authenticator'
+          optional :otp_code, type: String,
+                              desc: 'Code from Google Authenticator'
         end
         post do
           declared_params = declared(params, include_missing: false)

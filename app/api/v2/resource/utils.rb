@@ -12,6 +12,9 @@ module API::V2
         end
       end
 
+      def unified_params
+        params.merge(kid: SecureRandom.hex(8)) if params[:algorithm].include?('HS')
+      end
     end
   end
 end

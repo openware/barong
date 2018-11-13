@@ -135,7 +135,7 @@ module EventAPI
           exp:   Time.now.to_i + 60,
           event: event_payload
         }
-
+        # FIXME: use keystore
         private_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(ENV.fetch('EVENT_API_JWT_PRIVATE_KEY')))
         algorithm   = ENV.fetch('EVENT_API_JWT_ALGORITHM', 'RS256')
         jwt         = JWT::Multisig.generate_jwt jwt_payload, \
