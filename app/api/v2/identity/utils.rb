@@ -9,7 +9,7 @@ module API::V2
       end
 
       def codec
-        @_codec ||= Barong::JWT.new(key: Rails.application.credentials.private_key)
+        @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
       end
 
       def verify_captcha!(user:, response:, error_statuses: [400, 422])

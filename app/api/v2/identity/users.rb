@@ -18,7 +18,7 @@ module API::V2
           requires :recaptcha_response, type: String, desc: 'Response from Recaptcha widget'
         end
         post do
-          # WIP : by default after creation 
+          # WIP: by default after creation
           # we hardcode 'active' for user creation for now, since we dont have confirmation logic for now
           active_user_params =  params.slice('email', 'password').merge!(state: "active")
           user = User.new(active_user_params)
@@ -28,6 +28,8 @@ module API::V2
           error!(user.errors.full_messages, 422) unless user.save
         end
 
+
+        # FIXME
         # desc 'Confirms an account',
         # success: { code: 201, message: 'Confirms an account' },
         # failure: [
@@ -56,6 +58,32 @@ module API::V2
         # end
         # post '/unlock' do
         #   WIP : unlock logic
+        # end
+
+        # desc 'Sets new account password',
+        #      failure: [
+        #        { code: 400, message: 'Required params are empty' },
+        #        { code: 404, message: 'Record is not found' },
+        #        { code: 422, message: 'Validation errors' }
+        #      ]
+        # params do
+        #   requires :reset_password_token, type: String,
+        #                                   desc: 'Token from email',
+        #                                   allow_blank: false
+        #   requires :password, type: String,
+        #                       desc: 'User password',
+        #                       allow_blank: false
+        # end
+        # put '/reset_password' do
+        #   required_params = declared(params)
+        #                     .merge(password_confirmation: params[:password])
+
+        #   user = User.reset_password_by_token(required_params)
+        #   raise ActiveRecord::RecordNotFound unless user.persisted?
+
+        #   if user.errors.any?
+        #     error!(user.errors.full_messages.to_sentence, 422)
+        #   end
         # end
       end
     end

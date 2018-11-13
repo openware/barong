@@ -6,7 +6,7 @@ module API::V2
       resource :users do
         desc 'Returns current user'
         get '/me' do
-          current_user
+          current_user.attributes.except('password_digest')
         end
       end
     end

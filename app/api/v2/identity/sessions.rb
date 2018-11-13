@@ -31,9 +31,21 @@ module API::V2
           error!('Invalid Email or Password', 401) unless user
           error!('Your account is not active', 401) unless user.active?
           error!('Invalid Email or Password', 401) unless user.authenticate(declared_params[:password])
+          unless user.otp
+            # place for refresh lock logic
+            session[:uid] = user.uid
+            return status 200 
+          end
 
-          session[:uid] = user.uid
-          status(200)
+          if declared_params[:otp_code].blank?
+            # user.add_failed_attempt
+            error!('The account has enabled 2FA but OTP code is missing', 403)
+          end
+
+          unless TOTPService.validate?(user.uid, declared_params[:otp_code])
+            # user.add_failed_attempt
+            error!('OTP code is invalid', 403)
+          end
         end
 
         desc 'Destroy current session',

@@ -30,6 +30,7 @@ gem 'jwt-multisig', '~> 1.0'
 gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
+gem 'vault', '~> 0.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
