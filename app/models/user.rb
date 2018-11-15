@@ -6,11 +6,12 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_one   :profile,   dependent: :destroy
-  has_many  :phones,    dependent: :destroy
-  has_many  :documents, dependent: :destroy
-  has_many  :labels,    dependent: :destroy
-  has_many  :api_keys,  dependent: :destroy, class_name: 'APIKey'
+  has_one   :profile,    dependent: :destroy
+  has_many  :phones,     dependent: :destroy
+  has_many  :documents,  dependent: :destroy
+  has_many  :labels,     dependent: :destroy
+  has_many  :api_keys,   dependent: :destroy, class_name: 'APIKey'
+  has_many  :activities, dependent: :destroy
 
   validates :email,     email: true, presence: true, uniqueness: true
   validates :uid,       presence: true, uniqueness: true

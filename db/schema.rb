@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_01_143041) do
+ActiveRecord::Schema.define(version: 2018_11_15_100105) do
+
+  create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "user_ip"
+    t.string "user_agent"
+    t.string "category"
+    t.string "action"
+    t.string "result"
+    t.text "data"
+    t.timestamp "created_at"
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
 
   create_table "apikeys", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false, unsigned: true
