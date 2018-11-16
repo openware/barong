@@ -39,6 +39,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bcrypt', '~> 3.1'
 gem 'email_validator', require: 'email_validator/strict'
 gem 'countries', require: 'countries/global'
+gem 'browser', require: "browser/browser"
 gem 'carrierwave', '~> 1.2.2'
 
 # Use gem to verify recatpcha on server side

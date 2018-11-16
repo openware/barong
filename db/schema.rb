@@ -13,12 +13,12 @@
 ActiveRecord::Schema.define(version: 2018_11_15_100105) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "user_ip"
-    t.string "user_agent"
-    t.string "category"
-    t.string "action"
-    t.string "result"
+    t.bigint "user_id", null: false
+    t.string "user_ip", null: false
+    t.string "user_agent", null: false
+    t.string "topic", null: false
+    t.string "action", null: false
+    t.string "result", null: false
     t.text "data"
     t.timestamp "created_at"
     t.index ["user_id"], name: "index_activities_on_user_id"

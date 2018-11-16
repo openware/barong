@@ -4,7 +4,7 @@ class CreateActivities < ActiveRecord::Migration[5.2]
       t.references :user,       null: false
       t.string     :user_ip,    null: false
       t.string     :user_agent, null: false
-      t.string     :category,   null: false
+      t.string     :topic,      null: false
       t.string     :action,     null: false
       t.string     :result,     null: false
       t.text       :data,       null: true
