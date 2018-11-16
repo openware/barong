@@ -64,7 +64,6 @@ module API::V2
         end
 
         namespace :authorize do
-          # AuthZ story
           desc 'Traffic Authorizer EndPoint',
             failure: [
               { code: 400, message: 'Request is invalid' },
@@ -73,7 +72,19 @@ module API::V2
           params do
             requires :path
           end
-          route ['GET','POST','HEAD','PUT'], '*path' do
+          route ['GET','POST','HEAD','PUT'], '/api/v2/barong/identity/(*:path)' do
+            status(200)
+          end
+
+          desc 'Traffic Authorizer EndPoint',
+            failure: [
+              { code: 400, message: 'Request is invalid' },
+              { code: 404, message: 'Destination endpoint is not found' }
+          ]
+          params do
+            requires :path
+          end
+          route ['GET','POST','HEAD','PUT'], '/(*:path)' do
 
             if apikey_headers?
               apiKey = APIKeysVerifier.new(apiKey_params)
@@ -83,7 +94,7 @@ module API::V2
             else
               error!('Invalid Session', 401) unless session[:uid]
               user = User.find_by!(uid: session[:uid])
-              header 'Authorization', codec.encode(user.as_payload)
+              header 'Authorization', 'Bearer ' + codec.encode(user.as_payload)
               return status(200)
             end
           end

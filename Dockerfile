@@ -27,19 +27,15 @@ RUN groupadd -r app --gid=1000 \
  && apt-get install -y imagemagick nodejs yarn
 
 WORKDIR $APP_HOME
+USER app
 
-COPY Gemfile Gemfile.lock $APP_HOME/
+COPY --chown=app:app Gemfile Gemfile.lock $APP_HOME/
 
 # Install dependencies
-RUN mkdir -p /opt/vendor/bundle && chown -R app:app /opt/vendor \
- && su app -s /bin/bash -c "bundle install --path /opt/vendor/bundle"
+RUN bundle install --jobs=4 --deployment
 
 # Copy the main application.
-COPY . $APP_HOME
-
-RUN chown -R app:app $APP_HOME
-
-USER app
+COPY --chown=app:app . $APP_HOME
 
 # Initialize application configuration & assets.
 RUN ./bin/init_config \
