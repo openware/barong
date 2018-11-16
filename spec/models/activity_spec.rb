@@ -34,7 +34,7 @@ RSpec.describe Activity, type: :model do
       it { should_not allow_value('passed').for(:result) }
       it { should_not allow_value('').for(:user_ip) }
       it { expect(activity.browser.known?).to eq false }
-      it { expect(activity.data).to eq 'note: detected suspicious browser' }
+      it { expect(activity.data).to eq '{"note":"Detected suspicious browser"}' }
     end
   end
 

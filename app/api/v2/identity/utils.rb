@@ -27,23 +27,41 @@ module API::V2
         return false if headers['X-Auth-Apikey'].nil? &&
         headers['X-Auth-Nounce'].nil? &&
         headers['X-Auth-Signature'].nil?
-        @apiKey_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nounce'], headers['X-Auth-Signature']]
+        @apikey_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nounce'], headers['X-Auth-Signature']]
         validate_headers?
       end
 
       def validate_headers?
-        @apiKey_headers.each do |k|
+        @apikey_headers.each do |k|
           error!('Request contains invalid or blank api key headers!') if k.blank?
         end
       end
 
-      def apiKey_params
+      def apikey_params
         params = {}
         params.merge(
           'kid': headers['X-Auth-Apikey'],
           'nounce': headers['X-Auth-Nounce'],
           'signature':  headers['X-Auth-Signature']
         )
+      end
+
+      def login_error!(options = {})
+        session_activity(options.except(:reason, :error_code))
+        error!(options[:reason], options[:error_code])
+      end
+
+      def session_activity(options = {})
+        params = {
+          user_id:    options[:user],
+          user_ip:    request.ip,
+          user_agent: request.env['HTTP_USER_AGENT'],
+          topic:      'session',
+          action:     options[:action],
+          result:     options[:result],
+          data:       options[:data]
+        }
+        Activity.create(params)
       end
     end
   end
