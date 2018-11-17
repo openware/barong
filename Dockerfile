@@ -7,24 +7,22 @@ FROM ruby:2.5.3
 #
 # See https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables-build-arg
 #
-ARG RAILS_ENV=development
+ARG RAILS_ENV=production
+ARG UID=1000
+ARG GID=1000
 
 # Devise requires secret key to be set during image build or it raises an error
 # preventing from running any scripts.
 # Users should override this variable by passing environment variable on container start.
 ENV RAILS_ENV=${RAILS_ENV} \
-    APP_HOME=/home/app \
-    DEVISE_SECRET_KEY='changeme' \
-    SECRET_KEY_BASE='changeme' \
-    JWT_SHARED_SECRET_KEY='changeme'
+    APP_HOME=/home/app
 
-RUN groupadd -r app --gid=1000 \
- && useradd -r -m -g app -d /home/app --uid=1000 app \
- && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
- && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
- && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
- && apt-get update \
- && apt-get install -y imagemagick nodejs yarn
+ENV TZ=UTC
+
+# Create group "app" and user "app".
+RUN groupadd -r --gid ${GID} app \
+ && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
+      --gid ${GID} --uid ${UID} app
 
 WORKDIR $APP_HOME
 USER app
@@ -32,14 +30,14 @@ USER app
 COPY --chown=app:app Gemfile Gemfile.lock $APP_HOME/
 
 # Install dependencies
-RUN bundle install --jobs=4 --deployment
+RUN bundle install --jobs=$(nproc) --deployment
 
 # Copy the main application.
 COPY --chown=app:app . $APP_HOME
 
 # Initialize application configuration & assets.
 RUN ./bin/init_config \
-    && bundle exec rake tmp:create yarn:install assets:precompile
+    && bundle exec rake tmp:create
 
 # Expose port 8080 to the Docker host, so we can access it
 # from the outside.
