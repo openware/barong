@@ -13,11 +13,11 @@ class Rack::Attack
   throttle('phone_verification/number', limit: phone_rate_limit , period: 24.hours) do |req|
     case req.path
     when '/phones/verification'
-      req.body.string
-    when '/api/v1/phones/verify'
-      req.get_header("HTTP_AUTHORIZATION")
+      req.ip
+    when '/api/v1/phones'
+      req.ip
+    when '/api/v1/phones/send_code'
+      req.ip
     end
   end
-
 end
-
