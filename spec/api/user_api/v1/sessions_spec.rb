@@ -36,6 +36,21 @@ describe 'Session create test' do
         expect(response.status).to eq(201)
       end
 
+      context 'when account was locked' do
+        before { acc.lock_access! }
+        it 'does not log in' do
+          do_request
+          expect_status.to eq(401)
+          expect_body.to eq(error: 'Your account was locked!')
+        end
+
+        it 'unlocks account after an hour' do
+          travel 65.minutes
+          do_request
+          expect_status.to eq(201)
+        end
+      end
+
       context 'when captcha is enabled' do
         before do
           ENV['CAPTCHA_ENABLED'] = 'true'
@@ -126,10 +141,6 @@ describe 'Session create test' do
                 post uri, params: params
                 expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
                 expect_status_to_eq 420
-
-                post uri, params: params
-                expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
-                expect_status_to_eq 420
               end
             end
 
@@ -138,10 +149,6 @@ describe 'Session create test' do
 
               it 'resets failed attempts' do
                 post uri, params: params.merge(recaptcha_response: valid_response)
-                expect(json_body[:error]).to eq('Invalid Email or Password')
-                expect_status_to_eq 401
-
-                post uri, params: params
                 expect(json_body[:error]).to eq('Invalid Email or Password')
                 expect_status_to_eq 401
               end
@@ -375,14 +382,12 @@ describe 'Session create test' do
       it 'generates valid session jwt' do
         token = json_body[:token]
         payload, = jwt_decode(token)
-
         expect(payload.symbolize_keys).to include(expected_payload)
       end
 
       it 'generates session jwt with comma separated scopes' do
         token = json_body[:token]
         payload, = jwt_decode(token)
-
         expect(payload['aud']).to eq multiple_scopes_api_key.scopes
       end
     end
