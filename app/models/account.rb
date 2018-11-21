@@ -8,7 +8,7 @@ class Account < ApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :secure_validatable,
+         :recoverable, :rememberable, :trackable, :secure_validatable, :pwned_password,
          :confirmable, :lockable
 
   ROLES = %w[admin compliance member].freeze

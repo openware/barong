@@ -236,7 +236,7 @@ describe 'Api::V1::Security' do
 
     context 'when Reset Password Token is invalid' do
       let(:reset_password_token) { 'invalid' }
-      let(:password) { 'Password1' }
+      let(:password) { 'Gol4aid2' }
 
       it 'renders 404 error' do
         do_request
@@ -248,7 +248,7 @@ describe 'Api::V1::Security' do
     context 'when Reset Password Token is valid' do
       let!(:account) { create(:account) }
       let(:reset_password_token) { account.send_reset_password_instructions }
-      let(:password) { 'Password1' }
+      let(:password) { 'ZahSh8ei' }
 
       it 'resets a password' do
         expect { do_request }.to change { account.reload.encrypted_password }

@@ -9,7 +9,7 @@ FactoryBot.define do
     doc_expire { Faker::Business.credit_card_expiry_date }
 
     after(:build) do |doc|
-      doc.upload.download!(Faker::Avatar.image)
+      doc.upload.download!(Faker::Company.logo)
     end
   end
 end

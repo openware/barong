@@ -114,6 +114,9 @@ GEM
       railties (>= 4.1.0, < 6.0)
       responders
       warden (~> 1.2.3)
+    devise-pwned_password (0.1.6)
+      devise (~> 4)
+      pwned (~> 1.2.1)
     devise-security (0.12.0)
       devise (>= 4.2.0, < 5.0)
       rails (>= 4.1.0, < 6.0)
@@ -185,6 +188,9 @@ GEM
     grape-swagger-entity (0.3.0)
       grape-entity (>= 0.5.0)
       grape-swagger (>= 0.31.0)
+    grape_logging (1.8.0)
+      grape
+      rack
     grape_on_rails_routes (0.3.2)
       rails (>= 3.1.1)
     http-cookie (1.0.3)
@@ -264,9 +270,12 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.3)
     puma (3.12.0)
+    pwned (1.2.1)
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-attack (5.4.1)
+      rack (>= 1.0, < 3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
@@ -425,6 +434,7 @@ DEPENDENCIES
   chromedriver-helper (~> 1.1)
   countries
   devise (~> 4.4)
+  devise-pwned_password
   devise-security
   discard (~> 1.0)
   doorkeeper (~> 4.4.2)
@@ -440,6 +450,7 @@ DEPENDENCIES
   grape-entity (~> 0.7.1)
   grape-swagger (~> 0.28)
   grape-swagger-entity (~> 0.2)
+  grape_logging (~> 1.8.0)
   grape_on_rails_routes (~> 0.3.2)
   jquery-rails (~> 4.3)
   jwt (~> 2.1)
@@ -453,6 +464,7 @@ DEPENDENCIES
   pry-byebug (~> 3.5)
   public_suffix
   puma (~> 3.7)
+  rack-attack (~> 5.4.1)
   rails (~> 5.2.1)
   rails-controller-testing
   recaptcha

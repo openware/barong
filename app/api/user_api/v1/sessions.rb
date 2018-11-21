@@ -50,7 +50,7 @@ module UserApi
 
           application = Doorkeeper::Application.find_by(uid: declared_params[:application_id])
           error!('Wrong Application ID', 401) unless application
-          error!('Your account was locked!', 401) unless account.locked_at.nil?
+          error!('Your account was locked!', 401) if account.access_locked?
 
           unless account.valid_password? declared_params[:password]
             handle_session_captcha(account: account,
