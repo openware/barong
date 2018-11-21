@@ -67,6 +67,10 @@ module API::V2
       def confirmation_codec
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key, sub: 'confirmation')
       end
+
+      def reset_codec
+        @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key, sub: 'reset')
+      end
     end
   end
 end

@@ -77,24 +77,9 @@ module API::V2
           EventAPI.notify(
             'system.user.email.confirmation.token', 
             {user: current_user.as_json_for_event_api, token: token})
+
           status 201
         end
-
-        # FIXME
-        # desc 'Confirms an account',
-        # success: { code: 201, message: 'Confirms an account' },
-        # failure: [
-        #   { code: 400, message: 'Required params are missing' },
-        #   { code: 422, message: 'Validation errors' }
-        # ]
-        # params do
-        #   requires :confirmation_token, type: String,
-        #                                 desc: 'Confirmation jwt token',
-        #                                 allow_blank: false
-        # end
-        # post '/confirm' do
-        #   WIP : confirmation logic
-        # end
 
         # desc 'Unlocks an account',
         # success: { code: 201, message: 'Unlocks an account' },
@@ -109,33 +94,66 @@ module API::V2
         # end
         # post '/unlock' do
         #   WIP : unlock logic
-        # end
+        # en
+        desc 'Send password reset instructions',
+        success: { code: 201, message: 'Generated password reset code' },
+        failure: [
+          { code: 400, message: 'Required params are missing' },
+          { code: 422, message: 'Validation errors' },
+          { code: 404, message: 'User doesn\'t exist'}
+        ]
+        params do
+          requires :email, type: String,
+                      desc: 'Account email',
+                      allow_blank: false
+        end
+        post '/reset_password' do
+          current_user = User.find_by_email(params[:email])
 
-        # desc 'Sets new account password',
-        #      failure: [
-        #        { code: 400, message: 'Required params are empty' },
-        #        { code: 404, message: 'Record is not found' },
-        #        { code: 422, message: 'Validation errors' }
-        #      ]
-        # params do
-        #   requires :reset_password_token, type: String,
-        #                                   desc: 'Token from email',
-        #                                   allow_blank: false
-        #   requires :password, type: String,
-        #                       desc: 'User password',
-        #                       allow_blank: false
-        # end
-        # put '/reset_password' do
-        #   required_params = declared(params)
-        #                     .merge(password_confirmation: params[:password])
+          if current_user.nil?
+            error!('User doesn\'t exist',404)
+          end
 
-        #   user = User.reset_password_by_token(required_params)
-        #   raise ActiveRecord::RecordNotFound unless user.persisted?
+          token = reset_codec.encode({email: params[:email],uid: current_user.uid}.as_json)
+          EventAPI.notify(
+            'system.user.password.reset.token', 
+            {user: current_user.as_json_for_event_api, token: token })
+          
+          status 201
+        end
 
-        #   if user.errors.any?
-        #     error!(user.errors.full_messages.to_sentence, 422)
-        #   end
-        # end
+        desc 'Sets new account password',
+        success: { code: 201, message: 'Generated verification code' },
+        failure: [
+          { code: 400, message: 'Required params are empty' },
+          { code: 404, message: 'Record is not found' },
+          { code: 422, message: 'Validation errors' }
+        ]
+        params do
+          requires :reset_password_token, type: String,
+                                          desc: 'Token from email',
+                                          allow_blank: false
+          requires :password, type: String,
+                              desc: 'User password',
+                              allow_blank: false
+        end
+        put '/reset_password' do
+          payload = reset_codec.decode_and_verify(
+            params[:reset_password_token], 
+            pub_key: Barong::App.config.keystore.public_key, 
+            sub:'reset'
+            )
+          current_user = User.find_by_email(payload[:email])
+          current_user.update(password: params[:password])
+
+          unless current_user.persisted?
+            error!('Something went wrong', 404)
+          end
+
+          EventAPI.notify('system.user.password.reset', current_user.as_json_for_event_api)
+
+          status 201
+        end
       end
     end
   end
