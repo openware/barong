@@ -22,6 +22,10 @@ module API::V2
       rescue_from(Grape::Exceptions::ValidationErrors) do |error|
         error!(error.message, 400)
       end
+      
+      rescue_from(JWT::DecodeError) do |error|
+        error!("Failed to decode and verify JWT", 422)
+      end
 
       rescue_from(:all) do |error|
         Rails.logger.error "#{error.class}: #{error.message}"

@@ -63,6 +63,10 @@ module API::V2
         }
         Activity.create(params)
       end
+
+      def confirmation_codec
+        @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key, sub: 'confirmation')
+      end
     end
   end
 end
