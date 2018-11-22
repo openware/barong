@@ -99,7 +99,9 @@ module API::V2
             if apikey_headers?
               apiKey = APIKeysVerifier.new(apikey_params)
               error!('Invalid or unsupported signature', 401) unless apiKey.verify_hmac_payload?
-              # generate JWT for API KEY
+              current_apikey = APIKey.find_by_kid(apikey_params[:kid])
+              user = User.find_by_id(current_apikey.user_id)
+              header 'Authorization', 'Bearer' + codec.encode(user.as_payload)
               status(200)
             else
               error!('Invalid Session', 401) unless session[:uid]

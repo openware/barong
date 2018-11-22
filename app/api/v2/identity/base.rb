@@ -24,7 +24,7 @@ module API::V2
       end
       
       rescue_from(JWT::DecodeError) do |error|
-        error!("Failed to decode and verify JWT", 422)
+        error!("Failed to decode and verify JWT", 403)
       end
 
       rescue_from(:all) do |error|

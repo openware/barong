@@ -90,12 +90,8 @@ module APIHelpers
     API::V2::Management::JWTAuthenticationMiddleware.security_configuration = config
   end
 
-  def confirm_codec
-    @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key, sub: 'confirmation')
-  end
-
-  def reset_codec
-    @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key, sub: 'reset')
+  def codec
+    @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
   end
   
 end

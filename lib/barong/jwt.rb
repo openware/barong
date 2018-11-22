@@ -37,7 +37,7 @@ module Barong
     end
 
     def merge_claims(payload)
-      payload.merge({
+      payload.reverse_merge({
         iat: Time.now.to_i,
         exp: (Time.now + @options[:expire]).to_i,
         sub: @options[:sub],
