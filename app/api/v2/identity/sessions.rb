@@ -82,7 +82,7 @@ module API::V2
           params do
             requires :path
           end
-          route :any, '/api/v2/barong/identity/(*:path)' do
+          route ['GET','POST','HEAD','PUT','DELETE'], '/api/v2/barong/identity/(*:path)' do
             status(200)
           end
 
