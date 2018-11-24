@@ -38,6 +38,7 @@ gem 'email_validator', require: 'email_validator/strict'
 gem 'countries', require: 'countries/global'
 gem 'browser', require: "browser/browser"
 gem 'carrierwave', '~> 1.2.2'
+gem 'bump'
 
 # Use gem to verify recatpcha on server side
 gem 'recaptcha'

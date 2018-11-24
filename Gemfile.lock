@@ -63,6 +63,7 @@ GEM
       msgpack (~> 1.0)
     browser (2.5.3)
     builder (3.2.3)
+    bump (0.7.0)
     bunny (2.12.0)
       amq-protocol (~> 2.3, >= 2.3.0)
     byebug (10.0.2)
@@ -308,6 +309,7 @@ DEPENDENCIES
   bcrypt (~> 3.1)
   bootsnap (>= 1.1.0)
   browser
+  bump
   bunny
   capybara (>= 2.15)
   carrierwave (~> 1.2.2)
