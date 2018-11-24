@@ -1,6 +1,7 @@
 module Barong
   class Seed
     def initialize
+      @result = Array.new
     end
 
     def seeds
@@ -11,6 +12,13 @@ module Barong
           )
         ).result
       )
+    end
+
+    def show_seeded_users
+      puts 'Seeded users:'
+      @result.each do |user|
+        puts "Email: #{user[:email]}, password: #{user[:password]}"
+      end
     end
 
     def logger
@@ -35,13 +43,13 @@ module Barong
         logger.info '---'
 
         # Skip existing users
-        if User.kept.find_by(email: seed['user']['email']).present?
-          logger.info "User '#{seed['user']['email']}' already exists"
-          result[:users].push(email: seed['user']['email'])
+        if User.find_by(email: seed['email']).present?
+          logger.info "User '#{seed['email']}' already exists"
+          @result.push(email: seed['email'])
           next
         end
 
-        admin = User.new(seed['user'])
+        admin = User.new(seed)
         admin.password ||= SecureRandom.base64(30)
 
         if admin.save
@@ -53,7 +61,7 @@ module Barong
           end
 
           # Confirm the email
-          if admin.update(confirmed_at: Time.current)
+          if admin.update(updated_at: Time.current)
             admin.add_level_label('email')
             logger.info("Confirmed email for '#{admin.email}'")
           end
@@ -82,7 +90,7 @@ module Barong
             end
           end
 
-          result[:users].push(email: admin.email, password: admin.password, level: admin.level)
+          @result.push(email: admin.email, password: admin.password, level: admin.level)
         else
           logger.error "Can't create admin '#{admin.email}': #{admin.errors.full_messages.join('; ')}"
         end

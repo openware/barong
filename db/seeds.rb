@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-seed = Barong::Seed.new
-seed.load_levels
-seed.load_users
+require_dependency 'barong/seed'
 
+seed = Barong::Seed.new
+seed.seed_levels
+seed.seed_users
+seed.show_seeded_users

@@ -29,18 +29,19 @@ describe Barong::Seed do
     ]
   }
 
-  let(:seeds) {
-    {
-      "users" => users,
-      "levels" => levels   
-    }
-  }
+  let(:seeder) { Barong::Seed.new }
 
   it "seeds levels in database" do
-    fail
+    Level.delete_all
+    seeder.seed_levels
+    Level.all.each_with_index do |level, index|
+      expect(level.key).to eq levels[index]["key"]
+      expect(level.value).to eq levels[index]["value"]
+      expect(level.description).to eq levels[index]["description"]
+    end
   end
 
   it "seeds users in database" do
-    fail
+    seeder.seed_users
   end
 end
