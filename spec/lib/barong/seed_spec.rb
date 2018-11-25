@@ -66,6 +66,12 @@ describe Barong::Seed do
         expect(level.description).to eq levels[index]["description"]
       end
     end
+
+    it "skips existing levels" do
+      seeder.seed_levels
+      seeder.seed_levels
+      expect(Level.count).to be 2
+    end
   end
 
   context "Seed one admin user" do
@@ -106,7 +112,7 @@ describe Barong::Seed do
       ]
     }
 
-    it "seeds users in database" do
+    it "raises an explicit error" do
       seeder.seed_levels
       expect {
         seeder.seed_users
@@ -126,7 +132,7 @@ describe Barong::Seed do
       ]
     }
 
-    it "seeds users in database" do
+    it "raises an explicit error" do
       seeder.seed_levels
       expect {
         seeder.seed_users
@@ -146,7 +152,7 @@ describe Barong::Seed do
       ]
     }
 
-    it "seeds users in database" do
+    it "raises an explicit error" do
       seeder.seed_levels
       expect {
         seeder.seed_users
@@ -166,7 +172,7 @@ describe Barong::Seed do
       ]
     }
 
-    it "seeds users in database" do
+    it "defaults state to pending" do
       seeder.seed_levels
       seeder.seed_users
       expect(User.count).to eq 1
@@ -174,6 +180,30 @@ describe Barong::Seed do
       expect(user.email).to eq("admin@peatio.tech")
       expect(user.role).to eq("admin")
       expect(user.state).to eq("pending")
+      expect(user.level).to eq(2)
+    end
+  end
+
+  context "User role is not set" do
+    let(:users) {
+      [
+        {
+          "email" => "admin@peatio.tech",
+          "password" => "123aZE@654",
+          "state" => "active",
+          "level" => 2
+        }
+      ]
+    }
+
+    it "defaults role to member" do
+      seeder.seed_levels
+      seeder.seed_users
+      expect(User.count).to eq 1
+      user = User.first
+      expect(user.email).to eq("admin@peatio.tech")
+      expect(user.role).to eq("member")
+      expect(user.state).to eq("active")
       expect(user.level).to eq(2)
     end
   end

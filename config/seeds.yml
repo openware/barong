@@ -1,9 +1,6 @@
 #
-# Other parameters that you can set here can be found in Account,
-# Profile and Phone models (e.g. app/models/account.rb...); all the
-# model properties are listed at the very bottom of this models files.
+# email and level are required for users
 #
-# Note: email is the only required field here.
 users:
   - email: <%= ENV.fetch("ADMIN_EMAIL", "admin@barong.io") %>
     password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
