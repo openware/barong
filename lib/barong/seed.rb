@@ -16,11 +16,12 @@ module Barong
       )
     end
 
-    def show_seeded_users
-      puts "Seeded users:"
-      @result.each do |user|
-        puts "Email: #{user[:email]}, password: #{user[:password]}"
-      end
+    def inspect
+      str = "Seeded users:\n"
+      str += @result.map do |user|
+        "Email: #{user[:email]}, password: #{user[:password]}"
+      end.join("\n")
+      return str
     end
 
     def logger
@@ -66,36 +67,6 @@ module Barong
           raise ConfigError.new("No enough levels found in database to grant the user to level #{user.level}") if levels.count < user.level
           levels.find_each do |level|
             user.add_level_label(level.key, level.value)
-          end
-
-          # Confirm the email
-          if user.update(updated_at: Time.current)
-            user.add_level_label("email")
-            logger.info("Confirmed email for '#{user.email}'")
-          end
-
-          # Create a Profile using defaults where values are not set in seeds.yml
-          if seed["phone"]
-            phone = Phone.new(seed["phone"])
-            phone.user = user
-
-            if phone.save && phone.update(validated_at: Time.current)
-              logger.info "Created phone for '#{user.email}'"
-            else
-              logger.error "Can't create phone for '#{user.email}': #{phone.errors.full_messages.join('; ')}"
-            end
-          end
-
-          # Create a Profile using defaults where values are not set in seeds.yml
-          if seed["profile"]
-            profile = Profile.new(seed["profile"])
-            profile.user = user
-
-            if profile.save
-              logger.info "Created profile for '#{user.email}'"
-            else
-              logger.error "Can't create profile for '#{user.email}': #{profile.errors.full_messages.join('; ')}"
-            end
           end
 
           @result.push(email: user.email, password: user.password, level: user.level)

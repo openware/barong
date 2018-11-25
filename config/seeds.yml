@@ -5,10 +5,10 @@
 #
 # Note: email is the only required field here.
 users:
-  - email: <%= ENV.fetch('ADMIN_EMAIL', 'admin@barong.io') %>
-    password: <%= ENV.fetch('ADMIN_PASSWORD', nil) %>
-    role: 'admin'
-    state: 'active'
+  - email: <%= ENV.fetch("ADMIN_EMAIL", "admin@barong.io") %>
+    password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
+    role: "admin"
+    state: "active"
     level: 3
 
 levels:
