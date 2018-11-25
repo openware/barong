@@ -10,28 +10,28 @@ module Barong
       YAML.safe_load(
         ERB.new(
           File.read(
-            ENV.fetch('SEEDS_FILE', Rails.root.join('config', 'seeds.yml'))
+            ENV.fetch("SEEDS_FILE", Rails.root.join("config", "seeds.yml"))
           )
         ).result
       )
     end
 
     def show_seeded_users
-      puts 'Seeded users:'
+      puts "Seeded users:"
       @result.each do |user|
         puts "Email: #{user[:email]}, password: #{user[:password]}"
       end
     end
 
     def logger
-      @logger ||= Logger.new(STDERR, progname: 'db:seed')
+      @logger ||= Logger.new(STDERR, progname: "db:seed")
     end
 
     def seed_levels
-      logger.info 'Seeding levels'
-      seeds['levels'].each_with_index do |level, index|
-        logger.info '---'
-        if Level.find_by(key: level['key'], value: level['value']).present?
+      logger.info "Seeding levels"
+      seeds["levels"].each_with_index do |level, index|
+        logger.info "---"
+        if Level.find_by(key: level["key"], value: level["value"]).present?
           logger.info "Level '#{level['key']}:#{level['value']}' already exists"
           next
         end
@@ -41,17 +41,17 @@ module Barong
     end
 
     def seed_users
-      logger.info 'Seeding users'
-      seeds['users'].each do |seed|
-        logger.info '---'
+      logger.info "Seeding users"
+      seeds["users"].each do |seed|
+        logger.info "---"
 
         raise ConfigError.new("Email missing in users seed") if seed["email"].to_s.empty?
         raise ConfigError.new("Level is missing for user #{seed["email"]}") unless seed["level"].is_a?(Integer)
 
         # Skip existing users
-        if User.find_by(email: seed['email']).present?
+        if User.find_by(email: seed["email"]).present?
           logger.info "User '#{seed['email']}' already exists"
-          @result.push(email: seed['email'])
+          @result.push(email: seed["email"])
           next
         end
 
@@ -70,13 +70,13 @@ module Barong
 
           # Confirm the email
           if user.update(updated_at: Time.current)
-            user.add_level_label('email')
+            user.add_level_label("email")
             logger.info("Confirmed email for '#{user.email}'")
           end
 
           # Create a Profile using defaults where values are not set in seeds.yml
-          if seed['phone']
-            phone = Phone.new(seed['phone'])
+          if seed["phone"]
+            phone = Phone.new(seed["phone"])
             phone.user = user
 
             if phone.save && phone.update(validated_at: Time.current)
@@ -87,8 +87,8 @@ module Barong
           end
 
           # Create a Profile using defaults where values are not set in seeds.yml
-          if seed['profile']
-            profile = Profile.new(seed['profile'])
+          if seed["profile"]
+            profile = Profile.new(seed["profile"])
             profile.user = user
 
             if profile.save
