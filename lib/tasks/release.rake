@@ -12,11 +12,7 @@ namespace 'release' do
 
   desc "Bump the version of the application"
   task :patch do
-    unless ENV["TRAVIS_BRANCH"] == 'master'
-      Kernel.abort "Bumping version aborted: GitHub pull request detected."
-    end
-
-    unless ENV["TRAVIS_PULL_REQUEST"] == "false"
+    if ENV["TRAVIS_PULL_REQUEST"] != "false"
       Kernel.abort "Bumping version aborted: GitHub pull request detected."
     end
 
@@ -24,8 +20,11 @@ namespace 'release' do
       Kernel.abort "Bumping version aborted: the build has been triggered by Git tag."
     end
 
-    Bump::Bump.run("patch", commit_message: '[no ci] Bump')
-    sh "git remote add authenticated-origin https://#{bot_username}:#{ENV.fetch("GITHUB_API_KEY")}@github.com/#{repository_slug}"
-    sh "git push authenticated-origin"
+    sh %(git config --global user.name "OpenWare")
+    sh %(git config --global user.email "support@openware.com")
+    Bump::Bump.run("patch", commit_message: '[skip ci]', tag: false)
+    sh %(git remote add authenticated-origin https://#{bot_username}:#{ENV.fetch("GITHUB_API_KEY")}@github.com/#{repository_slug})
+    sh %(git tag #{Bump::Bump.current})
+    sh %(git push --tags authenticated-origin HEAD:#{ENV.fetch('TRAVIS_BRANCH')})
   end
 end
