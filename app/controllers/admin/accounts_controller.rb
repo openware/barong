@@ -5,7 +5,11 @@ module Admin
     before_action :find_account, except: :index
 
     def index
-      @accounts = Account.kept.page(params[:page])
+      if params[:level]
+        @accounts = Account.where(level: params[:level]).kept.page(params[:page])
+      else
+        @accounts = Account.kept.page(params[:page])
+      end
     end
 
     def show
