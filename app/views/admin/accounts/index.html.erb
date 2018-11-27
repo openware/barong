@@ -2,6 +2,16 @@
 
   <h1>Accounts</h1>
 
+  <span class='form-group filter'>
+    <h3>Filter by level</h3>
+  
+    <%= form_tag({controller: 'admin/accounts', action: 'index'}, method: 'get') do %>
+      <%= select_tag 'level', options_for_select(['Select', ['Unverified', 0], ['Email verified', 1],
+          ['Phone verified', 2], ['Document verified', 3]]), :onchange => "this.form.submit()"
+      %>
+    <% end %>
+  </span>
+
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>
