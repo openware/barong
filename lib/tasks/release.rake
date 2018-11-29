@@ -12,6 +12,10 @@ namespace 'release' do
 
   desc "Bump the version of the application"
   task :patch do
+    unless ENV["TRAVIS_BRANCH"] == 'master'
+      Kernel.abort "Bumping version aborted: GitHub pull request detected."
+    end
+
     if ENV["TRAVIS_PULL_REQUEST"] != "false"
       Kernel.abort "Bumping version aborted: GitHub pull request detected."
     end
