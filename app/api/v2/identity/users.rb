@@ -16,15 +16,22 @@ module API::V2
         params do
           requires :email, type: String, desc: 'User Email', allow_blank: false
           requires :password, type: String, desc: 'User Password', allow_blank: false
-          requires :recaptcha_response, type: String, desc: 'Response from Recaptcha widget'
+          optional :captcha_response, types: [String, Hash],
+                                      desc: 'Response from captcha widget'
         end
         post do
-          user_params =  params.slice('email', 'password')
+          declared_params = declared(params, include_missing: false)
+          user_params = declared_params.slice('email', 'password')
           user = User.new(user_params)
-          verify_captcha!(user: user,
-                          response: params['recaptcha_response'])
+
+          verify_captcha!(user: user, response: params['captcha_response'])
 
           error!(user.errors.full_messages, 422) unless user.save
+        end
+
+        desc 'Register Geetest captcha'
+        get '/register_geetest' do
+          CaptchaService::GeetestVerifier.new.register
         end
 
         namespace :email do
