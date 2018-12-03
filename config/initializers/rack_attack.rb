@@ -10,7 +10,7 @@ class Rack::Attack
   end
 
   # Limit number of phone verification calls per number
-  throttle('phone_verification/number', limit: phone_rate_limit , period: 24.hours) do |req|
+throttle('phone_verification/number', limit: phone_rate_limit.to_i , period: 24.hours) do |req|
     case req.path
     when '/phones/verification'
       req.ip
