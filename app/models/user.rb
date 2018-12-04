@@ -1,5 +1,7 @@
-class User < ApplicationRecord
+# frozen_string_literal: true
 
+# User model
+class User < ApplicationRecord
   ROLES = %w[admin accountant compliance member].freeze
 
   acts_as_eventable prefix: 'user', on: %i[create update]
@@ -15,7 +17,10 @@ class User < ApplicationRecord
 
   validates :email,     email: true, presence: true, uniqueness: true
   validates :uid,       presence: true, uniqueness: true
-  validates :password,  presence: true, on: :create, required_symbols: true, password_strength: {use_dictionary: true, min_entropy: 14}
+  validates :password,  presence: true, if: :should_validate?,
+                        required_symbols: true,
+                        password_strength: { use_dictionary: true,
+                                             min_entropy: 14 }
 
   scope :active, -> { where(state: 'active') }
 
@@ -29,13 +34,17 @@ class User < ApplicationRecord
     super.inquiry
   end
 
+  def should_validate?
+    new_record? || password.present?
+  end
+
   def after_confirmation
     add_level_label(:email)
     self.state = 'active'
     save
   end
 
-  #FIXME: Clean level micro code
+  # FIXME: Clean level micro code
   def update_level
     tags = []
     user_level = 0
@@ -45,6 +54,7 @@ class User < ApplicationRecord
     levels = Level.all.order(id: :asc)
     levels.each do |lvl|
       break unless tags.include?(lvl.key + ':' + lvl.value)
+
       user_level = lvl.id
     end
 
@@ -77,6 +87,7 @@ class User < ApplicationRecord
 
   def assign_uid
     return unless uid.blank?
+
     loop do
       self.uid = random_uid
       break unless User.where(uid: uid).any?

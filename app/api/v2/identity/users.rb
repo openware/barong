@@ -101,9 +101,7 @@ module API::V2
           post '/generate_code' do
             current_user = User.find_by_email(params[:email])
 
-            if current_user.nil?
-              error!('User doesn\'t exist',404)
-            end
+            error!('User doesn\'t exist', 404) if current_user.nil?
 
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid)
             EventAPI.notify(
@@ -138,18 +136,15 @@ module API::V2
 
             payload = codec.decode_and_verify(
               params[:reset_password_token],
-              pub_key: Barong::App.config.keystore.public_key,
-              sub:'reset'
-              )
+              pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
+            )
             current_user = User.find_by_email(payload[:email])
-            current_user.update(password: params[:password])
 
-            unless current_user.persisted?
-              error!('Something went wrong', 404)
+            unless current_user.update(password: params[:password])
+              error!(current_user.errors.full_messages, 422)
             end
 
             EventAPI.notify('system.user.password.reset', current_user.as_json_for_event_api)
-
             status 201
           end
         end

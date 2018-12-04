@@ -184,7 +184,7 @@ describe API::V2::Identity::Users do
       end
     end
 
-    context 'when Reset Password Token is valid' do
+    context 'when Reset Password Token and Password are valid ' do
       let!(:user) { create(:user) }
       let(:reset_password_token) { codec.encode(sub:'reset', email: user.email, uid: user.uid) }
       let(:password) { 'ZahSh8ei' }
@@ -196,6 +196,19 @@ describe API::V2::Identity::Users do
         expect(response.status).to eq(201)
         log_in
         expect(response.status).to eq(200)
+      end
+    end
+
+    context 'When Reset Password Token is valid, passwords are weak' do
+      let!(:user) { create(:user) }
+      let(:reset_password_token) { codec.encode(sub:'reset', email: user.email, uid: user.uid) }
+      let(:password) { 'Simple' }
+      let(:confirm_password) { 'Simple' }
+
+      it 'returns weak password error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: ['Password does not meet the minimum requirements','Password is too weak'])
       end
     end
 
