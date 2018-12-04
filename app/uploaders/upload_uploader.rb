@@ -23,4 +23,14 @@ class UploadUploader < CarrierWave::Uploader::Base
   def size_range
     1..10.megabytes
   end
+
+  # Override default 'publicly visible' policy of fog
+  def fog_public
+    false # (default is true)
+  end
+
+  # Set the expire time of authentification signature
+  def fog_authenticated_url_expiration
+    1.minutes # in seconds from now,  (default is 10.minutes)
+  end
 end
