@@ -22,21 +22,16 @@ module API::V2
       rescue_from(API::V2::Management::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
       rescue_from(Grape::Exceptions::ValidationErrors) { |e| error!(e.message, 422) }
       rescue_from(ActiveRecord::RecordNotFound) { error!('Record is not found', 404) }
-      # Known Vault Error from Vault::TOTP.with_human_error
-      #rescue_from(Vault::TOTP::Error) do |error|
-      #  error!(error.message, 422)
-      #end
-      # Unknown Vault error
-      #rescue_from(Vault::VaultError) do |error|
-      #  Rails.logger.error "#{error.class}: #{error.message}"
-      #  error!('Something wrong with 2FA', 422)
-      #end
+
+      # Known Vault Error from TOTPService.with_human_error
+      rescue_from(TOTPService::Error) do |error|
+        error!(error.message, 422)
+      end
 
       use API::V2::Management::JWTAuthenticationMiddleware
       mount API::V2::Management::Labels
       mount API::V2::Management::Users
       mount API::V2::Management::Tools
-
 
       add_swagger_documentation base_path: nil,
                                 info: {

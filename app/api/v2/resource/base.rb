@@ -35,6 +35,11 @@ module API::V2
         end
       end
 
+      # Known Vault Error from TOTPService.with_human_error
+      rescue_from(TOTPService::Error) do |error|
+        error!(error.message, 422)
+      end
+
       rescue_from(:all) do |error|
         Rails.logger.error "#{error.class}: #{error.message}"
         error!('Something went wrong', 500)
