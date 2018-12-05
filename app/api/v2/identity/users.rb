@@ -5,7 +5,6 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Users < Grape::API
-
       desc 'User related routes'
       resource :users do
         desc 'Creates new user',
@@ -104,10 +103,10 @@ module API::V2
             error!('User doesn\'t exist', 404) if current_user.nil?
 
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid)
-            EventAPI.notify(
-              'system.user.password.reset.token',
-              {user: current_user.as_json_for_event_api, token: token })
 
+            activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
+
+            EventAPI.notify('system.user.password.reset.token', user: current_user.as_json_for_event_api, token: token)
             status 201
           end
 
@@ -141,8 +140,13 @@ module API::V2
             current_user = User.find_by_email(payload[:email])
 
             unless current_user.update(password: params[:password])
+              error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
+              activity_record(user: current_user.id, action: 'password reset',
+                              result: 'failed', topic: 'password', data: error_note)
               error!(current_user.errors.full_messages, 422)
             end
+
+            activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 
             EventAPI.notify('system.user.password.reset', current_user.as_json_for_event_api)
             status 201

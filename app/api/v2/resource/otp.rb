@@ -2,10 +2,9 @@
 
 module API::V2
   module Resource
+    # TOTP functionality API
     class Otp < Grape::API
-
       resource :otp do
-
         desc 'Generate qr code for 2FA',
              security: [{ "BearerToken": [] }],
              failure: [
@@ -13,8 +12,13 @@ module API::V2
                { code: 401, message: 'Invalid bearer token' }
              ]
         post '/generate_qrcode' do
-          error!('2FA has been enabled for this account', 400) if current_user.otp
+          if current_user.otp
+            otp_error!(reason: '2FA has been already enabled for this account', error_code: 400,
+              user: current_user.id, action: 'request QR code for 2FA', result: 'failed')
+          end
+
           TOTPService.create(current_user.uid, current_user.email)
+          activity_record(user: current_user.id, action: 'request QR code for 2FA', result: 'succeed', topic: 'otp')
         end
 
         desc 'Enable 2FA',
@@ -29,15 +33,23 @@ module API::V2
                           allow_blank: false
         end
         post '/enable' do
-          error!('2FA has been enabled for this account', 400) if current_user.otp
+          if current_user.otp
+            otp_error!(reason: '2FA has been already enabled for this account', error_code: 400,
+                         user: current_user.id, action: 'enable 2FA', result: 'failed')
+          end
 
           unless TOTPService.validate?(current_user.uid, declared(params)[:code])
-            error!('OTP code is invalid', 422)
+            otp_error!(reason: 'OTP code is invalid', error_code: 422,
+              user: current_user.id, action: 'enable 2FA', result: 'failed')
           end
 
           unless current_user.update(otp: true)
-            error!(current_user.errors.full_messages.to_sentence, 422)
+            otp_error!(reason: current_user.errors.full_messages.to_sentence, error_code: 422,
+              user: current_user.id, action: 'enable 2FA', result: 'failed')
           end
+
+          activity_record(user: current_user.id, action: 'enable 2FA', result: 'succeed', topic: 'otp')
+          200
         end
 
         desc 'Verify 2FA code',
@@ -52,10 +64,14 @@ module API::V2
                           allow_blank: false
         end
         post '/verify' do
-          error!('2FA has not been enabled for this account', 400) unless current_user.otp
+          unless current_user.otp
+            otp_error!(reason: '2FA has not been enabled for this account', error_code: 400,
+                       user: current_user.id, action: 'verify 2FA code', result: 'failed')
+          end
 
           unless TOTPService.validate?(current_user.uid, declared(params)[:code])
-            error!('OTP code is invalid', 422)
+            otp_error!(reason: 'OTP code is invalid', error_code: 422,
+                       user: current_user.id, action: 'verify 2FA code', result: 'failed')
           end
         end
       end

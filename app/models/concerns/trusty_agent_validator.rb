@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
+# User agent validator
 class TrustyAgentValidator < ActiveModel::EachValidator
-
-  def validate_each(record, attribute, value)
+  def validate_each(record, _attribute, value)
     browser = Browser.new(value)
-    unless browser.known?
-      record.data = {note: 'Detected suspicious browser'}.to_json 
-    end
-  end
+    return if browser.known?
 
+    return record.data = { note: 'Detected suspicious browser' }.to_json if record.data.nil?
+
+    record.data = JSON.parse(record.data).merge(note: 'Detected suspicious browser').to_json
+  end
 end

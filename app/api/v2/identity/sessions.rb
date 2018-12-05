@@ -25,18 +25,24 @@ module API::V2
           declared_params = declared(params, include_missing: false)
           user = User.find_by(email: declared_params[:email])
 
-          verify_captcha!(user: user,
-                          response: params['recaptcha_response']) if declared_params[:recaptcha_response]
+          if declared_params[:recaptcha_response]
+            verify_captcha!(user: user, response: params['recaptcha_response'])
+          end
 
           error!('Invalid Email or Password', 401) unless user
-          login_error!(reason: 'Your account is not active', error_code: 401,
-                       user: user.id, action: 'login', result: 'failed') unless user.active?
-          login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
-                       action: 'login', result: 'failed') unless user.authenticate(declared_params[:password])
+          unless user.active?
+            login_error!(reason: 'Your account is not active', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed')
+          end
+
+          unless user.authenticate(declared_params[:password])
+            login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
+                         action: 'login', result: 'failed')
+          end
 
           unless user.otp
             # place for refresh lock logic
-            session_activity(user: user.id, action: 'login', result: 'succeed')
+            activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
             return status 200 
           end
@@ -51,7 +57,7 @@ module API::V2
                          user: user.id, action: 'login::2fa', result: 'failed')
           end
 
-          session_activity(user: user.id, action: 'login::2fa', result: 'succeed')
+          activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
           session[:uid] = user.uid
           status(200)
         end
@@ -67,7 +73,7 @@ module API::V2
           user = User.find_by!(uid: session[:uid])
           error!('Invalid Session', 401) unless user
 
-          session_activity(user: user.id, action: 'logout', result: 'succeed')
+          activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 
           session.destroy
           status(200)
@@ -94,8 +100,7 @@ module API::V2
           params do
             requires :path
           end
-          route ['GET','POST','HEAD','PUT'], '/(*:path)' do
-
+          route ['GET', 'POST', 'HEAD', 'PUT'], '/(*:path)' do
             if apikey_headers?
               apiKey = APIKeysVerifier.new(apikey_params)
               error!('Invalid or unsupported signature', 401) unless apiKey.verify_hmac_payload?
