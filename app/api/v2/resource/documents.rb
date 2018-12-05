@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 module API::V2
   module Resource
     class Documents < Grape::API
@@ -29,7 +31,9 @@ module API::V2
           requires :doc_expire, type: Date, allow_blank: false, desc: 'Document expiration date'
           requires :doc_type, type: String, allow_blank: false, desc: 'Document type'
           requires :doc_number, type: String, allow_blank: false, desc: 'Document number'
-          requires :upload, type: File, allow_blank: false, desc: 'Uploaded file'
+          requires :attachments, type: Array do
+            requires :upload, :type => Rack::Multipart::UploadedFile, :desc => 'Uploaded files'
+          end
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
@@ -37,14 +41,19 @@ module API::V2
           if current_user.documents.count >= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error! 'Maximum number of documents was reached', 400
           end
+          puts params
 
-          doc = current_user.documents.new(declared(params))
-          if doc.save
-            status 201
-          else
-            error!(doc.errors.full_messages.to_sentence, 400)
-          end
-        # temporary rescues the connection errors in fog-gooogle
+          params[:attachments].each do |upload|
+            doc = current_user.documents.new(declared(params).expect(:attachments).merge(upload) )
+
+            binding.pry
+
+            if doc.save
+              status 201
+            else
+              error!(doc.errors.full_messages.to_sentence, 400)
+            end
+          end        # temporary rescues the connection errors in fog-gooogle
         # TODO: check workability after adding carrierwave-google-storage gem
         rescue Excon::Error => e
           error!('Connection error', 500)
