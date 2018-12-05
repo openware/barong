@@ -4,12 +4,13 @@ module API::V2
   module Resource
     # Responsible for CRUD for api keys
     class APIKeys < Grape::API
-
       resource :api_keys do
         before do
           unless current_user.otp
             error!('Only accounts with enabled 2FA alowed', 400)
           end
+
+          error!('OTP code is missing', 422) unless params[:totp_code].present?
 
           unless TOTPService.validate?(current_user.uid, params[:totp_code])
             error!('OTP code is invalid', 422)
@@ -90,7 +91,6 @@ module API::V2
           api_key.destroy
           status 204
         end
-
 
         desc 'List all api keys for current account.',
         security: [{ "BearerToken": [] }],
