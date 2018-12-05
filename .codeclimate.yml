@@ -38,6 +38,8 @@ plugins:
       languages:
         - ruby:
 checks:
+  Rubocop/Metrics/LineLength:
+    enabled: false
   method-complexity:
     config:
       threshold: 10

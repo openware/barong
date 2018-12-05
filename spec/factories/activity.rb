@@ -8,6 +8,6 @@ FactoryBot.define do
     topic { %w[session password otp] } 
     action { %w[otp::enable login logout] }
     result { %w[succeed failed] }
-    data { Faker::Lorem.sentence(3, true, 4) }
+    data { {data: Faker::Lorem.sentence(3, true, 4)}.to_json }
   end
 end

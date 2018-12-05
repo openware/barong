@@ -47,23 +47,24 @@ module API::V2
       end
 
       def login_error!(options = {})
-        session_activity(options.except(:reason, :error_code))
+        options[:data] = { reason: options[:reason] }.to_json
+        options[:topic] = 'session'
+        activity_record(options.except(:reason, :error_code))
         error!(options[:reason], options[:error_code])
       end
 
-      def session_activity(options = {})
+      def activity_record(options = {})
         params = {
           user_id:    options[:user],
           user_ip:    request.ip,
           user_agent: request.env['HTTP_USER_AGENT'],
-          topic:      'session',
+          topic:      options[:topic],
           action:     options[:action],
           result:     options[:result],
           data:       options[:data]
         }
         Activity.create(params)
       end
-
     end
   end
 end

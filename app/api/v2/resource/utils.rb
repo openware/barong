@@ -14,6 +14,26 @@ module API::V2
       def unified_params
         params.merge(kid: SecureRandom.hex(8)) if params[:algorithm].include?('HS')
       end
+
+      def otp_error!(options = {})
+        options[:data] = { reason: options[:reason] }.to_json
+        options[:topic] = 'otp'
+        activity_record(options.except(:reason, :error_code))
+        error!(options[:reason], options[:error_code])
+      end
+
+      def activity_record(options = {})
+        params = {
+          user_id:    options[:user],
+          user_ip:    request.ip,
+          user_agent: request.env['HTTP_USER_AGENT'],
+          topic:      options[:topic],
+          action:     options[:action],
+          result:     options[:result],
+          data:       options[:data]
+        }
+        Activity.create(params)
+      end
     end
   end
 end
