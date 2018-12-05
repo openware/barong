@@ -34,7 +34,9 @@ describe 'Documents API test' do
                                     doc_type: 'Passport',
                                     doc_expire: '2020-01-22',
                                     doc_number: 'AA1234BB',
-                                    upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                    attachments: [
+                                      fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                    ]
                                   }
       end
 
@@ -48,7 +50,9 @@ describe 'Documents API test' do
                                     doc_type: 'Passport',
                                     doc_expire: '2020-01-22',
                                     doc_number: 'AA1234BB',
-                                    upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                    attachments: [
+                                      fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                    ]
                                   }
       end
 
