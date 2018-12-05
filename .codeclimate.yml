@@ -1,0 +1,59 @@
+#TODO enable codeclimate in spec files and fix issues
+
+version: '2'
+plugins:
+  brakeman:
+    enabled: true
+  rubocop:
+    enabled: true
+  reek:
+    enabled: false
+    checks:
+      FeatureEnvy:
+        enabled: false
+      RepeatedConditional:
+        enabled: false
+      NilCheck:
+        enabled: false
+      InstanceVariableAssumption:
+        enabled: false
+      IrresponsibleModule:
+        enabled: false
+      UncommunicativeModuleName:
+        enabled: false
+    exclude_patterns:
+      - spec/
+  bundler-audit:
+    enabled: true
+  todo:
+    enabled: false
+  fixme:
+    enabled: false
+  duplication:
+    enabled: true
+    exclude_patterns:
+      - spec/
+      - app/api/
+    config:
+      languages:
+        - ruby:
+checks:
+  method-complexity:
+    config:
+      threshold: 10
+  file-lines:
+    config:
+      threshold: 350
+exclude_patterns:
+  - db/
+  - ci/bump.rb
+  - node_modules/
+  - vendor/
+  - config/initializers/*
+  - config/plugins.rb
+  - config/
+  - test/
+  - db/
+  - dist/
+  - script/
+  - spec/
