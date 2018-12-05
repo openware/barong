@@ -13,7 +13,9 @@ describe 'Documents API test' do
         doc_type: 'Passport',
         doc_expire: '2020-01-22',
         doc_number: 'AA1234BB',
-        upload: image
+        attachments: [
+          upload: image
+        ]
       }
     end
 
@@ -30,14 +32,14 @@ describe 'Documents API test' do
     it 'saves 10 documents successfully' do
       10.times do
         post '/api/v2/resource/documents', headers: auth_header,
-                                  params: {
-                                    doc_type: 'Passport',
-                                    doc_expire: '2020-01-22',
-                                    doc_number: 'AA1234BB',
-                                    attachments: [
-                                      fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                    ]
-                                  }
+                                           params: {
+                                             doc_type: 'Passport',
+                                             doc_expire: '2020-01-22',
+                                             doc_number: 'AA1234BB',
+                                             attachments: [
+                                               upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             ]
+                                           }
       end
 
       expect(response.status).to eq(201)
@@ -46,18 +48,72 @@ describe 'Documents API test' do
     it 'renders an error when max documents was reached' do
       11.times do
         post '/api/v2/resource/documents', headers: auth_header,
-                                  params: {
-                                    doc_type: 'Passport',
-                                    doc_expire: '2020-01-22',
-                                    doc_number: 'AA1234BB',
-                                    attachments: [
-                                      fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                    ]
-                                  }
+                                           params: {
+                                             doc_type: 'Passport',
+                                             doc_expire: '2020-01-22',
+                                             doc_number: 'AA1234BB',
+                                             attachments: [
+                                               upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             ]
+                                           }
       end
 
       expect(response.status).to eq(400)
       expect_body.to eq(error: 'Maximum number of documents was reached')
+    end
+
+    it 'uploads 2 files at once' do
+      post '/api/v2/resource/documents', headers: auth_header,
+                                         params: {
+                                           doc_type: 'Passport',
+                                           doc_expire: '2020-01-22',
+                                           doc_number: 'AA1234BB',
+                                           attachments: [
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+                                           ]
+                                         }
+      expect(response.status).to eq(201)
+      expect(test_user.documents.length).to eq(2)
+    end
+
+    it 'uploads 3 files at once' do
+      post '/api/v2/resource/documents', headers: auth_header,
+                                         params: {
+                                           doc_type: 'Passport',
+                                           doc_expire: '2020-01-22',
+                                           doc_number: 'AA1234BB',
+                                           attachments: [
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                           ]
+                                         }
+      expect(response.status).to eq(201)
+      expect(test_user.documents.length).to eq(3)
+    end
+
+    it 'doesn\'t upload more than 10 files at once' do
+      post '/api/v2/resource/documents', headers: auth_header,
+                                         params: {
+                                           doc_type: 'Passport',
+                                           doc_expire: '2020-01-22',
+                                           doc_number: 'AA1234BB',
+                                           attachments: [
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
+                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+                                           ]
+                                         }
+      expect(response.status).to eq(400)
     end
 
     it 'Checks if params are ok and returns success' do
@@ -85,13 +141,13 @@ describe 'Documents API test' do
       expect(response.status).to eq(400)
 
       post '/api/v2/resource/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(error: 'upload is missing, upload is empty')
+      expect_body.to eq(error: 'Upload File size should be greater than 1 Byte and Upload can\'t be blank')
       expect(response.status).to eq(400)
 
       params0 = params
       params0[:upload] = Faker::Avatar.image
       post '/api/v2/resource/documents', params: params0, headers: auth_header
-      expect_body.to eq(error: 'upload is invalid')
+      expect_body.to eq(error: 'Upload File size should be greater than 1 Byte and Upload can\'t be blank')
       expect(response.status).to eq(400)
     end
 

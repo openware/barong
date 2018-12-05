@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 module API::V2
   module Resource
     class Documents < Grape::API
-
-      #helpers Doorkeeper::Grape::Helpers
-
       desc 'Documents related routes'
       resource :documents do
         desc 'Return current user documents list',
-             security: [{ "BearerToken": [] }],
+             security: [{ 'BearerToken': [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' }
              ]
@@ -20,7 +15,7 @@ module API::V2
         end
 
         desc 'Upload a new document for current user',
-             security: [{ "BearerToken": [] }],
+             security: [{ 'BearerToken': [] }],
              success: { code: 201, message: 'Document is uploaded' },
              failure: [
                { code: 400, message: 'Required params are empty' },
@@ -32,29 +27,29 @@ module API::V2
           requires :doc_type, type: String, allow_blank: false, desc: 'Document type'
           requires :doc_number, type: String, allow_blank: false, desc: 'Document number'
           requires :attachments, type: Array do
-            requires :upload, :type => Rack::Multipart::UploadedFile, :desc => 'Uploaded files'
+            requires :upload, type: Rack::Multipart::UploadedFile, desc: 'Uploaded files'
           end
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post '/' do
-          if current_user.documents.count >= ENV.fetch('DOCUMENTS_LIMIT', 10)
+          unless current_user.documents.count < ENV.fetch('DOCUMENTS_LIMIT', 10)
             error! 'Maximum number of documents was reached', 400
           end
-          puts params
+
+          unless params[:attachments].length < ENV.fetch('DOCUMENTS_LIMIT', 10)
+            error! 'Too many documents uploaded at once', 400
+          end
 
           params[:attachments].each do |upload|
-            doc = current_user.documents.new(declared(params).expect(:attachments).merge(upload) )
+            doc = current_user.documents.new(declared(params).except(:attachments).merge(upload))
 
-            binding.pry
+            error!(doc.errors.full_messages.to_sentence, 400) unless doc.save
 
-            if doc.save
-              status 201
-            else
-              error!(doc.errors.full_messages.to_sentence, 400)
-            end
-          end        # temporary rescues the connection errors in fog-gooogle
-        # TODO: check workability after adding carrierwave-google-storage gem
+            status 201
+          end
+          # temporary rescues the connection errors in fog-gooogle
+          # TODO: check workability after adding carrierwave-google-storage gem
         rescue Excon::Error => e
           error!('Connection error', 500)
           logger.fatal(e)
