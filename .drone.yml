@@ -1,0 +1,27 @@
+kind: pipeline
+name: default
+
+steps:
+- name: rspec
+  image: ruby:2.5.3
+  environment:
+    DATABASE_HOST: database
+    EVENT_API_RABBITMQ_HOST: rabbitmq
+    RAILS_ENV: test
+  commands:
+    - bundle
+    - rake db:create db:migrate
+    - rspec
+
+services:
+- name: database
+  image: mariadb
+  ports:
+    - 3306
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+- name: rabbitmq
+  image: rabbitmq:3.7.6
+  ports:
+    - 5672
