@@ -2,14 +2,27 @@ kind: pipeline
 name: default
 
 steps:
+- name: vault
+  image: vault:0.11.4
+  commands:
+    - vault secrets disable secret
+    - vault secrets enable -path=secret -version=1 kv
+    - vault secrets enable totp
+  environment:
+    VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    VAULT_ADDR: http://vault:8200
+
 - name: rspec
   image: ruby:2.5.3
   environment:
     DATABASE_HOST: database
     EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDR: http://vault:8200
     RAILS_ENV: test
   commands:
     - bundle
+    - ./bin/init_config
     - rake db:create db:migrate
     - rspec
 
@@ -25,3 +38,13 @@ services:
   image: rabbitmq:3.7.6
   ports:
     - 5672
+
+- name: vault
+  image: vault:0.11.4
+  ports:
+    - 8200
+  environment:
+    SKIP_SETCAP: 1
+    VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    VAULT_ADDR: http://vault:8200
