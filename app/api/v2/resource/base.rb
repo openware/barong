@@ -8,12 +8,6 @@ module API::V2
       use Barong::Middleware::JWTAuthenticator, \
         pubkey: Rails.configuration.x.keystore.public_key
 
-      cascade false
-
-      format         :json
-      content_type   :json, 'application/json'
-      default_format :json
-
       helpers API::V2::Resource::Utils
 
       do_not_route_options!
@@ -51,10 +45,6 @@ module API::V2
       mount Resource::Phones
       mount Resource::Otp
       mount Resource::APIKeys
-
-      route :any, '*path' do
-        error! 'Route is not found', 404
-      end
     end
   end
 end

@@ -1,11 +1,6 @@
 module API::V2
   module Management
     class Base < Grape::API
-      cascade false
-
-      format         :json
-      content_type   :json, 'application/json'
-      default_format :json
 
       logger Rails.logger.dup
       logger.formatter = GrapeLogging::Formatters::Rails.new
@@ -32,21 +27,6 @@ module API::V2
       mount API::V2::Management::Labels
       mount API::V2::Management::Users
       mount API::V2::Management::Tools
-
-      add_swagger_documentation base_path: nil,
-                                info: {
-                                  title: 'Management API v1',
-                                  description: 'Management API is server-to-server API with high privileges'
-                                },
-                                api_version: 'v2',
-                                doc_version: '2.0', # Used to be Barong::Version 
-                                hide_format: true,
-                                hide_documentation_path: true,
-                                mount_path: '/swagger_doc'
-
-      route :any, '*path' do
-        error! 'Unable to find endpoint', 404
-      end
     end
   end
 end

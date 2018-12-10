@@ -38,6 +38,8 @@ plugins:
       languages:
         - ruby:
 checks:
+  Rubocop/Layout/AlignHash:
+    enabled: false
   Rubocop/Metrics/LineLength:
     enabled: false
   method-complexity:
