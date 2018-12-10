@@ -1,13 +1,17 @@
+# frozen_string_literal: true
+
+require_dependency 'v2/validations'
+
 module API::V2
   # Base api configuration for V2 module
   class Base < Grape::API
-
     cascade false
 
     format         :json
     content_type   :json, 'application/json'
     default_format :json
 
+    mount Admin::Base      => '/admin'
     mount Identity::Base   => '/identity'
     mount Resource::Base   => '/resource'
     mount Management::Base => '/management'

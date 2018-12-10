@@ -17,8 +17,8 @@ module API::V2
               user: current_user.id, action: 'request QR code for 2FA', result: 'failed')
           end
 
-          TOTPService.create(current_user.uid, current_user.email)
           activity_record(user: current_user.id, action: 'request QR code for 2FA', result: 'succeed', topic: 'otp')
+          TOTPService.create(current_user.uid, current_user.email)
         end
 
         desc 'Enable 2FA',

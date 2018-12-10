@@ -14,6 +14,8 @@ gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'mini_racer', platforms: :ruby
 
+gem 'kaminari'
+
 gem 'peatio', '~> 0.4.4'
 
 # REST-like API framework for Ruby
