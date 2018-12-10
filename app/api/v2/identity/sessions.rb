@@ -93,6 +93,18 @@ module API::V2
           end
 
           desc 'Traffic Authorizer EndPoint',
+          failure: [
+            { code: 400, message: 'Request is invalid' },
+            { code: 404, message: 'Destination endpoint is not found' }
+          ]
+          params do
+            requires :path
+          end
+          route ['GET','POST','HEAD','PUT','DELETE'], '/api/v2/peatio/public/(*:path)' do
+            status(200)
+          end
+
+          desc 'Traffic Authorizer EndPoint',
             failure: [
               { code: 400, message: 'Request is invalid' },
               { code: 404, message: 'Destination endpoint is not found' }
