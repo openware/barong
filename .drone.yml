@@ -2,7 +2,7 @@ kind: pipeline
 name: default
 
 steps:
-- name: vault
+- name: Configure Vault
   image: vault:0.11.4
   commands:
     - vault secrets disable secret
@@ -13,7 +13,7 @@ steps:
     VAULT_DEV_ROOT_TOKEN_ID: changeme
     VAULT_ADDR: http://vault:8200
 
-- name: rspec
+- name: Run rspec
   image: ruby:2.5.3
   environment:
     DATABASE_HOST: database
