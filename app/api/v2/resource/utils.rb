@@ -15,9 +15,9 @@ module API::V2
         params.merge(kid: SecureRandom.hex(8)) if params[:algorithm].include?('HS')
       end
 
-      def otp_error!(options = {})
+      def record_error!(options = {})
         options[:data] = { reason: options[:reason] }.to_json
-        options[:topic] = 'otp'
+        options[:result] = 'failed'
         activity_record(options.except(:reason, :error_code))
         error!(options[:reason], options[:error_code])
       end
@@ -33,6 +33,10 @@ module API::V2
           data:       options[:data]
         }
         Activity.create(params)
+      end
+
+      def password_valid?(password)
+        true if current_user == current_user.try(:authenticate, password)
       end
     end
   end
