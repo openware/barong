@@ -16,8 +16,8 @@ module API::V2
         params do
           requires :email
           requires :password
-          optional :recaptcha_response, type: String,
-                                        desc: 'Response from Recaptcha widget'
+          optional :captcha_response, types: [String, Hash],
+                                      desc: 'Response from captcha widget'
           optional :otp_code, type: String,
                               desc: 'Code from Google Authenticator'
         end
@@ -25,8 +25,8 @@ module API::V2
           declared_params = declared(params, include_missing: false)
           user = User.find_by(email: declared_params[:email])
 
-          if declared_params[:recaptcha_response]
-            verify_captcha!(user: user, response: params['recaptcha_response'])
+          if declared_params[:captcha_response]
+            verify_captcha!(user: user, response: params['captcha_response'])
           end
 
           error!('Invalid Email or Password', 401) unless user
@@ -44,7 +44,7 @@ module API::V2
             # place for refresh lock logic
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
-            return status 200 
+            return status 200
           end
 
           if declared_params[:otp_code].blank?
