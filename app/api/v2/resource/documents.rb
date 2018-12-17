@@ -2,6 +2,7 @@
 
 module API::V2
   module Resource
+    # Dpcuments API
     class Documents < Grape::API
       desc 'Documents related routes'
       resource :documents do
@@ -10,7 +11,7 @@ module API::V2
              failure: [
                { code: 401, message: 'Invalid bearer token' }
              ]
-        get '/' do
+        get do
           current_user.documents.as_json(only: %i[upload doc_type doc_number doc_expire])
         end
 
@@ -32,7 +33,7 @@ module API::V2
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
-        post '/' do
+        post do
           unless current_user.documents.count < ENV.fetch('DOCUMENTS_LIMIT', 10)
             error! 'Maximum number of documents was reached', 400
           end
