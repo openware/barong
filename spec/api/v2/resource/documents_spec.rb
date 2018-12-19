@@ -13,8 +13,8 @@ describe 'Documents API test' do
         doc_type: 'Passport',
         doc_expire: '2020-01-22',
         doc_number: 'AA1234BB',
-        attachments: [
-          upload: image
+        upload: [
+          image
         ]
       }
     end
@@ -36,30 +36,26 @@ describe 'Documents API test' do
                                              doc_type: 'Passport',
                                              doc_expire: '2020-01-22',
                                              doc_number: 'AA1234BB',
-                                             attachments: [
-                                               upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                             ]
+                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
                                            }
       end
 
       expect(response.status).to eq(201)
     end
 
-    it 'renders an error when max documents was reached' do
+    it 'renders an error when max documents already reached' do
       11.times do
         post '/api/v2/resource/documents', headers: auth_header,
                                            params: {
                                              doc_type: 'Passport',
                                              doc_expire: '2020-01-22',
                                              doc_number: 'AA1234BB',
-                                             attachments: [
-                                               upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                             ]
+                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
                                            }
       end
 
       expect(response.status).to eq(400)
-      expect_body.to eq(error: 'Maximum number of documents was reached')
+      expect_body.to eq(error: 'Documents amount will reach limit by this upload')
     end
 
     it 'uploads 2 files at once' do
@@ -68,9 +64,9 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           attachments: [
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+                                           upload: [
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(201)
@@ -83,11 +79,11 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           attachments: [
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                           ]
+                                           upload: [
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                          ]
                                          }
       expect(response.status).to eq(201)
       expect(test_user.documents.length).to eq(3)
@@ -99,19 +95,19 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           attachments: [
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') },
-                                             { upload: fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
-                                           ]
+                                           upload: [
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                         ]
                                          }
       expect(response.status).to eq(400)
     end
@@ -141,13 +137,13 @@ describe 'Documents API test' do
       expect(response.status).to eq(400)
 
       post '/api/v2/resource/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(error: 'Upload File size should be greater than 1 Byte and Upload can\'t be blank')
+      expect_body.to eq(error: 'upload is missing')
       expect(response.status).to eq(400)
 
       params0 = params
-      params0[:upload] = Faker::Avatar.image
+      params0[:upload] = [Faker::Avatar.image]
       post '/api/v2/resource/documents', params: params0, headers: auth_header
-      expect_body.to eq(error: 'Upload File size should be greater than 1 Byte and Upload can\'t be blank')
+      expect_body.to eq(error: 'Upload can\'t be blank')
       expect(response.status).to eq(400)
     end
 

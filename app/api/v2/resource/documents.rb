@@ -27,30 +27,26 @@ module API::V2
           requires :doc_expire, type: Date, allow_blank: false, desc: 'Document expiration date'
           requires :doc_type, type: String, allow_blank: false, desc: 'Document type'
           requires :doc_number, type: String, allow_blank: false, desc: 'Document number'
-          requires :attachments, type: Array do
-            requires :upload, type: Rack::Multipart::UploadedFile, desc: 'Uploaded files'
-          end
+          requires :upload, desc: 'Array of Rack::Multipart::UploadedFile'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post do
-          unless current_user.documents.count < ENV.fetch('DOCUMENTS_LIMIT', 10)
-            error! 'Maximum number of documents was reached', 400
+          unless current_user.documents.count <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+            error! 'Maximum number of documents already reached', 400
           end
 
-          unless params[:attachments].length < ENV.fetch('DOCUMENTS_LIMIT', 10)
-            error! 'Too many documents uploaded at once', 400
+          unless current_user.documents.count + params[:upload].length <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+            error! 'Documents amount will reach limit by this upload', 400
           end
 
-          params[:attachments].each do |upload|
-            doc = current_user.documents.new(declared(params).except(:attachments).merge(upload))
+          params[:upload].each do |file|
+            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
 
             error!(doc.errors.full_messages.to_sentence, 400) unless doc.save
-
-            status 201
           end
-          # temporary rescues the connection errors in fog-gooogle
-          # TODO: check workability after adding carrierwave-google-storage gem
+          status 201
+
         rescue Excon::Error => e
           error!('Connection error', 500)
           logger.fatal(e)
