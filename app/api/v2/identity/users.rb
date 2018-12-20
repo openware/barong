@@ -27,6 +27,9 @@ module API::V2
           verify_captcha!(user: user, response: params['captcha_response'])
 
           error!(user.errors.full_messages, 422) unless user.save
+
+          publish_confirmation(user)
+          status 201
         end
 
         desc 'Register Geetest captcha'
@@ -52,11 +55,7 @@ module API::V2
               error!('User doesn\'t exist or has already been activated', 422)
             end
 
-            token = codec.encode(sub: 'confirmation', email: params[:email], uid: current_user.uid)
-            EventAPI.notify(
-              'system.user.email.confirmation.token',
-              {user: current_user.as_json_for_event_api, token: token})
-
+            publish_confirmation(current_user)
             status 201
           end
 

@@ -1,11 +1,27 @@
 #TODO enable codeclimate in spec files and fix issues
 
 version: '2'
+checks:
+  method-complexity:
+    config:
+      threshold: 10
+  file-lines:
+    config:
+      threshold: 350
 plugins:
   brakeman:
     enabled: true
   rubocop:
     enabled: true
+    checks:
+      Rubocop/Style/RedundantSelf:
+        enabled: false
+      Rubocop/Metrics/AbcSize:
+        enabled: false
+      Rubocop/Layout/AlignHash:
+        enabled: false
+      Rubocop/Metrics/LineLength:
+        enabled: false
   reek:
     enabled: false
     checks:
@@ -36,18 +52,7 @@ plugins:
       - app/api/
     config:
       languages:
-        - ruby:
-checks:
-  Rubocop/Layout/AlignHash:
-    enabled: false
-  Rubocop/Metrics/LineLength:
-    enabled: false
-  method-complexity:
-    config:
-      threshold: 10
-  file-lines:
-    config:
-      threshold: 350
+        - ruby
 exclude_patterns:
   - db/
   - ci/bump.rb
