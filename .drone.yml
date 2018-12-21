@@ -12,6 +12,9 @@ steps:
     VAULT_TOKEN: changeme
     VAULT_DEV_ROOT_TOKEN_ID: changeme
     VAULT_ADDR: http://vault:8200
+  when:
+    event:
+      - pull_request
 
 - name: Run rspec
   image: ruby:2.5.3
@@ -25,6 +28,9 @@ steps:
     - ./bin/init_config
     - rake db:create db:migrate
     - rspec
+  when:
+    event:
+      - pull_request
 
 - name: Bump and tag
   image: ruby:2.5.3
