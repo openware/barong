@@ -41,7 +41,14 @@ steps:
     GITHUB_API_KEY:
       from_secret: kite_bot_key
   commands:
-    - bundle exec rake release:patch
+    - gem install bump
+    - git config --global user.name "  Kite Bot"
+    - git config --global user.email "kite-bot@heliostech.fr"
+    - git remote add authenticated-origin https://kite-bot:$GITHUB_API_KEY@github.com/${DRONE_REPO}
+    - git fetch authenticated-origin
+    - bump patch --tag --commit-message 'Bump [ci skip]'
+    - git push authenticated-origin master
+    - git push --tags authenticated-origin
     - git describe --tags $(git rev-list --tags --max-count=1) > .tags
   when:
     event:
@@ -62,6 +69,21 @@ steps:
       - push
     branch:
       - master
+
+- name: Redeploy
+  image: rubykube/microkube:0.1.0
+  environment:
+      WEBHOOK_JWT_SECRET:
+          from_secret: microkube_webhook_secret
+  commands:
+    - export latest_image=rubykube/barong:$(cat .tags)
+    - cd /home/app
+    - bundle exec rake payload:send[barong,$latest_image,http://www.microkube.com:1337]
+  when:
+    branch:
+      - master
+    event:
+      - push
 
 services:
 - name: database
