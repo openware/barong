@@ -26,6 +26,23 @@ steps:
     - rake db:create db:migrate
     - rspec
 
+- name: Bump and tag
+  image: ruby:2.5.3
+  environment:
+    BOT_USERNAME: kite-bot
+    BOT_NAME: Kite Bot
+    BOT_EMAIL: kite-bot@heliostech.fr
+    GITHUB_API_KEY:
+      from_secret: kite_bot_key
+  commands:
+    - bundle exec rake release:patch
+    - git describe --tags $(git rev-list --tags --max-count=1) > .tags
+  when:
+    event:
+      - push
+    branch:
+      - master
+
 services:
 - name: database
   image: mariadb
