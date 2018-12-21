@@ -25,4 +25,7 @@ class APIKey < ApplicationRecord
     self.algorithm.include?('HS')
   end
 
+  def active?
+    self.state == 'active'
+  end
 end

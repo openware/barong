@@ -5,7 +5,6 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Sessions < Grape::API
-
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
@@ -79,56 +78,6 @@ module API::V2
 
           session.destroy
           status(200)
-        end
-
-        namespace :authorize do
-          desc 'Traffic Authorizer EndPoint',
-            failure: [
-              { code: 400, message: 'Request is invalid' },
-              { code: 404, message: 'Destination endpoint is not found' }
-          ]
-          params do
-            requires :path
-          end
-          route ['GET','POST','HEAD','PUT','DELETE'], '/api/v2/barong/identity/(*:path)' do
-            status(200)
-          end
-
-          desc 'Traffic Authorizer EndPoint',
-          failure: [
-            { code: 400, message: 'Request is invalid' },
-            { code: 404, message: 'Destination endpoint is not found' }
-          ]
-          params do
-            requires :path
-          end
-          route ['GET','POST','HEAD','PUT','DELETE'], '/api/v2/peatio/public/(*:path)' do
-            status(200)
-          end
-
-          desc 'Traffic Authorizer EndPoint',
-            failure: [
-              { code: 400, message: 'Request is invalid' },
-              { code: 404, message: 'Destination endpoint is not found' }
-          ]
-          params do
-            requires :path
-          end
-          route ['GET', 'POST', 'HEAD', 'PUT'], '/(*:path)' do
-            if apikey_headers?
-              apiKey = APIKeysVerifier.new(apikey_params)
-              error!('Invalid or unsupported signature', 401) unless apiKey.verify_hmac_payload?
-              current_apikey = APIKey.find_by_kid(apikey_params[:kid])
-              user = User.find_by_id(current_apikey.user_id)
-              header 'Authorization', 'Bearer' + codec.encode(user.as_payload)
-              status(200)
-            else
-              error!('Invalid Session', 401) unless session[:uid]
-              user = User.find_by!(uid: session[:uid])
-              header 'Authorization', 'Bearer ' + codec.encode(user.as_payload)
-              return status(200)
-            end
-          end
         end
       end
     end

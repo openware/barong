@@ -3,7 +3,6 @@
 module API::V2
   module Identity
     module Utils
-
       def session
         request.session_options[:expire_after] = Barong::App.config.session_expire_time.to_i.seconds
         request.session
@@ -55,29 +54,6 @@ module API::V2
                (response['geetest_seccode'].is_a? String)
           error!('mandatory fields must be filled in', 400)
         end
-      end
-
-      def apikey_headers?
-        return false if headers['X-Auth-Apikey'].nil? &&
-        headers['X-Auth-Nounce'].nil? &&
-        headers['X-Auth-Signature'].nil?
-        @apikey_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nounce'], headers['X-Auth-Signature']]
-        validate_headers?
-      end
-
-      def validate_headers?
-        @apikey_headers.each do |k|
-          error!('Request contains invalid or blank api key headers!') if k.blank?
-        end
-      end
-
-      def apikey_params
-        params = {}
-        params.merge(
-          'kid': headers['X-Auth-Apikey'],
-          'nounce': headers['X-Auth-Nounce'],
-          'signature':  headers['X-Auth-Signature']
-        )
       end
 
       def login_error!(options = {})
