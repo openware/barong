@@ -39,14 +39,14 @@ module API::V2
           return error!('Profile already exists', 409) unless current_user.profile.nil?
           profile = current_user.create_profile(declared(params, include_missing: false))
           error!(profile.errors.full_messages.to_sentence, 422) if profile.errors.any?
-          
+
           label =
-              current_user.labels.new(
-                key: 'profile',
-                value: 'verified',
-                scope: 'private'
-              )
-            error!(label.errors.as_json(full_messages: true), 422) unless label.save
+            current_user.labels.new(
+              key: 'profile',
+              value: 'verified',
+              scope: 'private'
+            )
+          error!(label.errors.as_json(full_messages: true), 422) unless label.save
 
           status 201
         end
