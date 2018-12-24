@@ -81,11 +81,39 @@ module API
               status 200
             end
 
+            desc 'Update user label scope',
+                 security: [{ 'BearerToken': [] }],
+                 failure: [
+                   { code: 400, message: 'Required params are empty' },
+                   { code: 401, message: 'Invalid bearer token' },
+                   { code: 404, message: 'Record is not found' },
+                   { code: 422, message: 'Validation errors' }
+                 ]
+            params do
+              requires :uid, type: String, desc: 'user uniq id', allow_blank: false
+              requires :key, type: String, allow_blank: false, desc: 'Label key.'
+              requires :scope, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false
+              requires :value, type: String, allow_blank: false, desc: 'Label value.'
+            end
+            put do
+              declared_params = declared(params, include_missing: false)
+
+              target_user = User.find_by_uid(declared_params[:uid])
+              error!('User with such UID doesnt exist', 404) if target_user.nil?
+
+              label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
+
+              error!('Label with such key doesnt exist or not assigned to chosen user', 404) if label.nil?
+
+              label.update(value: params[:value])
+              status 200
+            end
+
             desc 'Deletes label for user',
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+                 security: [{ "BearerToken": [] }],
+                 failure: [
+                   { code: 401, message: 'Invalid bearer token' }
+                 ]
             params do
               requires :uid, type: String, desc: 'user uniq id', allow_blank: false
               requires :key, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false

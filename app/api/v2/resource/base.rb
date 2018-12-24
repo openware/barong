@@ -40,6 +40,7 @@ module API::V2
       end
 
       mount Resource::Users
+      mount Resource::Labels
       mount Resource::Profiles
       mount Resource::Documents
       mount Resource::Phones
