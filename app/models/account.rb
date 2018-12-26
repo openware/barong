@@ -12,6 +12,7 @@ class Account < ApplicationRecord
          :confirmable, :lockable
 
   ROLES = %w[admin compliance member].freeze
+  STATE = %w[active banned].freeze
 
   acts_as_eventable prefix: 'account', on: %i[create update]
 
