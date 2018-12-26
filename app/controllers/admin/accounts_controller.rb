@@ -7,6 +7,8 @@ module Admin
     def index
       if params[:level]
         @accounts = Account.where(level: params[:level]).kept.page(params[:page])
+      elsif params[:state]
+        @accounts = Account.where(state: params[:state]).kept.page(params[:page])
       else
         @accounts = Account.kept.page(params[:page])
       end
@@ -51,7 +53,7 @@ module Admin
     end
 
     def account_params
-      params.require(:account).permit(:role)
+      params.require(:account).permit(:role, :state)
     end
   end
 end
