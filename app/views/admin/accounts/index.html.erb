@@ -2,6 +2,27 @@
 
   <h1>Accounts</h1>
 
+  <div class="row">
+    <span class='form-group filter col-2'>
+      <h3>Filter by level</h3>
+
+      <%= form_tag({controller: 'admin/accounts', action: 'index'}, method: 'get') do %>
+        <%= select_tag 'level', options_for_select(['Select', ['Unverified', 0], ['Email verified', 1],
+            ['Phone verified', 2], ['Document verified', 3]]), :onchange => "this.form.submit()"
+        %>
+      <% end %>
+    </span>
+    <span class='form-group filter col-2'>
+
+      <h3>Filter by state</h3>
+
+      <%= form_tag({controller: 'admin/accounts', action: 'index'}, method: 'get') do %>
+        <%= select_tag 'state', options_for_select(['Select', ['Active', 'active'], ['Banned', 'banned'], ['Pending', 'pending']]), :onchange => "this.form.submit()"
+        %>
+      <% end %>
+    </span>
+  </div>
+
   <table class="table table-bordered table-striped table-hover table-sm text-center">
     <thead>
       <tr>

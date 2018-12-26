@@ -5,7 +5,13 @@ module Admin
     before_action :find_account, except: :index
 
     def index
-      @accounts = Account.kept.page(params[:page])
+      if params[:level]
+        @accounts = Account.where(level: params[:level]).kept.page(params[:page])
+      elsif params[:state]
+        @accounts = Account.where(state: params[:state]).kept.page(params[:page])
+      else
+        @accounts = Account.kept.page(params[:page])
+      end
     end
 
     def show
@@ -47,7 +53,7 @@ module Admin
     end
 
     def account_params
-      params.require(:account).permit(:role)
+      params.require(:account).permit(:role, :state)
     end
   end
 end
