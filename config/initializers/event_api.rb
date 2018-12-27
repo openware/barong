@@ -43,6 +43,8 @@ module EventAPI
         tokens << record.class.event_api_settings.fetch(:prefix) { record.class.name.underscore.gsub(/\//, '_') }
         tokens << partial_event_name.to_s
         full_event_name = tokens.join('.')
+        return if event_payload.key?(:changes) && event_payload[:changes].key?(:updated_at)
+
         EventAPI.notify(full_event_name, event_payload)
       end
 
