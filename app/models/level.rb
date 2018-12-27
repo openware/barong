@@ -2,8 +2,7 @@
 
 # Label level mapping model
 class Level < ApplicationRecord
-  validates :key, :value, :description, presence: true
-  validates :value, uniqueness: { scope: :key }
+  validates :requirements, :description, presence: true
 end
 
   # == Schema Information
@@ -18,4 +17,3 @@ end
   #  created_at  :datetime         not null
   #  updated_at  :datetime         not null
   #
-

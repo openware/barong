@@ -1,4 +1,4 @@
-#
+
 # email and level are required for users
 #
 users:
@@ -6,15 +6,18 @@ users:
     password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
     role: "admin"
     state: "active"
-    level: 3
+    level: 4
 
 levels:
-  - key: email
-    value: verified
+  - requirements:
+      email: "verified"
     description: "User clicked on the confirmation link"
-  - key: phone
-    value: verified
+  - requirements:
+      phone: "verified"
     description: "User entered a valid code from sms"
-  - key: document
-    value: verified
+  - requirements:
+      profile: "verified"
+    description: "User submitted his personal information"
+  - requirements:
+      document: "verified"
     description: "User personal documents have been verified"

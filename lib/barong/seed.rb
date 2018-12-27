@@ -32,48 +32,50 @@ module Barong
       logger.info "Seeding levels"
       seeds["levels"].each_with_index do |level, index|
         logger.info "---"
-        if Level.find_by(key: level["key"], value: level["value"]).present?
-          logger.info "Level '#{level['key']}:#{level['value']}' already exists"
+        level["requirements"] = level["requirements"].to_json
+        if Level.find_by_requirements(level["requirements"]).present?
+          logger.info "Level '#{index}' already exists"
           next
         end
-        level[:id] = index+1
+
+        level[:id] = index + 1
         Level.create!(level)
       end
     end
 
     def seed_users
-      logger.info "Seeding users"
-      seeds["users"].each do |seed|
-        logger.info "---"
+    #   logger.info "Seeding users"
+    #   seeds["users"].each do |seed|
+    #     logger.info "---"
 
-        raise ConfigError.new("Email missing in users seed") if seed["email"].to_s.empty?
-        raise ConfigError.new("Level is missing for user #{seed["email"]}") unless seed["level"].is_a?(Integer)
+    #     raise ConfigError.new("Email missing in users seed") if seed["email"].to_s.empty?
+    #     raise ConfigError.new("Level is missing for user #{seed["email"]}") unless seed["level"].is_a?(Integer)
 
-        # Skip existing users
-        if User.find_by(email: seed["email"]).present?
-          logger.info "User '#{seed['email']}' already exists"
-          @result.push(email: seed["email"])
-          next
-        end
+    #     # Skip existing users
+    #     if User.find_by(email: seed["email"]).present?
+    #       logger.info "User '#{seed['email']}' already exists"
+    #       @result.push(email: seed["email"])
+    #       next
+    #     end
 
-        user = User.new(seed)
-        user.password ||= SecureRandom.base64(30)
+    #     user = User.new(seed)
+    #     user.password ||= SecureRandom.base64(30)
 
-        if user.save
-          logger.info "Created user for '#{user.email}'"
+    #     if user.save
+    #       logger.info "Created user for '#{user.email}'"
 
-          # Set correct level with labels
-          levels = levels = Level.where(id: 1..user.level)
-          raise ConfigError.new("No enough levels found in database to grant the user to level #{user.level}") if levels.count < user.level
-          levels.find_each do |level|
-            user.add_level_label(level.key, level.value)
-          end
+    #       # Set correct level with labels
+    #       levels = levels = Level.where(id: 1..user.level)
+    #       raise ConfigError.new("No enough levels found in database to grant the user to level #{user.level}") if levels.count < user.level
+    #       levels.find_each do |level|
+    #         user.add_level_label(level.key, level.value)
+    #       end
 
-          @result.push(email: user.email, password: user.password, level: user.level)
-        else
-          logger.error "Can't create user '#{user.email}': #{user.errors.full_messages.join('; ')}"
-        end
-      end
+    #       @result.push(email: user.email, password: user.password, level: user.level)
+    #     else
+    #       logger.error "Can't create user '#{user.email}': #{user.errors.full_messages.join('; ')}"
+    #     end
+    #   end
     end
   end
 end
