@@ -33,7 +33,9 @@ module API::V2
       Entities::Label,
       Entities::APIKey,
       Entities::Profile,
-      Entities::UserWithProfile
+      Entities::User,
+      Entities::UserWithProfile,
+      Entities::UserWithFullInfo
     ],
     api_version: 'v2',
     doc_version: '2.0.10-alpha', # Used to be BARONG::VERSION

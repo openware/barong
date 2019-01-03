@@ -13,7 +13,8 @@ module API::V2
       resource :users do
         desc 'Returns current user'
         get '/me' do
-          current_user.attributes.except('password_digest')
+          present current_user, with: API::V2::Entities::User
+          status(200)
         end
 
         desc 'Returns user activity'

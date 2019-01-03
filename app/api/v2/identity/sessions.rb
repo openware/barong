@@ -44,6 +44,8 @@ module API::V2
             # place for refresh lock logic
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
+
+            present user, with: API::V2::Entities::User
             return status 200
           end
 
