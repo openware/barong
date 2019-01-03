@@ -59,6 +59,8 @@ module UserApi
             error!('Invalid Email or Password', 401)
           end
 
+          error!('Your account is locked', 401) if account.state == 'banned'
+
           unless account.active_for_authentication?
             error!('You have to confirm your email address before continuing', 401)
           end
