@@ -15,12 +15,12 @@ class User < ApplicationRecord
   has_many  :api_keys,   dependent: :destroy, class_name: 'APIKey'
   has_many  :activities, dependent: :destroy
 
-  validates :email,     email: true, presence: true, uniqueness: true
-  validates :uid,       presence: true, uniqueness: true
-  validates :password,  presence: true, if: :should_validate?,
-                        required_symbols: true,
-                        password_strength: { use_dictionary: true,
-                                             min_entropy: 14 }
+  validates :email,       email: true, presence: true, uniqueness: true
+  validates :uid,         presence: true, uniqueness: true
+  validates :password,    presence: true, if: :should_validate?,
+                          required_symbols: true,
+                          password_strength: { use_dictionary: true,
+                                               min_entropy: 14 }
 
   scope :active, -> { where(state: 'active') }
 
@@ -80,7 +80,7 @@ class User < ApplicationRecord
   end
 
   def as_payload
-    as_json(only: %i[uid email role level state])
+    as_json(only: %i[uid email referral_id role level state])
   end
 
   private

@@ -5,6 +5,16 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Users < Grape::API
+      helpers do
+        def parse_refid!
+          error!('Invalid referral uid format', 422) unless /\AID\w{10}$/.match?(params[:refid])
+          user = User.find_by_uid(params[:refid])
+          error!("Referral doesn't exist", 422) if user.nil?
+
+          user.id
+        end
+      end
+
       desc 'User related routes'
       resource :users do
         desc 'Creates new user',
@@ -16,12 +26,16 @@ module API::V2
         params do
           requires :email, type: String, desc: 'User Email', allow_blank: false
           requires :password, type: String, desc: 'User Password', allow_blank: false
+          optional :refid, type: String, desc: 'Referral uid'
           optional :captcha_response, types: [String, Hash],
                                       desc: 'Response from captcha widget'
         end
         post do
           declared_params = declared(params, include_missing: false)
           user_params = declared_params.slice('email', 'password')
+
+          user_params[:referral_id] = parse_refid! unless params[:refid].nil?
+
           user = User.new(user_params)
 
           verify_captcha!(user: user, response: params['captcha_response'])
