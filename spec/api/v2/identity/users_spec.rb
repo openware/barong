@@ -16,6 +16,26 @@ describe API::V2::Identity::Users do
       end
     end
 
+    context 'when referral is unexist' do
+      let(:params) { { email: 'valid.email@gmail.com', password: 'Password1', refid: 'ID1231231231' } }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: "Referral doesn't exist")
+      end
+    end
+
+    context 'when referral id is invalid' do
+      let(:params) { { email: 'valid.email@gmail.com', password: 'Password1', refid: 'UID123' } }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: "Invalid referral uid format")
+      end
+    end
+
     context 'when Password is invalid' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'password' } }
 
