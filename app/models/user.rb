@@ -25,8 +25,8 @@ class User < ApplicationRecord
   scope :active, -> { where(state: 'active') }
 
   before_validation :assign_uid
-  belongs_to :referrer, class_name: "User", optional: true, foreign_key: 'referral_id'
-  has_many :referees, class_name: "User", foreign_key: 'referral_id'
+  belongs_to :referrer, class_name: 'User', optional: true, foreign_key: 'referral_id'
+  has_many :referees, class_name: 'User', foreign_key: 'referral_id'
 
   def active?
     self.state == 'active'

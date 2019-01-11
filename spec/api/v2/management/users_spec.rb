@@ -23,7 +23,7 @@ describe API::V2::Management::Users, type: :request do
         }
       end
       let(:expected_attributes) do
-        %i[email uid role level otp state profile created_at updated_at]
+        %i[email uid role level otp state referral_id profile created_at updated_at]
       end
       let(:signers) { %i[alex jeff] }
 
