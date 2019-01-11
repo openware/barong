@@ -98,6 +98,8 @@ GEM
       http_parser.rb (~> 0.6.0)
     email_validator (1.6.0)
       activemodel
+    env-tweaks (1.0.0)
+      activesupport (>= 3.0, < 6.0)
     equalizer (0.0.11)
     erubi (1.7.1)
     eventmachine (1.2.7)
@@ -213,6 +215,7 @@ GEM
     rack (2.0.6)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-cors (1.0.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
@@ -327,6 +330,7 @@ DEPENDENCIES
   carrierwave (~> 1.2.2)
   countries
   email_validator
+  env-tweaks (~> 1.0.0)
   factory_bot_rails (~> 4.11)
   faker (~> 1.8)
   grape (~> 1.0)
@@ -347,6 +351,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma (~> 3.11)
+  rack-cors (~> 1.0.2)
   rails (~> 5.2.1)
   rails-controller-testing
   recaptcha

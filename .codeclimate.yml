@@ -66,6 +66,7 @@ exclude_patterns:
   - config/plugins.rb
   - config/
   - test/
+  - config.ru
   - db/
   - dist/
   - script/

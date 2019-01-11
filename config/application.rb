@@ -18,6 +18,9 @@ module Barong
     # Setup the logger
     config.logger = Logger.new(STDOUT)
 
+    # Load lib folder files to be visible in specs
+    config.paths.add 'lib', eager_load: false, autoload: true
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
