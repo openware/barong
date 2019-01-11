@@ -5,6 +5,8 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Sessions < Grape::API
+      use ActionDispatch::Session::CookieStore
+
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',

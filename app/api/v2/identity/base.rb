@@ -8,7 +8,6 @@ module API::V2
 
       do_not_route_options!
       # Enable Rails sessions
-      use ActionDispatch::Session::CookieStore
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
         error!('Record is not found', 404)
