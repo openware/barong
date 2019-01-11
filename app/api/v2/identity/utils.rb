@@ -5,6 +5,7 @@ module API::V2
     module Utils
 
       def session
+        request.session_options[:expire_after] = Barong::App.config.session_expire_time.to_i.seconds
         request.session
       end
 
