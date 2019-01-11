@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Sessions do
+  include ActiveSupport::Testing::TimeHelpers
+
   before do
     allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: true, geetest: false)
   end
@@ -19,6 +21,12 @@ describe API::V2::Identity::Sessions do
 
     context 'With valid params' do
       let(:do_request) { post uri, params: params }
+      let(:session_expire_time) do
+        Barong::App.config.session_expire_time.to_i.seconds
+      end
+      let(:check_session) do
+        get '/api/v2/identity/sessions/authorize/resource/users/me'
+      end
       let(:params) do
         {
           email: email,
@@ -29,10 +37,20 @@ describe API::V2::Identity::Sessions do
       it 'Checks current credentials and returns session' do
         do_request
         expect(session[:uid]).to eq(user.uid)
+        expect(session.options.to_hash[:expire_after]).to eq(
+          session_expire_time
+        )
         expect_status.to eq(200)
 
-        # Make a succed request somewhere
-        # expect(response.status).to eq(200)
+        check_session
+        expect(response.status).to eq(200)
+      end
+
+      it 'Expires a session after configured time' do
+        do_request
+        travel session_expire_time + 30.minutes
+        check_session
+        expect(response.status).to eq(401)
       end
 
       let(:captcha_response) { nil }
