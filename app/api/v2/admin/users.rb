@@ -21,22 +21,38 @@ module API
             end
           end
 
-          desc 'Changes user state',
+          desc 'Update user',
           security: [{ "BearerToken": [] }],
           failure: [
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
             requires :uid, type: String, desc: 'user uniq id', allow_blank: false
-            requires :state, type: String, desc: 'user uniq id', allow_blank: false
+            optional :state, type: String, desc: 'user state', allow_blank: false
+            optional :otp, type: Boolean, desc: 'user 2fa status', allow_blank: false
+            optional :role, type: String, desc: 'user role', allow_blank: false
+            exactly_one_of :state, :otp, :role
           end
-          post do
+          put do
             target_user = User.find_by_uid(params[:uid])
+
+            # Ruby Hash returns array on keys and values
+            update_param_key = params.except(:uid).keys.first
+            update_param_value = params.except(:uid).values.first
+
             error!('User with such UID doesnt exist', 404) if target_user.nil?
 
-            error!('State already setted to this', 403) if target_user.state == params[:state]
+            error!("Admin can't update himself", 422) if target_user.uid == current_user.uid
 
-            target_user.update(state: params[:state])
+            if update_param_key == 'role' && update_param_value == true
+              error!('Manual 2FA enabling not allowed', 422)
+            end
+
+            if update_param_value == target_user[update_param_key]
+              error!("Can't change #{update_param_key}, as its already #{update_param_value}", 422)
+            end
+
+            target_user.update(update_param_key => update_param_value)
             status 200
           end
 

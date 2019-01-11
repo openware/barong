@@ -15,6 +15,7 @@ module API
         expose :state, documentation: { type: 'String' }
         expose :profile, using: Entities::Profile
         expose :labels, using: Entities::Label
+        expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document
 
         with_options(format_with: :iso_timestamp) do

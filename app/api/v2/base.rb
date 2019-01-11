@@ -35,7 +35,8 @@ module API::V2
       Entities::Profile,
       Entities::User,
       Entities::UserWithProfile,
-      Entities::UserWithFullInfo
+      Entities::UserWithFullInfo,
+      Entities::Phone
     ],
     api_version: 'v2',
     doc_version: '2.0.10-alpha', # Used to be BARONG::VERSION
