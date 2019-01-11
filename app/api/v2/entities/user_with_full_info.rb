@@ -13,6 +13,7 @@ module API
         expose :level, documentation: { type: 'Integer' }
         expose :otp, documentation: { type: 'Boolean' }
         expose :state, documentation: { type: 'String' }
+        expose :referral_id, documentation: { type: 'Integer' }
         expose :profile, using: Entities::Profile
         expose :labels, using: Entities::Label
         expose :documents, using: Entities::Document

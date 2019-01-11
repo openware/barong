@@ -11,6 +11,7 @@ module API::V2
       expose :level, documentation: { type: 'Integer' }
       expose :otp, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
       expose :state, documentation: { type: 'String' }
+      expose :referral_id, documentation: { type: 'Integer' }
       expose :profile, using: Entities::Profile
 
       with_options(format_with: :iso_timestamp) do
