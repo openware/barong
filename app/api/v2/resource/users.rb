@@ -26,7 +26,7 @@ module API::V2
         get '/activity/:topic' do
           data = current_user.activities
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
-          error!('No activity recorded or wrong topic') unless data.present?
+          error!('No activity recorded or wrong topic', 422) unless data.present?
           data
         end
 
