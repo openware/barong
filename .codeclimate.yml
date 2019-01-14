@@ -12,7 +12,7 @@ plugins:
   brakeman:
     enabled: true
   rubocop:
-    enabled: true
+    enabled: false
     checks:
       Rubocop/Metrics/ClassLength:
         enabled: false

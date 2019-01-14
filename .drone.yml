@@ -17,7 +17,7 @@ steps:
       - pull_request
 
 - name: Run rspec
-  image: ruby:2.5.3
+  image: ruby:2.6.0
   environment:
     DATABASE_HOST: database
     EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -33,7 +33,7 @@ steps:
       - pull_request
 
 - name: Bump and tag
-  image: ruby:2.5.3
+  image: ruby:2.6.0
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
