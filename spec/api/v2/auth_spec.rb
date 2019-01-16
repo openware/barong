@@ -66,7 +66,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
       end
 
-      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/blocked/ping' }
+      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping' }
 
       it 'receives access error if path is blacklisted' do
         do_restricted_request
@@ -187,7 +187,7 @@ describe '/api/v2/auth functionality test' do
 
     context 'testing restrictions' do
       let(:do_restricted_request) {
-        put '/api/v2/auth/api/v2/peatio/blocked/ping', headers: {
+        put '/api/v2/auth/api/v2/peatio/management/ping', headers: {
           'X-Auth-Apikey' => kid,
           'X-Auth-Nonce' => nonce,
           'X-Auth-Signature' => signature
@@ -196,20 +196,6 @@ describe '/api/v2/auth functionality test' do
 
       it 'receives access error if path is blacklisted' do
         do_restricted_request
-        expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"permission_denied\"}")
-      end
-
-      let(:two_times_underlured_path_request) {
-        put '/api/v2/auth/api/v2/peatio/blocked/ping', headers: {
-          'X-Auth-Apikey' => kid,
-          'X-Auth-Nonce' => nonce,
-          'X-Auth-Signature' => signature
-        }
-      }
-
-      it 'receives access error if path is blacklisted and whitelisted (blacklisting is a priority)' do
-        two_times_underlured_path_request
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"error\":\"permission_denied\"}")
       end

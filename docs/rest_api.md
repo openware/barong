@@ -1,8 +1,8 @@
 Barong
 ======
-API for barong OAuth server
+RESTful API for barong OAuth server
 
-**Version:** 2.0.10-alpha
+**Version:** 2.0.30-alpha
 
 ### Security
 ---
@@ -33,6 +33,34 @@ API for barong OAuth server
 | ---- | ----------- |
 | 204 | Deletes label for user |
 | 401 | Invalid bearer token |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+##### ***PUT***
+**Description:** Update user label scope
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | user uniq id | Yes | string |
+| key | formData | Label key. | Yes | string |
+| scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
+| value | formData | Label value. | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update user label scope |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+| 422 | Validation errors |
 
 **Security**
 
@@ -91,21 +119,23 @@ API for barong OAuth server
 
 ### /admin/users
 ---
-##### ***POST***
-**Description:** Changes user state
+##### ***PUT***
+**Description:** Update user
 
 **Parameters**
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | uid | formData | user uniq id | Yes | string |
-| state | formData | user uniq id | Yes | string |
+| state | formData | user state | No | string |
+| otp | formData | user 2fa status | No | boolean |
+| role | formData | user role | No | string |
 
 **Responses**
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Changes user state |
+| 200 | Update user |
 | 401 | Invalid bearer token |
 
 **Security**
@@ -115,13 +145,20 @@ API for barong OAuth server
 | BearerToken | |
 
 ##### ***GET***
-**Description:** Returns array of users
+**Description:** Returns array of users as paginated collection
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of withdraws per page (defaults to 100, maximum is 1000). | No | integer |
 
 **Responses**
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Returns array of users |
+| 200 | Returns array of users as paginated collection |
 | 401 | Invalid bearer token |
 
 **Security**
@@ -210,6 +247,17 @@ API for barong OAuth server
 | 400 | Required params are missing |
 | 422 | Validation errors |
 
+### /identity/users/register_geetest
+---
+##### ***GET***
+**Description:** Register Geetest captcha
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Register Geetest captcha |
+
 ### /identity/users
 ---
 ##### ***POST***
@@ -221,7 +269,8 @@ API for barong OAuth server
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
-| recaptcha_response | formData | Response from Recaptcha widget | Yes | string |
+| refid | formData | Referral uid | No | string |
+| captcha_response | formData | Response from captcha widget | No | string |
 
 **Responses**
 
@@ -230,80 +279,6 @@ API for barong OAuth server
 | 201 | Creates new user |
 | 400 | Required params are missing |
 | 422 | Validation errors |
-
-### /identity/sessions/authorize/(*{path})
----
-##### ***DELETE***
-**Description:** Traffic Authorizer EndPoint
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| path | path |  | Yes | string |
-| splat | query |  | Yes | integer |
-
-**Responses**
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Traffic Authorizer EndPoint |
-| 400 | Request is invalid |
-| 404 | Destination endpoint is not found |
-
-##### ***PUT***
-**Description:** Traffic Authorizer EndPoint
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| path | path |  | Yes | string |
-| splat | formData |  | Yes | integer |
-
-**Responses**
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Traffic Authorizer EndPoint |
-| 400 | Request is invalid |
-| 404 | Destination endpoint is not found |
-
-##### ***POST***
-**Description:** Traffic Authorizer EndPoint
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| path | path |  | Yes | string |
-| splat | formData |  | Yes | integer |
-
-**Responses**
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Traffic Authorizer EndPoint |
-| 400 | Request is invalid |
-| 404 | Destination endpoint is not found |
-
-##### ***GET***
-**Description:** Traffic Authorizer EndPoint
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| path | path |  | Yes | string |
-| splat | query |  | Yes | integer |
-
-**Responses**
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Traffic Authorizer EndPoint |
-| 400 | Request is invalid |
-| 404 | Destination endpoint is not found |
 
 ### /identity/sessions
 ---
@@ -327,7 +302,7 @@ API for barong OAuth server
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData |  | Yes | string |
 | password | formData |  | Yes | string |
-| recaptcha_response | formData | Response from Recaptcha widget | No | string |
+| captcha_response | formData | Response from captcha widget | No | string |
 | otp_code | formData | Code from Google Authenticator | No | string |
 
 **Responses**
@@ -631,7 +606,7 @@ API for barong OAuth server
 | doc_expire | formData | Document expiration date | Yes | date |
 | doc_type | formData | Document type | Yes | string |
 | doc_number | formData | Document number | Yes | string |
-| attachments[upload] | formData | Uploaded files | Yes | [ file ] |
+| upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
 
 **Responses**
 
@@ -716,6 +691,147 @@ API for barong OAuth server
 | --- | --- |
 | BearerToken | |
 
+### /resource/labels/{key}
+---
+##### ***DELETE***
+**Description:** Delete a label  with 'public' scope.
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| key | path | Label key. | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Succefully deleted |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+##### ***PATCH***
+**Description:** Update a label with 'public' scope.
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| key | path | Label key. | Yes | string |
+| value | formData | Label value. | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update a label with 'public' scope. |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+| 422 | Validation errors |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+##### ***GET***
+**Description:** Return a label by key.
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| key | path | Label key. | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Return a label by key. |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /resource/labels
+---
+##### ***POST***
+**Description:** Create a label with 'public' scope.
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| key | formData | Label key. | Yes | string |
+| value | formData | Label value. | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create a label with 'public' scope. |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+##### ***GET***
+**Description:** List all labels for current user.
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | List all labels for current user. |
+| 401 | Invalid bearer token |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /resource/users/password
+---
+##### ***PUT***
+**Description:** Sets new account password
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| old_password | formData | Previous account password | Yes | string |
+| new_password | formData | User password | Yes | string |
+| confirm_password | formData | User password | Yes | string |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Changes password |
+| 400 | Required params are empty |
+| 404 | Record is not found |
+| 422 | Validation errors |
+
 ### /resource/users/activity/{topic}
 ---
 ##### ***GET***
@@ -744,184 +860,10 @@ API for barong OAuth server
 | ---- | ----------- |
 | 200 | Returns current user |
 
-### /management/timestamp
----
-##### ***POST***
-**Description:** Returns server time in seconds since Unix epoch.
-
-**Responses**
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Returns server time in seconds since Unix epoch. |
-
-### /management/users/import
----
-##### ***POST***
-**Description:** Imports an existing user
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| email | formData | User Email | Yes | string |
-| password_digest | formData | User Password Hash | Yes | string |
-| phone | formData |  | No | string |
-| first_name | formData |  | No | string |
-| last_name | formData |  | No | string |
-| dob | formData | Birthday date | No | date |
-| address | formData |  | No | string |
-| postcode | formData |  | No | string |
-| city | formData |  | No | string |
-| country | formData |  | No | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Imports an existing user | [UserWithProfile](#userwithprofile) |
-
-### /management/users
----
-##### ***POST***
-**Description:** Creates new user
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| email | formData | User Email | Yes | string |
-| password | formData | User Password | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Creates new user | [UserWithProfile](#userwithprofile) |
-
-### /management/users/get
----
-##### ***POST***
-**Description:** Get users and profile information
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | User uid | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Get users and profile information | [UserWithProfile](#userwithprofile) |
-
-### /management/labels/delete
----
-##### ***POST***
-**Description:** Delete a label with 'private' scope
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| user_uid | formData | User uid | Yes | string |
-| key | formData | Label key. | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Delete a label with 'private' scope | [Label](#label) |
-
-### /management/labels
----
-##### ***PUT***
-**Description:** Update a label with 'private' scope
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| user_uid | formData | User uid | Yes | string |
-| key | formData | Label key. | Yes | string |
-| value | formData | Label value. | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Update a label with 'private' scope | [Label](#label) |
-
-##### ***POST***
-**Description:** Create a label with 'private' scope and assigns to users
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| user_uid | formData | User uid | Yes | string |
-| key | formData | Label key. | Yes | string |
-| value | formData | Label value. | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Create a label with 'private' scope and assigns to users | [Label](#label) |
-
-### /management/labels/list
----
-##### ***POST***
-**Description:** Get all labels assigned to users
-
-**Parameters**
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| user_uid | formData | User uid | Yes | string |
-
-**Responses**
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Get all labels assigned to users | [Label](#label) |
-
 ### Models
 ---
 
-### UserWithProfile  
-
-Get users and profile information
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
-| profile | [Profile](#profile) |  | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-### Profile  
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| first_name | string |  | No |
-| last_name | string |  | No |
-| dob | date | Birthday date | No |
-| address | string |  | No |
-| postcode | string |  | No |
-| city | string |  | No |
-| country | string |  | No |
-| metadata | object | Profile additional fields | No |
-
 ### Label  
-
-Get all labels assigned to users
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -943,15 +885,41 @@ Get all labels assigned to users
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### Document  
+### Profile  
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| upload | string | file url | No |
-| doc_type | string | document type: passport, driver license | No |
-| doc_number | string | document number: AB123123 type | No |
-| doc_expire | string | expire date of uploaded documents | No |
-| metadata | string | any additional stored data | No |
+| first_name | string |  | No |
+| last_name | string |  | No |
+| dob | date | Birthday date | No |
+| address | string |  | No |
+| postcode | string |  | No |
+| city | string |  | No |
+| country | string |  | No |
+| metadata | object | Profile additional fields | No |
+
+### User  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string |  | No |
+
+### UserWithProfile  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string |  | No |
+| profile | [Profile](#profile) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -963,10 +931,31 @@ Get all labels assigned to users
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
-| otp | boolean | is 2FA enabled for account | No |
+| otp | boolean |  | No |
 | state | string |  | No |
 | profile | [Profile](#profile) |  | No |
 | labels | [Label](#label) |  | No |
+| phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+### Phone  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| country | string |  | No |
+| number | string |  | No |
+| validated_at | s (g) |  | No |
+
+### Document  
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| upload | string | file url | No |
+| doc_type | string | document type: passport, driver license | No |
+| doc_number | string | document number: AB123123 type | No |
+| doc_expire | string | expire date of uploaded documents | No |
+| metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |

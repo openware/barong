@@ -14,12 +14,11 @@ module API::V2
     mount Admin::Base      => '/admin'
     mount Identity::Base   => '/identity'
     mount Resource::Base   => '/resource'
-    mount Management::Base => '/management'
 
-    add_swagger_documentation base_path: '/api/v2',
+    add_swagger_documentation base_path: '/api/v2/*/',
     info: {
       title: 'Barong',
-      description: 'API for barong OAuth server'
+      description: 'RESTful API for barong OAuth server'
     },
     security_definitions: {
       "BearerToken": {
@@ -39,11 +38,12 @@ module API::V2
       Entities::Phone
     ],
     api_version: 'v2',
-    doc_version: '2.0.10-alpha', # Used to be BARONG::VERSION
+    doc_version: '2.0.30-alpha', # Used to be BARONG::VERSION
     hide_format: true,
     hide_documentation_path: true,
-    mount_path: '/swagger.json'
+    mount_path: '/restful_api.json'
 
+    mount Management::Base => '/management'
     route :any, '*path' do
       error! 'Route is not found', 404
     end

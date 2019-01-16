@@ -1,15 +1,15 @@
-{  
-  "info":{  
+{
+  "info":{
      "title":"Barong",
-     "description":"API for barong OAuth server",
-     "version":"2.0.10-alpha"
+     "description":"RESTful API for barong OAuth server",
+     "version":"2.0.30-alpha"
   },
   "swagger":"2.0",
-  "produces":[  
+  "produces":[
      "application/json"
   ],
-  "securityDefinitions":{  
-     "BearerToken":{  
+  "securityDefinitions":{
+     "BearerToken":{
         "description":"Bearer Token authentication",
         "type":"jwt",
         "name":"Authorization",
@@ -17,48 +17,44 @@
      }
   },
   "host":"localhost:3000",
-  "basePath":"/api/v2",
-  "tags":[  
-     {  
+  "basePath":"/api/v2/*/",
+  "tags":[
+     {
         "name":"admin",
         "description":"Operations about admins"
      },
-     {  
+     {
         "name":"identity",
         "description":"Operations about identities"
      },
-     {  
+     {
         "name":"resource",
         "description":"Operations about resources"
-     },
-     {  
-        "name":"management",
-        "description":"Operations about managements"
      }
   ],
-  "paths":{  
-     "/admin/users/labels":{  
-        "delete":{  
+  "paths":{
+     "/admin/users/labels":{
+        "delete":{
            "description":"Deletes label for user",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"query",
                  "name":"uid",
                  "description":"user uniq id",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"query",
                  "name":"key",
                  "description":"label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"query",
                  "name":"scope",
                  "description":"label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.",
@@ -66,57 +62,124 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "204":{  
+           "responses":{
+              "204":{
                  "description":"Deletes label for user"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "admin"
            ],
            "operationId":"deleteAdminUsersLabels"
         },
-        "post":{  
-           "description":"Adds label for user",
-           "produces":[  
+        "put":{
+           "description":"Update user label scope",
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"uid",
                  "description":"user uniq id",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
+                 "in":"formData",
+                 "name":"key",
+                 "description":"Label key.",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"scope",
+                 "description":"label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"value",
+                 "description":"Label value.",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "200":{
+                 "description":"Update user label scope"
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              },
+              "404":{
+                 "description":"Record is not found"
+              },
+              "422":{
+                 "description":"Validation errors"
+              }
+           },
+           "tags":[
+              "admin"
+           ],
+           "operationId":"putAdminUsersLabels"
+        },
+        "post":{
+           "description":"Adds label for user",
+           "produces":[
+              "application/json"
+           ],
+           "consumes":[
+              "application/json"
+           ],
+           "parameters":[
+              {
+                 "in":"formData",
+                 "name":"uid",
+                 "description":"user uniq id",
+                 "type":"string",
+                 "required":true
+              },
+              {
                  "in":"formData",
                  "name":"key",
                  "description":"label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"value",
                  "description":"label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"scope",
                  "description":"Label scope: 'public' or 'private'. Default is public",
@@ -124,35 +187,35 @@
                  "required":false
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Adds label for user"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "admin"
            ],
            "operationId":"postAdminUsersLabels"
         }
      },
-     "/admin/users/{uid}":{  
-        "get":{  
+     "/admin/users/{uid}":{
+        "get":{
            "description":"Returns user info",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"path",
                  "name":"uid",
                  "description":"user uniq id",
@@ -160,123 +223,157 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Returns user info"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "admin"
            ],
            "operationId":"getAdminUsersUid"
         }
      },
-     "/admin/users":{  
-        "post":{  
-           "description":"Changes user state",
-           "produces":[  
+     "/admin/users":{
+        "put":{
+           "description":"Update user",
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"uid",
                  "description":"user uniq id",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"state",
-                 "description":"user uniq id",
+                 "description":"user state",
                  "type":"string",
-                 "required":true
+                 "required":false
+              },
+              {
+                 "in":"formData",
+                 "name":"otp",
+                 "description":"user 2fa status",
+                 "type":"boolean",
+                 "required":false
+              },
+              {
+                 "in":"formData",
+                 "name":"role",
+                 "description":"user role",
+                 "type":"string",
+                 "required":false
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
-                 "description":"Changes user state"
+           "responses":{
+              "200":{
+                 "description":"Update user"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "admin"
            ],
-           "operationId":"postAdminUsers"
+           "operationId":"putAdminUsers"
         },
-        "get":{  
-           "description":"Returns array of users",
-           "produces":[  
+        "get":{
+           "description":"Returns array of users as paginated collection",
+           "produces":[
               "application/json"
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "parameters":[
+              {
+                 "in":"query",
+                 "name":"page",
+                 "description":"Page number (defaults to 1).",
+                 "type":"integer",
+                 "format":"int32",
+                 "default":1,
+                 "required":false
+              },
+              {
+                 "in":"query",
+                 "name":"limit",
+                 "description":"Number of withdraws per page (defaults to 100, maximum is 1000).",
+                 "type":"integer",
+                 "format":"int32",
+                 "default":100,
+                 "required":false
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
-                 "description":"Returns array of users"
+           "responses":{
+              "200":{
+                 "description":"Returns array of users as paginated collection"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "admin"
            ],
            "operationId":"getAdminUsers"
         }
      },
-     "/identity/users/password/confirm_code":{  
-        "post":{  
+     "/identity/users/password/confirm_code":{
+        "post":{
            "description":"Sets new account password",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"reset_password_token",
                  "description":"Token from email",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"password",
                  "description":"User password",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"confirm_password",
                  "description":"User password",
@@ -284,37 +381,37 @@
                  "required":true
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Resets password"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentityUsersPasswordConfirmCode"
         }
      },
-     "/identity/users/password/generate_code":{  
-        "post":{  
+     "/identity/users/password/generate_code":{
+        "post":{
            "description":"Send password reset instructions",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"email",
                  "description":"Account email",
@@ -322,37 +419,37 @@
                  "required":true
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Generated password reset code"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are missing"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               },
-              "404":{  
+              "404":{
                  "description":"User doesn't exist"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentityUsersPasswordGenerateCode"
         }
      },
-     "/identity/users/email/confirm_code":{  
-        "post":{  
+     "/identity/users/email/confirm_code":{
+        "post":{
            "description":"Confirms an account",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"token",
                  "description":"Token from email",
@@ -360,34 +457,34 @@
                  "required":true
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Confirms an account"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are missing"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentityUsersEmailConfirmCode"
         }
      },
-     "/identity/users/email/generate_code":{  
-        "post":{  
+     "/identity/users/email/generate_code":{
+        "post":{
            "description":"Send confirmations instructions",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"email",
                  "description":"Account email",
@@ -395,311 +492,147 @@
                  "required":true
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Generated verification code"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are missing"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentityUsersEmailGenerateCode"
         }
      },
-     "/identity/users":{  
-        "post":{  
+     "/identity/users/register_geetest":{
+        "get":{
+           "description":"Register Geetest captcha",
+           "produces":[
+              "application/json"
+           ],
+           "responses":{
+              "200":{
+                 "description":"Register Geetest captcha"
+              }
+           },
+           "tags":[
+              "identity"
+           ],
+           "operationId":"getIdentityUsersRegisterGeetest"
+        }
+     },
+     "/identity/users":{
+        "post":{
            "description":"Creates new user",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"email",
                  "description":"User Email",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"password",
                  "description":"User Password",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
-                 "name":"recaptcha_response",
-                 "description":"Response from Recaptcha widget",
+                 "name":"refid",
+                 "description":"Referral uid",
                  "type":"string",
-                 "required":true
+                 "required":false
+              },
+              {
+                 "in":"formData",
+                 "name":"captcha_response",
+                 "description":"Response from captcha widget",
+                 "type":"string",
+                 "required":false
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Creates new user"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are missing"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentityUsers"
         }
      },
-     "/identity/sessions/authorize/(*{path})":{  
-        "delete":{  
-           "description":"Traffic Authorizer EndPoint",
-           "produces":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"path",
-                 "name":"path",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"query",
-                 "name":"splat",
-                 "type":"integer",
-                 "format":"int32",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "204":{  
-                 "description":"Traffic Authorizer EndPoint"
-              },
-              "400":{  
-                 "description":"Request is invalid"
-              },
-              "404":{  
-                 "description":"Destination endpoint is not found"
-              }
-           },
-           "tags":[  
-              "identity"
-           ],
-           "operationId":"deleteIdentitySessionsAuthorize(*Path)"
-        },
-        "put":{  
-           "description":"Traffic Authorizer EndPoint",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"path",
-                 "name":"path",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"splat",
-                 "type":"integer",
-                 "format":"int32",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "200":{  
-                 "description":"Traffic Authorizer EndPoint"
-              },
-              "400":{  
-                 "description":"Request is invalid"
-              },
-              "404":{  
-                 "description":"Destination endpoint is not found"
-              }
-           },
-           "tags":[  
-              "identity"
-           ],
-           "operationId":"putIdentitySessionsAuthorize(*Path)"
-        },
-        "head":{  
-           "description":"Traffic Authorizer EndPoint",
-           "produces":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"path",
-                 "name":"path",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"query",
-                 "name":"splat",
-                 "type":"integer",
-                 "format":"int32",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "200":{  
-                 "description":"Traffic Authorizer EndPoint"
-              },
-              "400":{  
-                 "description":"Request is invalid"
-              },
-              "404":{  
-                 "description":"Destination endpoint is not found"
-              }
-           },
-           "tags":[  
-              "identity"
-           ],
-           "operationId":"headIdentitySessionsAuthorize(*Path)"
-        },
-        "post":{  
-           "description":"Traffic Authorizer EndPoint",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"path",
-                 "name":"path",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"splat",
-                 "type":"integer",
-                 "format":"int32",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Traffic Authorizer EndPoint"
-              },
-              "400":{  
-                 "description":"Request is invalid"
-              },
-              "404":{  
-                 "description":"Destination endpoint is not found"
-              }
-           },
-           "tags":[  
-              "identity"
-           ],
-           "operationId":"postIdentitySessionsAuthorize(*Path)"
-        },
-        "get":{  
-           "description":"Traffic Authorizer EndPoint",
-           "produces":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"path",
-                 "name":"path",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"query",
-                 "name":"splat",
-                 "type":"integer",
-                 "format":"int32",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "200":{  
-                 "description":"Traffic Authorizer EndPoint"
-              },
-              "400":{  
-                 "description":"Request is invalid"
-              },
-              "404":{  
-                 "description":"Destination endpoint is not found"
-              }
-           },
-           "tags":[  
-              "identity"
-           ],
-           "operationId":"getIdentitySessionsAuthorize(*Path)"
-        }
-     },
-     "/identity/sessions":{  
-        "delete":{  
+     "/identity/sessions":{
+        "delete":{
            "description":"Destroy current session",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "responses":{  
-              "204":{  
+           "responses":{
+              "204":{
                  "description":"Destroy current session"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"deleteIdentitySessions"
         },
-        "post":{  
+        "post":{
            "description":"Start a new session",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"email",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"password",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
-                 "name":"recaptcha_response",
-                 "description":"Response from Recaptcha widget",
+                 "name":"captcha_response",
+                 "description":"Response from captcha widget",
                  "type":"string",
                  "required":false
               },
-              {  
+              {
                  "in":"formData",
                  "name":"otp_code",
                  "description":"Code from Google Authenticator",
@@ -707,65 +640,65 @@
                  "required":false
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Start a new session"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"postIdentitySessions"
         }
      },
-     "/identity/time":{  
-        "get":{  
+     "/identity/time":{
+        "get":{
            "description":"Get server current unix timestamp.",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Get server current unix timestamp."
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"getIdentityTime"
         }
      },
-     "/identity/ping":{  
-        "get":{  
+     "/identity/ping":{
+        "get":{
            "description":"Test connectivity",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Test connectivity"
               }
            },
-           "tags":[  
+           "tags":[
               "identity"
            ],
            "operationId":"getIdentityPing"
         }
      },
-     "/resource/api_keys":{  
-        "get":{  
+     "/resource/api_keys":{
+        "get":{
            "description":"List all api keys for current account.",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"query",
                  "name":"totp_code",
                  "description":"Code from Google Authenticator",
@@ -773,58 +706,58 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"List all api keys for current account."
               },
-              "400":{  
+              "400":{
                  "description":"Require 2FA and totp code"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"getResourceApiKeys"
         },
-        "post":{  
+        "post":{
            "description":"Create an api key",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"algorithm",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"kid",
                  "type":"string",
                  "required":false
               },
-              {  
+              {
                  "in":"formData",
                  "name":"scope",
                  "description":"comma separated scopes",
                  "type":"string",
                  "required":false
               },
-              {  
+              {
                  "in":"formData",
                  "name":"totp_code",
                  "description":"Code from Google Authenticator",
@@ -832,47 +765,47 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Create an api key"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceApiKeys"
         }
      },
-     "/resource/api_keys/{kid}":{  
-        "delete":{  
+     "/resource/api_keys/{kid}":{
+        "delete":{
            "description":"Delete an api key",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"path",
                  "name":"kid",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"query",
                  "name":"totp_code",
                  "description":"Code from Google Authenticator",
@@ -880,62 +813,62 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "204":{  
+           "responses":{
+              "204":{
                  "description":"Succefully deleted"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"deleteResourceApiKeysKid"
         },
-        "patch":{  
+        "patch":{
            "description":"Updates an api key",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"path",
                  "name":"kid",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"scope",
                  "description":"comma separated scopes",
                  "type":"string",
                  "required":false
               },
-              {  
+              {
                  "in":"formData",
                  "name":"state",
                  "description":"State of API Key. \"active\" state means key is active and can be used for auth",
                  "type":"string",
                  "required":false
               },
-              {  
+              {
                  "in":"formData",
                  "name":"totp_code",
                  "description":"Code from Google Authenticator",
@@ -943,47 +876,47 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Updates an api key"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"patchResourceApiKeysKid"
         }
      },
-     "/resource/otp/verify":{  
-        "post":{  
+     "/resource/otp/verify":{
+        "post":{
            "description":"Verify 2FA code",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"code",
                  "description":"Code from Google Authenticator",
@@ -991,44 +924,44 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Verify 2FA code"
               },
-              "400":{  
+              "400":{
                  "description":"2FA has not been enabled for this account or code is missing"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceOtpVerify"
         }
      },
-     "/resource/otp/enable":{  
-        "post":{  
+     "/resource/otp/enable":{
+        "post":{
            "description":"Enable 2FA",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"code",
                  "description":"Code from Google Authenticator",
@@ -1036,84 +969,84 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Enable 2FA"
               },
-              "400":{  
+              "400":{
                  "description":"2FA has been enabled for this account or code is missing"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceOtpEnable"
         }
      },
-     "/resource/otp/generate_qrcode":{  
-        "post":{  
+     "/resource/otp/generate_qrcode":{
+        "post":{
            "description":"Generate qr code for 2FA",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Generate qr code for 2FA"
               },
-              "400":{  
+              "400":{
                  "description":"2FA has been enabled for this account"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceOtpGenerateQrcode"
         }
      },
-     "/resource/phones/verify":{  
-        "post":{  
+     "/resource/phones/verify":{
+        "post":{
            "description":"Verify a phone",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"phone_number",
                  "description":"Phone number with country code",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"verification_code",
                  "description":"Verification code from sms",
@@ -1121,44 +1054,44 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Verify a phone"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourcePhonesVerify"
         }
      },
-     "/resource/phones/send_code":{  
-        "post":{  
+     "/resource/phones/send_code":{
+        "post":{
            "description":"Resend activation code",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"phone_number",
                  "description":"Phone number with country code",
@@ -1166,47 +1099,47 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Resend activation code"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourcePhonesSendCode"
         }
      },
-     "/resource/phones":{  
-        "post":{  
+     "/resource/phones":{
+        "post":{
            "description":"Add new phone",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"phone_number",
                  "description":"Phone number with country code",
@@ -1214,47 +1147,47 @@
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Add new phone"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"Record is not found"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourcePhones"
         }
      },
-     "/resource/documents":{  
-        "post":{  
+     "/resource/documents":{
+        "post":{
            "description":"Upload a new document for current user",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"doc_expire",
                  "description":"Document expiration date",
@@ -1262,205 +1195,466 @@
                  "format":"date",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"doc_type",
                  "description":"Document type",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"doc_number",
                  "description":"Document number",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
-                 "name":"attachments[upload]",
-                 "description":"Uploaded files",
-                 "type":"array",
-                 "items":{  
-                    "type":"file"
-                 },
+                 "name":"upload",
+                 "description":"Array of Rack::Multipart::UploadedFile",
+                 "type":"string",
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Document is uploaded"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceDocuments"
         },
-        "get":{  
+        "get":{
            "description":"Return current user documents list",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Return current user documents list"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"getResourceDocuments"
         }
      },
-     "/resource/profiles":{  
-        "post":{  
+     "/resource/profiles":{
+        "post":{
            "description":"Create a profile for current_user",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "consumes":[  
+           "consumes":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
                  "in":"formData",
                  "name":"first_name",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"last_name",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"dob",
                  "type":"string",
                  "format":"date",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"address",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"postcode",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"city",
                  "type":"string",
                  "required":true
               },
-              {  
+              {
                  "in":"formData",
                  "name":"country",
                  "type":"string",
                  "required":true
               }
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "201":{  
+           "responses":{
+              "201":{
                  "description":"Create a profile for current_user"
               },
-              "400":{  
+              "400":{
                  "description":"Required params are empty"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "409":{  
+              "409":{
                  "description":"Profile already exists"
               },
-              "422":{  
+              "422":{
                  "description":"Validation errors"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"postResourceProfiles"
         }
      },
-     "/resource/profiles/me":{  
-        "get":{  
+     "/resource/profiles/me":{
+        "get":{
            "description":"Return profile of current resource owner",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "security":[  
-              {  
-                 "BearerToken":[  
+           "security":[
+              {
+                 "BearerToken":[
 
                  ]
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Return profile of current resource owner"
               },
-              "401":{  
+              "401":{
                  "description":"Invalid bearer token"
               },
-              "404":{  
+              "404":{
                  "description":"User has no profile"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"getResourceProfilesMe"
         }
      },
-     "/resource/users/activity/{topic}":{  
-        "get":{  
-           "description":"Returns user activity",
-           "produces":[  
+     "/resource/labels/{key}":{
+        "delete":{
+           "description":"Delete a label  with 'public' scope.",
+           "produces":[
               "application/json"
            ],
-           "parameters":[  
-              {  
+           "parameters":[
+              {
+                 "in":"path",
+                 "name":"key",
+                 "description":"Label key.",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "204":{
+                 "description":"Succefully deleted"
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              },
+              "404":{
+                 "description":"Record is not found"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"deleteResourceLabelsKey"
+        },
+        "patch":{
+           "description":"Update a label with 'public' scope.",
+           "produces":[
+              "application/json"
+           ],
+           "consumes":[
+              "application/json"
+           ],
+           "parameters":[
+              {
+                 "in":"path",
+                 "name":"key",
+                 "description":"Label key.",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"value",
+                 "description":"Label value.",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "200":{
+                 "description":"Update a label with 'public' scope."
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              },
+              "404":{
+                 "description":"Record is not found"
+              },
+              "422":{
+                 "description":"Validation errors"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"patchResourceLabelsKey"
+        },
+        "get":{
+           "description":"Return a label by key.",
+           "produces":[
+              "application/json"
+           ],
+           "parameters":[
+              {
+                 "in":"path",
+                 "name":"key",
+                 "description":"Label key.",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "200":{
+                 "description":"Return a label by key."
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              },
+              "404":{
+                 "description":"Record is not found"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"getResourceLabelsKey"
+        }
+     },
+     "/resource/labels":{
+        "post":{
+           "description":"Create a label with 'public' scope.",
+           "produces":[
+              "application/json"
+           ],
+           "consumes":[
+              "application/json"
+           ],
+           "parameters":[
+              {
+                 "in":"formData",
+                 "name":"key",
+                 "description":"Label key.",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"value",
+                 "description":"Label value.",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "201":{
+                 "description":"Create a label with 'public' scope."
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              },
+              "422":{
+                 "description":"Validation errors"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"postResourceLabels"
+        },
+        "get":{
+           "description":"List all labels for current user.",
+           "produces":[
+              "application/json"
+           ],
+           "security":[
+              {
+                 "BearerToken":[
+
+                 ]
+              }
+           ],
+           "responses":{
+              "200":{
+                 "description":"List all labels for current user."
+              },
+              "401":{
+                 "description":"Invalid bearer token"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"getResourceLabels"
+        }
+     },
+     "/resource/users/password":{
+        "put":{
+           "description":"Sets new account password",
+           "produces":[
+              "application/json"
+           ],
+           "consumes":[
+              "application/json"
+           ],
+           "parameters":[
+              {
+                 "in":"formData",
+                 "name":"old_password",
+                 "description":"Previous account password",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"new_password",
+                 "description":"User password",
+                 "type":"string",
+                 "required":true
+              },
+              {
+                 "in":"formData",
+                 "name":"confirm_password",
+                 "description":"User password",
+                 "type":"string",
+                 "required":true
+              }
+           ],
+           "responses":{
+              "201":{
+                 "description":"Changes password"
+              },
+              "400":{
+                 "description":"Required params are empty"
+              },
+              "404":{
+                 "description":"Record is not found"
+              },
+              "422":{
+                 "description":"Validation errors"
+              }
+           },
+           "tags":[
+              "resource"
+           ],
+           "operationId":"putResourceUsersPassword"
+        }
+     },
+     "/resource/users/activity/{topic}":{
+        "get":{
+           "description":"Returns user activity",
+           "produces":[
+              "application/json"
+           ],
+           "parameters":[
+              {
                  "in":"path",
                  "name":"topic",
                  "description":"Topic of user activity. Allowed: [all, password, session, otp]",
@@ -1468,565 +1662,264 @@
                  "required":true
               }
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Returns user activity"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"getResourceUsersActivityTopic"
         }
      },
-     "/resource/users/me":{  
-        "get":{  
+     "/resource/users/me":{
+        "get":{
            "description":"Returns current user",
-           "produces":[  
+           "produces":[
               "application/json"
            ],
-           "responses":{  
-              "200":{  
+           "responses":{
+              "200":{
                  "description":"Returns current user"
               }
            },
-           "tags":[  
+           "tags":[
               "resource"
            ],
            "operationId":"getResourceUsersMe"
         }
-     },
-     "/management/timestamp":{  
-        "post":{  
-           "description":"Returns server time in seconds since Unix epoch.",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Returns server time in seconds since Unix epoch."
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementTimestamp"
-        }
-     },
-     "/management/users/import":{  
-        "post":{  
-           "description":"Imports an existing user",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"email",
-                 "description":"User Email",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"password_digest",
-                 "description":"User Password Hash",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"phone",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"first_name",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"last_name",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"dob",
-                 "description":"Birthday date",
-                 "type":"string",
-                 "format":"date",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"address",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"postcode",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"city",
-                 "type":"string",
-                 "required":false
-              },
-              {  
-                 "in":"formData",
-                 "name":"country",
-                 "type":"string",
-                 "required":false
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Imports an existing user",
-                 "schema":{  
-                    "$ref":"#/definitions/UserWithProfile"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementUsersImport"
-        }
-     },
-     "/management/users":{  
-        "post":{  
-           "description":"Creates new user",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"email",
-                 "description":"User Email",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"password",
-                 "description":"User Password",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Creates new user",
-                 "schema":{  
-                    "$ref":"#/definitions/UserWithProfile"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementUsers"
-        }
-     },
-     "/management/users/get":{  
-        "post":{  
-           "description":"Get users and profile information",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"uid",
-                 "description":"User uid",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Get users and profile information",
-                 "schema":{  
-                    "$ref":"#/definitions/UserWithProfile"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementUsersGet"
-        }
-     },
-     "/management/labels/delete":{  
-        "post":{  
-           "description":"Delete a label with 'private' scope",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"user_uid",
-                 "description":"User uid",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"key",
-                 "description":"Label key.",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Delete a label with 'private' scope",
-                 "schema":{  
-                    "$ref":"#/definitions/Label"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementLabelsDelete"
-        }
-     },
-     "/management/labels":{  
-        "put":{  
-           "description":"Update a label with 'private' scope",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"user_uid",
-                 "description":"User uid",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"key",
-                 "description":"Label key.",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"value",
-                 "description":"Label value.",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "200":{  
-                 "description":"Update a label with 'private' scope",
-                 "schema":{  
-                    "$ref":"#/definitions/Label"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"putManagementLabels"
-        },
-        "post":{  
-           "description":"Create a label with 'private' scope and assigns to users",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"user_uid",
-                 "description":"User uid",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"key",
-                 "description":"Label key.",
-                 "type":"string",
-                 "required":true
-              },
-              {  
-                 "in":"formData",
-                 "name":"value",
-                 "description":"Label value.",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Create a label with 'private' scope and assigns to users",
-                 "schema":{  
-                    "$ref":"#/definitions/Label"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementLabels"
-        }
-     },
-     "/management/labels/list":{  
-        "post":{  
-           "description":"Get all labels assigned to users",
-           "produces":[  
-              "application/json"
-           ],
-           "consumes":[  
-              "application/json"
-           ],
-           "parameters":[  
-              {  
-                 "in":"formData",
-                 "name":"user_uid",
-                 "description":"User uid",
-                 "type":"string",
-                 "required":true
-              }
-           ],
-           "responses":{  
-              "201":{  
-                 "description":"Get all labels assigned to users",
-                 "schema":{  
-                    "$ref":"#/definitions/Label"
-                 }
-              }
-           },
-           "tags":[  
-              "management"
-           ],
-           "operationId":"postManagementLabelsList"
-        }
      }
   },
-  "definitions":{  
-     "UserWithProfile":{  
+  "definitions":{
+     "Label":{
         "type":"object",
-        "properties":{  
-           "email":{  
+        "properties":{
+           "key":{
+              "type":"string",
+              "description":"Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters."
+           },
+           "value":{
+              "type":"string",
+              "description":"Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+           },
+           "scope":{
+              "type":"string",
+              "description":"Label scope: 'public' or 'private'"
+           },
+           "created_at":{
               "type":"string"
            },
-           "uid":{  
-              "type":"string"
-           },
-           "role":{  
-              "type":"string"
-           },
-           "level":{  
-              "type":"integer",
-              "format":"int32"
-           },
-           "otp":{  
-              "type":"boolean",
-              "description":"is 2FA enabled for account"
-           },
-           "state":{  
-              "type":"string"
-           },
-           "profile":{  
-              "$ref":"#/definitions/Profile"
-           },
-           "created_at":{  
-              "type":"string"
-           },
-           "updated_at":{  
+           "updated_at":{
               "type":"string"
            }
-        },
-        "description":"Get users and profile information"
+        }
      },
-     "Profile":{  
+     "APIKey":{
         "type":"object",
-        "properties":{  
-           "first_name":{  
+        "properties":{
+           "kid":{
+              "type":"string",
+              "description":"jwt public key"
+           },
+           "algorithm":{
+              "type":"string",
+              "description":"cryptographic hash function type"
+           },
+           "scope":{
+              "type":"string",
+              "description":"serialized array of scopes"
+           },
+           "state":{
+              "type":"string",
+              "description":"active/non-active state of key"
+           },
+           "secret":{
               "type":"string"
            },
-           "last_name":{  
+           "created_at":{
               "type":"string"
            },
-           "dob":{  
+           "updated_at":{
+              "type":"string"
+           }
+        }
+     },
+     "Profile":{
+        "type":"object",
+        "properties":{
+           "first_name":{
+              "type":"string"
+           },
+           "last_name":{
+              "type":"string"
+           },
+           "dob":{
               "type":"string",
               "format":"date",
               "description":"Birthday date"
            },
-           "address":{  
+           "address":{
               "type":"string"
            },
-           "postcode":{  
+           "postcode":{
               "type":"string"
            },
-           "city":{  
+           "city":{
               "type":"string"
            },
-           "country":{  
+           "country":{
               "type":"string"
            },
-           "metadata":{  
+           "metadata":{
               "type":"object",
               "description":"Profile additional fields"
            }
         }
      },
-     "Label":{  
+     "User":{
         "type":"object",
-        "properties":{  
-           "key":{  
-              "type":"string",
-              "description":"Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters."
-           },
-           "value":{  
-              "type":"string",
-              "description":"Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
-           },
-           "scope":{  
-              "type":"string",
-              "description":"Label scope: 'public' or 'private'"
-           },
-           "created_at":{  
+        "properties":{
+           "email":{
               "type":"string"
            },
-           "updated_at":{  
-              "type":"string"
-           }
-        },
-        "description":"Get all labels assigned to users"
-     },
-     "APIKey":{  
-        "type":"object",
-        "properties":{  
-           "kid":{  
-              "type":"string",
-              "description":"jwt public key"
-           },
-           "algorithm":{  
-              "type":"string",
-              "description":"cryptographic hash function type"
-           },
-           "scope":{  
-              "type":"string",
-              "description":"serialized array of scopes"
-           },
-           "state":{  
-              "type":"string",
-              "description":"active/non-active state of key"
-           },
-           "secret":{  
+           "uid":{
               "type":"string"
            },
-           "created_at":{  
+           "role":{
               "type":"string"
            },
-           "updated_at":{  
-              "type":"string"
-           }
-        }
-     },
-     "Document":{  
-        "type":"object",
-        "properties":{  
-           "upload":{  
-              "type":"string",
-              "description":"file url"
-           },
-           "doc_type":{  
-              "type":"string",
-              "description":"document type: passport, driver license"
-           },
-           "doc_number":{  
-              "type":"string",
-              "description":"document number: AB123123 type"
-           },
-           "doc_expire":{  
-              "type":"string",
-              "description":"expire date of uploaded documents"
-           },
-           "metadata":{  
-              "type":"string",
-              "description":"any additional stored data"
-           },
-           "created_at":{  
-              "type":"string"
-           },
-           "updated_at":{  
-              "type":"string"
-           }
-        }
-     },
-     "UserWithFullInfo":{  
-        "type":"object",
-        "properties":{  
-           "email":{  
-              "type":"string"
-           },
-           "uid":{  
-              "type":"string"
-           },
-           "role":{  
-              "type":"string"
-           },
-           "level":{  
+           "level":{
               "type":"integer",
               "format":"int32"
            },
-           "otp":{  
+           "otp":{
               "type":"boolean",
               "description":"is 2FA enabled for account"
            },
-           "state":{  
+           "state":{
+              "type":"string"
+           }
+        }
+     },
+     "UserWithProfile":{
+        "type":"object",
+        "properties":{
+           "email":{
               "type":"string"
            },
-           "profile":{  
+           "uid":{
+              "type":"string"
+           },
+           "role":{
+              "type":"string"
+           },
+           "level":{
+              "type":"integer",
+              "format":"int32"
+           },
+           "otp":{
+              "type":"boolean",
+              "description":"is 2FA enabled for account"
+           },
+           "state":{
+              "type":"string"
+           },
+           "profile":{
               "$ref":"#/definitions/Profile"
            },
-           "labels":{  
-              "$ref":"#/definitions/Label"
-           },
-           "documents":{  
-              "$ref":"#/definitions/Document"
-           },
-           "created_at":{  
+           "created_at":{
               "type":"string"
            },
-           "updated_at":{  
+           "updated_at":{
+              "type":"string"
+           }
+        }
+     },
+     "UserWithFullInfo":{
+        "type":"object",
+        "properties":{
+           "email":{
+              "type":"string"
+           },
+           "uid":{
+              "type":"string"
+           },
+           "role":{
+              "type":"string"
+           },
+           "level":{
+              "type":"integer",
+              "format":"int32"
+           },
+           "otp":{
+              "type":"boolean"
+           },
+           "state":{
+              "type":"string"
+           },
+           "profile":{
+              "$ref":"#/definitions/Profile"
+           },
+           "labels":{
+              "$ref":"#/definitions/Label"
+           },
+           "phones":{
+              "$ref":"#/definitions/Phone"
+           },
+           "documents":{
+              "$ref":"#/definitions/Document"
+           },
+           "created_at":{
+              "type":"string"
+           },
+           "updated_at":{
+              "type":"string"
+           }
+        }
+     },
+     "Phone":{
+        "type":"object",
+        "properties":{
+           "country":{
+              "type":"string"
+           },
+           "number":{
+              "type":"string"
+           },
+           "validated_at":{
+              "type":"s",
+              "format":"g"
+           }
+        }
+     },
+     "Document":{
+        "type":"object",
+        "properties":{
+           "upload":{
+              "type":"string",
+              "description":"file url"
+           },
+           "doc_type":{
+              "type":"string",
+              "description":"document type: passport, driver license"
+           },
+           "doc_number":{
+              "type":"string",
+              "description":"document number: AB123123 type"
+           },
+           "doc_expire":{
+              "type":"string",
+              "description":"expire date of uploaded documents"
+           },
+           "metadata":{
+              "type":"string",
+              "description":"any additional stored data"
+           },
+           "created_at":{
+              "type":"string"
+           },
+           "updated_at":{
               "type":"string"
            }
         }
