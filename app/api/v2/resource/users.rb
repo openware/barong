@@ -48,7 +48,7 @@ module API::V2
                               desc: 'User password',
                               allow_blank: false
         end
-        post '/password' do
+        put '/password' do
           unless params[:new_password] == params[:confirm_password]
             password_error!(reason: 'New passwords don\'t match',
               error_code: 422, user: current_user.id, action: 'password change')

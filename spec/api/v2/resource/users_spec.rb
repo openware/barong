@@ -18,7 +18,7 @@ describe 'Api::V1::Profiles' do
 
     describe 'POST /api/v2/resource/users/password' do
       let(:do_request) do
-        post '/api/v2/resource/users/password', params: params, headers: auth_header
+        put '/api/v2/resource/users/password', params: params, headers: auth_header
       end
       let(:params) do
         {
