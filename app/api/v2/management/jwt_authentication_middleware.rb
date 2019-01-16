@@ -9,6 +9,8 @@ module API::V2
       mattr_accessor :security_configuration
 
       def before
+        return if request.path == '/api/v2/management/management.json'
+
         check_request_method!
         check_query_parameters!
         check_content_type!
