@@ -8,7 +8,7 @@ class Phone < ApplicationRecord
 
   validates :number, phone: true
 
-  after_initialize  :generate_code
+  before_create  :generate_code
   before_validation :parse_country
   before_validation :sanitize_number
 
@@ -38,7 +38,7 @@ class Phone < ApplicationRecord
     end
 
     def send_confirmation_sms(phone)
-      Rails.logger.info("Sending SMS to #{phone.number} with code #{phone.code}")
+      Rails.logger.info("Sending SMS to #{phone.number}")
 
       app_name = Barong::App.config.app_name
       send_sms(number: phone.number,
