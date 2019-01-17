@@ -160,34 +160,4 @@ describe API::V2::Identity::Sessions do
       end
     end
   end
-
-  describe 'DELETE /api/v2/identity/sessions' do
-    let!(:email) { 'user@gmail.com' }
-    let!(:password) { 'testPassword111' }
-    let(:uri) { '/api/v2/identity/sessions' }
-    let(:params) do
-      {
-        email: email,
-        password: password
-      }
-    end
-    subject!(:user) do
-      create :user,
-             email: email,
-             password: password,
-             password_confirmation: password
-    end
-    context 'With valid session' do
-      let(:do_create_session_request) { post uri, params: params }
-      let(:do_delete_session_request) { delete uri }
-
-      it 'Deletes session' do
-        do_create_session_request
-        expect(session[:uid]).to eq(user.uid)
-
-        do_delete_session_request
-        expect(session[:uid]).to eq(nil)
-      end
-    end
-  end
 end

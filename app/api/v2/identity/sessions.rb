@@ -64,23 +64,6 @@ module API::V2
           session[:uid] = user.uid
           status(200)
         end
-
-        desc 'Destroy current session',
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' }
-        ]
-        params do
-        end
-        delete do
-          user = User.find_by!(uid: session[:uid])
-          error!('Invalid Session', 401) unless user
-
-          activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
-
-          session.destroy
-          status(200)
-        end
       end
     end
   end
