@@ -96,7 +96,8 @@ module API::V2
               error!('User doesn\'t exist or has already been activated', 422)
             end
 
-            current_user.after_confirmation
+            current_user.after_confirmation if token_uniq?(payload[:jti])
+
             EventAPI.notify('system.user.email.confirmed', current_user.as_json_for_event_api)
 
             status 201
@@ -145,8 +146,8 @@ module API::V2
                                 desc: 'User password',
                                 allow_blank: false
             requires :confirm_password, type: String,
-                                desc: 'User password',
-                                allow_blank: false
+                                        desc: 'User password',
+                                        allow_blank: false
           end
           post '/confirm_code' do
             unless params[:password] == params[:confirm_password]
@@ -157,6 +158,8 @@ module API::V2
               params[:reset_password_token],
               pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
             )
+            error!('JWT has already been used') if Rails.cache.read(payload[:jti]) == 'utilized'
+
             current_user = User.find_by_email(payload[:email])
 
             unless current_user.update(password: params[:password])
@@ -165,6 +168,7 @@ module API::V2
                               result: 'failed', topic: 'password', data: error_note)
               error!(current_user.errors.full_messages, 422)
             end
+            Rails.cache.write(payload[:jti], 'utilized')
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 

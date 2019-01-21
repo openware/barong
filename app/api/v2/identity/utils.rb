@@ -76,6 +76,11 @@ module API::V2
         Activity.create(params)
       end
 
+      def token_uniq?(jti)
+        error!('JWT has already been used') if Rails.cache.read(jti) == 'utilized'
+        Rails.cache.write(jti, 'utilized')
+      end
+
       def publish_confirmation(user)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(

@@ -33,7 +33,7 @@ gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.6.0'
 gem 'vault',        '~> 0.1'
-
+gem 'redis-rails', '~> 5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 
