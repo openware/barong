@@ -79,6 +79,16 @@ describe 'Api::V2::Resources::Phones' do
         expect_status.to eq 201
         expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
       end
+
+      it 'doesnt change code in DB on phone initialize' do
+        do_request
+        expect_body.to eq(message: 'Code was sent successfully')
+        expect_status.to eq 201
+        code_after_create = Phone.last.code
+        # Phone.last initilazes phone
+        code_after_initialize = Phone.last.code
+        expect(code_after_create).to eq code_after_initialize
+      end
     end
 
     context 'when phone is on national format with zero' do
