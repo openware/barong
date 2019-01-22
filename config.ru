@@ -2,6 +2,8 @@
 
 require_relative 'config/environment'
 require 'rack/cors'
+# Load CORS::Validations module
+require_relative 'lib/barong/cors/validations'
 
 use Rack::Cors do
   allow do
