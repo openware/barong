@@ -62,6 +62,8 @@ module API::V2
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
           session[:uid] = user.uid
+
+          present user, with: API::V2::Entities::User
           status(200)
         end
 
