@@ -40,6 +40,8 @@ module API::V2
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
+          error!('Phone number already exists', 400) if current_user.phones.exists?(number: phone_number)
+
           phone = current_user.phones.create(number: phone_number)
           # FIXME: active record validation
           error!(phone.errors, 422) if phone.errors.any?
