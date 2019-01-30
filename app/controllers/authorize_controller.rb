@@ -5,6 +5,7 @@ require_dependency 'barong/authorize'
 # Rails Metal base controller to manage AuthZ story
 class AuthorizeController < ActionController::Metal
   include AbstractController::Rendering
+  use ActionDispatch::Session::CookieStore
 
   # /api/v2/auth endpoint
   def authorize
