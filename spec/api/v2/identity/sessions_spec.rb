@@ -188,6 +188,16 @@ describe API::V2::Identity::Sessions do
         do_delete_session_request
         expect(session[:uid]).to eq(nil)
       end
+
+      it "return invalid set-cookie header on #logout" do
+        do_create_session_request
+        expect(session[:uid]).to eq(user.uid)
+  
+        do_delete_session_request
+        expect(response.status).to eq(200)
+        expect(response.headers['Set-Cookie']).not_to be_nil
+        expect(response.headers['Set-Cookie']).to include "_session_id"
+      end
     end
   end
 end
