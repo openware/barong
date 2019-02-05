@@ -30,6 +30,12 @@ describe '/api/v2/auth functionality test' do
         expect(response.headers['Authorization']).to include "Bearer"
       end
 
+      it "doesn't return set-cookie header on valid session" do
+        get auth_request
+        expect(response.status).to eq(200)
+        expect(response.headers['Set-Cookie']).to be_nil
+      end
+
       it 'allows any type of request' do
         available_types = %w[post get put head delete patch]
         available_types.each do |ping|
@@ -47,6 +53,12 @@ describe '/api/v2/auth functionality test' do
         get auth_request
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"error\":\"Invalid Session\"}")
+      end
+
+      it "doesn't return set-cookie header on invalid session" do
+        get auth_request
+        expect(response.status).to eq(401)
+        expect(response.headers['Set-Cookie']).to be_nil
       end
 
       it 'renders error if session belongs to non-active user' do
