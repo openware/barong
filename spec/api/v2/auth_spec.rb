@@ -115,7 +115,7 @@ describe '/api/v2/auth functionality test' do
       allow(TOTPService).to receive(:validate?)
         .with(test_user.uid, otp_code) { true }
       allow(SecretStorage).to receive(:get_secret)
-        .with(kid) { secret }
+        .with(kid) { Vault::Secret.new(data: { value: secret }) }
     end
 
     context 'testing api key related errors' do
