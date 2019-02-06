@@ -41,7 +41,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(error: 'Only accounts with enabled 2FA alowed')
+        expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
       end
     end
 
@@ -51,7 +51,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(error: 'OTP code is invalid')
+        expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
       end
     end
   end
@@ -91,7 +91,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(400)
-          expect_body.to eq(error: 'Only accounts with enabled 2FA alowed')
+          expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
         end
       end
 
@@ -101,7 +101,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(error: 'OTP code is invalid')
+          expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
         end
       end
     end
@@ -139,7 +139,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(400)
-          expect_body.to eq(error: 'Only accounts with enabled 2FA alowed')
+          expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
         end
       end
 
@@ -149,7 +149,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(error: 'OTP code is invalid')
+          expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
         end
       end
     end
@@ -173,7 +173,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(error: 'Only accounts with enabled 2FA alowed')
+        expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
       end
     end
 
@@ -183,7 +183,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(error: 'OTP code is invalid')
+        expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
       end
     end
   end

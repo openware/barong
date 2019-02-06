@@ -30,15 +30,15 @@ module API::V2
             verify_captcha!(user: user, response: params['captcha_response'])
           end
 
-          error!('Invalid Email or Password', 401) unless user
+          error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless user
           unless user.active?
             login_error!(reason: 'Your account is not active', error_code: 401,
-                         user: user.id, action: 'login', result: 'failed')
+                         user: user.id, action: 'login', result: 'failed', error_text: 'not_active')
           end
 
           unless user.authenticate(declared_params[:password])
             login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
-                         action: 'login', result: 'failed')
+                         action: 'login', result: 'failed', error_text: 'invalid_params')
           end
 
           unless user.otp
@@ -52,12 +52,12 @@ module API::V2
 
           if declared_params[:otp_code].blank?
             login_error!(reason: 'The account has enabled 2FA but OTP code is missing', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed')
+                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'missing_otp')
           end
 
           unless TOTPService.validate?(user.uid, declared_params[:otp_code])
             login_error!(reason: 'OTP code is invalid', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed')
+                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
@@ -76,7 +76,7 @@ module API::V2
         end
         delete do
           user = User.find_by!(uid: session[:uid])
-          error!('Invalid Session', 401) unless user
+          error!({ errors: ['identity.session.invalid'] }, 401) unless user
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 

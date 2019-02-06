@@ -12,7 +12,8 @@ module API::V2
                { code: 404, message: 'User has no profile' }
              ]
         get '/me' do
-          error!('User has no profile', 404) unless current_user.profile
+          error!({ errors: ['resource.profile.not_exist'] }, 404) unless current_user.profile
+
           current_user.profile.as_json(only: %i[first_name last_name dob address country city postcode state metadata])
         end
 
@@ -36,7 +37,8 @@ module API::V2
         end
 
         post do
-          return error!('Profile already exists', 409) unless current_user.profile.nil?
+          return error!({ errors: ['resource.profile.exist'] }, 409) unless current_user.profile.nil?
+
           profile = current_user.create_profile(declared(params, include_missing: false))
           error!(profile.errors.full_messages.to_sentence, 422) if profile.errors.any?
 
@@ -46,6 +48,7 @@ module API::V2
               value: 'verified',
               scope: 'private'
             )
+          # FIXME: active record validation
           error!(label.errors.as_json(full_messages: true), 422) unless label.save
 
           status 201

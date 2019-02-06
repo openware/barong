@@ -19,7 +19,7 @@ module API::V2
         options[:data] = { reason: options[:reason] }.to_json
         options[:result] = 'failed'
         activity_record(options.except(:reason, :error_code))
-        error!(options[:reason], options[:error_code])
+        error!({ errors: ['resource.' + options[:topic] + '.' + options[:error_text]] }, options[:error_code])
       end
 
       def activity_record(options = {})

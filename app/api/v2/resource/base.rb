@@ -13,7 +13,7 @@ module API::V2
       do_not_route_options!
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
-        error!('Record is not found', 404)
+        error!({ errors: ['record.not_found'] }, 404)
       end
 
       rescue_from(Grape::Exceptions::ValidationErrors) do |error|

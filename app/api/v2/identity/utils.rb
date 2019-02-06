@@ -16,7 +16,7 @@ module API::V2
         return if Barong::CaptchaPolicy.config.disabled
 
         if response.blank?
-          error!('captcha_response is required', error_statuses.first)
+          error!({ errors: ['identity.captcha.required'] }, error_statuses.first)
         end
 
         if Barong::CaptchaPolicy.config.re_captcha
@@ -26,41 +26,40 @@ module API::V2
       end
 
       def recaptcha(user:, response:, error_statuses: [400, 422])
-        captcha_error_message = 'reCAPTCHA verification failed, please try again.'
+        captcha_error_message = 'identity.captcha.verification_failed'
 
         return if CaptchaService::RecaptchaVerifier.new(request: request).verify_recaptcha(model: user,
                                                                            skip_remote_ip: true,
                                                                            response: response)
-
-        error!(captcha_error_message, error_statuses.last)
+        error!({ errors: [captcha_error_message] }, error_statuses.last)
       rescue StandardError
-        error!(captcha_error_message, error_statuses.last)
+        error!({ errors: [captcha_error_message] }, error_statuses.last)
       end
 
       def geetest(response:, error_statuses: [400, 422])
-        geetest_error_message = 'Geetest verification failed, please try again.'
+        geetest_error_message = 'identity.captcha.verification_failed'
         validate_geetest_response(response: response)
 
         return if CaptchaService::GeetestVerifier.new.validate(response)
 
-        error!(geetest_error_message, error_statuses.last)
+        error!({ errors: [geetest_error_message] }, error_statuses.last)
       rescue StandardError
-        error!(geetest_error_message, error_statuses.last)
+        error!({ errors: [geetest_error_message] }, error_statuses.last)
       end
 
       def validate_geetest_response(response:)
         unless (response['geetest_challenge'].is_a? String) &&
                (response['geetest_validate'].is_a? String) &&
                (response['geetest_seccode'].is_a? String)
-          error!('mandatory fields must be filled in', 400)
+          error!({ errors: ['identity.captcha.mandatory_fields'] }, 400)
         end
       end
 
       def login_error!(options = {})
         options[:data] = { reason: options[:reason] }.to_json
         options[:topic] = 'session'
-        activity_record(options.except(:reason, :error_code))
-        error!(options[:reason], options[:error_code])
+        activity_record(options.except(:reason, :error_code, :error_text))
+        error!({ errors: ['identity.session.' + options[:error_text]] }, options[:error_code])
       end
 
       def activity_record(options = {})
@@ -77,7 +76,7 @@ module API::V2
       end
 
       def token_uniq?(jti)
-        error!('JWT has already been used') if Rails.cache.read(jti) == 'utilized'
+        error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(jti) == 'utilized'
         Rails.cache.write(jti, 'utilized')
       end
 

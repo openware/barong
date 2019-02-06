@@ -14,7 +14,7 @@ describe API::V2::Admin::Users do
       it 'access denied to non-admin user' do
         do_request
         expect(response.status).to eq 401
-        expect(response.body).to eq "{\"error\":\"Access Denied: User is not Admin\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
       end
     end
 
@@ -71,7 +71,7 @@ describe API::V2::Admin::Users do
       it 'access denied to non-admin user' do
         do_request
         expect(response.status).to eq 401
-        expect(response.body).to eq "{\"error\":\"Access Denied: User is not Admin\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
       end
     end
 
@@ -115,7 +115,7 @@ describe API::V2::Admin::Users do
           state: 'active'
         }
         expect(response.status).to eq 404
-        expect(response.body).to eq "{\"error\":\"User with such UID doesnt exist\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
       it 'sets state to active' do
@@ -152,7 +152,7 @@ describe API::V2::Admin::Users do
           state: 'pending'
         }
         expect(response.status).to eq 422
-        expect(response.body).to eq "{\"error\":\"Can't change state, as its already pending\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.state_no_change\"]}"
       end
     end
   end
@@ -164,7 +164,7 @@ describe API::V2::Admin::Users do
       it 'access denied to non-admin user' do
         do_request
         expect(response.status).to eq 401
-        expect(response.body).to eq "{\"error\":\"Access Denied: User is not Admin\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
       end
     end
 
@@ -174,7 +174,7 @@ describe API::V2::Admin::Users do
       it 'renders error if uid is invalid' do
         get '/api/v2/admin/users/asdasdsad', headers: auth_header
         expect(response.status).to eq 404
-        expect(response.body).to eq "{\"error\":\"User with such UID doesnt exist\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
       it 'returns user info' do
@@ -198,7 +198,7 @@ describe API::V2::Admin::Users do
       it 'access denied to non-admin user' do
         do_request
         expect(response.status).to eq 401
-        expect(response.body).to eq "{\"error\":\"Access Denied: User is not Admin\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
       end
     end
 
@@ -239,7 +239,7 @@ describe API::V2::Admin::Users do
           value: 'verified'
         }
         expect(response.status).to eq 404
-        expect(response.body).to eq "{\"error\":\"User with such UID doesnt exist\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
       it 'adds label with default public scope' do
@@ -280,7 +280,7 @@ describe API::V2::Admin::Users do
       it 'access denied to non-admin user' do
         do_request
         expect(response.status).to eq 401
-        expect(response.body).to eq "{\"error\":\"Access Denied: User is not Admin\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
       end
     end
 
@@ -328,7 +328,7 @@ describe API::V2::Admin::Users do
           scope: 'public'
         }
         expect(response.status).to eq 404
-        expect(response.body).to eq "{\"error\":\"User with such UID doesnt exist\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
       it 'renders error when label does not exist' do
@@ -338,7 +338,7 @@ describe API::V2::Admin::Users do
           scope: 'public'
         }
         expect(response.status).to eq 404
-        expect(response.body).to eq "{\"error\":\"Label with such key doesnt exist or not assigned to chosen user\"}"
+        expect(response.body).to eq "{\"errors\":[\"admin.label.doesnt_exist\"]}"
       end
 
       it 'deletes label' do

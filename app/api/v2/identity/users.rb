@@ -7,9 +7,9 @@ module API::V2
     class Users < Grape::API
       helpers do
         def parse_refid!
-          error!('Invalid referral uid format', 422) unless /\AID\w{10}$/.match?(params[:refid])
+          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless /\AID\w{10}$/.match?(params[:refid])
           user = User.find_by_uid(params[:refid])
-          error!("Referral doesn't exist", 422) if user.nil?
+          error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
 
           user.id
         end
@@ -40,6 +40,7 @@ module API::V2
 
           verify_captcha!(user: user, response: params['captcha_response'])
 
+          # FIXME: active record validation
           error!(user.errors.full_messages, 422) unless user.save
 
           publish_confirmation(user)
@@ -66,7 +67,7 @@ module API::V2
           post '/generate_code' do
             current_user = User.find_by_email(params[:email])
             if current_user.nil? || current_user.active?
-              error!('User doesn\'t exist or has already been activated', 422)
+              error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
             publish_confirmation(current_user)
@@ -93,7 +94,7 @@ module API::V2
             current_user = User.find_by_email(payload[:email])
 
             if current_user.nil? || current_user.active?
-              error!('User doesn\'t exist or has already been activated', 422)
+              error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
             current_user.after_confirmation if token_uniq?(payload[:jti])
@@ -121,7 +122,7 @@ module API::V2
           post '/generate_code' do
             current_user = User.find_by_email(params[:email])
 
-            error!('User doesn\'t exist', 404) if current_user.nil?
+            error!({ errors: ['identity.password.user_doesnt_exist'] }, 404) if current_user.nil?
 
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid)
 
@@ -151,14 +152,14 @@ module API::V2
           end
           post '/confirm_code' do
             unless params[:password] == params[:confirm_password]
-              error!('Passwords don\'t match', 422)
+              error!({ errors: ['identity.user.passwords_doesnt_match'] }, 422)
             end
 
             payload = codec.decode_and_verify(
               params[:reset_password_token],
               pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
             )
-            error!('JWT has already been used') if Rails.cache.read(payload[:jti]) == 'utilized'
+            error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(payload[:jti]) == 'utilized'
 
             current_user = User.find_by_email(payload[:email])
 
@@ -166,6 +167,7 @@ module API::V2
               error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
               activity_record(user: current_user.id, action: 'password reset',
                               result: 'failed', topic: 'password', data: error_note)
+              # FIXME: active record validation
               error!(current_user.errors.full_messages, 422)
             end
             Rails.cache.write(payload[:jti], 'utilized')

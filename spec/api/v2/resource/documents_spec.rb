@@ -55,7 +55,7 @@ describe 'Documents API test' do
       end
 
       expect(response.status).to eq(400)
-      expect_body.to eq(error: 'Documents amount will reach limit by this upload')
+      expect_body.to eq(errors: ["resource.documents.limit_will_be_reached"])
     end
 
     it 'uploads 2 files at once' do

@@ -22,7 +22,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: "Referral doesn't exist")
+        expect_body.to eq(errors: ["identity.user.referral_doesnt_exist"])
       end
     end
 
@@ -32,7 +32,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: "Invalid referral uid format")
+        expect_body.to eq(errors: ["identity.user.invalid_referral_format"])
       end
     end
 
@@ -97,7 +97,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: 'reCAPTCHA verification failed, please try again.')
+        expect_body.to eq(errors: ["identity.captcha.verification_failed"])
       end
     end
 
@@ -107,7 +107,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 400
-        expect_body.to eq(error: 'captcha_response is required')
+        expect_body.to eq(errors: ["identity.captcha.required"])
       end
     end
   end
@@ -138,7 +138,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: 'Geetest verification failed, please try again.')
+        expect_body.to eq(errors: ["identity.captcha.verification_failed"])
       end
     end
 
@@ -148,7 +148,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 400
-        expect_body.to eq(error: 'captcha_response is required')
+        expect_body.to eq(errors: ["identity.captcha.required"])
       end
     end
 
@@ -161,7 +161,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 400
-        expect_body.to eq(error: 'mandatory fields must be filled in')
+        expect_body.to eq(errors: ["identity.captcha.mandatory_fields"])
       end
     end
   end
@@ -174,7 +174,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: 'User doesn\'t exist or has already been activated')
+        expect_body.to eq(errors: ["identity.user.active_or_doesnt_exist"])
       end
     end
 
@@ -184,7 +184,7 @@ describe API::V2::Identity::Users do
         create(:user, email: 'valid-confirmed@email.com', state: 'active')
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: 'User doesn\'t exist or has already been activated')
+        expect_body.to eq(errors: ["identity.user.active_or_doesnt_exist"])
       end
     end
 
@@ -216,7 +216,7 @@ describe API::V2::Identity::Users do
       it 'returns an error' do
         do_request
         expect_status_to_eq 403
-        expect_body.to eq(error:'Failed to decode and verify JWT')
+        expect_body.to eq(errors: ["jwt.decode_and_verify"])
       end
     end
 
@@ -242,7 +242,7 @@ describe API::V2::Identity::Users do
       it 'renders not found error' do
         do_request
         expect_status_to_eq 404
-        expect_body.to eq(error: 'User doesn\'t exist')
+        expect_body.to eq(errors: ["identity.password.user_doesnt_exist"])
       end
     end
 
@@ -288,7 +288,7 @@ describe API::V2::Identity::Users do
       it 'renders 403 error' do
         do_request
         expect_status_to_eq 403
-        expect_body.to eq(error: 'Failed to decode and verify JWT')
+        expect_body.to eq(errors: ["jwt.decode_and_verify"])
       end
     end
 
@@ -329,7 +329,7 @@ describe API::V2::Identity::Users do
       it 'returns 422 error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: 'Passwords don\'t match')
+        expect_body.to eq(errors: ["identity.user.passwords_doesnt_match"])
       end
     end
   end

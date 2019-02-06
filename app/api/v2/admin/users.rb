@@ -40,16 +40,16 @@ module API
             update_param_key = params.except(:uid).keys.first
             update_param_value = params.except(:uid).values.first
 
-            error!('User with such UID doesnt exist', 404) if target_user.nil?
+            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-            error!("Admin can't update himself", 422) if target_user.uid == current_user.uid
+            error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
 
             if update_param_key == 'role' && update_param_value == true
-              error!('Manual 2FA enabling not allowed', 422)
+              error!({ errors: ['admin.user.enable_2fa'] }, 422)
             end
 
             if update_param_value == target_user[update_param_key]
-              error!("Can't change #{update_param_key}, as its already #{update_param_value}", 422)
+              error!({ errors: ["admin.user.#{update_param_key}_no_change"] }, 422)
             end
 
             target_user.update(update_param_key => update_param_value)
@@ -66,7 +66,7 @@ module API
           end
           get '/:uid' do
             target_user = User.find_by_uid(params[:uid])
-            error!('User with such UID doesnt exist', 404) if target_user.nil?
+            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
             present target_user, with: API::V2::Entities::UserWithFullInfo
           end
@@ -87,11 +87,12 @@ module API
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(params[:uid])
-              error!('User with such UID doesnt exist', 404) if target_user.nil?
+              error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
               declared_params[:user_id] = target_user.id
 
               label = Label.new(declared_params.except(:uid))
 
+              # FIXME: active record validation
               error!(label.errors.full_messages, 422) unless label.save
 
               status 200
@@ -115,11 +116,11 @@ module API
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(declared_params[:uid])
-              error!('User with such UID doesnt exist', 404) if target_user.nil?
+              error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 
-              error!('Label with such key doesnt exist or not assigned to chosen user', 404) if label.nil?
+              error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
               label.update(value: params[:value])
               status 200
@@ -139,11 +140,11 @@ module API
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(params[:uid])
-              error!('User with such UID doesnt exist', 404) if target_user.nil?
+              error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 
-              error!('Label with such key doesnt exist or not assigned to chosen user', 404) if label.nil?
+              error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
               label.delete
               status 200

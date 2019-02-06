@@ -52,7 +52,7 @@ describe '/api/v2/auth functionality test' do
       it 'renders error if no session or api key headers provided' do
         get auth_request
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"Invalid Session\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
       end
 
       it "doesn't return set-cookie header on invalid session" do
@@ -68,7 +68,7 @@ describe '/api/v2/auth functionality test' do
 
         get auth_request
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"User account is not active!\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.user_not_active\"]}")
       end
     end
 
@@ -83,7 +83,7 @@ describe '/api/v2/auth functionality test' do
       it 'receives access error if path is blacklisted' do
         do_restricted_request
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"permission_denied\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.permission_denied\"]}")
       end
 
       let(:do_whitelisted_request) { put '/api/v2/auth/api/v2/peatio/public/ping' }
@@ -125,7 +125,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Nonce' => nonce,
         }
         expect(response.status).to eq(422)
-        expect(response.body).to eq("{\"error\":\"Request contains invalid or blank api key headers!\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.invalid_api_key_headers\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 
@@ -136,7 +136,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Signature' => ' '
         }
         expect(response.status).to eq(422)
-        expect(response.body).to eq("{\"error\":\"Request contains invalid or blank api key headers!\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.invalid_api_key_headers\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 
@@ -147,7 +147,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Signature' => 'some-random-signature'
         }
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"Invalid or unsupported signature\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.invalid_signature\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 
@@ -161,7 +161,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Signature' => signature
         }
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"Requested api key is not active\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.apikey_not_active\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 
@@ -175,7 +175,7 @@ describe '/api/v2/auth functionality test' do
           'X-Auth-Signature' => signature
         }
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"Invalid Session\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
     end
@@ -209,7 +209,7 @@ describe '/api/v2/auth functionality test' do
       it 'receives access error if path is blacklisted' do
         do_restricted_request
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"error\":\"permission_denied\"}")
+        expect(response.body).to eq("{\"errors\":[\"authz.permission_denied\"]}")
       end
 
       let(:do_whitelisted_request) {
