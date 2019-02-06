@@ -100,12 +100,11 @@ module Barong
 
     # converts header into hash of parameters
     def api_key_params
-      params = {}
-      params.merge(
+      {
         'kid': headers['X-Auth-Apikey'],
         'nonce': headers['X-Auth-Nonce'],
         'signature':  headers['X-Auth-Signature']
-      )
+      }
     end
 
     # custom error, calls AuthError class
