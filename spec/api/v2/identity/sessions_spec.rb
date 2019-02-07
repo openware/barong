@@ -140,6 +140,13 @@ describe API::V2::Identity::Sessions do
 
       it 'returns error on banned user' do
         post uri, params: { email: another_email, password: password }
+        expect_body.to eq(errors: ["identity.session.banned"])
+        expect(response.status).to eq(401)
+      end
+
+      it 'returns error on non-active user' do
+        user_banned.update(state: 'not-active')
+        post uri, params: { email: another_email, password: password }
         expect_body.to eq(errors: ["identity.session.not_active"])
         expect(response.status).to eq(401)
       end

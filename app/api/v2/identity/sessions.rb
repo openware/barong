@@ -31,6 +31,12 @@ module API::V2
           end
 
           error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless user
+
+          if user.state == 'banned'
+            login_error!(reason: 'Your account is banned', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'banned')
+          end
+
           unless user.active?
             login_error!(reason: 'Your account is not active', error_code: 401,
                          user: user.id, action: 'login', result: 'failed', error_text: 'not_active')
