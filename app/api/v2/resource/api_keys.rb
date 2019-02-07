@@ -7,13 +7,12 @@ module API::V2
       resource :api_keys do
         before do
           unless current_user.otp
-            error!('Only accounts with enabled 2FA alowed', 400)
+            error!({ errors: ['resource.api_key.2fa_disabled'] }, 400)
           end
-
-          error!('OTP code is missing', 422) unless params[:totp_code].present?
+          error!({ errors: ['resource.api_key.missing_otp'] }, 422) unless params[:totp_code].present?
 
           unless TOTPService.validate?(current_user.uid, params[:totp_code])
-            error!('OTP code is invalid', 422)
+            error!({ errors: ['resource.api_key.invalid_otp'] }, 422)
           end
         end
 
@@ -38,6 +37,7 @@ module API::V2
                             .merge(scope: params[:scope]&.split(','))
           api_key = current_user.api_keys.create(declared_params)
           if api_key.errors.any?
+            # FIXME: active record validation
             error!(api_key.errors.full_messages.to_sentence, 422)
           end
 
@@ -68,6 +68,7 @@ module API::V2
           api_key = current_user.api_keys.find_by!(kid: params[:kid])
 
           unless api_key.update(declared_params)
+            # FIXME: active record validation
             error!(api_key.errors.full_messages.to_sentence, 422)
           end
 

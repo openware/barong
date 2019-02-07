@@ -21,7 +21,7 @@ module API::V2
         post '/generate_qrcode' do
           if current_user.otp
             otp_error!(reason: '2FA has been already enabled for this account', error_code: 400,
-              user: current_user.id, action: 'request QR code for 2FA')
+              user: current_user.id, action: 'request QR code for 2FA', error_text: 'already_enabled')
           end
 
           activity_record(user: current_user.id, action: 'request QR code for 2FA', result: 'succeed', topic: 'otp')
@@ -42,15 +42,16 @@ module API::V2
         post '/enable' do
           if current_user.otp
             otp_error!(reason: '2FA has been already enabled for this account', error_code: 400,
-                         user: current_user.id, action: 'enable 2FA')
+                         user: current_user.id, action: 'enable 2FA', error_text: 'already_enabled')
           end
 
           unless TOTPService.validate?(current_user.uid, declared(params)[:code])
             otp_error!(reason: 'OTP code is invalid', error_code: 422,
-              user: current_user.id, action: 'enable 2FA')
+              user: current_user.id, action: 'enable 2FA', error_text: 'invalid')
           end
 
           unless current_user.update(otp: true)
+            # FIXME active record validation
             otp_error!(reason: current_user.errors.full_messages.to_sentence, error_code: 422,
               user: current_user.id, action: 'enable 2FA')
           end
@@ -73,12 +74,12 @@ module API::V2
         post '/verify' do
           unless current_user.otp
             otp_error!(reason: '2FA has not been enabled for this account', error_code: 400,
-                       user: current_user.id, action: 'verify 2FA code')
+                       user: current_user.id, action: 'verify 2FA code', error_text: 'already_enabled')
           end
 
           unless TOTPService.validate?(current_user.uid, declared(params)[:code])
             otp_error!(reason: 'OTP code is invalid', error_code: 422,
-                       user: current_user.id, action: 'verify 2FA code')
+                       user: current_user.id, action: 'verify 2FA code', error_text: 'invalid')
           end
         end
       end

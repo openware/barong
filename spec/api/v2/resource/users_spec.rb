@@ -47,7 +47,7 @@ describe 'Api::V1::Profiles' do
         it 'renders 400 error' do
           do_request
           expect(response.status).to eq(400)
-          expect_body.to eq(error: 'Previous password is not correct')
+          expect_body.to eq(errors: ["resource.password.prev_pass_not_correct"])
         end
       end
 
@@ -59,7 +59,7 @@ describe 'Api::V1::Profiles' do
         it 'renders 422 error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(error: 'New passwords don\'t match')
+          expect_body.to eq(errors: ["resource.password.doesnt_match"])
         end
       end
 

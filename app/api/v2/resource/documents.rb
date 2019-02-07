@@ -33,11 +33,11 @@ module API::V2
 
         post do
           unless current_user.documents.count <= ENV.fetch('DOCUMENTS_LIMIT', 10)
-            error! 'Maximum number of documents already reached', 400
+            error!({ errors: ['resource.documents.limit_reached'] }, 400)
           end
 
           unless current_user.documents.count + params[:upload].length <= ENV.fetch('DOCUMENTS_LIMIT', 10)
-            error! 'Documents amount will reach limit by this upload', 400
+            error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
 
           params[:upload].each do |file|

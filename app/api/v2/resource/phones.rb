@@ -3,20 +3,19 @@
 module API::V2
   module Resource
     class Phones < Grape::API
-
       rescue_from(Twilio::REST::RestError) do |error|
         Rails.logger.error "Twilio Client Error: #{error.message}"
-        error!('Something wrong with Twilio Client', 500)
+        error!({ errors: ['resource.phone.twillio'] }, 500)
       end
 
       helpers do
         def validate_phone!(phone_number)
           phone_number = Phone.international(phone_number)
 
-          error!('Phone number is invalid', 400) \
+          error!({ errors: ['resource.phone.invalid_num'] }, 400) \
             unless Phone.valid?(phone_number)
 
-          error!('Phone number already exists', 400) \
+              error!({ errors: ['resource.phone.number_exist'] }, 400) \
             if Phone.verified.exists?(number: phone_number)
         end
       end
@@ -42,6 +41,7 @@ module API::V2
 
           phone_number = Phone.international(declared_params[:phone_number])
           phone = current_user.phones.create(number: phone_number)
+          # FIXME: active record validation
           error!(phone.errors, 422) if phone.errors.any?
           Phone.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
@@ -66,6 +66,7 @@ module API::V2
 
           phone_number = Phone.international(declared_params[:phone_number])
           phone = current_user.phones.find_by!(number: phone_number)
+          # FIXME: active record validation
           error!(phone.errors, 422) unless phone.regenerate_code
 
           Phone.send_confirmation_sms(phone)
@@ -95,14 +96,13 @@ module API::V2
           phone = current_user.phones.find_by(number: phone_number,
                                                  code: declared_params[:verification_code])
 
-          error!('Phone is not found or verification code is invalid', 404) unless phone
+          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless phone
 
           phone.update(validated_at: Time.current)
           current_user.add_level_label(:phone)
           { message: 'Phone was verified successfully' }
         end
       end
-
     end
   end
 end

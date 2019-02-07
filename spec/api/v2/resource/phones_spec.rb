@@ -26,7 +26,7 @@ describe 'Api::V2::Resources::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'Phone number is invalid')
+        expect_body.to eq(errors: ["resource.phone.invalid_num"])
         expect_status.to eq 400
       end
     end
@@ -42,7 +42,7 @@ describe 'Api::V2::Resources::Phones' do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: 'Phone number already exists')
+          expect_body.to eq(errors: ["resource.phone.number_exist"])
           expect_status.to eq 400
         end
       end
@@ -53,7 +53,7 @@ describe 'Api::V2::Resources::Phones' do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: 'Phone number already exists')
+          expect_body.to eq(errors: ["resource.phone.number_exist"])
           expect_status.to eq 400
         end
       end
@@ -113,7 +113,7 @@ describe 'Api::V2::Resources::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq error: 'Phone number already exists'
+        expect_body.to eq errors: ["resource.phone.number_exist"]
         expect_status.to eq 400
       end
     end
@@ -147,7 +147,7 @@ describe 'Api::V2::Resources::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'Phone number is invalid')
+        expect_body.to eq(errors: ["resource.phone.invalid_num"])
         expect_status.to eq 400
       end
     end
@@ -160,7 +160,7 @@ describe 'Api::V2::Resources::Phones' do
 
       it 'renders an error' do
         do_request
-        expect_body.to eq(error: 'Phone number already exists')
+        expect_body.to eq(errors: ["resource.phone.number_exist"])
         expect_status.to eq 400
       end
     end
@@ -174,7 +174,7 @@ describe 'Api::V2::Resources::Phones' do
 
       it 'renders an error' do
       do_request
-      expect_body.to eq(error: 'Phone number already exists')
+      expect_body.to eq(errors: ["resource.phone.number_exist"])
       expect_status.to eq 400
     end
   end
@@ -185,7 +185,7 @@ describe 'Api::V2::Resources::Phones' do
 
     it 'rendens an error' do
       do_request
-      expect_body.to eq(error: 'Phone is not found or verification code is invalid')
+      expect_body.to eq(errors: ["resource.phone.verification_invalid"])
       expect_status.to eq 404
     end
   end
@@ -196,7 +196,7 @@ describe 'Api::V2::Resources::Phones' do
 
     it 'rendens an error' do
       do_request
-      expect_body.to eq(error: 'Phone is not found or verification code is invalid')
+      expect_body.to eq(errors: ["resource.phone.verification_invalid"])
       expect_status.to eq 404
     end
   end

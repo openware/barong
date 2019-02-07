@@ -26,7 +26,8 @@ module API::V2
         get '/activity/:topic' do
           data = current_user.activities
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
-          error!('No activity recorded or wrong topic', 422) unless data.present?
+          error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
+
           data
         end
 
@@ -51,23 +52,24 @@ module API::V2
         put '/password' do
           unless params[:new_password] == params[:confirm_password]
             password_error!(reason: 'New passwords don\'t match',
-              error_code: 422, user: current_user.id, action: 'password change')
+              error_code: 422, user: current_user.id, action: 'password change', error_text: 'doesnt_match')
           end
 
           unless password_valid?(params[:old_password])
             password_error!(reason: 'Previous password is not correct',
-              error_code: 400, user: current_user.id, action: 'password change')
+              error_code: 400, user: current_user.id, action: 'password change', error_text: 'prev_pass_not_correct')
           end
 
           if params[:old_password] == params[:new_password]
             password_error!(reason: 'New password cant be the same, as old one',
-              error_code: 400, user: current_user.id, action: 'password change')
+              error_code: 400, user: current_user.id, action: 'password change', error_text: 'no_change_provided')
           end
 
           unless current_user.update(password: params[:new_password])
             error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
             activity_record(user: current_user.id, action: 'password change',
                             result: 'failed', topic: 'password', data: error_note)
+            # FIXME: active record validation
             error!(current_user.errors.full_messages, 422)
           end
 

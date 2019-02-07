@@ -11,7 +11,7 @@ class AuthorizeController < ActionController::Metal
   def authorize
     req = Barong::Authorize.new(request, params[:path]) # initialize params of request
     # checks if request is blacklisted
-    return access_error!('permission_denied', 401) if req.restricted?('block')
+    return access_error!('authz.permission_denied', 401) if req.restricted?('block')
 
     response.status = 200
     return if req.restricted?('pass') # check if request is whitelisted
@@ -32,6 +32,6 @@ class AuthorizeController < ActionController::Metal
   # error for blacklisted routes
   def access_error!(text, code)
     response.status = code
-    response.body = { 'error': text }.to_json
+    response.body = { 'errors': [text] }.to_json
   end
 end

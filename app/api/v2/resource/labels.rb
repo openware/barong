@@ -53,6 +53,7 @@ module API
             if label.save
               present label, with: Entities::Label
             else
+              # FIXME: active record validation
               error!(label.errors.as_json(full_messages: true), 422)
             end
           end
@@ -71,7 +72,7 @@ module API
           end
           patch ':key' do
             label = current_user.labels.find_by!(key: params[:key])
-            return error!('Can\'t update Label.', 400) if label.private?
+            return error!({ errors: ['resource.labels.private'] }, 400) if label.private?
 
             label.update(value: params[:value])
             present label, with: Entities::Label
@@ -90,7 +91,7 @@ module API
           end
           delete ':key' do
             label = current_user.labels.find_by!(key: params[:key])
-            return error!('Can\'t update Label.', 400) if label.private?
+            return error!({ errors: ['resource.labels.private'] }, 400) if label.private?
 
             label.destroy
             status 204

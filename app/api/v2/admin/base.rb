@@ -19,11 +19,11 @@ module API::V2
       do_not_route_options!
 
       before do
-        error!('Access Denied: User is not Admin', 401) unless current_user.role.admin?
+        error!({ errors: ['admin.access.denied'] }, 401) unless current_user.role.admin?
       end
 
       rescue_from(ActiveRecord::RecordNotFound) do |_e|
-        error!('Record is not found', 404)
+        error!({ errors: ['record.not_found'] }, 404)
       end
 
       rescue_from(Grape::Exceptions::ValidationErrors) do |error|

@@ -58,12 +58,6 @@ describe API::V2::Identity::Sessions do
             captcha_response: captcha_response
           }
         end
-        # WIP: need a logic for captcha on signin
-        # it 'renders an error' do
-        #   do_request
-        #   expect(json_body[:error]).to eq('captcha_response is required')
-        #   expect_status_to_eq 420
-        # end
       end
 
       context 'when captcha response is not valid' do
@@ -81,7 +75,7 @@ describe API::V2::Identity::Sessions do
 
         it 'renders an error' do
           do_request
-          expect(json_body[:error]).to eq('reCAPTCHA verification failed, please try again.')
+          expect(json_body[:errors]).to eq(["identity.captcha.verification_failed"])
           expect_status_to_eq 422
         end
       end
@@ -124,7 +118,7 @@ describe API::V2::Identity::Sessions do
         context 'when Password is wrong' do
           it 'returns errror' do
             post uri, params: { email: email, password: 'password' }
-            expect_body.to eq(error: 'Invalid Email or Password')
+            expect_body.to eq(errors: ["identity.session.invalid_params"])
             expect(response.status).to eq(401)
           end
 
@@ -146,7 +140,7 @@ describe API::V2::Identity::Sessions do
 
       it 'returns error on banned user' do
         post uri, params: { email: another_email, password: password }
-        expect_body.to eq(error: 'Your account is not active')
+        expect_body.to eq(errors: ["identity.session.not_active"])
         expect(response.status).to eq(401)
       end
 
@@ -155,7 +149,7 @@ describe API::V2::Identity::Sessions do
         expect(user_banned.state).to eq('pending')
 
         post uri, params: { email: another_email, password: password }
-        expect_body.to eq(error: 'Your account is not active')
+        expect_body.to eq(errors: ["identity.session.not_active"])
         expect(response.status).to eq(401)
       end
     end

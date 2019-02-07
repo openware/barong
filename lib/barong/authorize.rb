@@ -32,10 +32,10 @@ module Barong
 
     # cookies validations
     def cookie_owner
-      error!('Invalid Session', 401) unless session[:uid]
+      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
       user = User.find_by!(uid: session[:uid])
-      error!('User account is not active!', 401) unless user.active?
+      error!({ errors: ['authz.user_not_active'] }, 401) unless user.active?
 
       user # returns user(whose session is inside cookie)
     end
@@ -43,13 +43,13 @@ module Barong
     # api key validations
     def api_key_owner
       api_key = APIKeysVerifier.new(api_key_params)
-      error!('Invalid or unsupported signature', 401) unless api_key.verify_hmac_payload?
+      error!({ errors: ['authz.invalid_signature'] }, 401) unless api_key.verify_hmac_payload?
 
       current_api_key = APIKey.find_by_kid(api_key_params[:kid])
-      error!('Requested api key is not active', 401) unless current_api_key.active?
+      error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
       user = User.find_by_id(current_api_key.user_id)
-      error!('Invalid Session', 401) unless user.active?
+      error!({ errors: ['authz.invalid_session'] }, 401) unless user.active?
 
       user # returns user(api key creator)
     end
@@ -94,7 +94,7 @@ module Barong
     # api key headers nil, blank validation
     def validate_headers?
       @api_key_headers.each do |k|
-        error!('Request contains invalid or blank api key headers!', 422) if k.blank?
+        error!({ errors: ['authz.invalid_api_key_headers'] }, 422) if k.blank?
       end
     end
 
@@ -109,7 +109,7 @@ module Barong
 
     # custom error, calls AuthError class
     def error!(text, code)
-      raise AuthError.new(code), { 'error': text }.to_json
+      raise AuthError.new(code),  text.to_json
     end
 
     def headers
