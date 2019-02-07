@@ -69,8 +69,7 @@ module API::V2
             error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
             activity_record(user: current_user.id, action: 'password change',
                             result: 'failed', topic: 'password', data: error_note)
-            # FIXME: active record validation
-            error!(current_user.errors.full_messages, 422)
+            code_error!(current_user.errors.details, 422)
           end
 
           activity_record(user: current_user.id, action: 'password change', result: 'succeed', topic: 'password')

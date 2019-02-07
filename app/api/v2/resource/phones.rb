@@ -43,8 +43,8 @@ module API::V2
           error!('Phone number already exists', 400) if current_user.phones.exists?(number: phone_number)
 
           phone = current_user.phones.create(number: phone_number)
-          # FIXME: active record validation
-          error!(phone.errors, 422) if phone.errors.any?
+          code_error!(phone.errors.details, 422) if phone.errors.any?
+
           Phone.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
         end
@@ -68,8 +68,7 @@ module API::V2
 
           phone_number = Phone.international(declared_params[:phone_number])
           phone = current_user.phones.find_by!(number: phone_number)
-          # FIXME: active record validation
-          error!(phone.errors, 422) unless phone.regenerate_code
+          code_error!(phone.errors.details, 422) unless phone.regenerate_code
 
           Phone.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }

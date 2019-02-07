@@ -40,8 +40,7 @@ module API::V2
 
           verify_captcha!(user: user, response: params['captcha_response'])
 
-          # FIXME: active record validation
-          error!(user.errors.full_messages, 422) unless user.save
+          code_error!(user.errors.details, 422) unless user.save
 
           publish_confirmation(user)
           status 201
@@ -167,8 +166,7 @@ module API::V2
               error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
               activity_record(user: current_user.id, action: 'password reset',
                               result: 'failed', topic: 'password', data: error_note)
-              # FIXME: active record validation
-              error!(current_user.errors.full_messages, 422)
+              code_error!(current_user.errors.details, 422)
             end
             Rails.cache.write(payload[:jti], 'utilized')
 

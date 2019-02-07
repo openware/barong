@@ -7,6 +7,8 @@ module API::V2
   class Base < Grape::API
     cascade false
 
+    helpers API::V2::Utils
+
     format         :json
     content_type   :json, 'application/json'
     default_format :json

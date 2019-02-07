@@ -53,8 +53,7 @@ module API
             if label.save
               present label, with: Entities::Label
             else
-              # FIXME: active record validation
-              error!(label.errors.as_json(full_messages: true), 422)
+              code_error!(label.errors.details, 422)
             end
           end
 

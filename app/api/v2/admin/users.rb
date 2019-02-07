@@ -92,8 +92,7 @@ module API
 
               label = Label.new(declared_params.except(:uid))
 
-              # FIXME: active record validation
-              error!(label.errors.full_messages, 422) unless label.save
+              code_error!(label.errors.details, 422) unless label.save
 
               status 200
             end

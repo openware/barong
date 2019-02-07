@@ -48,8 +48,7 @@ module API::V2
               value: 'verified',
               scope: 'private'
             )
-          # FIXME: active record validation
-          error!(label.errors.as_json(full_messages: true), 422) unless label.save
+          code_error!(label.errors.details, 422) unless label.save
 
           status 201
         end

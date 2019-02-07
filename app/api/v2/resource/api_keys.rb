@@ -37,8 +37,7 @@ module API::V2
                             .merge(scope: params[:scope]&.split(','))
           api_key = current_user.api_keys.create(declared_params)
           if api_key.errors.any?
-            # FIXME: active record validation
-            error!(api_key.errors.full_messages.to_sentence, 422)
+            code_error!(api_key.errors.details, 422)
           end
 
           present api_key, with: Entities::APIKey
@@ -68,8 +67,7 @@ module API::V2
           api_key = current_user.api_keys.find_by!(kid: params[:kid])
 
           unless api_key.update(declared_params)
-            # FIXME: active record validation
-            error!(api_key.errors.full_messages.to_sentence, 422)
+            code_error!(api_key.errors.details, 422)
           end
 
           present api_key, with: Entities::APIKey, except: [:secret]
