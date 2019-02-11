@@ -18,7 +18,6 @@ describe API::V2::Management::Users, type: :request do
     describe 'Show user info' do
       let(:data) do
         {
-          uid: user.uid,
           scope: :read_users
         }
       end
@@ -32,10 +31,38 @@ describe API::V2::Management::Users, type: :request do
                   multisig_jwt_management_api_v1({ data: data }, *signers)
       end
 
-      it 'reads user info' do
+      it 'reads user info by uid' do
+        data[:uid] = user.uid
         do_request
         expect(response.status).to eq 201
         expect(json_body.keys).to eq expected_attributes
+      end
+
+      it 'reads user info by email' do
+        data[:email] = user.email
+        do_request
+        expect(response.status).to eq 201
+        expect(json_body.keys).to eq expected_attributes
+      end
+
+      let!(:phone) do
+        create(:phone, validated_at: 1.minutes.ago, user_id: user.id)
+      end
+
+      it 'reads user info by user phone' do
+        data[:phone_num] = phone.number
+        do_request
+        expect(response.status).to eq 201
+        expect(json_body.keys).to eq expected_attributes
+      end
+
+      it 'allows only one of phone, uid, email' do
+        data[:phone_num] = phone.number
+        data[:email] = user.email
+        data[:uid] = user.uid
+        do_request
+        expect(response.status).to eq 422
+        expect_body.to eq(error: 'uid, email, phone_num are mutually exclusive')
       end
 
       it 'denies access unless enough signatures are supplied' do
@@ -44,8 +71,20 @@ describe API::V2::Management::Users, type: :request do
         expect(response.status).to eq 401
       end
 
-      it 'denies when user is not found' do
+      it 'denies when uid is not found' do
         data[:uid] = 'invalid'
+        do_request
+        expect(response.status).to eq 404
+      end
+
+      it 'denies when email is not found' do
+        data[:email] = 'invalid'
+        do_request
+        expect(response.status).to eq 404
+      end
+
+      it 'denies when email is not found' do
+        data[:phone_num] = 'invalid'
         do_request
         expect(response.status).to eq 404
       end
@@ -56,7 +95,7 @@ describe API::V2::Management::Users, type: :request do
         it 'renders errors' do
           do_request
           expect(response.status).to eq 422
-          expect_body.to eq(error: 'uid is missing, uid is empty')
+          expect_body.to eq(error: 'uid, email, phone_num are missing, exactly one parameter must be provided')
         end
       end
     end
