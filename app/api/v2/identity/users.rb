@@ -27,6 +27,7 @@ module API::V2
           requires :email, type: String, desc: 'User Email', allow_blank: false
           requires :password, type: String, desc: 'User Password', allow_blank: false
           optional :refid, type: String, desc: 'Referral uid'
+          optional :lang, type: String, desc: 'Client env language'
           optional :captcha_response, types: [String, Hash],
                                       desc: 'Response from captcha widget'
         end
@@ -43,7 +44,7 @@ module API::V2
           # FIXME: active record validation
           error!(user.errors.full_messages, 422) unless user.save
 
-          publish_confirmation(user)
+          publish_confirmation(user, params[:lang])
           status 201
         end
 
@@ -63,6 +64,8 @@ module API::V2
             requires :email, type: String,
                         desc: 'Account email',
                         allow_blank: false
+            optional :lang, type: String,
+                        desc: 'Client env language'
           end
           post '/generate_code' do
             current_user = User.find_by_email(params[:email])
@@ -70,7 +73,7 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            publish_confirmation(current_user)
+            publish_confirmation(current_user, params[:lang_code])
             status 201
           end
 
@@ -115,8 +118,10 @@ module API::V2
           ]
           params do
             requires :email, type: String,
-                        desc: 'Account email',
-                        allow_blank: false
+                             desc: 'Account email',
+                             allow_blank: false
+            optional :lang, type: String,
+                            desc: 'Client env language'
           end
 
           post '/generate_code' do
@@ -128,7 +133,10 @@ module API::V2
 
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
-            EventAPI.notify('system.user.password.reset.token', user: current_user.as_json_for_event_api, token: token)
+            EventAPI.notify('system.user.password.reset.token',
+                            user: current_user.as_json_for_event_api,
+                            language: params[:lang] ||= 'en',
+                            token: token)
             status 201
           end
 
