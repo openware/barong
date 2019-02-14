@@ -144,6 +144,13 @@ describe API::V2::Identity::Sessions do
         expect(response.status).to eq(401)
       end
 
+      it 'records activity with simplified browser identifier' do
+        post uri, params: { email: another_email, password: password }
+        expect(response.status).to eq(401)
+        browser = Activity.find_by_user_id(user_banned.id).user_agent
+        expect(browser).to eq('Generic Browser 0.0 (Other)')
+      end
+
       it 'returns error on non-active user' do
         user_banned.update(state: 'not-active')
         post uri, params: { email: another_email, password: password }

@@ -66,7 +66,7 @@ module API::V2
         params = {
           user_id:    options[:user],
           user_ip:    request.ip,
-          user_agent: request.env['HTTP_USER_AGENT'],
+          user_agent: readable_agent,
           topic:      options[:topic],
           action:     options[:action],
           result:     options[:result],
@@ -87,6 +87,11 @@ module API::V2
           user: user.as_json_for_event_api,
           token: token
         )
+      end
+
+      def readable_agent
+        agent = Browser.new(request.env['HTTP_USER_AGENT'])
+        "#{agent.name} #{agent.full_version} (#{agent.platform.name})"
       end
     end
   end
