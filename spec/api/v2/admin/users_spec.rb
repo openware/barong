@@ -157,8 +157,9 @@ describe API::V2::Admin::Users do
     end
   end
 
-  describe 'Get /api/v2/admin/users/:uid' do
-    let(:do_request) { get '/api/v2/admin/users/' + experimental_user.uid, headers: auth_header }
+  describe 'Get /api/v2/admin/users/:uid(:email)' do
+    let(:do_request) { get '/api/v2/admin/users/info/?uid=' + experimental_user.uid, headers: auth_header }
+    let(:do_request_email) { get '/api/v2/admin/users/info/?email=' + experimental_user.email, headers: auth_header }
 
     context 'non-admin user' do
       it 'access denied to non-admin user' do
@@ -172,21 +173,38 @@ describe API::V2::Admin::Users do
       let(:test_user) { create(:user, role: "admin") }
 
       it 'renders error if uid is invalid' do
-        get '/api/v2/admin/users/asdasdsad', headers: auth_header
+        get '/api/v2/admin/users/info/?uid=ID1111111', headers: auth_header
         expect(response.status).to eq 404
         expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
-      it 'returns user info' do
-        do_request
-        result = JSON.parse(response.body)
-        expect(response.status).to eq 200
+      it 'renders error if email is invalid' do
+        get '/api/v2/admin/users/info/?email=email@email.email', headers: auth_header
+        expect(response.status).to eq 404
+        expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
+      end
+
+      def check_user(result)
         expect(result['uid']).to eq experimental_user.uid
         expect(result['role']).to eq experimental_user.role
         expect(result['email']).to eq experimental_user.email
         expect(result['level']).to eq experimental_user.level
         expect(result['otp']).to eq experimental_user.otp
         expect(result['state']).to eq experimental_user.state
+      end
+
+      it 'returns user info based on uid' do
+        do_request
+        expect(response.status).to eq 200
+        result = JSON.parse(response.body)
+        check_user(result)
+      end
+
+      it 'returns user info based on email' do
+        do_request_email
+        expect(response.status).to eq 200
+        result = JSON.parse(response.body)
+        check_user(result)
       end
     end
   end

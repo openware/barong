@@ -62,10 +62,16 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
-            requires :uid, type: String, desc: 'user uniq id', allow_blank: false
+            optional :uid, type: String, desc: 'user uniq id', allow_blank: false
+            optional :email, type: String, desc: 'user uniq id', allow_blank: false
+            exactly_one_of :email, :uid
           end
-          get '/:uid' do
-            target_user = User.find_by_uid(params[:uid])
+          get '/info' do
+            target_user = if params.key?(:uid)
+                            User.find_by_uid(params[:uid])
+                          else
+                            User.find_by_email(params[:email])
+                          end
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
             present target_user, with: API::V2::Entities::UserWithFullInfo
