@@ -53,6 +53,14 @@ admin.access.denied          Access Denied: User is not Admin
 
 ## General errors
 ```
-record.not_found        Record is not found
-jwt.decode_and_verify   Failed to decode and verify JWT
+record.not_found                Record is not found
+jwt.decode_and_verify           Failed to decode and verify JWT
+authz.invalid_session           Failed to decode cookies
+authz.user_not_active           User is not active
+authz.invalid_signature         API Key header 'signature' is invalid
+authz.apikey_not_active         API Key state is 'inactive'
+authz.disabled_2fa              API Key owner has disabled 2FA
+authz.invalid_api_key_headers   Blank or missing API Key headers
+authz.permission_denied         Path is blacklisted
+authz.unexistent_apikey         X-Auth-Apikey header is invalid
 ```

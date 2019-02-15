@@ -3,6 +3,8 @@
 class APIKey < ApplicationRecord
   self.table_name = :apikeys
 
+  ALGORITHMS = ['HS256'].freeze
+
   serialize :scope, Array
 
   JWT_OPTIONS = {
@@ -17,6 +19,7 @@ class APIKey < ApplicationRecord
   }.freeze
 
   validates :user_id, :kid, presence: true
+  validates :algorithm, inclusion: { in: ALGORITHMS }
 
   belongs_to :user
   scope :active, -> { where(state: 'active') }

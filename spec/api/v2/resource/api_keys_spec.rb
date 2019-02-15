@@ -104,6 +104,14 @@ describe 'Api::V2::APIKeys' do
           expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
         end
       end
+
+      context 'when algorithm is invalid' do
+        it 'renders an error' do
+          params[:algorithm] = 'kek'
+          do_request
+          expect_body.to eq(error: "Kid can't be blank and Algorithm is not included in the list")
+        end
+      end
     end
   end
 
@@ -117,7 +125,8 @@ describe 'Api::V2::APIKeys' do
       let(:params) do
         {
           state: 'inactive',
-          scope: 'sell'
+          scope: 'sell',
+          algorithm: 'HS256'
         }
       end
 

@@ -178,6 +178,21 @@ describe '/api/v2/auth functionality test' do
         expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
+
+      let(:disable_user_2fa) { test_user.update(otp: false) }
+
+      it 'renders error when api key is valid but user have disabled 2fa' do
+        disable_user_2fa
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.disabled_2fa\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
     end
 
     context 'testing api key with valid params' do
