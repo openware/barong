@@ -80,11 +80,12 @@ module API::V2
         Rails.cache.write(jti, 'utilized')
       end
 
-      def publish_confirmation(user)
+      def publish_confirmation(user, language)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
           'system.user.email.confirmation.token',
           user: user.as_json_for_event_api,
+          language: language ||= 'en',
           token: token
         )
       end
