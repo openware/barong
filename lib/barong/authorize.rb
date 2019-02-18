@@ -43,15 +43,18 @@ module Barong
     # api key validations
     def api_key_owner
       api_key = APIKeysVerifier.new(api_key_params)
+
       error!({ errors: ['authz.invalid_signature'] }, 401) unless api_key.verify_hmac_payload?
 
       current_api_key = APIKey.find_by_kid(api_key_params[:kid])
       error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
       user = User.find_by_id(current_api_key.user_id)
-      error!({ errors: ['authz.invalid_session'] }, 401) unless user.active?
 
+      validate_user!(user)
       user # returns user(api key creator)
+    rescue ActiveRecord::RecordNotFound
+      error!({ errors: ['authz.unexistent_apikey'] }, 401)
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter
@@ -89,6 +92,12 @@ module Barong
                       headers['X-Auth-Signature'].nil?
       @api_key_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nonce'], headers['X-Auth-Signature']]
       validate_headers?
+    end
+
+    def validate_user!(user)
+      error!({ errors: ['authz.invalid_session'] }, 401) unless user.active?
+
+      error!({ errors: ['authz.disabled_2fa'] }, 401) unless user.otp
     end
 
     # api key headers nil, blank validation

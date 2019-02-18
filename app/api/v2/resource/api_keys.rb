@@ -27,8 +27,8 @@ module API::V2
           requires :algorithm, type: String, allow_blank: false
           optional :kid, type: String, allow_blank: false
           optional :scope, type: String,
-                            allow_blank: false,
-                            desc: 'comma separated scopes'
+                           allow_blank: false,
+                           desc: 'comma separated scopes'
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         post do
@@ -55,10 +55,10 @@ module API::V2
         params do
           requires :kid, type: String, allow_blank: false
           optional :scope, type: String,
-                            allow_blank: false,
-                            desc: 'comma separated scopes'
+                           allow_blank: false,
+                           desc: 'comma separated scopes'
           optional :state, type: String, desc: 'State of API Key. "active" state means key is active and can be used for auth',
-                            allow_blank: false
+                           allow_blank: false
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
         end
         patch ':kid' do
