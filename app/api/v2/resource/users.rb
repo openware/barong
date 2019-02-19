@@ -22,13 +22,15 @@ module API::V2
           requires :topic, type: String,
                               allow_blank: false,
                               desc: 'Topic of user activity. Allowed: [all, password, session, otp]'
+          optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
+          optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of withdraws per page (defaults to 100, maximum is 1000).'
         end
         get '/activity/:topic' do
           data = current_user.activities
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
 
-          data
+          data.page(params[:page]).per(params[:limit])
         end
 
         desc 'Sets new account password',
