@@ -8,6 +8,12 @@ module API::V2
           options[:topic] = 'password'
           record_error!(options)
         end
+
+        def validate_topic!(topic)
+          unless %w[all session otp password].include?(topic)
+            error!({ errors: ['resource.user.wrong_topic'] }, 422)
+          end
+        end
       end
 
       resource :users do
@@ -26,8 +32,10 @@ module API::V2
           optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of withdraws per page (defaults to 100, maximum is 1000).'
         end
         get '/activity/:topic' do
+          validate_topic!(params[:topic])
           data = current_user.activities
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
+
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
 
           data.page(params[:page]).per(params[:limit])

@@ -16,6 +16,22 @@ describe 'Api::V1::Profiles' do
       expect(response.status).to eq(200)
     end
 
+    describe 'POST /api/v2/resource/users/activity' do
+      let(:do_request) do
+        put '/api/v2/resource/users/password', params: params, headers: auth_header
+      end
+
+      it 'allows only [password, otp, session, all] as a topic parameter' do
+        get '/api/v2/resource/users/activity/invalid', headers: auth_header
+        expect(response.status).to eq(422)
+        expect_body.to eq(errors: ['resource.user.wrong_topic'])
+
+        get '/api/v2/resource/users/activity/session', headers: auth_header
+        expect(response.status).to eq(422)
+        expect_body.to eq(errors: ['resource.user.no_activity'])
+      end
+    end
+
     describe 'POST /api/v2/resource/users/password' do
       let(:do_request) do
         put '/api/v2/resource/users/password', params: params, headers: auth_header
