@@ -25,11 +25,12 @@ module API::V2
 
         desc 'Returns user activity'
         params do
-          requires :topic, type: String,
-                              allow_blank: false,
-                              desc: 'Topic of user activity. Allowed: [all, password, session, otp]'
           optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
           optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of withdraws per page (defaults to 100, maximum is 1000).'
+          requires :topic,
+                   type: String,
+                   allow_blank: { value: false, message: 'resource.user.empty_topic' },
+                   desc: 'Topic of user activity. Allowed: [all, password, session, otp]'
         end
         get '/activity/:topic' do
           validate_topic!(params[:topic])
@@ -49,15 +50,18 @@ module API::V2
           { code: 422, message: 'Validation errors' }
         ]
         params do
-          requires :old_password, type: String,
-                                          desc: 'Previous account password',
-                                          allow_blank: false
-          requires :new_password, type: String,
-                              desc: 'User password',
-                              allow_blank: false
-          requires :confirm_password, type: String,
-                              desc: 'User password',
-                              allow_blank: false
+          requires :old_password,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Previous account password'
+          requires :new_password,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'User password'
+          requires :confirm_password,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'User password'
         end
         put '/password' do
           unless params[:new_password] == params[:confirm_password]
@@ -79,8 +83,7 @@ module API::V2
             error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
             activity_record(user: current_user.id, action: 'password change',
                             result: 'failed', topic: 'password', data: error_note)
-            # FIXME: active record validation
-            error!(current_user.errors.full_messages, 422)
+            code_error!(current_user.errors.details, 422)
           end
 
           activity_record(user: current_user.id, action: 'password change', result: 'succeed', topic: 'password')

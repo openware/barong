@@ -31,20 +31,21 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :phone_number, type: String,
-                                  desc: 'Phone number with country code',
-                                  allow_blank: false
+          requires :phone_number,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Phone number with country code'
         end
         post do
           declared_params = declared(params)
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          error!('Phone number already exists', 400) if current_user.phones.exists?(number: phone_number)
+          error!({errors: ['resource.phone.exists']}, 400) if current_user.phones.exists?(number: phone_number)
 
           phone = current_user.phones.create(number: phone_number)
-          # FIXME: active record validation
-          error!(phone.errors, 422) if phone.errors.any?
+          code_error!(phone.errors.details, 422) if phone.errors.any?
+
           Phone.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
         end
@@ -58,9 +59,10 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :phone_number, type: String,
-                                  desc: 'Phone number with country code',
-                                  allow_blank: false
+          requires :phone_number,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Phone number with country code'
         end
         post '/send_code' do
           declared_params = declared(params)
@@ -68,8 +70,7 @@ module API::V2
 
           phone_number = Phone.international(declared_params[:phone_number])
           phone = current_user.phones.find_by!(number: phone_number)
-          # FIXME: active record validation
-          error!(phone.errors, 422) unless phone.regenerate_code
+          code_error!(phone.errors.details, 422) unless phone.regenerate_code
 
           Phone.send_confirmation_sms(phone)
           { message: 'Code was sent successfully' }
@@ -83,12 +84,14 @@ module API::V2
                { code: 404, message: 'Record is not found' }
              ]
         params do
-          requires :phone_number, type: String,
-                                  desc: 'Phone number with country code',
-                                  allow_blank: false
-          requires :verification_code, type: String,
-                                       desc: 'Verification code from sms',
-                                       allow_blank: false
+          requires :phone_number,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Phone number with country code'
+          requires :verification_code,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Verification code from sms'
         end
         post '/verify' do
           declared_params = declared(params)

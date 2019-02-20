@@ -62,7 +62,7 @@ describe 'Labels API.' do
     it 'Respond with errors on create if existing key is used for current user' do
       post '/api/v2/resource/labels', params: post_params.merge(key: label.key), headers: auth_header
       expect(response.status).to eq(422)
-      expect(response.body).to be_include('Key has already been taken')
+      expect(response.body).to be_include('key.taken')
     end
 
     it 'Respond with error if attempted to update a private label' do

@@ -12,7 +12,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Email is invalid', 'Password is too weak'])
+        expect_body.to eq(errors: ["email.invalid", "password.password.password_strength"])
       end
     end
 
@@ -42,7 +42,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Password does not meet the minimum requirements', 'Password is too weak'])
+        expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
       end
     end
 
@@ -51,8 +51,8 @@ describe API::V2::Identity::Users do
 
       it 'renders an error' do
         do_request
-        expect_status_to_eq 400
-        expect_body.to eq(error: 'email is missing, email is empty, password is missing, password is empty')
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["identity.user.missing_email", "identity.user.empty_email", "identity.user.missing_password", "identity.user.empty_password"])
       end
     end
 
@@ -61,8 +61,8 @@ describe API::V2::Identity::Users do
 
       it 'renders an error' do
         do_request
-        expect_status_to_eq 400
-        expect_body.to eq(error: 'email is empty')
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["identity.user.empty_email"])
       end
     end
 
@@ -205,8 +205,8 @@ describe API::V2::Identity::Users do
     context 'when token is missing' do
       it 'returns an error' do
         do_request
-        expect_status_to_eq 400
-        expect_body.to eq(error: 'token is missing, token is empty')
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["identity.user.missing_token", "identity.user.empty_token"])
       end
     end
 
@@ -273,10 +273,10 @@ describe API::V2::Identity::Users do
     let(:confirm_password) { '' }
 
     context 'when params are blank' do
-      it 'renders 400 error' do
+      it 'renders 422 error' do
         do_request
-        expect_status_to_eq 400
-        expect_body.to eq(error: 'reset_password_token is empty, password is empty, confirm_password is empty')
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["identity.user.empty_reset_password_token", "identity.user.empty_password", "identity.user.empty_confirm_password"])
       end
     end
 
@@ -316,7 +316,7 @@ describe API::V2::Identity::Users do
       it 'returns weak password error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(error: ['Password does not meet the minimum requirements','Password is too weak'])
+        expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
       end
     end
 

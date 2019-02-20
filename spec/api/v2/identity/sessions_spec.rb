@@ -105,14 +105,14 @@ describe API::V2::Identity::Sessions do
       context 'Checks current credentials and returns error' do
         it 'when email, password is missing' do
           post uri
-          expect_body.to eq(error: 'email is missing, password is missing')
-          expect(response.status).to eq(400)
+          expect_body.to eq(errors: ["identity.session.missing_email", "identity.session.missing_password"])
+          expect(response.status).to eq(422)
         end
 
         it 'when password is missing' do
           post uri, params: { email: email }
-          expect_body.to eq(error: 'password is missing')
-          expect(response.status).to eq(400)
+          expect_body.to eq(errors: ["identity.session.missing_password"])
+          expect(response.status).to eq(422)
         end
 
         context 'when Password is wrong' do

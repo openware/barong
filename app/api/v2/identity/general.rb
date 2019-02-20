@@ -4,12 +4,12 @@ module API::V2
   module Identity
     class General < Grape::API
       desc 'Test connectivity'
-      get "/ping" do
+      get '/ping' do
         { ping: 'pong' }
       end
 
       desc 'Get server current unix timestamp.'
-      get "/time" do
+      get '/time' do
         ts = ::Time.now.to_i
         { time: ts }
       end

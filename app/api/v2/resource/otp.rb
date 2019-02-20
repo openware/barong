@@ -36,8 +36,10 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :code, type: String, desc: 'Code from Google Authenticator',
-                          allow_blank: false
+          requires :code,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Code from Google Authenticator'
         end
         post '/enable' do
           if current_user.otp
@@ -68,8 +70,10 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :code, type: String, desc: 'Code from Google Authenticator',
-                          allow_blank: false
+          requires :code,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Code from Google Authenticator'
         end
         post '/verify' do
           unless current_user.otp
