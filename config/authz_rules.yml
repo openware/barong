@@ -2,10 +2,24 @@
 # pass for whitelisted (public) routes
 # block for blacklisted routes
 #
-rules:
+general_rules:
   pass: 
     - api/v2/barong/identity
     - api/v2/peatio/public
   block:
     - api/v2/barong/management
     - api/v2/peatio/management
+api_key_rules:
+  account: 
+    - api/v2/barong/resource/documents
+    - api/v2/barong/resource/profiles
+    - api/v2/barong/resource/users
+    - api/v2/barong/resource/labels
+  trade:
+    - api/v2/peatio/account/balances
+    - api/v2/peatio/account/deposits
+    - api/v2/peatio/market/trades
+    - api/v2/peatio/market/orders
+  withdraw:
+    - api/v2/peatio/account/balances
+    - api/v2/peatio/account/withdraws

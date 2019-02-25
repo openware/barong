@@ -24,7 +24,7 @@ describe 'Api::V2::APIKeys' do
       {
         kid: api_key.kid,
         state: api_key.state,
-        scope: %w[trade]
+        scope: { 'trade': 'read' }
       }
     end
     let(:totp_code) { valid_otp_code }
@@ -67,14 +67,13 @@ describe 'Api::V2::APIKeys' do
     context 'when fields are valid' do
       let(:params) do
         {
-          scope: 'trade',
+          scope: '{"trade": "write"}',
           algorithm: 'HS256'
         }
       end
       let(:expected_fields) do
         {
           state: 'active',
-          scope: params[:scope].split(','),
           algorithm: 'HS256'
         }
       end
@@ -125,7 +124,7 @@ describe 'Api::V2::APIKeys' do
       let(:params) do
         {
           state: 'inactive',
-          scope: 'sell',
+          scope: '{"withdraw": "read"}',
           algorithm: 'HS256'
         }
       end
@@ -138,7 +137,7 @@ describe 'Api::V2::APIKeys' do
 
       it 'Updates a scope' do
         expect { do_request }.to change { api_key.reload.scope }
-          .from(['trade']).to(['sell'])
+          .from({"trade"=>"read"}).to({'withdraw'=> 'read'})
         expect(response.status).to eq(200)
       end
 

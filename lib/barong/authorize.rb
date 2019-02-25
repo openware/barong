@@ -19,7 +19,7 @@ module Barong
       @request = request
       session[:init] = true
       @path = path
-      @rules = lists['rules']
+      @rules = lists['general_rules']
     end
 
     # main: switch between cookie and api key logic, return bearer token
@@ -52,6 +52,9 @@ module Barong
       user = User.find_by_id(current_api_key.user_id)
 
       validate_user!(user)
+
+      validate_access!(current_api_key.scope)
+
       user # returns user(api key creator)
     rescue ActiveRecord::RecordNotFound
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
@@ -90,6 +93,7 @@ module Barong
       return false if headers['X-Auth-Apikey'].nil? &&
                       headers['X-Auth-Nonce'].nil? &&
                       headers['X-Auth-Signature'].nil?
+
       @api_key_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nonce'], headers['X-Auth-Signature']]
       validate_headers?
     end
@@ -98,6 +102,16 @@ module Barong
       error!({ errors: ['authz.invalid_session'] }, 401) unless user.active?
 
       error!({ errors: ['authz.disabled_2fa'] }, 401) unless user.otp
+    end
+
+    # validates if api key has access for current request path
+    def validate_access!(scope)
+      scope.each do |k, v|
+        return true if @path.starts_with?(*lists['api_key_rules'][k]) &&
+                       (@request.get? || v == 'write')
+      end
+
+      error!({ errors: ['authz.api_key_not_enough_rights'] }, 401)
     end
 
     # api key headers nil, blank validation

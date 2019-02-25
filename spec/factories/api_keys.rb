@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :api_key, class: 'APIKey' do
     user
     kid { Faker::Crypto.sha256 }
-    scope { %w[trade] }
+    scope { { 'trade': 'read' } }
     algorithm { 'HS256' }
   end
 end

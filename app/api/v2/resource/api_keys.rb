@@ -30,10 +30,10 @@ module API::V2
           optional :kid,
                    type: String,
                    allow_blank: false
-          optional :scope,
-                   type: String,
+          optional :json,
+                   type: JSON,
                    allow_blank: false,
-                   desc: 'comma separated scopes'
+                   desc: 'json string with key: value pair'
           requires :totp_code,
                    type: String,
                    message: 'resource.api_key.missing_totp',
@@ -43,7 +43,6 @@ module API::V2
         post do
           declared_params = declared(unified_params, include_missing: false)
                             .except(:totp_code)
-                            .merge(scope: params[:scope]&.split(','))
           api_key = current_user.api_keys.create(declared_params)
           if api_key.errors.any?
             code_error!(api_key.errors.details, 422)
@@ -65,7 +64,7 @@ module API::V2
                    type: String,
                    allow_blank: false
           optional :scope,
-                   type: String,
+                   type: JSON,
                    allow_blank: false,
                    desc: 'comma separated scopes'
           optional :state,
@@ -80,7 +79,6 @@ module API::V2
         patch ':kid' do
           declared_params = declared(params, include_missing: false)
                             .except(:totp_code)
-                            .merge(scope: params[:scope]&.split(','))
           api_key = current_user.api_keys.find_by!(kid: params[:kid])
 
           unless api_key.update(declared_params)

@@ -14,8 +14,11 @@ describe '/api/v2/auth functionality test' do
   end
 
   let(:do_create_session_request) { post uri, params: params }
-  let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
+  let(:auth_request) { '/api/v2/auth/api/v2/barong/resource/users/random-request' }
   let(:protected_request) { '/api/v2/resource/users/me' }
+  let(:account_request) { '/api/v2/auth/api/v2/barong/resource/users' }
+  let(:trade_request) { '/api/v2/auth/api/v2/peatio/market/trades' }
+  let(:withdraw_request) { '/api/v2/auth/api/v2/peatio/account/withdraws' }
 
   describe 'testing workability with session' do
     context 'with valid session' do
@@ -101,7 +104,7 @@ describe '/api/v2/auth functionality test' do
     include_context 'bearer authentication'
     let!(:test_user) { create(:user, otp: otp_enabled) }
     let(:otp_enabled) { true }
-    let!(:api_key) { create :api_key, user: test_user }
+    let!(:api_key) { create :api_key, user: test_user, scope: { "account": "read" } }
     let(:otp_code) { '1357' }
     let(:nonce) { Time.now.to_i }
     let(:kid) { api_key.kid }
@@ -192,6 +195,110 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"errors\":[\"authz.disabled_2fa\"]}")
         expect(response.headers['Authorization']).to be_nil
+      end
+    end
+
+    context 'testing api key scopes' do
+      let!(:change_scope_to_read_withdraw) { APIKey.last.update(scope: { 'withdraw': 'read'}) }
+      let!(:change_scope_to_read_trade) { APIKey.last.update(scope: { 'trade': 'read'}) }
+
+      it 'renders error for non-GET requests with right SCOPE module and READ access for account' do
+        # scope: { "account": "read" }
+        post account_request, headers: {
+              'X-Auth-Apikey' => kid,
+              'X-Auth-Nonce' => nonce,
+              'X-Auth-Signature' => signature
+            }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.api_key_not_enough_rights\"]}")
+      end
+
+      it 'renders error for non-GET requests with right SCOPE module and READ access for withdraw' do
+        change_scope_to_read_withdraw
+        # scope: { "withdraw": "read" }
+        put withdraw_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.api_key_not_enough_rights\"]}")
+      end
+
+      it 'renders error for non-GET requests with right SCOPE module and READ access for trade' do
+        change_scope_to_read_trade
+        # scope: { "trade": "read" }
+        post trade_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.api_key_not_enough_rights\"]}")
+      end
+
+      it 'renders error if path is not in the access list for current scope' do
+        # scope: { "trade": "read" }
+        # scope is trade, but trying to get the api included in withdraw-scope list
+        get withdraw_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.api_key_not_enough_rights\"]}")
+      end
+
+      it 'renders if path is not in the access list for current scope' do
+        # scope: { "trade": "read" }
+        # scope is trade, but trying to get the api included in withdraw-scope list
+        get withdraw_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.api_key_not_enough_rights\"]}")
+      end
+
+      it 'works if scope and path fits each other, access type - READ, and request - GET' do
+        # scope: { "trade": "read" }
+        get trade_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(200)
+        expect(response.body).to be_empty
+        expect(response.headers['Authorization']).to include "Bearer"
+        expect(response.headers['Authorization']).not_to be_nil
+      end
+
+      it 'works if scope and path fits each other, access type - WRITE, and request - POST' do
+        # scope: { "trade": "read" }
+        get trade_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(200)
+        expect(response.body).to be_empty
+        expect(response.headers['Authorization']).to include "Bearer"
+        expect(response.headers['Authorization']).not_to be_nil
+      end
+
+      it 'works if scope and path fits each other, access type - WRITE, and request - POST' do
+        APIKey.last.update(scope: { 'trade': 'write'})
+        # scope: { "trade": "write" }
+        post trade_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(200)
+        expect(response.body).to be_empty
+        expect(response.headers['Authorization']).to include "Bearer"
+        expect(response.headers['Authorization']).not_to be_nil
       end
     end
 

@@ -5,7 +5,7 @@ class APIKey < ApplicationRecord
 
   ALGORITHMS = ['HS256'].freeze
 
-  serialize :scope, Array
+  serialize :scope, JSON
 
   JWT_OPTIONS = {
     verify_expiration: true,

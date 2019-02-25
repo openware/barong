@@ -36,7 +36,6 @@ describe API::V2::Management::Labels, type: :request do
   
       it 'get list of user labels' do
         do_request
-        #binding.pry
         expect(response.status).to eq 201
         expect(json_body.size).to eq 2
       end
