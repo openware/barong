@@ -46,11 +46,20 @@ module ManagementAPI
         end
 
         params do
-          requires :uid, type: String, allow_blank: false, desc: 'Account uid'
+          optional :uid, type: String, allow_blank: false, desc: 'User uid'
+          optional :email, type: String, allow_blank: false, desc: 'User email'
+          optional :phone_num, type: String, allow_blank: false, desc: 'User phone number'
+          exactly_one_of :uid, :email, :phone_num
         end
 
         post '/get' do
-          account = Account.kept.find_by!(declared(params))
+          declared_params = declared(params, include_missing: false)
+          if declared_params.key?(:phone_num)
+            account = Phone.find_by_number!(declared_params[:phone_num]).account
+            present account, with: Entities::AccountWithProfile
+            return status 201
+          end
+          account = Account.kept.find_by!(declared_params)
           present account, with: Entities::AccountWithProfile
         end
 

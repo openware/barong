@@ -53,7 +53,7 @@ describe ManagementAPI::V1::Accounts, type: :request do
       it 'renders errors' do
         do_request
         expect(response.status).to eq 422
-        expect_body.to eq(error: 'UID is missing, UID is empty')
+        expect_body.to eq(error: 'UID, Email, phone_num are missing, exactly one parameter must be provided')
       end
     end
   end
