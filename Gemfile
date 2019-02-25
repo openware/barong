@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.0'
 
+gem 'api-pagination', '~> 4.8.2'
+
 gem 'env-tweaks', '~> 1.0.0'
 
 gem 'fog-google',  '~> 0.1.0'

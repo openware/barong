@@ -31,14 +31,21 @@ describe API::V2::Admin::Users do
         fourth_user
       }
 
+      def validate_fields(user)
+        user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
+      end
       it 'returns list of users' do
         do_request
         users = JSON.parse(response.body)
         expect(User.count).to eq users.count
-        expect(User.first.attributes.except('password_digest')).to eq users.first
-        expect(User.second.attributes.except('password_digest')).to eq users.second
-        expect(User.third.attributes.except('password_digest')).to eq users.third
-        expect(User.last.attributes.except('password_digest')).to eq users.last
+        expect(validate_fields(User.first)).to eq users.first
+        expect(validate_fields(User.second)).to eq users.second
+        expect(validate_fields(User.third)).to eq users.third
+        expect(validate_fields(User.last)).to eq users.last
+
+        expect(response.headers.fetch('Total')).to eq '4'
+        expect(response.headers.fetch('Page')).to eq '1'
+        expect(response.headers.fetch('Per-Page')).to eq '100'
       end
 
       context 'pagination test' do
@@ -47,8 +54,12 @@ describe API::V2::Admin::Users do
             limit: 2
           }
           users = JSON.parse(response.body)
-          expect(User.first.attributes.except('password_digest')).to eq users.first
-          expect(User.second.attributes.except('password_digest')).to eq users.second
+          expect(validate_fields(User.first)).to eq users.first
+          expect(validate_fields(User.second)).to eq users.second
+
+          expect(response.headers.fetch('Total')).to eq '4'
+          expect(response.headers.fetch('Page')).to eq '1'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
         end
 
         it 'returns 2nd page, limit 2 users per page' do
@@ -57,8 +68,12 @@ describe API::V2::Admin::Users do
             page: 2
           }
           users = JSON.parse(response.body)
-          expect(User.third.attributes.except('password_digest')).to eq users.first
-          expect(User.last.attributes.except('password_digest')).to eq users.second
+          expect(validate_fields(User.third)).to eq users.first
+          expect(validate_fields(User.last)).to eq users.second
+
+          expect(response.headers.fetch('Total')).to eq '4'
+          expect(response.headers.fetch('Page')).to eq '2'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
         end
       end
     end

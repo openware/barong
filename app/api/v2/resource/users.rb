@@ -38,7 +38,7 @@ module API::V2
 
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
 
-          data.page(params[:page]).per(params[:limit])
+          present paginate(data)
         end
 
         desc 'Sets new account password',

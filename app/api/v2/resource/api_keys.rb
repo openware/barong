@@ -101,9 +101,11 @@ module API::V2
         ]
         params do
           requires :totp_code, type: String, desc: 'Code from Google Authenticator', allow_blank: false
+          optional :page,      type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
+          optional :limit,     type: Integer, default: 100, range: 1..1000, desc: 'Number of api keys per page (defaults to 100, maximum is 1000).'
         end
         get do
-          present current_user.api_keys, with: Entities::APIKey, except: [:secret]
+          current_user.api_keys.tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }
         end
       end
     end
