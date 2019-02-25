@@ -13,12 +13,10 @@ module API
           ]
           params do
             optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of withdraws per page (defaults to 100, maximum is 1000).'
+            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
           end
           get do
-            User.all.page(params[:page]).per(params[:limit]).collect do |user|
-              user.attributes.except('password_digest')
-            end
+            User.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
           end
 
           desc 'Update user',
