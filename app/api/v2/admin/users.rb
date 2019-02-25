@@ -146,7 +146,7 @@ module API
 
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
-              label.delete
+              label.destroy
               status 200
             end
           end
