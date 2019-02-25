@@ -19,10 +19,17 @@ describe API::V2::Admin::Users do
     end
 
     context 'admin user' do
-      let(:test_user) { create(:user, role: 'admin') }
-      let(:second_user) { create(:user) }
-      let(:third_user) { create(:user) }
-      let(:fourth_user) { create(:user) }
+      let(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
+      let(:second_user) { create(:user, email: 'testb@gmail.com') }
+      let(:third_user) { create(:user, email: 'testd@gmail.com') }
+      let(:fourth_user) { create(:user, email: 'testc@gmail.com') }
+
+      let(:params) do {
+        field: 'email',
+        value: 'testa@gmail.com'
+      }
+      end
+      let(:do_search_request) { get '/api/v2/admin/users/search', headers: auth_header, params: params }
 
       before(:example) {
         test_user
@@ -46,6 +53,21 @@ describe API::V2::Admin::Users do
         expect(response.headers.fetch('Total')).to eq '4'
         expect(response.headers.fetch('Page')).to eq '1'
         expect(response.headers.fetch('Per-Page')).to eq '100'
+      end
+
+      it 'returns list of users (ASC ordered) in search' do
+        do_search_request
+        users = JSON.parse(response.body)
+
+        expect(users.count).to eq 1
+        expect(users[0]['email']).to eq 'testa@gmail.com'
+      end
+
+      it 'returns all users (ASC ordered) in search req if field is invalid' do
+        params[:field] = 'bazz'
+        do_search_request
+        expect_body.to eq(errors: ['admin.user.non_user_field'])
+        expect_status.to eq(422)
       end
 
       context 'pagination test' do

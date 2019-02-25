@@ -49,6 +49,8 @@ admin.user.state_no_change   Can't change state, as its already {active}
 admin.user.doesnt_exist      User with such UID doesnt exist
 admin.label.doesnt_exist     Label with such key doesnt exist or not assigned to chosen user
 admin.access.denied          Access Denied: User is not Admin
+admin.user.non_user_field    Search field is not a user attribute
+admin.user.no_matches        Search result is empty array
 ```
 
 ## General errors
