@@ -2,7 +2,7 @@ Barong
 ======
 RESTful API for barong OAuth server
 
-**Version:** 2.0.30-alpha
+**Version:** 2.0.51
 
 ### Security
 ---
@@ -152,7 +152,34 @@ RESTful API for barong OAuth server
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of withdraws per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+
+**Responses**
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of users as paginated collection |
+| 401 | Invalid bearer token |
+
+**Security**
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/search
+---
+##### ***GET***
+**Description:** Returns array of users as paginated collection
+
+**Parameters**
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| field | query | User model field. | Yes | string |
+| value | query | First part of a value (search target) | Yes | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
 
 **Responses**
 
@@ -199,6 +226,7 @@ RESTful API for barong OAuth server
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
+| lang | formData | Client env language | No | string |
 
 **Responses**
 
@@ -238,6 +266,7 @@ RESTful API for barong OAuth server
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
+| lang | formData | Client env language | No | string |
 
 **Responses**
 
@@ -270,6 +299,7 @@ RESTful API for barong OAuth server
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
 | refid | formData | Referral uid | No | string |
+| lang | formData | Client env language | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 
 **Responses**
@@ -344,6 +374,8 @@ RESTful API for barong OAuth server
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of api keys per page (defaults to 100, maximum is 1000). | No | integer |
 | totp_code | query | Code from Google Authenticator | Yes | string |
 
 **Responses**
@@ -841,6 +873,8 @@ RESTful API for barong OAuth server
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of activity per page (defaults to 100, maximum is 1000). | No | integer |
 | topic | path | Topic of user activity. Allowed: [all, password, session, otp] | Yes | string |
 
 **Responses**

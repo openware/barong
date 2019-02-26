@@ -44,7 +44,7 @@ module API
             requires :field,    type: String, desc: 'User model field.'
             requires :value,    type: String, desc: 'First part of a value (search target)'
             optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of withdraws per page (defaults to 100, maximum is 1000).'
+            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
           end
           get '/search' do
             users = search(params[:field], params[:value])
