@@ -51,7 +51,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
+        expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
       end
     end
   end
@@ -101,7 +101,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
+          expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
         end
       end
 
@@ -109,7 +109,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           params[:algorithm] = 'kek'
           do_request
-          expect_body.to eq(error: "Kid can't be blank and Algorithm is not included in the list")
+          expect_body.to eq(errors: ["kid.blank", "algorithm.inclusion"])
         end
       end
     end
@@ -158,7 +158,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
+          expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
         end
       end
     end
@@ -192,7 +192,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_otp"])
+        expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
       end
     end
   end

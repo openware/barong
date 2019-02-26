@@ -40,7 +40,7 @@ module API::V2
           return error!({ errors: ['resource.profile.exist'] }, 409) unless current_user.profile.nil?
 
           profile = current_user.create_profile(declared(params, include_missing: false))
-          error!(profile.errors.full_messages.to_sentence, 422) if profile.errors.any?
+          code_error!(profile.errors.details, 422) if profile.errors.any?
 
           label =
             current_user.labels.new(
@@ -48,8 +48,7 @@ module API::V2
               value: 'verified',
               scope: 'private'
             )
-          # FIXME: active record validation
-          error!(label.errors.as_json(full_messages: true), 422) unless label.save
+          code_error!(label.errors.details, 422) unless label.save
 
           status 201
         end

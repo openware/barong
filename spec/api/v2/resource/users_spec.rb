@@ -6,7 +6,7 @@ describe 'Api::V1::Profiles' do
   describe 'GET /api/v2/resource/users/me' do
     it 'should reply permissions denied' do
       get '/api/v2/resource/users/me'
-      expect(json_body[:error][:code]).to eq(2001)
+      expect_body.to eq(errors: ["jwt.decode_and_verify"])
       expect(response.status).to eq(401)
     end
 
@@ -50,8 +50,8 @@ describe 'Api::V1::Profiles' do
       context 'when params are blank' do
         it 'renders 400 error' do
           do_request
-          expect(response.status).to eq(400)
-          expect_body.to eq(error: 'old_password is empty, new_password is empty, confirm_password is empty')
+          expect(response.status).to eq(422)
+          expect_body.to eq(errors: ["resource.user.empty_old_password", "resource.user.empty_new_password", "resource.user.empty_confirm_password"])
         end
       end
 
@@ -87,7 +87,7 @@ describe 'Api::V1::Profiles' do
         it 'returns weak password error' do
           do_request
           expect_status_to_eq 422
-          expect_body.to eq(error: ['Password does not meet the minimum requirements','Password is too weak'])
+          expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
         end
       end
 

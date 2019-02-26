@@ -42,16 +42,16 @@ describe 'API::V2::Resource::Profiles' do
 
     it 'throws an error, cause some of the required params are absent' do
       post url, params: request_params.except(:dob), headers: auth_header
-      expect_body.to eq(error: 'dob is missing')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.profile.missing_dob"])
+      expect(response.status).to eq(422)
 
       post url, params: request_params.except(:first_name), headers: auth_header
-      expect_body.to eq(error: 'first_name is missing')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.profile.missing_first_name"])
+      expect(response.status).to eq(422)
 
       post url, headers: auth_header
-      expect_body.to eq(error: 'first_name is missing, last_name is missing, dob is missing, address is missing, postcode is missing, city is missing, country is missing')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.profile.missing_first_name", "resource.profile.missing_last_name", "resource.profile.missing_dob", "resource.profile.missing_address", "resource.profile.missing_postcode", "resource.profile.missing_city", "resource.profile.missing_country"])
+      expect(response.status).to eq(422)
     end
 
     it 'creates new profile with only required fields' do
@@ -80,7 +80,7 @@ describe 'API::V2::Resource::Profiles' do
     it 'renders an error when field is invalid' do
       post url, params: request_params.merge(first_name: ''), headers: auth_header
       expect_status.to eq(422)
-      expect_body.to eq(error: "First name can't be blank")
+      expect_body.to eq(errors: ["first_name.blank"])
     end
   end
 

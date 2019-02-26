@@ -118,32 +118,32 @@ describe API::V2::Admin::Users do
         put '/api/v2/admin/users', headers: auth_header, params: {
           state: 'active'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"uid is missing, uid is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_uid\",\"admin.user.empty_uid\"]}"
       end
 
       it 'renders error if state is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
           uid: experimental_user.uid
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"state, otp, role are missing, exactly one parameter must be provided\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
       end
 
       it 'renders error if otp is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
           uid: experimental_user.uid
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"state, otp, role are missing, exactly one parameter must be provided\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
       end
 
       it 'renders error if role is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
           uid: experimental_user.uid
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"state, otp, role are missing, exactly one parameter must be provided\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
       end
 
       it 'renders error if uid is incorrect' do
@@ -247,8 +247,8 @@ describe API::V2::Admin::Users do
           key: 'email',
           value: 'vedified'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"uid is missing, uid is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_uid\",\"admin.user.empty_uid\"]}"
       end
 
       it 'renders error when key is missing' do
@@ -256,8 +256,8 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid,
           value: 'vedified'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"key is missing, key is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_key\",\"admin.user.empty_key\"]}"
       end
 
       it 'renders error when value is missing' do
@@ -265,8 +265,8 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid,
           key: 'email'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"value is missing, value is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_value\",\"admin.user.empty_value\"]}"
       end
 
       it 'renders error when uid is invalid' do
@@ -336,8 +336,8 @@ describe API::V2::Admin::Users do
           key: 'email',
           scope: 'public'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"uid is missing, uid is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_uid\",\"admin.user.empty_uid\"]}"
       end
 
       it 'renders error when key is missing' do
@@ -345,8 +345,8 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid,
           scope: 'public'
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"key is missing, key is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_key\",\"admin.user.empty_key\"]}"
       end
 
       it 'renders error when scope is missing' do
@@ -354,8 +354,8 @@ describe API::V2::Admin::Users do
           key: 'email',
           uid: experimental_user.uid
         }
-        expect(response.status).to eq 400
-        expect(response.body).to eq "{\"error\":\"scope is missing, scope is empty\"}"
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_scope\",\"admin.user.empty_scope\"]}"
       end
 
       it 'renders error when uid is invalid' do

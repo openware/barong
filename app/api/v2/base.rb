@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
 require_dependency 'v2/validations'
+require_dependency 'v2/exception_handlers'
 
 module API::V2
   # Base api configuration for V2 module
   class Base < Grape::API
     cascade false
 
+    helpers API::V2::Utils
+
     format         :json
     content_type   :json, 'application/json'
     default_format :json
+
+    include ExceptionHandlers
 
     mount Admin::Base      => '/admin'
     mount Identity::Base   => '/identity'

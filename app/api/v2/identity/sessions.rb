@@ -17,10 +17,12 @@ module API::V2
         params do
           requires :email
           requires :password
-          optional :captcha_response, types: [String, Hash],
-                                      desc: 'Response from captcha widget'
-          optional :otp_code, type: String,
-                              desc: 'Code from Google Authenticator'
+          optional :captcha_response,
+                   types: { value: [String, Hash], message: 'identity.session.invalid_captcha_format' },
+                   desc: 'Response from captcha widget'
+          optional :otp_code,
+                   type: String,
+                   desc: 'Code from Google Authenticator'
         end
         post do
           declared_params = declared(params, include_missing: false)

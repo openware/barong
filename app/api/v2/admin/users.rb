@@ -20,8 +20,16 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
-            optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+            optional :page,
+                     type: { value: Integer, message: 'admin.user.non_integer_page' },
+                     values: { value: -> (p){ p.try(:positive?) }, message: 'admin.user.non_positive_page'},
+                     default: 1,
+                     desc: 'Page number (defaults to 1).'
+            optional :limit,
+                     type: { value: Integer, message: 'admin.user.non_integer_limit' },
+                     values: { value: 1..100, message: 'admin.user.invalid_limit' },
+                     default: 100,
+                     desc: 'Number of users per page (defaults to 100, maximum is 100).'
           end
           get do
             User.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
@@ -53,11 +61,23 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
-            requires :uid, type: String, desc: 'user uniq id', allow_blank: false
-            optional :state, type: String, desc: 'user state', allow_blank: false
-            optional :otp, type: Boolean, desc: 'user 2fa status', allow_blank: false
-            optional :role, type: String, desc: 'user role', allow_blank: false
-            exactly_one_of :state, :otp, :role
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uniq id'
+            optional :state,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user state'
+            optional :otp,
+                     type: Boolean,
+                     allow_blank: false,
+                     desc: 'user 2fa status'
+            optional :role,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user role'
+            exactly_one_of :state, :otp, :role, message: 'admin.user.one_of_role_state_otp'
           end
           put do
             target_user = User.find_by_uid(params[:uid])
@@ -88,7 +108,10 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
-            requires :uid, type: String, desc: 'user uniq id', allow_blank: false
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uniq id'
           end
           get '/:uid' do
             target_user = User.find_by_uid(params[:uid])
@@ -104,9 +127,18 @@ module API
               { code: 401, message: 'Invalid bearer token' }
             ]
             params do
-              requires :uid, type: String, desc: 'user uniq id', allow_blank: false
-              requires :key, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false
-              requires :value, type: String, desc: 'label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.', allow_blank: false
+              requires :uid,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'user uniq id'
+              requires :key,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
+              requires :value,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.'
               optional :scope, type: String, desc: "Label scope: 'public' or 'private'. Default is public", allow_blank: false
             end
             post do
@@ -118,8 +150,7 @@ module API
 
               label = Label.new(declared_params.except(:uid))
 
-              # FIXME: active record validation
-              error!(label.errors.full_messages, 422) unless label.save
+              code_error!(label.errors.details, 422) unless label.save
 
               status 200
             end
@@ -133,10 +164,22 @@ module API
                    { code: 422, message: 'Validation errors' }
                  ]
             params do
-              requires :uid, type: String, desc: 'user uniq id', allow_blank: false
-              requires :key, type: String, allow_blank: false, desc: 'Label key.'
-              requires :scope, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false
-              requires :value, type: String, allow_blank: false, desc: 'Label value.'
+              requires :uid,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'user uniq id'
+              requires :key,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'Label key.'
+              requires :scope,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
+              requires :value,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'Label value.'
             end
             put do
               declared_params = declared(params, include_missing: false)
@@ -158,9 +201,18 @@ module API
                    { code: 401, message: 'Invalid bearer token' }
                  ]
             params do
-              requires :uid, type: String, desc: 'user uniq id', allow_blank: false
-              requires :key, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false
-              requires :scope, type: String, desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.', allow_blank: false
+              requires :uid,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'user uniq id'
+              requires :key,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
+              requires :scope,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
             end
             delete do
               declared_params = declared(params, include_missing: false)

@@ -125,25 +125,25 @@ describe 'Documents API test' do
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
       post '/api/v2/resource/documents', params: params.except(:doc_type), headers: auth_header
-      expect_body.to eq(error: 'doc_type is missing, doc_type is empty')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ['resource.document.missing_doc_type', 'resource.document.empty_doc_type'])
+      expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:doc_expire), headers: auth_header
-      expect_body.to eq(error: 'doc_expire is missing, doc_expire is empty')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.document.missing_doc_expire", "resource.document.empty_doc_expire"])
+      expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:doc_number), headers: auth_header
-      expect_body.to eq(error: 'doc_number is missing, doc_number is empty')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.document.missing_doc_number", "resource.document.empty_doc_number"])
+      expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(error: 'upload is missing')
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.document.missing_upload"])
+      expect(response.status).to eq(422)
 
       params0 = params
       params0[:upload] = [Faker::Avatar.image]
       post '/api/v2/resource/documents', params: params0, headers: auth_header
-      expect_body.to eq(error: 'Upload can\'t be blank')
+      expect_body.to eq(errors: ["upload.blank"])
       expect(response.status).to eq(400)
     end
 

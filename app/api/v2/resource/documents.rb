@@ -24,10 +24,20 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :doc_expire, type: Date, allow_blank: false, desc: 'Document expiration date'
-          requires :doc_type, type: String, allow_blank: false, desc: 'Document type'
-          requires :doc_number, type: String, allow_blank: false, desc: 'Document number'
-          requires :upload, desc: 'Array of Rack::Multipart::UploadedFile'
+          requires :doc_expire,
+                   type: Date,
+                   allow_blank: false,
+                   desc: 'Document expiration date'
+          requires :doc_type,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Document type'
+          requires :doc_number,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Document number'
+          requires :upload,
+                   desc: 'Array of Rack::Multipart::UploadedFile'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
@@ -43,7 +53,7 @@ module API::V2
           params[:upload].each do |file|
             doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
 
-            error!(doc.errors.full_messages.to_sentence, 400) unless doc.save
+            code_error!(doc.errors.details, 400) unless doc.save
           end
           status 201
 
