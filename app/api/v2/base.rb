@@ -40,7 +40,8 @@ module API::V2
       Entities::User,
       Entities::UserWithProfile,
       Entities::UserWithFullInfo,
-      Entities::Phone
+      Entities::Phone,
+      Entities::Activity
     ],
     api_version: 'v2',
     doc_version: '2.0.30-alpha', # Used to be BARONG::VERSION
