@@ -17,6 +17,7 @@ module API
         expose :labels, using: Entities::Label
         expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document
+        expose :activities, using: Entities::Activity
 
         with_options(format_with: :iso_timestamp) do
           expose :created_at
