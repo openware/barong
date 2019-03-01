@@ -42,7 +42,7 @@ module API
           ]
           params do
             requires :field,    type: String, desc: 'User model field.'
-            requires :value,    type: String, desc: 'First part of a value (search target)'
+            requires :value,    type: String, desc: 'Value to match (strictly)'
             optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
             optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
           end
@@ -50,9 +50,7 @@ module API
             users = search(params[:field], params[:value])
             error!({ errors: ['admin.user.no_matches'] }) if users.empty?
 
-            users.page(params[:page]).per(params[:limit]).collect do |user|
-              user.attributes.except('password_digest')
-            end
+            users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
           end
 
           desc 'Update user',
