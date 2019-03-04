@@ -34,7 +34,7 @@ module API::V2
         end
         get '/activity/:topic' do
           validate_topic!(params[:topic])
-          data = current_user.activities.sort_by {|t| -t.created_at.to_i }
+          data = current_user.activities.order('created_at DESC')
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
 
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
