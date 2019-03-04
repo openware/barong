@@ -47,6 +47,7 @@ steps:
     - git remote add authenticated-origin https://kite-bot:$GITHUB_API_KEY@github.com/${DRONE_REPO}
     - git fetch authenticated-origin
     - bump patch --commit-message 'Bump [ci skip]'
+    - V=$(cat VERSION) bin/gendocs
     - git tag $(cat VERSION)
     - git push authenticated-origin master
     - git push --tags authenticated-origin

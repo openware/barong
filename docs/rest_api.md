@@ -1,11 +1,9 @@
-Barong
-======
+# Barong
 RESTful API for barong OAuth server
 
-**Version:** 2.0.51
+## Version: 2.0.30-alpha
 
 ### Security
----
 **BearerToken**  
 
 |jwt|*undefined*|
@@ -15,11 +13,13 @@ RESTful API for barong OAuth server
 |In|header|
 
 ### /admin/users/labels
----
-##### ***DELETE***
-**Description:** Deletes label for user
 
-**Parameters**
+#### DELETE
+##### Description:
+
+Deletes label for user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -27,23 +27,25 @@ RESTful API for barong OAuth server
 | key | query | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 | scope | query | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 204 | Deletes label for user |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***PUT***
-**Description:** Update user label scope
+#### PUT
+##### Description:
 
-**Parameters**
+Update user label scope
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -52,7 +54,7 @@ RESTful API for barong OAuth server
 | scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 | value | formData | Label value. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -62,16 +64,18 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***POST***
-**Description:** Adds label for user
+#### POST
+##### Description:
 
-**Parameters**
+Adds label for user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -80,49 +84,53 @@ RESTful API for barong OAuth server
 | value | formData | label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | Yes | string |
 | scope | formData | Label scope: 'public' or 'private'. Default is public | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 201 | Adds label for user |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /admin/users/{uid}
----
-##### ***GET***
-**Description:** Returns user info
 
-**Parameters**
+#### GET
+##### Description:
+
+Returns user info
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | uid | path | user uniq id | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Returns user info |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /admin/users
----
-##### ***PUT***
-**Description:** Update user
 
-**Parameters**
+#### PUT
+##### Description:
+
+Update user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -131,75 +139,81 @@ RESTful API for barong OAuth server
 | otp | formData | user 2fa status | No | boolean |
 | role | formData | user role | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Update user |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***GET***
-**Description:** Returns array of users as paginated collection
+#### GET
+##### Description:
 
-**Parameters**
+Returns array of users as paginated collection
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Returns array of users as paginated collection |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /admin/users/search
----
-##### ***GET***
-**Description:** Returns array of users as paginated collection
 
-**Parameters**
+#### GET
+##### Description:
+
+Returns array of users as paginated collection
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | field | query | User model field. | Yes | string |
-| value | query | First part of a value (search target) | Yes | string |
+| value | query | Value to match (strictly) | Yes | string |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Returns array of users as paginated collection |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /identity/users/password/confirm_code
----
-##### ***POST***
-**Description:** Sets new account password
 
-**Parameters**
+#### POST
+##### Description:
+
+Sets new account password
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -207,7 +221,7 @@ RESTful API for barong OAuth server
 | password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -217,18 +231,20 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /identity/users/password/generate_code
----
-##### ***POST***
-**Description:** Send password reset instructions
 
-**Parameters**
+#### POST
+##### Description:
+
+Send password reset instructions
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
 | lang | formData | Client env language | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -238,17 +254,19 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /identity/users/email/confirm_code
----
-##### ***POST***
-**Description:** Confirms an account
 
-**Parameters**
+#### POST
+##### Description:
+
+Confirms an account
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | token | formData | Token from email | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -257,18 +275,20 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /identity/users/email/generate_code
----
-##### ***POST***
-**Description:** Send confirmations instructions
 
-**Parameters**
+#### POST
+##### Description:
+
+Send confirmations instructions
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
 | lang | formData | Client env language | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -277,22 +297,26 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /identity/users/register_geetest
----
-##### ***GET***
-**Description:** Register Geetest captcha
 
-**Responses**
+#### GET
+##### Description:
+
+Register Geetest captcha
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Register Geetest captcha |
 
 ### /identity/users
----
-##### ***POST***
-**Description:** Creates new user
 
-**Parameters**
+#### POST
+##### Description:
+
+Creates new user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -302,7 +326,7 @@ RESTful API for barong OAuth server
 | lang | formData | Client env language | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -311,11 +335,13 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /identity/sessions
----
-##### ***DELETE***
-**Description:** Destroy current session
 
-**Responses**
+#### DELETE
+##### Description:
+
+Destroy current session
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -323,10 +349,12 @@ RESTful API for barong OAuth server
 | 400 | Required params are empty |
 | 404 | Record is not found |
 
-##### ***POST***
-**Description:** Start a new session
+#### POST
+##### Description:
 
-**Parameters**
+Start a new session
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -335,7 +363,7 @@ RESTful API for barong OAuth server
 | captcha_response | formData | Response from captcha widget | No | string |
 | otp_code | formData | Code from Google Authenticator | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -344,33 +372,39 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 
 ### /identity/time
----
-##### ***GET***
-**Description:** Get server current unix timestamp.
 
-**Responses**
+#### GET
+##### Description:
+
+Get server current unix timestamp.
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Get server current unix timestamp. |
 
 ### /identity/ping
----
-##### ***GET***
-**Description:** Test connectivity
 
-**Responses**
+#### GET
+##### Description:
+
+Test connectivity
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Test connectivity |
 
 ### /resource/api_keys
----
-##### ***GET***
-**Description:** List all api keys for current account.
 
-**Parameters**
+#### GET
+##### Description:
+
+List all api keys for current account.
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -378,7 +412,7 @@ RESTful API for barong OAuth server
 | limit | query | Number of api keys per page (defaults to 100, maximum is 1000). | No | integer |
 | totp_code | query | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -386,16 +420,18 @@ RESTful API for barong OAuth server
 | 400 | Require 2FA and totp code |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***POST***
-**Description:** Create an api key
+#### POST
+##### Description:
 
-**Parameters**
+Create an api key
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -404,7 +440,7 @@ RESTful API for barong OAuth server
 | scope | formData | comma separated scopes | No | string |
 | totp_code | formData | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -413,25 +449,27 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/api_keys/{kid}
----
-##### ***DELETE***
-**Description:** Delete an api key
 
-**Parameters**
+#### DELETE
+##### Description:
+
+Delete an api key
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | kid | path |  | Yes | string |
 | totp_code | query | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -440,16 +478,18 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***PATCH***
-**Description:** Updates an api key
+#### PATCH
+##### Description:
 
-**Parameters**
+Updates an api key
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -458,7 +498,7 @@ RESTful API for barong OAuth server
 | state | formData | State of API Key. "active" state means key is active and can be used for auth | No | string |
 | totp_code | formData | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -468,24 +508,26 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/otp/verify
----
-##### ***POST***
-**Description:** Verify 2FA code
 
-**Parameters**
+#### POST
+##### Description:
+
+Verify 2FA code
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | code | formData | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -494,24 +536,26 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/otp/enable
----
-##### ***POST***
-**Description:** Enable 2FA
 
-**Parameters**
+#### POST
+##### Description:
+
+Enable 2FA
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | code | formData | Code from Google Authenticator | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -520,18 +564,20 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/otp/generate_qrcode
----
-##### ***POST***
-**Description:** Generate qr code for 2FA
 
-**Responses**
+#### POST
+##### Description:
+
+Generate qr code for 2FA
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -539,25 +585,27 @@ RESTful API for barong OAuth server
 | 400 | 2FA has been enabled for this account |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/phones/verify
----
-##### ***POST***
-**Description:** Verify a phone
 
-**Parameters**
+#### POST
+##### Description:
+
+Verify a phone
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | phone_number | formData | Phone number with country code | Yes | string |
 | verification_code | formData | Verification code from sms | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -566,24 +614,26 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/phones/send_code
----
-##### ***POST***
-**Description:** Resend activation code
 
-**Parameters**
+#### POST
+##### Description:
+
+Resend activation code
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | phone_number | formData | Phone number with country code | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -593,24 +643,26 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/phones
----
-##### ***POST***
-**Description:** Add new phone
 
-**Parameters**
+#### POST
+##### Description:
+
+Add new phone
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | phone_number | formData | Phone number with country code | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -620,18 +672,20 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/documents
----
-##### ***POST***
-**Description:** Upload a new document for current user
 
-**Parameters**
+#### POST
+##### Description:
+
+Upload a new document for current user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -640,7 +694,7 @@ RESTful API for barong OAuth server
 | doc_number | formData | Document number | Yes | string |
 | upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -649,34 +703,38 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***GET***
-**Description:** Return current user documents list
+#### GET
+##### Description:
 
-**Responses**
+Return current user documents list
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Return current user documents list |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/profiles
----
-##### ***POST***
-**Description:** Create a profile for current_user
 
-**Parameters**
+#### POST
+##### Description:
+
+Create a profile for current_user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -688,7 +746,7 @@ RESTful API for barong OAuth server
 | city | formData |  | Yes | string |
 | country | formData |  | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -698,18 +756,20 @@ RESTful API for barong OAuth server
 | 409 | Profile already exists |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/profiles/me
----
-##### ***GET***
-**Description:** Return profile of current resource owner
 
-**Responses**
+#### GET
+##### Description:
+
+Return profile of current resource owner
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -717,24 +777,26 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 404 | User has no profile |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/labels/{key}
----
-##### ***DELETE***
-**Description:** Delete a label  with 'public' scope.
 
-**Parameters**
+#### DELETE
+##### Description:
+
+Delete a label  with 'public' scope.
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | key | path | Label key. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -743,23 +805,25 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***PATCH***
-**Description:** Update a label with 'public' scope.
+#### PATCH
+##### Description:
 
-**Parameters**
+Update a label with 'public' scope.
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | key | path | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -769,22 +833,24 @@ RESTful API for barong OAuth server
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***GET***
-**Description:** Return a label by key.
+#### GET
+##### Description:
 
-**Parameters**
+Return a label by key.
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | key | path | Label key. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -793,25 +859,27 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/labels
----
-##### ***POST***
-**Description:** Create a label with 'public' scope.
 
-**Parameters**
+#### POST
+##### Description:
+
+Create a label with 'public' scope.
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -820,34 +888,38 @@ RESTful API for barong OAuth server
 | 401 | Invalid bearer token |
 | 422 | Validation errors |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
-##### ***GET***
-**Description:** List all labels for current user.
+#### GET
+##### Description:
 
-**Responses**
+List all labels for current user.
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | List all labels for current user. |
 | 401 | Invalid bearer token |
 
-**Security**
+##### Security
 
 | Security Schema | Scopes |
 | --- | --- |
 | BearerToken | |
 
 ### /resource/users/password
----
-##### ***PUT***
-**Description:** Sets new account password
 
-**Parameters**
+#### PUT
+##### Description:
+
+Sets new account password
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -855,7 +927,7 @@ RESTful API for barong OAuth server
 | new_password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
@@ -865,11 +937,13 @@ RESTful API for barong OAuth server
 | 422 | Validation errors |
 
 ### /resource/users/activity/{topic}
----
-##### ***GET***
-**Description:** Returns user activity
 
-**Parameters**
+#### GET
+##### Description:
+
+Returns user activity
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -877,27 +951,29 @@ RESTful API for barong OAuth server
 | limit | query | Number of activity per page (defaults to 100, maximum is 1000). | No | integer |
 | topic | path | Topic of user activity. Allowed: [all, password, session, otp] | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Returns user activity |
 
 ### /resource/users/me
----
-##### ***GET***
-**Description:** Returns current user
 
-**Responses**
+#### GET
+##### Description:
+
+Returns current user
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | Returns current user |
 
 ### Models
----
 
-### Label  
+
+#### Label
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -907,7 +983,7 @@ RESTful API for barong OAuth server
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### APIKey  
+#### APIKey
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -919,7 +995,7 @@ RESTful API for barong OAuth server
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### Profile  
+#### Profile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -932,7 +1008,7 @@ RESTful API for barong OAuth server
 | country | string |  | No |
 | metadata | object | Profile additional fields | No |
 
-### User  
+#### User
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -943,7 +1019,7 @@ RESTful API for barong OAuth server
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 
-### UserWithProfile  
+#### UserWithProfile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -957,7 +1033,7 @@ RESTful API for barong OAuth server
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### UserWithFullInfo  
+#### UserWithFullInfo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -971,10 +1047,11 @@ RESTful API for barong OAuth server
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| activities | [Activity](#activity) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### Phone  
+#### Phone
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -982,7 +1059,7 @@ RESTful API for barong OAuth server
 | number | string |  | No |
 | validated_at | s (g) |  | No |
 
-### Document  
+#### Document
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -993,3 +1070,15 @@ RESTful API for barong OAuth server
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+
+#### Activity
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| user_ip | string |  | No |
+| user_agent | string |  | No |
+| topic | string |  | No |
+| action | string |  | No |
+| result | string |  | No |
+| data | string |  | No |
+| created_at | string |  | No |
