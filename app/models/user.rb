@@ -62,7 +62,8 @@ class User < ApplicationRecord
   end
 
   def referral_uid
-    Member.where(uid: referral_id).first
+    member = Member.where(uid: referral_id).first
+    return member.uid if member
   end
 
   def add_level_label(key, value = 'verified')
