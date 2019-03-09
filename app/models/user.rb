@@ -70,6 +70,7 @@ class User < ApplicationRecord
     {
       uid: uid,
       email: email,
+      referral_id: referral_id,
       role: role,
       level: level,
       otp: otp,
