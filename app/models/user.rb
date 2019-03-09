@@ -61,6 +61,10 @@ class User < ApplicationRecord
     update(level: user_level)
   end
 
+  def referral_uid
+    Member.where(uid: referral_id).first
+  end
+
   def add_level_label(key, value = 'verified')
     labels.find_or_create_by(key: key, scope: 'private')
           .update!(value: value)
@@ -70,7 +74,7 @@ class User < ApplicationRecord
     {
       uid: uid,
       email: email,
-      referral_id: referral_id,
+      referral_uid: referral_uid,
       role: role,
       level: level,
       otp: otp,
