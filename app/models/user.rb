@@ -62,7 +62,7 @@ class User < ApplicationRecord
   end
 
   def referral_uid
-    member = Member.where(uid: referral_id).first
+    member = User.where(uid: referral_id).first
     return member.uid if member
   end
 
