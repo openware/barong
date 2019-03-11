@@ -118,6 +118,23 @@ module API
             present target_user, with: API::V2::Entities::UserWithFullInfo
           end
 
+          desc 'Delete unverified phones and users from DB',
+          security: [{ "BearerToken": [] }],
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ]
+          params do
+            requires :updated_at_limit, type: String, desc: 'updated at limit'
+          end
+          delete '/cleanup' do
+            begin
+              DateTime.parse(params[:updated_at_limit])
+              CleanupService.delete_unverified(params[:updated_at_limit])
+            rescue ArgumentError
+              error!({ errors: ['admin.user.cleaup.invalid_updated_at_limit'] }, 422)
+            end
+          end
+
           namespace :labels do
             desc 'Adds label for user',
             security: [{ "BearerToken": [] }],

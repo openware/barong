@@ -391,4 +391,55 @@ describe API::V2::Admin::Users do
       end
     end
   end
+
+  describe 'DELETE /api/v2/admin/users/cleanup' do
+    let(:do_request) { delete '/api/v2/admin/users/cleanup', headers: auth_header }
+
+    context 'non-admin user' do
+      it 'access denied to non-admin user' do
+        do_request
+        expect(response.status).to eq 401
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
+      end
+    end
+
+    context 'admin user' do
+      let(:test_user) { create(:user, role: 'admin') }
+
+      it 'renders error when updated_at_limit is missing' do
+        delete '/api/v2/admin/users/cleanup', headers: auth_header, params: {}
+        expect(response.status).to eq 422
+      end
+
+      it 'renders error when updated_at_limit is invalid' do
+        delete '/api/v2/admin/users/cleanup', headers: auth_header, params: {
+          updated_at_limit: 'date',
+        }
+        expect(response.status).to eq 422
+      end
+
+      it 'deletes pending users with updated_at < updated_at_limit' do
+        3.times { create(:user, state: 'pending') }
+        User.last.update(state: 'active')
+
+        delete '/api/v2/admin/users/cleanup', headers: auth_header, params: {
+          updated_at_limit: '2019-03-11T18:02:35+02:00'
+        }
+
+        expect(User.all.count).to eq 1
+      end
+
+      it 'deletes unvalidated phones with updated_at < updated_at_limit' do
+        3.times { create(:phone, validated_at: nil) }
+        Phone.last.update(validated_at: DateTime.now)
+
+        delete '/api/v2/admin/users/cleanup', headers: auth_header, params: {
+          updated_at_limit: '2019-03-11T18:02:35+02:00'
+        }
+
+        expect(Phone.all.count).to eq 1
+      end
+    end
+  end
+
 end
