@@ -34,7 +34,7 @@ module API::V2
         end
         get '/activity/:topic' do
           validate_topic!(params[:topic])
-          data = current_user.activities
+          data = current_user.activities.order('id DESC')
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
 
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?

@@ -17,10 +17,6 @@ describe 'Api::V1::Profiles' do
     end
 
     describe 'POST /api/v2/resource/users/activity' do
-      let(:do_request) do
-        put '/api/v2/resource/users/password', params: params, headers: auth_header
-      end
-
       it 'allows only [password, otp, session, all] as a topic parameter' do
         get '/api/v2/resource/users/activity/invalid', headers: auth_header
         expect(response.status).to eq(422)
@@ -29,6 +25,15 @@ describe 'Api::V1::Profiles' do
         get '/api/v2/resource/users/activity/session', headers: auth_header
         expect(response.status).to eq(422)
         expect_body.to eq(errors: ['resource.user.no_activity'])
+      end
+
+      it 'sorts user activities' do
+        4.times { create(:activity, user: test_user) }
+
+        get '/api/v2/resource/users/activity/all', headers: auth_header
+        activities = JSON.parse(response.body)
+
+        expect(activities.first['id']).to be >= activities.last['id']
       end
     end
 
