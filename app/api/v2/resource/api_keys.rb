@@ -4,18 +4,20 @@ module API::V2
   module Resource
     # Responsible for CRUD for api keys
     class APIKeys < Grape::API
-      resource :api_keys do
-        before do
+      helpers do
+        def otp_protected!
           unless current_user.otp
             error!({ errors: ['resource.api_key.2fa_disabled'] }, 400)
           end
           error!({ errors: ['resource.api_key.missing_totp'] }, 422) unless params[:totp_code].present?
 
-          unless TOTPService.validate?(current_user.uid, params[:totp_code])
-            error!({ errors: ['resource.api_key.invalid_totp'] }, 422)
-          end
-        end
+          return if TOTPService.validate?(current_user.uid, params[:totp_code])
 
+          error!({ errors: ['resource.api_key.invalid_totp'] }, 422)
+        end
+      end
+
+      resource :api_keys do
         desc 'Create an api key',
              security: [{ "BearerToken": [] }],
              failure: [
@@ -41,6 +43,7 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         post do
+          otp_protected!
           declared_params = declared(unified_params, include_missing: false)
                             .except(:totp_code)
                             .merge(scope: params[:scope]&.split(','))
@@ -78,6 +81,7 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         patch ':kid' do
+          otp_protected!
           declared_params = declared(params, include_missing: false)
                             .except(:totp_code)
                             .merge(scope: params[:scope]&.split(','))
@@ -108,6 +112,7 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         delete ':kid' do
+          otp_protected!
           api_key = current_user.api_keys.find_by!(kid: params[:kid])
           api_key.destroy
           status 204
@@ -122,10 +127,6 @@ module API::V2
         params do
           optional :page,      type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
           optional :limit,     type: Integer, default: 100, range: 1..1000, desc: 'Number of api keys per page (defaults to 100, maximum is 1000).'
-          requires :totp_code,
-                   type: String,
-                   allow_blank: false,
-                   desc: 'Code from Google Authenticator'
         end
         get do
           current_user.api_keys.tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }

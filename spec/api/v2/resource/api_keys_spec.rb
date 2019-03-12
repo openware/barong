@@ -19,7 +19,18 @@ describe 'Api::V2::APIKeys' do
   end
 
   describe 'GET /api/v2/resource/api_keys/' do
-    let(:do_request) { get "/api/v2/resource/api_keys/?totp_code=#{otp_code}", headers: auth_header }
+    let(:params) do
+      {
+        scope: 'trade',
+        algorithm: 'HS256'
+      }
+    end
+    let(:do_request) do
+      post '/api/v2/resource/api_keys',
+           params: params.merge(totp_code: otp_code),
+           headers: auth_header
+    end
+    let(:do_get_request) { get "/api/v2/resource/api_keys", headers: auth_header }
     let(:expected_fields) do
       {
         kid: api_key.kid,
@@ -30,7 +41,7 @@ describe 'Api::V2::APIKeys' do
     let(:totp_code) { valid_otp_code }
 
     it 'Return api key for current account' do
-      do_request
+      do_get_request
       expect(response.status).to eq(200)
       expect(json_body.first).to include(expected_fields)
     end
