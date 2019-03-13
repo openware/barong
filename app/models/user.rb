@@ -2,6 +2,7 @@
 
 # User model
 class User < ApplicationRecord
+
   ROLES = %w[admin accountant compliance member].freeze
 
   acts_as_eventable prefix: 'user', on: %i[create update]
@@ -28,6 +29,13 @@ class User < ApplicationRecord
 
   def active?
     self.state == 'active'
+  end
+
+  # Deal with password generation or skip somehow password validation
+  def self.find_or_create_from_auth_hash(auth)
+    where(email: auth['info']['email'])
+      .first_or_initialize(attributes: { email: auth['info']['email'], password: 'HfyljvysqGfhjkm1233' })
+      .tap(&:save!)
   end
 
   def role

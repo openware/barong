@@ -6,6 +6,8 @@ ruby '2.6.0'
 gem 'api-pagination', '~> 4.8.2'
 
 gem 'env-tweaks', '~> 1.0.0'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-auth0', '~> 2.0.0'
 
 gem 'fog-google',  '~> 0.1.0'
 gem 'fog-aws',     '~> 2.0.1'
