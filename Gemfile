@@ -43,7 +43,9 @@ gem 'redis-rails', '~> 5'
 # gem 'redis', '~> 4.0'
 
 gem 'bcrypt', '~> 3.1'
-gem 'email_validator', require: 'email_validator/strict'
+# Email validators. Lock at 1.6.0 to use /strict dependency
+gem 'email_validator', '= 1.6.0', require: 'email_validator/strict'
+
 gem 'countries', require: 'countries/global'
 gem 'browser', require: "browser/browser"
 gem 'carrierwave', '~> 1.2.2'

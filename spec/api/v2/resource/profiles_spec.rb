@@ -7,7 +7,7 @@ describe 'API::V2::Resource::Profiles' do
   let!(:optional_params) do
     {
       metadata: {
-        gender: Faker::Dog.gender,
+        gender: Faker::Creature::Dog.gender,
         place_of_birth: Faker::Address.city
       }
     }
