@@ -149,6 +149,20 @@ event: {
 | `user`   | The up-to-date user attributes.               |
 | `token`  | Valid reset-pass jwt token (mandatory param for password reset endpoint) `/identity/users/password/confirm_code` |
 
+## Format of `system.user.account.discarded` event
+```ruby
+   event: {
+    uid: "IDB1629BFE9E",
+    email: "example@barong.io",
+    role: "member",
+    level: 1,
+    otp: false,
+    state: "discarded",
+    created_at: "2019-01-28T10:17:27Z",
+    updated_at: "2019-01-28T10:17:45Z",
+    name: "system.user.account.discarded"
+  }
+```
 
 ## Format of `system.user.password.reset` event
 ```ruby
