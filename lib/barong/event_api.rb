@@ -137,8 +137,7 @@ module EventAPI
           exp:   Time.now.to_i + 60,
           event: event_payload
         }
-        # FIXME: use keystore
-        private_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(ENV.fetch('EVENT_API_JWT_PRIVATE_KEY')))
+        private_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(Barong::App.config.event_api_jwt_private_key))
         algorithm   = ENV.fetch('EVENT_API_JWT_ALGORITHM', 'RS256')
         jwt         = JWT::Multisig.generate_jwt jwt_payload, \
           { Middlewares.application_name.to_sym => private_key },

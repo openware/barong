@@ -23,6 +23,8 @@ steps:
     EVENT_API_RABBITMQ_HOST: rabbitmq
     BARONG_VAULT_ADDR: http://vault:8200
     RAILS_ENV: test
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
   commands:
     - bundle
     - ./bin/init_config
@@ -35,19 +37,26 @@ steps:
 - name: Bump and tag
   image: ruby:2.6.0
   environment:
+    DATABASE_HOST: database
+    EVENT_API_RABBITMQ_HOST: rabbitmq
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
     BOT_EMAIL: kite-bot@heliostech.fr
     GITHUB_API_KEY:
       from_secret: kite_bot_key
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
   commands:
     - gem install bump
     - git config --global user.name "  Kite Bot"
     - git config --global user.email "kite-bot@heliostech.fr"
     - git remote add authenticated-origin https://kite-bot:$GITHUB_API_KEY@github.com/${DRONE_REPO}
     - git fetch authenticated-origin
+    - curl -sL https://deb.nodesource.com/setup_10.x | bash -
+    - apt-get update && apt-get install -y nodejs
+    - export V=$(cat VERSION)
+    - bin/gendocs
     - bump patch --commit-message 'Bump [ci skip]'
-    - V=$(cat VERSION) bin/gendocs
     - git tag $(cat VERSION)
     - git push authenticated-origin master
     - git push --tags authenticated-origin

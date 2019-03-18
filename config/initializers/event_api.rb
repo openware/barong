@@ -8,4 +8,5 @@ end
 
 Barong::App.define do |config|
   config.set(:barong_domain, 'changeme.com')
+  config.set(:event_api_jwt_private_key)
 end
