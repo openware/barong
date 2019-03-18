@@ -51,6 +51,7 @@ admin.label.doesnt_exist     Label with such key doesnt exist or not assigned to
 admin.access.denied          Access Denied: User is not Admin
 admin.user.non_user_field    Search field is not a user attribute
 admin.user.no_matches        Search result is empty array
+admin.user.label_no_matches  Search result is empty array
 ```
 
 ## General errors

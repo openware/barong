@@ -48,7 +48,7 @@ module API
           end
           get '/search' do
             users = search(params[:field], params[:value])
-            error!({ errors: ['admin.user.no_matches'] }) if users.empty?
+            error!({ errors: ['admin.user.no_matches'] }, 404) if users.empty?
 
             users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
           end
@@ -100,25 +100,25 @@ module API
             status 200
           end
 
-          desc 'Returns user info',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
-          params do
-            requires :uid,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'user uniq id'
-          end
-          get '/:uid' do
-            target_user = User.find_by_uid(params[:uid])
-            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
-
-            present target_user, with: API::V2::Entities::UserWithFullInfo
-          end
-
           namespace :labels do
+            desc 'Returns array of users as paginated collection',
+            security: [{ "BearerToken": [] }],
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ]
+            params do
+              requires :key,      type: String, desc: 'Label key'
+              requires :value,    type: String, desc: 'Label value'
+              optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
+              optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+            end
+            get do
+              users = User.joins(:labels).where(labels: { key: params[:key], value: params[:value] })
+              error!({ errors: ['admin.user.label_no_matches'] }, 404) if users.empty?
+
+              users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
+            end
+
             desc 'Adds label for user',
             security: [{ "BearerToken": [] }],
             failure: [
@@ -225,6 +225,24 @@ module API
               label.destroy
               status 200
             end
+          end
+
+          desc 'Returns user info',
+          security: [{ "BearerToken": [] }],
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ]
+          params do
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uniq id'
+          end
+          get '/:uid' do
+            target_user = User.find_by_uid(params[:uid])
+            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+            present target_user, with: API::V2::Entities::UserWithFullInfo
           end
         end
       end
