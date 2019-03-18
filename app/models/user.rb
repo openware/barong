@@ -2,8 +2,6 @@
 
 # User model
 class User < ApplicationRecord
-  ROLES = %w[admin accountant compliance member].freeze
-
   acts_as_eventable prefix: 'user', on: %i[create update]
 
   has_secure_password

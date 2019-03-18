@@ -52,9 +52,18 @@ module Barong
       user = User.find_by_id(current_api_key.user_id)
 
       validate_user!(user)
+
+      error!({ errors: ['authz.invalid_permission'] }, 401) unless enough_permissions?
+
       user # returns user(api key creator)
     rescue ActiveRecord::RecordNotFound
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
+    end
+
+    def enough_permissions?(user)
+      target_permission = Permission.find(role: user.role, type: @request.type, path: @path)
+
+      !target_permission
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter
