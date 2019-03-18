@@ -41,6 +41,18 @@ module Barong
       end
     end
 
+    def seed_permissions
+      logger.info "Seeding permissions"
+      seeds["permissions"].each do |perm|
+        logger.info "---"
+        if Permission.find_by(role: perm["role"], req_type: perm["req_type"], path: perm["path"]).present?
+          logger.info "Permission for '#{perm['role']}' : '#{perm['req_type']} #{perm['path']}' already exists"
+          next
+        end
+        Permission.create!(perm)
+      end
+    end
+
     def seed_users
       logger.info "Seeding users"
       seeds["users"].each do |seed|

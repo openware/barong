@@ -3,7 +3,8 @@
 require_dependency 'barong/seed'
 
 seed = Barong::Seed.new
-seed.seed_levels
-seed.seed_users
+# seed.seed_levels
+# seed.seed_users
+seed.seed_permissions
 
 puts seed.inspect

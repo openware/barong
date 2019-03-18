@@ -1,6 +1,7 @@
 #
 # email and level are required for users
 #
+# permissions defines 
 users:
   - email: <%= ENV.fetch("ADMIN_EMAIL", "admin@barong.io") %>
     password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
@@ -18,3 +19,29 @@ levels:
   - key: document
     value: verified
     description: "User personal documents have been verified"
+
+permissions:
+  - role: admin
+    req_type: GET
+    path: "/api/v2/adminget"
+  - role: admin
+    req_type: POST
+    path: "/api/v2/adminpost"
+  - role: admin
+    req_type: POST
+    path: "/api/v2/adminpost1"
+  - role: member
+    req_type: GET
+    path: "/api/v2/memberget"
+  - role: member
+    req_type: GET
+    path: "/api/v2/memberget1"
+  - role: member
+    req_type: POST
+    path: "/api/v2/memberpost"
+  - role: member
+    req_type: POST
+    path: "/api/v2/memberpost1"
+  - role: maksimka
+    req_type: GET
+    path: "/api/v2/maksimkaget"
