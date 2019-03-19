@@ -391,4 +391,96 @@ describe API::V2::Admin::Users do
       end
     end
   end
+
+  describe 'GET /api/v2/admin/users/labels' do
+    let(:params) { { key: 'document', value: 'pending' } }
+    let(:do_request) { get '/api/v2/admin/users/labels', headers: auth_header, params: params }
+
+    context 'non-admin user' do
+      it 'access denied to non-admin user' do
+        do_request
+        expect(response.status).to eq 401
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
+      end
+    end
+
+    context 'admin user' do
+      let(:test_user) { create(:user, role: 'admin') }
+
+      let(:document_pending_count)  { 3 }
+      let(:document_rejected_count) { 2 }
+      let(:public_labels_count)     { 2 }
+
+      before(:example) do
+        document_pending_count.times do |i|
+          create(:label, key: 'document', value: 'pending', scope: 'private')
+        end
+
+        document_rejected_count.times do |i|
+          create(:label, key: 'document', value: 'rejected', scope: 'private')
+        end
+      end
+
+      it 'renders error when key is missing' do
+        get '/api/v2/admin/users/labels', headers: auth_header, params: {
+          value: 'pending'
+        }
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_key\"]}"
+      end
+
+      it 'renders error when value is missing' do
+        get '/api/v2/admin/users/labels', headers: auth_header, params: {
+          key: 'document'
+        }
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.missing_value\"]}"
+      end
+
+      it 'returns users' do
+        get '/api/v2/admin/users/labels', headers: auth_header, params: {
+          key: 'document',
+          value: 'pending'
+        }
+
+        users = JSON.parse(response.body)
+        expect(users.count).to eq document_pending_count
+      end
+
+      context 'pagination test' do
+        it 'returns 1st page as default, limit 2 users per page' do
+          get '/api/v2/admin/users/labels', headers: auth_header, params: {
+            key: 'document',
+            value: 'pending',
+            limit: 2
+          }
+
+          users = JSON.parse(response.body)
+          expect(users.count).to eq 2
+          expect(User.first.email).to eq users.first['email']
+          expect(User.second.email).to eq users.second['email']
+
+          expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
+          expect(response.headers.fetch('Page')).to eq '1'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
+        end
+
+        it 'returns 2nd page, limit 2 users per page' do
+          get '/api/v2/admin/users/labels', headers: auth_header, params: {
+            key: 'document',
+            value: 'pending',
+            limit: 2,
+            page: 2
+          }
+
+          users = JSON.parse(response.body)
+          expect(User.third.email).to eq users.first['email']
+
+          expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
+          expect(response.headers.fetch('Page')).to eq '2'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
+        end
+      end
+    end
+  end
 end
