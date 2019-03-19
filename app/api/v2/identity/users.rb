@@ -54,7 +54,7 @@ module API::V2
 
           code_error!(user.errors.details, 422) unless user.save
 
-          publish_confirmation(user, params[:lang])
+          publish_confirmation(user, params[:lang], Barong::App.config.barong_domain)
           status 201
         end
 
@@ -85,7 +85,7 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            publish_confirmation(current_user, params[:lang_code])
+            publish_confirmation(current_user, language, Barong::App.config.barong_domain)
             status 201
           end
 
@@ -100,6 +100,10 @@ module API::V2
                      type: String,
                      allow_blank: false,
                      desc: 'Token from email'
+            optional :lang,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Language in iso-2 format'
           end
           post '/confirm_code' do
             payload = codec.decode_and_verify(
@@ -115,7 +119,10 @@ module API::V2
 
             current_user.after_confirmation if token_uniq?(payload[:jti])
 
-            EventAPI.notify('system.user.email.confirmed', current_user.as_json_for_event_api)
+            EventAPI.notify('system.user.email.confirmed',
+                            user: current_user.as_json_for_event_api,
+                            language: language,
+                            domain: Barong::App.config.barong_domain)
 
             status 201
           end
@@ -137,7 +144,7 @@ module API::V2
                      desc: 'Account email'
             optional :lang,
                      type: String,
-                     desc: 'Client env language'
+                     desc: 'Language in iso-2 format'
           end
 
           post '/generate_code' do
@@ -151,7 +158,8 @@ module API::V2
 
             EventAPI.notify('system.user.password.reset.token',
                             user: current_user.as_json_for_event_api,
-                            language: params[:lang] ||= 'en',
+                            language: language,
+                            domain: Barong::App.config.barong_domain,
                             token: token)
             status 201
           end
@@ -179,6 +187,9 @@ module API::V2
                      message: 'identity.user.missing_confirm_password',
                      allow_blank: false,
                      desc: 'User password'
+            optional :lang,
+                     type: String,
+                     desc: 'Language in iso-2 format'
           end
           post '/confirm_code' do
             unless params[:password] == params[:confirm_password]
@@ -203,7 +214,11 @@ module API::V2
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 
-            EventAPI.notify('system.user.password.reset', current_user.as_json_for_event_api)
+            EventAPI.notify('system.user.password.reset',
+                            user: current_user.as_json_for_event_api,
+                            language: language,
+                            domain: Barong::App.config.barong_domain)
+
             status 201
           end
         end

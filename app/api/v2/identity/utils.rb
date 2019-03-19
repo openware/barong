@@ -12,6 +12,10 @@ module API::V2
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
       end
 
+      def language
+        params[:lang].nil? ? 'EN' : params[:lang].upcase!
+      end
+
       def verify_captcha!(user:, response:, error_statuses: [400, 422])
         return if Barong::CaptchaPolicy.config.disabled
 
@@ -80,12 +84,13 @@ module API::V2
         Rails.cache.write(jti, 'utilized')
       end
 
-      def publish_confirmation(user, language)
+      def publish_confirmation(user, language, domain)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
           'system.user.email.confirmation.token',
           user: user.as_json_for_event_api,
-          language: language ||= 'en',
+          language: language,
+          domain: domain,
           token: token
         )
       end
