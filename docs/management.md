@@ -1,11 +1,9 @@
-Barong
-======
+# Barong
 Management API for barong OAuth server
 
-**Version:** 2.0.30-alpha
+## Version: 2.0.30-alpha
 
 ### Security
----
 **BearerToken**  
 
 |jwt|*undefined*|
@@ -15,29 +13,33 @@ Management API for barong OAuth server
 |In|header|
 
 ### /labels/delete
----
-##### ***POST***
-**Description:** Delete a label with 'private' scope
 
-**Parameters**
+#### POST
+##### Description:
+
+Delete a label with 'private' scope
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | user_uid | formData | User uid | Yes | string |
 | key | formData | Label key. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Delete a label with 'private' scope | [Label](#label) |
 
 ### /labels
----
-##### ***PUT***
-**Description:** Update a label with 'private' scope
 
-**Parameters**
+#### PUT
+##### Description:
+
+Update a label with 'private' scope
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -45,16 +47,18 @@ Management API for barong OAuth server
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Update a label with 'private' scope | [Label](#label) |
 
-##### ***POST***
-**Description:** Create a label with 'private' scope and assigns to users
+#### POST
+##### Description:
 
-**Parameters**
+Create a label with 'private' scope and assigns to users
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -62,35 +66,39 @@ Management API for barong OAuth server
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Create a label with 'private' scope and assigns to users | [Label](#label) |
 
 ### /labels/list
----
-##### ***POST***
-**Description:** Get all labels assigned to users
 
-**Parameters**
+#### POST
+##### Description:
+
+Get all labels assigned to users
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | user_uid | formData | User uid | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Get all labels assigned to users | [Label](#label) |
 
 ### /users/import
----
-##### ***POST***
-**Description:** Imports an existing user
 
-**Parameters**
+#### POST
+##### Description:
+
+Imports an existing user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
@@ -105,62 +113,70 @@ Management API for barong OAuth server
 | city | formData |  | No | string |
 | country | formData |  | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Imports an existing user | [UserWithProfile](#userwithprofile) |
 
 ### /users
----
-##### ***POST***
-**Description:** Creates new user
 
-**Parameters**
+#### POST
+##### Description:
+
+Creates new user
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Creates new user | [UserWithProfile](#userwithprofile) |
 
 ### /users/get
----
-##### ***POST***
-**Description:** Get users and profile information
 
-**Parameters**
+#### POST
+##### Description:
+
+Get users and profile information
+
+##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | User uid | Yes | string |
+| uid | formData | User uid | No | string |
+| email | formData | User email | No | string |
+| phone_num | formData | User phone number | No | string |
 
-**Responses**
+##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Get users and profile information | [UserWithProfile](#userwithprofile) |
 
 ### /timestamp
----
-##### ***POST***
-**Description:** Returns server time in seconds since Unix epoch.
 
-**Responses**
+#### POST
+##### Description:
+
+Returns server time in seconds since Unix epoch.
+
+##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 201 | Returns server time in seconds since Unix epoch. |
 
 ### Models
----
 
-### Label  
+
+#### Label
 
 Get all labels assigned to users
 
@@ -172,7 +188,7 @@ Get all labels assigned to users
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### UserWithProfile  
+#### UserWithProfile
 
 Get users and profile information
 
@@ -188,7 +204,7 @@ Get users and profile information
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### Profile  
+#### Profile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -201,7 +217,7 @@ Get users and profile information
 | country | string |  | No |
 | metadata | object | Profile additional fields | No |
 
-### APIKey  
+#### APIKey
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -213,7 +229,7 @@ Get users and profile information
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### User  
+#### User
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -224,7 +240,7 @@ Get users and profile information
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 
-### UserWithFullInfo  
+#### UserWithFullInfo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -238,10 +254,11 @@ Get users and profile information
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| activities | [Activity](#activity) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-### Phone  
+#### Phone
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -249,7 +266,7 @@ Get users and profile information
 | number | string |  | No |
 | validated_at | s (g) |  | No |
 
-### Document  
+#### Document
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -260,3 +277,15 @@ Get users and profile information
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+
+#### Activity
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| user_ip | string |  | No |
+| user_agent | string |  | No |
+| topic | string |  | No |
+| action | string |  | No |
+| result | string |  | No |
+| data | string |  | No |
+| created_at | string |  | No |
