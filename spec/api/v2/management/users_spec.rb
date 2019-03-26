@@ -5,8 +5,8 @@ require 'pry'
 
 describe API::V2::Management::Users, type: :request do
     before do
-      defaults_for_management_api_v1_security_configuration!
-      management_api_v1_security_configuration.merge! \
+      defaults_for_management_api_v2_security_configuration!
+      management_api_v2_security_configuration.merge! \
         scopes: {
           read_users: { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] },
           write_users: { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] }
@@ -28,7 +28,7 @@ describe API::V2::Management::Users, type: :request do
 
       let(:do_request) do
         post_json '/api/v2/management/users/get',
-                  multisig_jwt_management_api_v1({ data: data }, *signers)
+                  multisig_jwt_management_api_v2({ data: data }, *signers)
       end
 
       it 'reads user info by uid' do
@@ -100,13 +100,72 @@ describe API::V2::Management::Users, type: :request do
       end
     end
 
+    describe 'Returns array of users as collection' do
+      let(:data) do
+        {
+          scope: :read_users
+        }
+      end
+      let(:signers) { %i[alex jeff] }
+
+      let(:do_request) do
+        post_json '/api/v2/management/users/list',
+                  multisig_jwt_management_api_v2({ data: data }, *signers)
+      end
+
+      context 'users' do
+        let(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
+        let(:second_user) { create(:user, email: 'testb@gmail.com') }
+        let(:third_user) { create(:user, email: 'testd@gmail.com') }
+        let(:fourth_user) { create(:user, email: 'testc@gmail.com') }
+
+        before(:example) {
+          test_user
+          second_user
+          third_user
+          fourth_user
+        }
+
+        def validate_fields(user)
+          user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
+        end
+
+        include_context 'bearer authentication'
+
+        let(:do_user_request) do
+          post_json '/api/v2/management/users/get',
+                    multisig_jwt_management_api_v2({ data: data }), headers: auth_header
+        end
+        it 'denies access for user JWT instead of management signature' do
+          do_user_request
+          expect(response.status).to eq 401
+        end
+
+        it 'denies access unless enough signatures are supplied' do
+          signers.clear.concat %i[james jeff]
+          do_request
+          expect(response.status).to eq 401
+        end
+
+        it 'returns list of users' do
+          do_request
+          users = JSON.parse(response.body)
+          expect(User.count).to eq users.count
+          expect(validate_fields(User.first)).to eq users.first
+          expect(validate_fields(User.second)).to eq users.second
+          expect(validate_fields(User.third)).to eq users.third
+          expect(validate_fields(User.last)).to eq users.last
+        end
+      end
+    end
+
     describe 'Create an user' do
       let(:signers) { %i[alex jeff] }
       let(:data) { params.merge(scope: :write_users) }
 
       let(:do_request) do
         post_json '/api/v2/management/users',
-                  multisig_jwt_management_api_v1({ data: data }, *signers)
+                  multisig_jwt_management_api_v2({ data: data }, *signers)
       end
 
       context 'when password is present' do
@@ -161,7 +220,7 @@ describe API::V2::Management::Users, type: :request do
 
       let(:do_request) do
         post_json '/api/v2/management/users/import',
-                  multisig_jwt_management_api_v1({ data: data }, *signers)
+                  multisig_jwt_management_api_v2({ data: data }, *signers)
       end
 
       let!(:email) { 'valid_email@example.com' }
@@ -172,7 +231,6 @@ describe API::V2::Management::Users, type: :request do
       let(:params) do
         { email: email, password_digest: password_digest }
       end
-
 
       context 'when email and password_hash are valid' do
         it 'creates an user and signs in with credentials' do

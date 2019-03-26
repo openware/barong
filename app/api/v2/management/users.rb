@@ -63,6 +63,23 @@ module API::V2
           present user, with: API::V2::Entities::UserWithProfile
         end
 
+        desc 'Returns array of users as collection',
+        security: [{ "BearerToken": [] }],
+        failure: [
+          { code: 401, message: 'Invalid bearer token' }
+        ] do
+          @settings[:scope] = :read_users
+          success API::V2::Entities::User
+        end
+
+        params do
+        end
+
+        post '/list' do
+          User.all.tap { |u| present u, with: API::V2::Entities::User }
+        end
+
+
         desc 'Creates new user' do
           @settings[:scope] = :write_users
           success API::V2::Entities::UserWithProfile
