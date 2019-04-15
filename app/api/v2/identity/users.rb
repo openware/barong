@@ -54,7 +54,7 @@ module API::V2
 
           code_error!(user.errors.details, 422) unless user.save
 
-          publish_confirmation(user, params[:lang], Barong::App.config.barong_domain)
+          publish_confirmation(user, language, Barong::App.config.barong_domain)
           status 201
         end
 
