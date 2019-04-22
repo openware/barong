@@ -24,10 +24,6 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :doc_expire,
-                   type: Date,
-                   allow_blank: false,
-                   desc: 'Document expiration date'
           requires :doc_type,
                    type: String,
                    allow_blank: false,
@@ -38,10 +34,20 @@ module API::V2
                    desc: 'Document number'
           requires :upload,
                    desc: 'Array of Rack::Multipart::UploadedFile'
+          optional :doc_expire,
+                   type: { value: Date, message: "resource.documents.expire_not_a_date" },
+                   allow_blank: false,
+                   desc: 'Document expiration date'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post do
+          if Barong::App.config.required_docs_expire
+            error!({ errors: ['resource.documents.invalid_format'] }, 422) unless /\A\d{4}\-\d{2}\-\d{2}\z/.match?(params[:doc_expire].to_s)
+
+            error!({ errors: ['resource.documents.already_expired'] }, 422) if params[:doc_expire] < DateTime.now.to_date
+          end
+
           unless current_user.documents.count <= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error!({ errors: ['resource.documents.limit_reached'] }, 400)
           end

@@ -19,7 +19,7 @@ module Barong
           config[key] = Rails.application.credentials[key]
 
         else
-          raise Error, "Config #{key} missing" unless default
+          raise Error, "Config #{key} missing" if default.nil?
           config[key] = default
 
         end

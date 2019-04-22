@@ -122,6 +122,9 @@ resource.labels.empty_key
 resource.labels.missing_value
 resource.labels.empty_value
 
+resource.documents.expire_not_a_date
+resource.documents.invalid_format
+resource.documents.already_expired
 resource.documents.missing_doc_expire
 resource.documents.empty_doc_expire
 resource.documents.missing_doc_type
