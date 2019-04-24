@@ -1,6 +1,7 @@
 #
 # email and level are required for users
 #
+# permissions defines user roles and abilities
 users:
   - email: <%= ENV.fetch("ADMIN_EMAIL", "admin@barong.io") %>
     password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
@@ -18,3 +19,88 @@ levels:
   - key: document
     value: verified
     description: "User personal documents have been verified"
+
+permissions:
+# SUPER ADMIN has an access to the whole system without any limits
+# so we can just grant him access to /api/v2/*
+ - { role: superadmin, verb: get, path: api/v2, action: accept }
+ - { role: superadmin, verb: post, path: api/v2, action: accept }
+ - { role: superadmin, verb: put, path: api/v2, action: accept }
+ - { role: superadmin, verb: delete, path: api/v2, action: accept }
+
+# ADMIN
+# admin has nearly full access to barong and peatio api, except managing permissions
+ - { role: admin, verb: get, path: api/v2, action: accept }
+ - { role: admin, verb: post, path: api/v2, action: accept }
+ - { role: admin, verb: put, path: api/v2, action: accept }
+ - { role: admin, verb: delete, path: api/v2, action: accept }
+ # admin doesnt have access to manage platform roles and permissions
+ - { role: admin, verb: post, path: api/v2/barong/admin/permissions, action: drop }
+ - { role: admin, verb: get, path: api/v2/barong/admin/permissions, action: drop }
+ - { role: admin, verb: put, path: api/v2/barong/admin/permissions, action: drop }
+ - { role: admin, verb: delete, path: api/v2/barong/admin/permissions, action: drop }
+
+# ACCOUNTANT
+ # accountant has a read access to the peatio admin api
+ - { role: accountant, verb: get, path: admin, action: accept }
+ # accountant has a read access to barong admin
+ - { role: accountant, verb: get, path: api/v2/barong/admin, action: accept }
+ # has an ability to ban user
+ - { role: accountant, verb: put, path: api/v2/barong/admin/users, action: accept }
+ - { role: accountant, verb: put, path: api/v2/barong/admin/users/labels, action: drop }
+
+# COMPLIANCE
+ # has an access to CRUD of user-related resources
+ - { role: compliance, verb: post, path: api/v2/barong/admin/users, action: accept }
+ - { role: compliance, verb: put, path: api/v2/barong/admin/users, action: accept }
+ - { role: compliance, verb: get, path: api/v2/barong/admin/users, action: accept }
+ - { role: compliance, verb: delete, path: api/v2/barong/admin/users, action: accept }
+ # has read-only access to peatio admin api
+ - { role: compliance, verb: get, path: admin, action: accept }
+
+# TECHNICAL
+ # has an access to CRUD of peatio admin functionality on market, blockchain, wallets, currencies
+ - { role: technical, verb: get, path: admin/wallets, action: accept }
+ - { role: technical, verb: post, path: admin/wallets, action: accept }
+ - { role: technical, verb: put, path: admin/wallets, action: accept }
+ - { role: technical, verb: delete, path: admin/wallets, action: accept }
+
+ - { role: technical, verb: get, path: admin/markets, action: accept }
+ - { role: technical, verb: post, path: admin/markets, action: accept }
+ - { role: technical, verb: put, path: admin/markets, action: accept }
+ - { role: technical, verb: delete, path: admin/markets, action: accept }
+
+ - { role: technical, verb: get, path: admin/blockchains, action: accept }
+ - { role: technical, verb: post, path: admin/blockchains, action: accept }
+ - { role: technical, verb: put, path: admin/blockchains, action: accept }
+ - { role: technical, verb: delete, path: admin/blockchains, action: accept }
+
+ - { role: technical, verb: get, path: admin/currencies, action: accept }
+ - { role: technical, verb: post, path: admin/currencies, action: accept }
+ - { role: technical, verb: put, path: admin/currencies, action: accept }
+ - { role: technical, verb: delete, path: admin/currencies, action: accept }
+
+# SUPPORT
+ # has read only access to several statistic and user-related endpoints
+ - { role: support, verb: get, path: admin/deposits, action: accept }
+ - { role: support, verb: get, path: admin/withdraws, action: accept }
+ - { role: support, verb: get, path: admin/members, action: accept }
+ - { role: support, verb: get, path: admin/operations, action: accept }
+ - { role: support, verb: get, path: api/v2/barong/admin/users, action: accept }
+
+# TRADER
+ # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
+ - { role: trader, verb: get, path: api/v2/peatio/account, action: accept }
+ - { role: trader, verb: post, path: api/v2/peatio/account, action: accept }
+ - { role: trader, verb: put, path: api/v2/peatio/account, action: accept }
+ - { role: trader, verb: delete, path: api/v2/peatio/account, action: accept }
+
+ - { role: trader, verb: get, path: api/v2/peatio/market, action: accept }
+ - { role: trader, verb: post, path: api/v2/peatio/market, action: accept }
+ - { role: trader, verb: put, path: api/v2/peatio/market, action: accept }
+ - { role: trader, verb: delete, path: api/v2/peatio/market, action: accept }
+
+ - { role: trader, verb: get, path: api/v2/barong/resource, action: accept }
+ - { role: trader, verb: post, path: api/v2/barong/resource, action: accept }
+ - { role: trader, verb: put, path: api/v2/barong/resource, action: accept }
+ - { role: trader, verb: delete, path: api/v2/barong/resource, action: accept }

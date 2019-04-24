@@ -18,11 +18,8 @@ module API::V2
 
       do_not_route_options!
 
-      before do
-        error!({ errors: ['admin.access.denied'] }, 401) unless current_user.role.admin?
-      end
-
       mount Admin::Users
+      mount Admin::Permissions
     end
   end
 end

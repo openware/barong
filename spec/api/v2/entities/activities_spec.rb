@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 describe API::V2::Entities::Activity do
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   let(:record) { create(:activity, topic: 'otp', result: 'succeed', action: 'login') }
 
   subject { OpenStruct.new API::V2::Entities::Activity.represent(record).serializable_hash }

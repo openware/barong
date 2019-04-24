@@ -34,6 +34,10 @@ RSpec.describe Profile, type: :model do
     it { should validate_presence_of(:postcode) }
   
     describe 'squish_spaces' do
+      let!(:create_member_permission) do
+        create :permission,
+               role: 'member'
+      end
       let!(:profile) do
         create :profile, first_name: '  First  Name ',
                          last_name: '  Last   Name  ',

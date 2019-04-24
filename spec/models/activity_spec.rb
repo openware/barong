@@ -3,6 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Activity, type: :model do
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   let!(:activity) do
     create :activity, topic: 'session',
                       action: 'login',

@@ -3,7 +3,10 @@
 describe 'API::V2::Resource::Profiles' do
 
   include_context 'bearer authentication'
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   let!(:optional_params) do
     {
       metadata: {

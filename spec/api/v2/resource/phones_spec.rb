@@ -3,7 +3,10 @@
 describe 'Api::V2::Resources::Phones' do
 
   include_context 'bearer authentication'
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   describe 'GET /api/v2/resource/phones' do
     let!(:phone1) { create(:phone, user: test_user) }
     let!(:phone2) { create(:phone, user: test_user, number: 12345677711 ) }

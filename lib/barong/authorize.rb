@@ -37,6 +37,8 @@ module Barong
       user = User.find_by!(uid: session[:uid])
       error!({ errors: ['authz.user_not_active'] }, 401) unless user.active?
 
+      validate_permissions!(user)
+
       user # returns user(whose session is inside cookie)
     end
 
@@ -50,11 +52,25 @@ module Barong
       error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
       user = User.find_by_id(current_api_key.user_id)
-
       validate_user!(user)
+
+      validate_permissions!(user)
+
       user # returns user(api key creator)
     rescue ActiveRecord::RecordNotFound
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
+    end
+
+    def validate_permissions!(user)
+      # Caches Permission.all result to optimize
+      permissions = Rails.cache.read('permissions')
+      if permissions.nil?
+        permissions = Permission.all.to_ary
+        Rails.cache.write('permissions', permissions, expires_in: 5.minutes)
+      end
+      permissions.select! { |a| a.role == user.role && a.verb == @request.env['REQUEST_METHOD'] && @path.starts_with?(a.path) }
+
+      error!({ errors: ['authz.invalid_permission'] }, 401) if permissions.blank? || permissions.pluck(:action).include?('DROP')
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter

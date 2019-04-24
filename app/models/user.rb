@@ -2,8 +2,6 @@
 
 # User model
 class User < ApplicationRecord
-  ROLES = %w[admin accountant compliance member].freeze
-
   acts_as_eventable prefix: 'user', on: %i[create update]
 
   has_secure_password
@@ -15,6 +13,7 @@ class User < ApplicationRecord
   has_many  :api_keys,   dependent: :destroy, class_name: 'APIKey'
   has_many  :activities, dependent: :destroy
 
+  validate :role_exists
   validates :email,       email: true, presence: true, uniqueness: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?,
@@ -28,6 +27,12 @@ class User < ApplicationRecord
 
   def active?
     self.state == 'active'
+  end
+
+  def role_exists
+    return if Permission.pluck(:role).include?(role)
+
+    errors.add(:role, 'doesnt exist')
   end
 
   def role

@@ -1,22 +1,21 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
 describe API::V2::Admin::Users do
   include_context 'bearer authentication'
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
 
   let(:experimental_user) { create(:user, state: "pending") }
 
   describe 'GET /api/v2/admin/users' do
     let(:do_request) { get '/api/v2/admin/users', headers: auth_header }
-
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
 
     context 'admin user' do
       let(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
@@ -42,6 +41,7 @@ describe API::V2::Admin::Users do
         user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
       end
       it 'returns list of users' do
+
         do_request
         users = JSON.parse(response.body)
         expect(User.count).to eq users.count
@@ -103,14 +103,6 @@ describe API::V2::Admin::Users do
 
   describe 'PUT /api/v2/admin/users' do
     let(:do_request) { put '/api/v2/admin/users', headers: auth_header }
-
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
 
     context 'admin user' do
       let(:test_user) { create(:user, role: "admin") }
@@ -197,14 +189,6 @@ describe API::V2::Admin::Users do
   describe 'Get /api/v2/admin/users/:uid' do
     let(:do_request) { get '/api/v2/admin/users/' + experimental_user.uid, headers: auth_header }
 
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
-
     context 'admin user' do
       let(:test_user) { create(:user, role: "admin") }
 
@@ -257,14 +241,6 @@ describe API::V2::Admin::Users do
   describe 'POST /api/v2/admin/labels' do
 
     let(:do_request) { post '/api/v2/admin/users/labels', headers: auth_header }
-
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
 
     context 'admin user' do
       let(:test_user) { create(:user, role: 'admin') }
@@ -340,14 +316,6 @@ describe API::V2::Admin::Users do
   describe 'POST /api/v2/admin/labels' do
     let(:do_request) { delete '/api/v2/admin/users/labels', headers: auth_header }
 
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
-
     context 'admin user' do
       let(:test_user) { create(:user, role: 'admin') }
       let(:add_label) {
@@ -422,14 +390,6 @@ describe API::V2::Admin::Users do
   describe 'GET /api/v2/admin/users/labels' do
     let(:params) { { key: 'document', value: 'pending' } }
     let(:do_request) { get '/api/v2/admin/users/labels', headers: auth_header, params: params }
-
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
 
     context 'admin user' do
       let(:test_user) { create(:user, role: 'admin') }
@@ -513,14 +473,6 @@ describe API::V2::Admin::Users do
 
   describe 'GET /api/v2/admin/users/documents/pending' do
     let(:do_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header}
-
-    context 'non-admin user' do
-      it 'access denied to non-admin user' do
-        do_request
-        expect(response.status).to eq 401
-        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
-      end
-    end
 
     context 'admin user' do
       let(:test_user) { create(:user, role: 'admin') }
