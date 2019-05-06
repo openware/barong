@@ -228,7 +228,34 @@ describe API::V2::Admin::Users do
     end
   end
 
+  describe 'GET /api/v2/admin/labels/list' do
+    let(:do_request) { get '/api/v2/admin/users/labels/list', headers: auth_header }
+    let!(:test_user) { create(:user, role: 'admin') }
+
+    context 'it returns array of labels attributes' do
+      let(:create_labels) { 10.times do create(:label, scope: 'private') end }
+
+      it 'acts as expected' do
+        create_labels
+        do_request
+        labels_from_db = Label.where(scope: 'private').group(:key, :value).size
+        expect(response.body).to eq(labels_from_db.to_json)
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'no labels in database' do
+      it 'returns empty array' do
+        do_request
+
+        expect(response.body).to eq '{}'
+        expect(response.status).to eq 200
+      end
+    end
+  end
+
   describe 'POST /api/v2/admin/labels' do
+
     let(:do_request) { post '/api/v2/admin/users/labels', headers: auth_header }
 
     context 'non-admin user' do
