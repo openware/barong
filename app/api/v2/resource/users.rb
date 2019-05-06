@@ -23,6 +23,12 @@ module API::V2
           status(200)
         end
 
+        desc 'Returns current user'
+        get '/me/full_info' do
+          present current_user, with: API::V2::Entities::UserWithFullInfo
+          status(200)
+        end
+
         desc 'Returns user activity'
         params do
           optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'

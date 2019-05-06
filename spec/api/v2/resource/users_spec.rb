@@ -3,6 +3,32 @@
 describe 'Api::V1::Profiles' do
   include_context 'bearer authentication'
 
+  describe 'GET /api/v2/resource/users/me/full_info' do
+    it 'should reply permissions denied' do
+      get '/api/v2/resource/users/me/full_info'
+      expect_body.to eq(errors: ["jwt.decode_and_verify"])
+      expect(response.status).to eq(401)
+    end
+
+    it 'should allow traffic with Authorization' do
+      get '/api/v2/resource/users/me/full_info', headers: auth_header
+      expect(json_body[:email]).to eq(test_user.email)
+      expect(response.status).to eq(200)
+    end
+
+    it 'returns user info' do
+      get '/api/v2/resource/users/me/full_info', headers: auth_header
+      result = JSON.parse(response.body)
+      expect(response.status).to eq 200
+      expect(result['uid']).to eq test_user.uid
+      expect(result['role']).to eq test_user.role
+      expect(result['email']).to eq test_user.email
+      expect(result['level']).to eq test_user.level
+      expect(result['otp']).to eq test_user.otp
+      expect(result['state']).to eq test_user.state
+    end
+  end
+
   describe 'GET /api/v2/resource/users/me' do
     it 'should reply permissions denied' do
       get '/api/v2/resource/users/me'
