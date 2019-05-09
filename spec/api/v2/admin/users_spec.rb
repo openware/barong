@@ -484,8 +484,8 @@ describe API::V2::Admin::Users do
     end
   end
 
-  describe 'GET /api/v2/admin/users/labels/pending' do
-    let(:do_request) { get '/api/v2/admin/users/labels/pending', headers: auth_header}
+  describe 'GET /api/v2/admin/users/documents/pending' do
+    let(:do_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header}
 
     context 'non-admin user' do
       it 'access denied to non-admin user' do
@@ -499,7 +499,7 @@ describe API::V2::Admin::Users do
       let(:test_user) { create(:user, role: 'admin') }
 
       let(:private_document_pending_count)  { 3 }
-      let(:public_document_pending_count)  { 3 }
+      let(:public_document_pending_count)  { 2 }
 
       before(:example) do
         private_document_pending_count.times do |i|
@@ -511,7 +511,7 @@ describe API::V2::Admin::Users do
       end
 
       it 'returns users' do
-        get '/api/v2/admin/users/labels/pending', headers: auth_header
+        get '/api/v2/admin/users/documents/pending', headers: auth_header
 
         users = JSON.parse(response.body)
         expect(users.count).to eq private_document_pending_count
@@ -528,7 +528,7 @@ describe API::V2::Admin::Users do
         end
 
         it 'returns users sorted by time of label creation' do
-          get '/api/v2/admin/users/labels/pending', headers: auth_header
+          get '/api/v2/admin/users/documents/pending', headers: auth_header
 
           users = JSON.parse(response.body)
           expect(users.last['email']).to eq first_user.email
@@ -537,7 +537,7 @@ describe API::V2::Admin::Users do
 
       context 'pagination test' do
         it 'returns 1st page as default, limit 2 users per page' do
-          get '/api/v2/admin/users/labels/pending', headers: auth_header, params: {
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {
               limit: 2
           }
 
@@ -552,7 +552,7 @@ describe API::V2::Admin::Users do
         end
 
         it 'returns 2nd page, limit 2 users per page' do
-          get '/api/v2/admin/users/labels/pending', headers: auth_header, params: {
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {
               limit: 2,
               page: 2
           }
