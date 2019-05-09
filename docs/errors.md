@@ -4,6 +4,10 @@
 ```
 resource.labels.private   -                 Can't update Label.
 resource.user.no_activity                   No activity recorded or wrong topic
+resource.user.empty_otp_code                Cant delete account. 2FA is on, but otp_code is empty
+resource.user.invalid_otp                   Cant delete account. 2FA is on, but otp_code is invalid
+resource.user.missing_otp_code              Cant delete account. 2FA is on, but otp_code is missing
+resource.user.invalid_password              Cant delete account. Password is wrong
 resource.profile.not_exist                  User has no profile
 resource.profile.exist                      Profile already exists
 resource.api_key.2fa_disabled               Only accounts with enabled 2FA alowed
@@ -34,6 +38,7 @@ identity.session.invalid_login_params   Invalid Email or Password
 identity.session.invalid                Invalid Session
 identity.captcha.required               captcha_response is required'
 identity.captcha.mandatory_fields       Mandatory fields must be filled in
+identity.session.discarded              Your account is discarded
 identity.session.not_active             Your account is not active
 identity.session.banned                 Your account is banned
 identity.session.invalid_params         Invalid Email or Password

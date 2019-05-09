@@ -39,6 +39,11 @@ module API::V2
                          user: user.id, action: 'login', result: 'failed', error_text: 'banned')
           end
 
+          if user.state == 'discarded'
+            login_error!(reason: 'Your account is discarded', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'discarded')
+          end
+
           unless user.active?
             login_error!(reason: 'Your account is not active', error_code: 401,
                          user: user.id, action: 'login', result: 'failed', error_text: 'not_active')
