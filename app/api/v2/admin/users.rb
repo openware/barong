@@ -119,6 +119,22 @@ module API
               users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
             end
 
+            desc 'Returns array of users with pending documents as paginated collection',
+                 security: [{ "BearerToken": [] }],
+                 failure: [
+                     { code: 401, message: 'Invalid bearer token' }
+                 ]
+            params do
+              optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
+              optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+            end
+            get '/pending' do
+              users = User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' })
+              error!({ errors: ['admin.user.label_no_matches'] }, 404) if users.empty?
+
+              users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
+            end
+
             desc 'Adds label for user',
             security: [{ "BearerToken": [] }],
             failure: [
