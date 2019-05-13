@@ -483,4 +483,88 @@ describe API::V2::Admin::Users do
       end
     end
   end
+
+  describe 'GET /api/v2/admin/users/documents/pending' do
+    let(:do_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header}
+
+    context 'non-admin user' do
+      it 'access denied to non-admin user' do
+        do_request
+        expect(response.status).to eq 401
+        expect(response.body).to eq "{\"errors\":[\"admin.access.denied\"]}"
+      end
+    end
+
+    context 'admin user' do
+      let(:test_user) { create(:user, role: 'admin') }
+
+      let(:private_document_pending_count)  { 3 }
+      let(:public_document_pending_count)  { 2 }
+
+      before(:example) do
+        private_document_pending_count.times do |i|
+          create(:label, key: 'document', value: 'pending', scope: 'private')
+        end
+        public_document_pending_count.times do |i|
+          create(:label, key: 'document', value: 'pending', scope: 'public')
+        end
+      end
+
+      it 'returns users' do
+        get '/api/v2/admin/users/documents/pending', headers: auth_header
+
+        users = JSON.parse(response.body)
+        expect(users.count).to eq private_document_pending_count
+      end
+
+      context 'sorting test' do
+        let(:test_user) { create(:user, role: 'admin') }
+        let(:first_user) { create(:user) }
+        let(:second_user) { create(:user) }
+
+        before(:example) do
+          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id)
+          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id)
+        end
+
+        it 'returns users sorted by time of label creation' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header
+
+          users = JSON.parse(response.body)
+          expect(users.last['email']).to eq first_user.email
+        end
+      end
+
+      context 'pagination test' do
+        it 'returns 1st page as default, limit 2 users per page' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {
+              limit: 2
+          }
+
+          users = JSON.parse(response.body)
+          expect(users.count).to eq 2
+          expect(User.first.email).to eq users.first['email']
+          expect(User.second.email).to eq users.second['email']
+
+          expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
+          expect(response.headers.fetch('Page')).to eq '1'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
+        end
+
+        it 'returns 2nd page, limit 2 users per page' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {
+              limit: 2,
+              page: 2
+          }
+
+          users = JSON.parse(response.body)
+          expect(User.third.email).to eq users.first['email']
+
+          expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
+          expect(response.headers.fetch('Page')).to eq '2'
+          expect(response.headers.fetch('Per-Page')).to eq '2'
+        end
+      end
+    end
+  end
 end
