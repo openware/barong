@@ -74,6 +74,32 @@ describe API::V2::Identity::Users do
         expect_status_to_eq 201
       end
     end
+
+    context 'language specified' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', lang: 'ua' } }
+
+      it 'notifies with right language' do
+        allow(EventAPI).to receive(:notify)
+
+        do_request
+
+        expect(EventAPI).to have_received(:notify).with('model.user.created', record: hash_including(email: 'vadid.email@gmail.com'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'UA'))
+      end
+    end
+
+    context 'language not specified' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+
+      it 'notifies with default language' do
+        allow(EventAPI).to receive(:notify)
+
+        do_request
+
+        expect(EventAPI).to have_received(:notify).with('model.user.created', record: hash_including(email: 'vadid.email@gmail.com'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'EN'))
+      end
+    end
   end
 
   describe 'POST /api/v2/identity/users with reCAPTCHA Barong::CaptchaPolicy' do
