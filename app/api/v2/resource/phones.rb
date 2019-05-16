@@ -22,6 +22,15 @@ module API::V2
 
       desc 'Phone related routes'
       resource :phones do
+        desc 'Returns list of user\'s phones',
+              security: [{ "BearerToken": [] }],
+              failure: [
+                { code: 401, message: 'Invalid bearer token' },
+              ]
+        get do
+          present current_user.phones, with: Entities::Phone
+        end
+
         desc 'Add new phone',
              security: [{ "BearerToken": [] }],
              failure: [

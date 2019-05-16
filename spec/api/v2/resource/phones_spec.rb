@@ -4,6 +4,26 @@ describe 'Api::V2::Resources::Phones' do
 
   include_context 'bearer authentication'
 
+  describe 'GET /api/v2/resource/phones' do
+    let!(:phone1) { create(:phone, user: test_user) }
+    let!(:phone2) { create(:phone, user: test_user, number: 12345677711 ) }
+    let(:do_request) do
+      get '/api/v2/resource/phones', headers: auth_header
+    end
+
+    it 'returns list of user\'s phones' do
+      do_request
+
+      expect(json_body.length).to eq 2
+      expect(json_body.first[:number]).to eq phone1.number
+      expect(json_body.first[:country]).to eq phone1.country
+      expect(json_body.first[:validated_at]).to eq phone1.validated_at
+      expect(json_body.second[:number]).to eq phone2.number
+      expect(json_body.second[:country]).to eq phone2.country
+      expect(json_body.second[:validated_at]).to eq phone2.validated_at
+    end
+  end
+
   describe 'POST /api/v2/resource/phones' do
     let(:do_request) do
       post '/api/v2/resource/phones', params: params, headers: auth_header
