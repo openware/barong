@@ -7,7 +7,7 @@ module API
       class Activities < Grape::API
         helpers do
           def permitted_search_params(params)
-            params.slice(:action, :uid, :email, :topic, :created_from, :created_to)
+            params.slice(:action, :uid, :email, :topic, :created_from, :created_to).merge(with_user: true, ordered: true)
           end
         end
 

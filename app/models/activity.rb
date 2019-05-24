@@ -1,5 +1,5 @@
 class Activity < ApplicationRecord
-  TOPICS = %w[session password otp].freeze
+  TOPICS = %w[session password otp account].freeze
   RESULTS = %w[succeed failed].freeze
 
   belongs_to :user

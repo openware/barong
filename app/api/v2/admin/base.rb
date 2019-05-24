@@ -21,6 +21,7 @@ module API::V2
       mount Admin::Users
       mount Admin::Permissions
       mount Admin::Activities
+      mount Admin::Metrics
     end
   end
 end

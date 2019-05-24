@@ -54,6 +54,8 @@ module API::V2
 
           code_error!(user.errors.details, 422) unless user.save
 
+          activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
+
           publish_confirmation(user, language, Barong::App.config.barong_domain)
           status 201
         end
