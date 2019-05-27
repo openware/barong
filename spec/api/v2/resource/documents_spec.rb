@@ -4,7 +4,10 @@ require 'spec_helper'
 
 describe 'Documents API test' do
   include_context 'bearer authentication'
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
 
   describe 'POST /api/v2/resource/documents/' do

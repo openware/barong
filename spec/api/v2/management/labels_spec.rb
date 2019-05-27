@@ -12,7 +12,14 @@ describe API::V2::Management::Labels, type: :request do
           read_labels:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] }
         }
     end
-
+    let!(:create_admin_permission) do
+      create :permission,
+             role: 'admin'
+    end
+    let!(:create_member_permission) do
+      create :permission,
+             role: 'member'
+    end
     let!(:user) { create(:user) }
 
     describe '#list' do

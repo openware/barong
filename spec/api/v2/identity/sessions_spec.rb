@@ -2,7 +2,10 @@
 
 describe API::V2::Identity::Sessions do
   include ActiveSupport::Testing::TimeHelpers
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   before do
     allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: true, geetest: false)
   end

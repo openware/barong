@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 describe API::V2::Identity::Users do
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   describe 'POST /api/v2/identity/users with default Barong::CaptchaPolicy' do
     let(:do_request) { post '/api/v2/identity/users', params: params }
 

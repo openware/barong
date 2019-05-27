@@ -12,7 +12,14 @@ describe API::V2::Management::Users, type: :request do
           write_users: { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] }
         }
     end
-
+    let!(:create_admin_permission) do
+      create :permission,
+             role: 'admin'
+    end
+    let!(:create_member_permission) do
+      create :permission,
+             role: 'member'
+    end
     let!(:user) { create(:user, :with_profile) }
 
     describe 'Show user info' do

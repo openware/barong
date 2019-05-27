@@ -4,7 +4,14 @@ require 'spec_helper'
 
 describe 'Labels API.' do
   include_context 'bearer authentication'
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
   let(:post_params) do
     {
       key: ::Faker::Internet.slug(nil, '-'),

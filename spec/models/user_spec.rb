@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   context 'User model basic syntax' do
     ## Test of validations
     it { should validate_presence_of(:email) }

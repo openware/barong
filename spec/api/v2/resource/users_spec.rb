@@ -2,7 +2,10 @@
 
 describe 'Api::V1::Profiles' do
   include_context 'bearer authentication'
-
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   describe 'GET /api/v2/resource/users/me' do
     it 'should reply permissions denied' do
       get '/api/v2/resource/users/me'

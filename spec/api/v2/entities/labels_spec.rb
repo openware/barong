@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 describe API::V2::Entities::Label do
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   let(:record) { create(:label) }
 
   subject { OpenStruct.new API::V2::Entities::Label.represent(record).serializable_hash }

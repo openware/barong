@@ -3,6 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Label, type: :model do
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   it { should belong_to(:user) }
 
   describe 'update user level if label defined as level', order: :defined do

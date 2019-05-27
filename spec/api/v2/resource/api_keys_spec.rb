@@ -2,6 +2,14 @@
 
 describe 'Api::V2::APIKeys' do
   include_context 'bearer authentication'
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
   let!(:test_user) { create(:user, otp: otp_enabled) }
   let(:otp_enabled) { true }
   let!(:api_key) { create :api_key, user: test_user }

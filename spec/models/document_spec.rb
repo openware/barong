@@ -4,6 +4,14 @@ require 'rails_helper'
 
 RSpec.describe Document, type: :model do
   ## Test of relationships
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
+  let!(:create_member_permission) do
+    create :permission,
+           role: 'member'
+  end
   it { should belong_to(:user) }
 
   describe 'validation' do
