@@ -6,6 +6,10 @@ module API
       # Admin functionality over users table
       class Users < Grape::API
         helpers do
+          def permitted_search_params(params)
+            params.slice(:uid, :email, :role, :first_name, :last_name, :country, :level, :state, :from, :to, :range)
+          end
+
           def search(field, value)
             error!({ errors: ['admin.user.non_user_field'] }, 422) unless User.attribute_names.include?(field)
 
@@ -24,6 +28,28 @@ module API
                      type: { value: Boolean, message: 'admin.user.non_boolean_extended' },
                      default: false,
                      desc: 'When true endpoint returns full information about users'
+            optional :uid,
+                     type: String
+            optional :email,
+                     type: String
+            optional :role,
+                     type: String
+            optional :first_name,
+                     type: String
+            optional :last_name,
+                     type: String
+            optional :country,
+                     type: String
+            optional :level,
+                     type: Integer
+            optional :state,
+                     type: String
+            optional :range,
+                     type: String,
+                     values: { value: -> (p){ %w[created updated].include?(p) }, message: 'admin.user.non_positive_page' },
+                     default: 'created'
+            optional :from
+            optional :to
             optional :page,
                      type: { value: Integer, message: 'admin.user.non_integer_page' },
                      values: { value: -> (p){ p.try(:positive?) }, message: 'admin.user.non_positive_page' },
@@ -37,27 +63,8 @@ module API
           end
           get do
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
-            User.all.tap { |q| present paginate(q), with: entity }
-          end
-
-          desc 'Returns array of users as paginated collection',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
-          params do
-            requires :field,    type: String, desc: 'User model field.'
-            requires :value,    type: String, desc: 'Value to match (strictly)'
-            optional :extended, type: { value: Boolean, message: 'admin.user.non_boolean_extended' }, default: false, desc: 'When true endpoint returns full information about users'
-            optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
-          end
-          get '/search' do
-            users = search(params[:field], params[:value])
-            error!({ errors: ['admin.user.no_matches'] }, 404) if users.empty?
-
-            entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
-            users.all.tap { |q| present paginate(q), with: entity }
+            users = API::V2::Queries::UserFilter.new(User.all).call(params)
+            users.tap { |q| present paginate(q), with: entity }
           end
 
           desc 'Update user',
