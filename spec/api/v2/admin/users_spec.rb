@@ -40,6 +40,7 @@ describe API::V2::Admin::Users do
       def validate_fields(user)
         user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
       end
+
       it 'returns list of users' do
 
         do_request
@@ -49,6 +50,26 @@ describe API::V2::Admin::Users do
         expect(validate_fields(User.second)).to eq users.second
         expect(validate_fields(User.third)).to eq users.third
         expect(validate_fields(User.last)).to eq users.last
+
+        expect(users.first.keys).to_not include('profile')
+
+        expect(response.headers.fetch('Total')).to eq '4'
+        expect(response.headers.fetch('Page')).to eq '1'
+        expect(response.headers.fetch('Per-Page')).to eq '100'
+      end
+
+      let(:extended_params) do {
+          extended: true
+        }
+      end
+      let(:do_extended_info_request) { get '/api/v2/admin/users', headers: auth_header, params: extended_params }
+
+      it 'returns list of users with full info' do
+        do_extended_info_request
+        users = JSON.parse(response.body)
+        expect(User.count).to eq users.count
+
+        expect(users.first.keys).to include('profile')
 
         expect(response.headers.fetch('Total')).to eq '4'
         expect(response.headers.fetch('Page')).to eq '1'
@@ -493,6 +514,15 @@ describe API::V2::Admin::Users do
         get '/api/v2/admin/users/documents/pending', headers: auth_header
 
         users = JSON.parse(response.body)
+        expect(users.first.keys).to_not include('profile')
+        expect(users.count).to eq private_document_pending_count
+      end
+
+      it 'returns users users with extended info' do
+        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {extended: true}
+
+        users = JSON.parse(response.body)
+        expect(users.first.keys).to include('profile')
         expect(users.count).to eq private_document_pending_count
       end
 
