@@ -18,77 +18,125 @@ describe API::V2::Admin::Users do
     let(:do_request) { get '/api/v2/admin/users', headers: auth_header }
 
     context 'admin user' do
-      let(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
-      let(:second_user) { create(:user, email: 'testb@gmail.com') }
-      let(:third_user) { create(:user, email: 'testd@gmail.com') }
-      let(:fourth_user) { create(:user, email: 'testc@gmail.com') }
+      let!(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
+      let!(:second_user) { create(:user, email: 'testb@gmail.com', level: 2, state: 'active') }
+      let!(:third_user) { create(:user, email: 'testd@gmail.com', level: 2, state: 'pending') }
+      let!(:fourth_user) { create(:user, email: 'testc@gmail.com', level: 1, state: 'active') }
 
-      let(:params) do {
-        field: 'email',
-        value: 'testa@gmail.com'
-      }
-      end
-      let(:do_search_request) { get '/api/v2/admin/users/search', headers: auth_header, params: params }
-
-      before(:example) {
-        test_user
-        second_user
-        third_user
-        fourth_user
-      }
+      let(:params) { {} }
+      let(:do_search_request) { get '/api/v2/admin/users', headers: auth_header, params: params }
 
       def validate_fields(user)
-        user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
+        user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid').symbolize_keys
       end
 
       it 'returns list of users' do
-
         do_request
-        users = JSON.parse(response.body)
-        expect(User.count).to eq users.count
-        expect(validate_fields(User.first)).to eq users.first
-        expect(validate_fields(User.second)).to eq users.second
-        expect(validate_fields(User.third)).to eq users.third
-        expect(validate_fields(User.last)).to eq users.last
+        expect(User.count).to eq json_body.count
+        expect(validate_fields(User.first)).to eq json_body.first
+        expect(validate_fields(User.second)).to eq json_body.second
+        expect(validate_fields(User.third)).to eq json_body.third
+        expect(validate_fields(User.fourth)).to eq json_body.fourth
 
-        expect(users.first.keys).to_not include('profile')
+        expect(json_body.first.keys).to_not include(:profile)
 
-        expect(response.headers.fetch('Total')).to eq '4'
+        expect(response.headers.fetch('Total')).to eq User.all.count.to_s
         expect(response.headers.fetch('Page')).to eq '1'
         expect(response.headers.fetch('Per-Page')).to eq '100'
       end
 
-      let(:extended_params) do {
-          extended: true
-        }
+      it 'returns filtered list of users when only one filter param given created_at and from' do
+        params[:range] = 'created'
+        User.first.update(created_at: 1.day.ago)
+        params[:from] = User.last.created_at
+        do_search_request
+
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq (User.all.count - 1)
       end
+
+      it 'returns filtered list of users when only one filter param given updated_at' do
+        params[:range] = 'updated'
+        User.first.update(updated_at: 1.day.ago)
+        params[:from] = User.last.updated_at
+        do_search_request
+
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq (User.all.count - 1)
+      end
+
+      it 'returns filtered list of users when only one filter param given (user attribute) level' do
+        params[:level] = 2
+        do_search_request
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq User.where(level: 2).count
+      end
+
+      it 'returns filtered list of users when only one filter param given (user attribute) state' do
+        params[:state] = 'active'
+        do_search_request
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq User.where(state: 'active').count
+      end
+
+      it 'returns filtered list of users when several params given (user attribute) : state and level' do
+        params[:level] = 2
+        params[:state] = 'active'
+        do_search_request
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq User.where(level: 2, state: 'active').count
+      end
+
+      let!(:profile) do
+        create :profile, first_name: 'peatio',
+                         last_name: 'barong',
+                         country: 'us'
+      end
+
+      it 'returns filtered list of users when only one filter param given (profile attribute) first_name' do
+        params[:first_name] = 'peatio'
+        do_search_request
+        expect(response.status).to eq 200
+      end
+
+      it 'returns filtered list of users when several params given (profile attribute) : first_name and country' do
+        params[:first_name] = 'peatio'
+        params[:last_name] = 'barong'
+        params[:country] = 'barong'
+        do_search_request
+        expect(response.status).to eq 200
+      end
+
+      let(:extended_params) { { extended: true } }
       let(:do_extended_info_request) { get '/api/v2/admin/users', headers: auth_header, params: extended_params }
 
       it 'returns list of users with full info' do
         do_extended_info_request
-        users = JSON.parse(response.body)
-        expect(User.count).to eq users.count
+        expect(User.count).to eq json_body.count
 
-        expect(users.first.keys).to include('profile')
+        expect(json_body.first.keys).to include(:profile)
 
-        expect(response.headers.fetch('Total')).to eq '4'
+        expect(response.headers.fetch('Total')).to eq User.all.count.to_s
         expect(response.headers.fetch('Page')).to eq '1'
         expect(response.headers.fetch('Per-Page')).to eq '100'
       end
 
       it 'returns list of users (ASC ordered) in search' do
+        params[:email] = 'testa@gmail.com'
         do_search_request
-        users = JSON.parse(response.body)
 
-        expect(users.count).to eq 1
-        expect(users[0]['email']).to eq 'testa@gmail.com'
+        expect(json_body.count).to eq 1
+        expect(json_body[0][:email]).to eq 'testa@gmail.com'
       end
 
-      it 'returns all users (ASC ordered) in search req if field is invalid' do
+      it 'returns all users (ASC ordered) in search req if field is not in the list' do
+        params.clear
         params[:field] = 'bazz'
         do_search_request
-        expect_body.to eq(errors: ['admin.user.non_user_field'])
-        expect_status.to eq(422)
+
+        expect(json_body.count).to eq User.all.count
+
+        expect_status.to eq(200)
       end
 
       context 'pagination test' do
@@ -96,11 +144,10 @@ describe API::V2::Admin::Users do
           get '/api/v2/admin/users', headers: auth_header, params: {
             limit: 2
           }
-          users = JSON.parse(response.body)
-          expect(validate_fields(User.first)).to eq users.first
-          expect(validate_fields(User.second)).to eq users.second
+          expect(validate_fields(User.first)).to eq json_body.first
+          expect(validate_fields(User.second)).to eq json_body.second
 
-          expect(response.headers.fetch('Total')).to eq '4'
+          expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
           expect(response.headers.fetch('Per-Page')).to eq '2'
         end
@@ -110,11 +157,10 @@ describe API::V2::Admin::Users do
             limit: 2,
             page: 2
           }
-          users = JSON.parse(response.body)
-          expect(validate_fields(User.third)).to eq users.first
-          expect(validate_fields(User.last)).to eq users.second
+          expect(validate_fields(User.third)).to eq json_body.first
+          expect(validate_fields(User.fourth)).to eq json_body.second
 
-          expect(response.headers.fetch('Total')).to eq '4'
+          expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
         end
@@ -221,14 +267,13 @@ describe API::V2::Admin::Users do
 
       it 'returns user info' do
         do_request
-        result = JSON.parse(response.body)
         expect(response.status).to eq 200
-        expect(result['uid']).to eq experimental_user.uid
-        expect(result['role']).to eq experimental_user.role
-        expect(result['email']).to eq experimental_user.email
-        expect(result['level']).to eq experimental_user.level
-        expect(result['otp']).to eq experimental_user.otp
-        expect(result['state']).to eq experimental_user.state
+        expect(json_body[:uid]).to eq experimental_user.uid
+        expect(json_body[:role]).to eq experimental_user.role
+        expect(json_body[:email]).to eq experimental_user.email
+        expect(json_body[:level]).to eq experimental_user.level
+        expect(json_body[:otp]).to eq experimental_user.otp
+        expect(json_body[:state]).to eq experimental_user.state
       end
     end
   end
@@ -451,8 +496,7 @@ describe API::V2::Admin::Users do
           value: 'pending'
         }
 
-        users = JSON.parse(response.body)
-        expect(users.count).to eq document_pending_count
+        expect(json_body.count).to eq document_pending_count
       end
 
       context 'pagination test' do
@@ -463,10 +507,9 @@ describe API::V2::Admin::Users do
             limit: 2
           }
 
-          users = JSON.parse(response.body)
-          expect(users.count).to eq 2
-          expect(User.first.email).to eq users.first['email']
-          expect(User.second.email).to eq users.second['email']
+          expect(json_body.count).to eq 2
+          expect(User.first.email).to eq json_body.first[:email]
+          expect(User.second.email).to eq json_body.second[:email]
 
           expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
@@ -481,8 +524,7 @@ describe API::V2::Admin::Users do
             page: 2
           }
 
-          users = JSON.parse(response.body)
-          expect(User.third.email).to eq users.first['email']
+          expect(User.third.email).to eq json_body.first[:email]
 
           expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
@@ -513,17 +555,15 @@ describe API::V2::Admin::Users do
       it 'returns users' do
         get '/api/v2/admin/users/documents/pending', headers: auth_header
 
-        users = JSON.parse(response.body)
-        expect(users.first.keys).to_not include('profile')
-        expect(users.count).to eq private_document_pending_count
+        expect(json_body.first.keys).to_not include(:profile)
+        expect(json_body.count).to eq private_document_pending_count
       end
 
       it 'returns users users with extended info' do
         get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {extended: true}
 
-        users = JSON.parse(response.body)
-        expect(users.first.keys).to include('profile')
-        expect(users.count).to eq private_document_pending_count
+        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.count).to eq private_document_pending_count
       end
 
       context 'sorting test' do
@@ -538,9 +578,7 @@ describe API::V2::Admin::Users do
 
         it 'returns users sorted by time of label creation' do
           get '/api/v2/admin/users/documents/pending', headers: auth_header
-
-          users = JSON.parse(response.body)
-          expect(users.last['email']).to eq first_user.email
+          expect(json_body.last[:email]).to eq first_user.email
         end
       end
 
@@ -550,10 +588,9 @@ describe API::V2::Admin::Users do
               limit: 2
           }
 
-          users = JSON.parse(response.body)
-          expect(users.count).to eq 2
-          expect(User.first.email).to eq users.first['email']
-          expect(User.second.email).to eq users.second['email']
+          expect(json_body.count).to eq 2
+          expect(User.first.email).to eq json_body.first[:email]
+          expect(User.second.email).to eq json_body.second[:email]
 
           expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
@@ -566,8 +603,7 @@ describe API::V2::Admin::Users do
               page: 2
           }
 
-          users = JSON.parse(response.body)
-          expect(User.third.email).to eq users.first['email']
+          expect(User.third.email).to eq json_body.first[:email]
 
           expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
