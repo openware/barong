@@ -1,5 +1,200 @@
 # Change Log
 
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.22...HEAD)
+
+**Closed issues:**
+
+- An error occurred while installing mysql2 \(0.5.2\), and Bundler cannot continue. Make sure that `gem install mysql2 -v '0.5.2' --source 'https://rubygems.org/'` succeeds before bundling. [\#873](https://github.com/rubykube/barong/issues/873)
+
+## [2.2.22](https://github.com/rubykube/barong/tree/2.2.22) (2019-07-17)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.21...2.2.22)
+
+**Merged pull requests:**
+
+- Add optional :extended UserWithFullInfo entity in post /get management [\#872](https://github.com/rubykube/barong/pull/872) ([ec](https://github.com/ec))
+- Make documents act\_as\_eventable on create [\#871](https://github.com/rubykube/barong/pull/871) ([ec](https://github.com/ec))
+
+## [2.2.21](https://github.com/rubykube/barong/tree/2.2.21) (2019-07-16)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.20...2.2.21)
+
+**Closed issues:**
+
+- \[To Confirm\] Strange admin activity creation behavior on UID filtering requests [\#869](https://github.com/rubykube/barong/issues/869)
+- ActionController::InvalidAuthenticityToken in SessionsController\#confirm [\#866](https://github.com/rubykube/barong/issues/866)
+
+**Merged pull requests:**
+
+- Add verb PATCH and ALL for admin audit && Update permission seeds [\#870](https://github.com/rubykube/barong/pull/870) ([chumaknadya](https://github.com/chumaknadya))
+- Make profile act\_as\_eventable on create  [\#865](https://github.com/rubykube/barong/pull/865) ([ec](https://github.com/ec))
+- Add filter/users in labels management api module [\#864](https://github.com/rubykube/barong/pull/864) ([ec](https://github.com/ec))
+- Update Readme [\#862](https://github.com/rubykube/barong/pull/862) ([liutenko](https://github.com/liutenko))
+- Support pagination & timestamp filtering on post '/list' management API [\#861](https://github.com/rubykube/barong/pull/861) ([ec](https://github.com/ec))
+
+## [2.2.20](https://github.com/rubykube/barong/tree/2.2.20) (2019-06-27)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.19...2.2.20)
+
+**Merged pull requests:**
+
+- Move to active storage [\#858](https://github.com/rubykube/barong/pull/858) ([ec](https://github.com/ec))
+- Fix /api/v2/admin/users/update [\#857](https://github.com/rubykube/barong/pull/857) ([denisfd](https://github.com/denisfd))
+
+## [2.2.19](https://github.com/rubykube/barong/tree/2.2.19) (2019-06-25)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.18...2.2.19)
+
+**Closed issues:**
+
+- add public api version check  [\#848](https://github.com/rubykube/barong/issues/848)
+- Split endpoints `admin/users` [\#847](https://github.com/rubykube/barong/issues/847)
+- Admin activities duplicated in user activities for admin users [\#845](https://github.com/rubykube/barong/issues/845)
+
+**Merged pull requests:**
+
+- Add docs in bump and update redeploy step [\#856](https://github.com/rubykube/barong/pull/856) ([denisfd](https://github.com/denisfd))
+- skip tag [\#855](https://github.com/rubykube/barong/pull/855) ([denisfd](https://github.com/denisfd))
+- Generate docs in CI [\#854](https://github.com/rubykube/barong/pull/854) ([denisfd](https://github.com/denisfd))
+- Use JSON logs in production [\#849](https://github.com/rubykube/barong/pull/849) ([denisfd](https://github.com/denisfd))
+
+## [2.2.18](https://github.com/rubykube/barong/tree/2.2.18) (2019-06-24)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.17...2.2.18)
+
+## [2.2.17](https://github.com/rubykube/barong/tree/2.2.17) (2019-06-24)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.16...2.2.17)
+
+## [2.2.16](https://github.com/rubykube/barong/tree/2.2.16) (2019-06-24)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.15...2.2.16)
+
+**Merged pull requests:**
+
+- Add missing data field in activity logger [\#853](https://github.com/rubykube/barong/pull/853) ([ec](https://github.com/ec))
+- Changes in admin API module [\#850](https://github.com/rubykube/barong/pull/850) ([ec](https://github.com/ec))
+
+## [2.2.15](https://github.com/rubykube/barong/tree/2.2.15) (2019-06-23)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.14...2.2.15)
+
+**Merged pull requests:**
+
+- Split and refactor auth spec, add sync auditor for test env [\#852](https://github.com/rubykube/barong/pull/852) ([ec](https://github.com/ec))
+- Add GET /identity/version endpoint [\#851](https://github.com/rubykube/barong/pull/851) ([ec](https://github.com/ec))
+
+## [2.2.14](https://github.com/rubykube/barong/tree/2.2.14) (2019-06-14)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.13...2.2.14)
+
+**Merged pull requests:**
+
+- AUDIT: support PATCH, add default topic, action, seeds [\#844](https://github.com/rubykube/barong/pull/844) ([ec](https://github.com/ec))
+
+## [2.2.13](https://github.com/rubykube/barong/tree/2.2.13) (2019-06-13)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.12...2.2.13)
+
+**Merged pull requests:**
+
+- Admin Auditor [\#835](https://github.com/rubykube/barong/pull/835) ([ec](https://github.com/ec))
+
+## [2.2.12](https://github.com/rubykube/barong/tree/2.2.12) (2019-06-10)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.11...2.2.12)
+
+## [2.2.11](https://github.com/rubykube/barong/tree/2.2.11) (2019-06-10)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.10...2.2.11)
+
+**Closed issues:**
+
+- BUG: Barong and Postmaster do not communicate well [\#818](https://github.com/rubykube/barong/issues/818)
+- Feature Request: Configurable roles and permissions [\#813](https://github.com/rubykube/barong/issues/813)
+- Expose Referral ID in API [\#802](https://github.com/rubykube/barong/issues/802)
+- Implement api keys scope logic [\#779](https://github.com/rubykube/barong/issues/779)
+- API Keys seed feature [\#778](https://github.com/rubykube/barong/issues/778)
+- Add readable logs in AuthZ lib [\#777](https://github.com/rubykube/barong/issues/777)
+
+**Merged pull requests:**
+
+- Disable APIKeys when user state or otp changes [\#829](https://github.com/rubykube/barong/pull/829) ([denisfd](https://github.com/denisfd))
+
+## [2.2.10](https://github.com/rubykube/barong/tree/2.2.10) (2019-06-10)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.9...2.2.10)
+
+**Merged pull requests:**
+
+- Use FullInfo instead of WithProfile to add documents array in response [\#842](https://github.com/rubykube/barong/pull/842) ([ec](https://github.com/ec))
+- Remove activities from full\_info entity [\#841](https://github.com/rubykube/barong/pull/841) ([ec](https://github.com/ec))
+- Fix nil language problem in case of empty string and upcased param [\#840](https://github.com/rubykube/barong/pull/840) ([ec](https://github.com/ec))
+- Return empty array instead of 404 error after filtering [\#839](https://github.com/rubykube/barong/pull/839) ([ec](https://github.com/ec))
+
+## [2.2.9](https://github.com/rubykube/barong/tree/2.2.9) (2019-06-05)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.8...2.2.9)
+
+**Merged pull requests:**
+
+- Update seeds.yml [\#838](https://github.com/rubykube/barong/pull/838) ([pkucherenk0](https://github.com/pkucherenk0))
+
+## [2.2.8](https://github.com/rubykube/barong/tree/2.2.8) (2019-06-04)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.7...2.2.8)
+
+**Merged pull requests:**
+
+- Add filters feature support on doc pending endpoint [\#837](https://github.com/rubykube/barong/pull/837) ([ec](https://github.com/ec))
+
+## [2.2.7](https://github.com/rubykube/barong/tree/2.2.7) (2019-05-28)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.6...2.2.7)
+
+**Merged pull requests:**
+
+- Add ability to filter by multiple fields [\#833](https://github.com/rubykube/barong/pull/833) ([gfedorenko](https://github.com/gfedorenko))
+
+## [2.2.6](https://github.com/rubykube/barong/tree/2.2.6) (2019-05-28)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.5...2.2.6)
+
+## [2.2.5](https://github.com/rubykube/barong/tree/2.2.5) (2019-05-28)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.4...2.2.5)
+
+**Merged pull requests:**
+
+- Add ability to get list of users with profile [\#830](https://github.com/rubykube/barong/pull/830) ([gfedorenko](https://github.com/gfedorenko))
+
+## [2.2.4](https://github.com/rubykube/barong/tree/2.2.4) (2019-05-28)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.3...2.2.4)
+
+## [2.2.3](https://github.com/rubykube/barong/tree/2.2.3) (2019-05-27)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.2...2.2.3)
+
+**Closed issues:**
+
+- Barong api session create don't return tokens [\#832](https://github.com/rubykube/barong/issues/832)
+- Admin api list users with pending documents [\#799](https://github.com/rubykube/barong/issues/799)
+- Automate documentation updating \(v2\) [\#784](https://github.com/rubykube/barong/issues/784)
+- Move all envs to config.store [\#736](https://github.com/rubykube/barong/issues/736)
+- \[Barong v2; Feature request\] handle document expired date. [\#666](https://github.com/rubykube/barong/issues/666)
+
+**Merged pull requests:**
+
+- Add metrics namespace in admin module [\#834](https://github.com/rubykube/barong/pull/834) ([ec](https://github.com/ec))
+- Add endpoint to list all user's phones [\#831](https://github.com/rubykube/barong/pull/831) ([denisfd](https://github.com/denisfd))
+- Added admin endpoints to get activities [\#828](https://github.com/rubykube/barong/pull/828) ([gfedorenko](https://github.com/gfedorenko))
+- Add management otp sign endpoint and specs [\#827](https://github.com/rubykube/barong/pull/827) ([ec](https://github.com/ec))
+- Avoid nil language bug on user creation event [\#820](https://github.com/rubykube/barong/pull/820) ([ec](https://github.com/ec))
+- Permissions & roles, seed feature and authz logic [\#819](https://github.com/rubykube/barong/pull/819) ([ec](https://github.com/ec))
+
+## [2.2.2](https://github.com/rubykube/barong/tree/2.2.2) (2019-05-13)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.1...2.2.2)
+
+**Merged pull requests:**
+
+- Added API call to get users with pending documents [\#826](https://github.com/rubykube/barong/pull/826) ([gfedorenko](https://github.com/gfedorenko))
+
+## [2.2.1](https://github.com/rubykube/barong/tree/2.2.1) (2019-05-09)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.1.4...2.2.1)
+
+**Closed issues:**
+
+- Internal Error when clicking on email confirmation [\#821](https://github.com/rubykube/barong/issues/821)
+- How to generate OTP using barong? [\#817](https://github.com/rubykube/barong/issues/817)
+- Allow user to close his account [\#812](https://github.com/rubykube/barong/issues/812)
+
+**Merged pull requests:**
+
+- Add GET /labels/list to return key, value, scope of all existing labels [\#824](https://github.com/rubykube/barong/pull/824) ([ec](https://github.com/ec))
+- \[ci skip\] Release 2.1.0 [\#822](https://github.com/rubykube/barong/pull/822) ([ec](https://github.com/ec))
+- Add DELETE /resource/users/me to allow user to block his account [\#811](https://github.com/rubykube/barong/pull/811) ([ec](https://github.com/ec))
+
 ## [2.1.4](https://github.com/rubykube/barong/tree/2.1.4) (2019-04-09)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.1.3...2.1.4)
 
@@ -35,8 +230,8 @@
 
 - Update rails-related gems versions in favor of vulnerability alerts [\#809](https://github.com/rubykube/barong/pull/809) ([ec](https://github.com/ec))
 - Allow to list API Keys without providing OTP code [\#807](https://github.com/rubykube/barong/pull/807) ([ec](https://github.com/ec))
-- API user activity sort desc [\#804](https://github.com/rubykube/barong/pull/804) ([maryna25](https://github.com/maryna25))
-- Add ability to search users by labels [\#800](https://github.com/rubykube/barong/pull/800) ([maryna25](https://github.com/maryna25))
+- API user activity sort desc [\#804](https://github.com/rubykube/barong/pull/804) ([mkalenska](https://github.com/mkalenska))
+- Add ability to search users by labels [\#800](https://github.com/rubykube/barong/pull/800) ([mkalenska](https://github.com/mkalenska))
 - Improve language support in event API, add domain info inside event [\#791](https://github.com/rubykube/barong/pull/791) ([ec](https://github.com/ec))
 
 ## [2.1.2](https://github.com/rubykube/barong/tree/2.1.2) (2019-03-01)
@@ -1539,3 +1734,7 @@
 - Add rubocop.yml [\#7](https://github.com/rubykube/barong/pull/7) ([yivo](https://github.com/yivo))
 - Prepare initial configuration and gemset [\#6](https://github.com/rubykube/barong/pull/6) ([yivo](https://github.com/yivo))
 - Development & software operations [\#5](https://github.com/rubykube/barong/pull/5) ([ysv](https://github.com/ysv))
+
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
