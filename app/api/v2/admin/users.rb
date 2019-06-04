@@ -120,12 +120,38 @@ module API
                    { code: 401, message: 'Invalid bearer token' }
                ]
           params do
-            optional :extended, type: { value: Boolean, message: 'admin.user.non_boolean_extended' }, default: false, desc: 'When true endpoint returns full information about users'
+            optional :extended,
+                     type: { value: Boolean, message: 'admin.user.non_boolean_extended' },
+                     default: false,
+                     desc: 'When true endpoint returns full information about users'
+            optional :uid,
+                     type: String
+            optional :email,
+                     type: String
+            optional :role,
+                     type: String
+            optional :first_name,
+                     type: String
+            optional :last_name,
+                     type: String
+            optional :country,
+                     type: String
+            optional :level,
+                     type: Integer
+            optional :state,
+                     type: String
+            optional :range,
+                     type: String,
+                     values: { value: ->(p) { %w[created updated].include?(p) }, message: 'admin.user.non_positive_page' },
+                     default: 'created'
+            optional :from
+            optional :to
             optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
             optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
           end
           get '/documents/pending' do
-            users = User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).order('labels.updated_at ASC')
+            users_with_pending_docs = User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).order('labels.updated_at ASC')
+            users = API::V2::Queries::UserFilter.new(users_with_pending_docs).call(params)
             error!({ errors: ['admin.user.label_no_matches'] }, 404) if users.empty?
 
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User

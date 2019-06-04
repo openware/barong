@@ -26,8 +26,8 @@ module API::V2::Queries
 
     # adds where(users.[created, updated]_at > from and users.[created, updated]_at < to) to query
     def filter_by_date(scoped, range = 'created', from = nil, to = nil)
-      updated_scope = from ? scoped.where("users.#{range}_at >= ?", from) : scoped
-      to ? updated_scope.where("users.#{range}_at <= ?", to) : updated_scope
+      updated_scope = from ? scoped.where("users.#{range}_at >= ?", Time.at(from.to_i)) : scoped
+      to ? updated_scope.where("users.#{range}_at <= ?", Time.at(to.to_i)) : updated_scope
     end
 
     # adds where(users.uid = uid) to query
