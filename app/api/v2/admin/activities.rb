@@ -7,7 +7,7 @@ module API
       class Activities < Grape::API
         helpers do
           def permitted_search_params(params)
-            params.slice(:action, :uid, :email, :topic, :created_from, :created_to).merge(with_user: true, ordered: true)
+            params.slice(:action, :uid, :email, :topic, :from, :to, :range).merge(with_user: true, ordered: true)
           end
         end
 
@@ -26,8 +26,12 @@ module API
                      type: { value: String, message: 'admin.activity.non_string_uid' }
             optional :email,
                      type: { value: String, message: 'admin.activity.non_string_email' }
-            optional :created_from
-            optional :created_to
+            optional :range,
+                     type: String,
+                     values: { value: -> (p){ %w[created].include?(p) }, message: 'admin.user.invalid_range' },
+                     default: 'created'
+            optional :from
+            optional :to
             optional :page,
                      type: { value: Integer, message: 'admin.activity.non_integer_page' },
                      values: { value: -> (p){ p.try(:positive?) }, message: 'admin.activity.non_positive_page'},

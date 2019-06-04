@@ -48,17 +48,7 @@ describe API::V2::Admin::Users do
       it 'returns filtered list of users when only one filter param given created_at and from' do
         params[:range] = 'created'
         User.first.update(created_at: 1.day.ago)
-        params[:from] = User.last.created_at
-        do_search_request
-
-        expect(response.status).to eq 200
-        expect(json_body.count).to eq (User.all.count - 1)
-      end
-
-      it 'returns filtered list of users when only one filter param given updated_at' do
-        params[:range] = 'updated'
-        User.first.update(updated_at: 1.day.ago)
-        params[:from] = User.last.updated_at
+        params[:from] = User.last.created_at.to_i
         do_search_request
 
         expect(response.status).to eq 200
@@ -564,6 +554,80 @@ describe API::V2::Admin::Users do
 
         expect(json_body.first.keys).to include(:profile)
         expect(json_body.count).to eq private_document_pending_count
+      end
+
+      context 'filtering' do
+        let(:params) { {} }
+        let(:do_search_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header, params: params }
+
+        it 'returns filtered list of users when only one filter param given created_at and from' do
+          params[:range] = 'created'
+          User.first.update(created_at: 1.day.ago)
+          params[:from] = 8.hours.ago.to_i
+          do_search_request
+
+          expect(response.status).to eq 200
+          expect(json_body.count).to eq (private_document_pending_count - 1)
+        end
+
+        it 'returns filtered list of users when only one filter param given updated_at' do
+          params[:range] = 'updated'
+          User.first.update(updated_at: 1.day.ago)
+          params[:from] = 8.hours.ago.to_i
+          do_search_request
+
+          expect(response.status).to eq 200
+          expect(json_body.count).to eq (private_document_pending_count - 1)
+        end
+
+        it 'returns filtered list of users when only one filter param given (user attribute) level' do
+          params[:level] = 2
+          do_search_request
+          User.first.update(level: 2)
+
+          expect(json_body.count).to eq User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).where(level: 2).count
+        end
+
+        it 'returns filtered list of users when only one filter param given (user attribute) state' do
+          params[:state] = 'active'
+          do_search_request
+          expect(response.status).to eq 200
+          expect(json_body.count).to eq User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).where(state: 'active').count
+        end
+
+        it 'returns filtered list of users when several params given (user attribute) : state and level' do
+          User.first.update(level: 2)
+          params[:level] = 2
+          params[:state] = 'active'
+          do_search_request
+          expect(response.status).to eq 200
+          expect(json_body.count).to eq User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).where(level: 2, state: 'active').count
+        end
+
+        let(:profile) do
+          create :profile, first_name: 'peatio',
+                           last_name: 'barong',
+                           country: 'us'
+          Label.create(key: 'document', value: 'pending', scope: 'private', user_id: Profile.last.user_id)
+        end
+
+        it 'returns filtered list of users when only one filter param given (profile attribute) first_name' do
+          profile
+          params[:first_name] = 'peatio'
+          do_search_request
+
+          expect(response.status).to eq 200
+        end
+
+        it 'returns filtered list of users when several params given (profile attribute) : first_name and country' do
+          profile
+          params[:first_name] = 'peatio'
+          params[:last_name] = 'barong'
+          params[:country] = 'us'
+          do_search_request
+
+          expect(response.status).to eq 200
+        end
       end
 
       context 'sorting test' do
