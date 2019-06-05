@@ -10,7 +10,7 @@ module API::V2
         end
 
         def validate_topic!(topic)
-          unless %w[all session otp password].include?(topic)
+          unless %w[all session otp password account].include?(topic)
             error!({ errors: ['resource.user.wrong_topic'] }, 422)
           end
         end

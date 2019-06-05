@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'barong/activity_logger'
+
 module Barong
   # AuthZ functionality
   class Authorize
@@ -68,9 +70,31 @@ module Barong
         permissions = Permission.all.to_ary
         Rails.cache.write('permissions', permissions, expires_in: 5.minutes)
       end
-      permissions.select! { |a| a.role == user.role && a.verb == @request.env['REQUEST_METHOD'] && @path.starts_with?(a.path) }
+      permissions.select! { |a| a.role == user.role && ( a.verb == @request.env['REQUEST_METHOD'] || a.verb == 'ALL' ) && @path.starts_with?(a.path) }
+      actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 
-      error!({ errors: ['authz.invalid_permission'] }, 401) if permissions.blank? || permissions.pluck(:action).include?('DROP')
+      if permissions.blank? || actions.include?('DROP') || !actions.include?('ACCEPT')
+        log_activity(user.id, 'denied')
+        error!({ errors: ['authz.invalid_permission'] }, 401)
+      end
+
+      if actions.include?('AUDIT')
+        topic = permissions.select { |a| a.action == 'AUDIT' }[0].topic
+        log_activity(user.id, 'succeed', topic)
+      end
+    end
+
+    def log_activity(user_id, result, topic = nil)
+      ActivityLogger.write(
+        user_id: user_id,
+        result: result,
+        user_agent: @request.env['HTTP_USER_AGENT'],
+        user_ip: @request.env['HTTP_X_FORWARDED_FOR'] || @request.ip,
+        path: @path,
+        topic: topic,
+        verb: @request.env['REQUEST_METHOD'],
+        payload: @request.params
+      )
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter
