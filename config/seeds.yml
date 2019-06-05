@@ -27,7 +27,7 @@ permissions:
  - { role: superadmin, verb: post, path: api/v2, action: accept }
  - { role: superadmin, verb: put, path: api/v2, action: accept }
  - { role: superadmin, verb: delete, path: api/v2, action: accept }
- # accountant has a full access to the peatio admin api
+ # superadmin has a full access to the peatio admin api
  - { role: superadmin, verb: get, path: admin, action: accept }
  - { role: superadmin, verb: post, path: admin, action: accept }
  - { role: superadmin, verb: put, path: admin, action: accept }
@@ -40,7 +40,7 @@ permissions:
  - { role: admin, verb: post, path: api/v2, action: accept }
  - { role: admin, verb: put, path: api/v2, action: accept }
  - { role: admin, verb: delete, path: api/v2, action: accept }
- # accountant has a full access to the peatio admin api
+ # admin has a full access to the peatio admin api
  - { role: admin, verb: get, path: admin, action: accept }
  - { role: admin, verb: post, path: admin, action: accept }
  - { role: admin, verb: put, path: admin, action: accept }
