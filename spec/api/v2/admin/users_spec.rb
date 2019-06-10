@@ -542,6 +542,31 @@ describe API::V2::Admin::Users do
         end
       end
 
+      it 'returns users with profile and documents if params extended' do
+        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: true }
+
+        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:documents)
+        expect(json_body.count).to eq private_document_pending_count
+      end
+
+      it 'doesnt returns users with profile and documents if extended false' do
+        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: false }
+
+        expect(json_body.first.keys).not_to include(:profile)
+        expect(json_body.first.keys).not_to include(:documents)
+        expect(json_body.count).to eq private_document_pending_count
+      end
+
+      it 'doesnt returns users with profile and documents if extended not provided' do
+        get '/api/v2/admin/users/documents/pending', headers: auth_header
+
+        expect(json_body.first.keys).not_to include(:profile)
+        expect(json_body.first.keys).not_to include(:documents)
+        expect(json_body.count).to eq private_document_pending_count
+      end
+
+
       it 'returns users' do
         get '/api/v2/admin/users/documents/pending', headers: auth_header
 
