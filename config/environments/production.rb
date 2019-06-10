@@ -76,6 +76,10 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
+  # configuring TIMEZONE
+  config.time_zone = Barong::App.config.timezone
+  config.active_record.default_timezone = :local
+  
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
