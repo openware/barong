@@ -163,6 +163,9 @@ describe API::V2::Admin::Users do
 
     context 'admin user' do
       let(:test_user) { create(:user, role: "admin") }
+      let(:user_with_api_keys) { create(:user, state: "active", otp: true) }
+      let!(:api_key1) { create(:api_key, user: user_with_api_keys) }
+      let!(:api_key2) { create(:api_key, user: user_with_api_keys) }
       it 'renders error if uid is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
           state: 'active'
@@ -239,6 +242,42 @@ describe API::V2::Admin::Users do
         }
         expect(response.status).to eq 422
         expect(response.body).to eq "{\"errors\":[\"admin.user.state_no_change\"]}"
+      end
+
+      it 'doesnt disable api keys for enabling otp' do
+        put '/api/v2/admin/users', headers: auth_header, params: {
+          uid: user_with_api_keys.uid,
+          otp: true
+        }
+        expect(api_key1.reload.state).to eq 'active'
+        expect(api_key2.reload.state).to eq 'active'
+      end
+
+      it 'doesnt disable api keys for activating user' do
+        put '/api/v2/admin/users', headers: auth_header, params: {
+          uid: user_with_api_keys.uid,
+          state: 'active'
+        }
+        expect(api_key1.reload.state).to eq 'active'
+        expect(api_key2.reload.state).to eq 'active'
+      end
+
+      it 'disables api_keys when state changes' do
+        put '/api/v2/admin/users', headers: auth_header, params: {
+          uid: user_with_api_keys.uid,
+          state: 'banned'
+        }
+        expect(api_key1.reload.state).to eq 'inactive'
+        expect(api_key2.reload.state).to eq 'inactive'
+      end
+
+      it 'disables api_keys when sets otp to false' do
+        put '/api/v2/admin/users', headers: auth_header, params: {
+          uid: user_with_api_keys.uid,
+          otp: false
+        }
+        expect(api_key1.reload.state).to eq 'inactive'
+        expect(api_key2.reload.state).to eq 'inactive'
       end
     end
   end
