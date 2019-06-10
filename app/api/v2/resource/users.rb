@@ -115,10 +115,11 @@ module API::V2
 
           activity_record(user: current_user.id, action: 'password change', result: 'succeed', topic: 'password')
 
-          params[:lang].nil? ? 'EN' : params[:lang].upcase!
+          language = params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
+
           EventAPI.notify('system.user.password.change',
                           user: current_user.as_json_for_event_api,
-                          language: params[:lang],
+                          language: language,
                           domain: Barong::App.config.barong_domain)
 
           status 201
