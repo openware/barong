@@ -24,6 +24,15 @@ class User < ApplicationRecord
   scope :active, -> { where(state: 'active') }
 
   before_validation :assign_uid
+  after_update :disable_api_keys
+
+  def disable_api_keys
+    if otp_previously_changed? && otp == false || state_previously_changed? && state != 'active'
+      api_keys.active.each do |key|
+        key.update(state: 'inactive')
+      end
+    end
+  end
 
   def active?
     self.state == 'active'

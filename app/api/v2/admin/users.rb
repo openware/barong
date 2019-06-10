@@ -102,7 +102,7 @@ module API
 
             error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
 
-            if update_param_key == 'role' && update_param_value == true
+            if update_param_key == 'otp' && update_param_value == true
               error!({ errors: ['admin.user.enable_2fa'] }, 422)
             end
 
