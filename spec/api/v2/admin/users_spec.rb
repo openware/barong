@@ -606,9 +606,9 @@ describe API::V2::Admin::Users do
         end
 
         it 'returns filtered list of users when only one filter param given (user attribute) level' do
+          User.first.update(level: 2)
           params[:level] = 2
           do_search_request
-          User.first.update(level: 2)
 
           expect(json_body.count).to eq User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).where(level: 2).count
         end
