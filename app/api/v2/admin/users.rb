@@ -154,7 +154,7 @@ module API
             users = API::V2::Queries::UserFilter.new(users_with_pending_docs).call(params)
             error!({ errors: ['admin.user.label_no_matches'] }, 404) if users.empty?
 
-            entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
+            entity = params[:extended] ? API::V2::Entities::UserWithFullInfo : API::V2::Entities::User
             users.all.tap { |q| present paginate(q), with: entity }
           end
 
