@@ -25,6 +25,7 @@ module API::V2
 
       def activity_record(options = {})
         params = {
+          category:   'user',
           user_id:    options[:user],
           user_ip:    request.ip,
           user_agent: request.env['HTTP_USER_AGENT'],

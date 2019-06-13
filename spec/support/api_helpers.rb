@@ -25,6 +25,12 @@ module APIHelpers
          headers: headers.reverse_merge('Content-Type' => 'application/json')
   end
 
+  def delete_json(destination, body, headers = {})
+    delete destination,
+           params: build_body(body),
+           headers: headers.reverse_merge('Content-Type' => 'application/json')
+  end
+
   def put_json(destination, body, headers = {})
     put destination,
         params: build_body(body),

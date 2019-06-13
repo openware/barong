@@ -45,7 +45,7 @@ module Barong
       logger.info "Seeding permissions"
       seeds["permissions"].each do |perm|
         logger.info "---"
-        if Permission.find_by(role: perm["role"], verb: perm["verb"], path: perm["path"]).present?
+        if Permission.find_by(role: perm["role"], verb: perm["verb"], path: perm["path"], action: perm["action"]).present?
           logger.info "Permission for '#{perm['role']}' : '#{perm['verb']} to #{perm['path']}' already exists"
           next
         end

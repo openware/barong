@@ -12,7 +12,7 @@ module API
                 error!({ errors: ['admin.permissions.invalid_verb'] }, 422)
               end
 
-              error!({ errors: ['admin.permissions.invalid_action'] }, 422) unless %w(accept drop).include?(params[:action].downcase)
+              error!({ errors: ['admin.permissions.invalid_action'] }, 422) unless %w(accept drop audit).include?(params[:action].downcase)
             end
           end
 

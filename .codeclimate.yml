@@ -7,7 +7,7 @@ checks:
       threshold: 10
   file-lines:
     config:
-      threshold: 350
+      threshold: 400
 plugins:
   brakeman:
     enabled: true
