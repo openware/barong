@@ -3,7 +3,7 @@
 module Barong
   # admin activities log writer class
   class ActivityLogger
-    ACTION = { post: 'create', put: 'update', get: 'read', delete: 'delete' }.freeze
+    ACTION = { post: 'create', put: 'update', get: 'read', delete: 'delete', patch: 'update' }.freeze
 
     def self.write(options = {})
       @activities ||= Queue.new
@@ -22,14 +22,14 @@ module Barong
     end
 
     def self.format_params(params)
-      topic = params[:topic].nil? ? params[:path].split('admin/')[1].split('/')[0] : params[:topic]
+      topic = params[:topic].nil? && params[:path].split('admin/')[1].nil? ? 'general' : params[:topic] || params[:path].split('admin/')[1].split('/')[0]
       {
         user_id:       params[:user_id],
         target_uid:   target_user(params[:payload]) || '',
         user_ip:       params[:user_ip],
         user_agent:    params[:user_agent],
         topic:         topic,
-        action:        ACTION[params[:verb].downcase.to_sym],
+        action:        ACTION[params[:verb].downcase.to_sym] || 'system',
         result:        params[:result],
         category:      'admin'
       }
