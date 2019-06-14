@@ -464,7 +464,7 @@ describe '/api/v2/auth functionality test' do
       put '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
     end
 
-    context 'doesnt record activity if path doesnt match with AUDIT permission path' do
+    context 'records activity if path doesnt match with AUDIT permission path but matches with DROP or BLANK' do
       context 'acts as expected with different roles with another permission type match' do
         before do
           Permission.delete_all
@@ -476,7 +476,7 @@ describe '/api/v2/auth functionality test' do
           # accountant
           do_create_session_request_acc
           do_some_requests
-          expect(Activity.where(category: 'admin').count).to eq(0)
+          expect(Activity.where(category: 'admin', result: 'denied').count).to eq(2)
         end
 
         it 'for admin' do
@@ -484,7 +484,7 @@ describe '/api/v2/auth functionality test' do
           # admin
           do_create_session_request_adm
           do_some_requests
-          expect(Activity.where(category: 'admin').count).to eq(0)
+          expect(Activity.where(category: 'admin', result: 'denied').count).to eq(2)
         end
       end
 
@@ -500,7 +500,7 @@ describe '/api/v2/auth functionality test' do
           do_create_session_request_acc
           do_some_requests
           expect(response.status).to eq(401)
-          expect(Activity.where(category: 'admin').count).to eq(0)
+          expect(Activity.where(category: 'admin', result: 'denied').count).to eq(2)
         end
 
         it 'for admin' do
@@ -508,7 +508,7 @@ describe '/api/v2/auth functionality test' do
           do_create_session_request_adm
           do_some_requests
           expect(response.status).to eq(401)
-          expect(Activity.where(category: 'admin').count).to eq(0)
+          expect(Activity.where(category: 'admin', result: 'denied').count).to eq(2)
         end
       end
     end
@@ -531,6 +531,39 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets')
           Rails.cache.write('permissions', nil)
         end
+
+        it 'works for general topic' do
+          do_create_session_request_acc
+          expect(Activity.where(category: 'admin').count).to eq(0)
+          get '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          sleep 0.01
+          expect(Activity.where(category: 'admin').count).to eq(1)
+          expect(Activity.last.topic).to eq('general')
+          expect(Activity.last.result).to eq('denied')
+        end
+
+        it 'works for patch request' do
+          do_create_session_request_acc
+          expect(Activity.where(category: 'admin').count).to eq(0)
+          patch '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          sleep 0.01
+          expect(Activity.where(category: 'admin').count).to eq(1)
+          expect(Activity.last.topic).to eq('general')
+          expect(Activity.last.action).to eq('update')
+          expect(Activity.last.result).to eq('denied')
+        end
+
+        it 'works for non - put post patch get delete requests' do
+          do_create_session_request_acc
+          expect(Activity.where(category: 'admin').count).to eq(0)
+          head '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          sleep 0.01
+          expect(Activity.where(category: 'admin').count).to eq(1)
+          expect(Activity.last.topic).to eq('general')
+          expect(Activity.last.action).to eq('system')
+          expect(Activity.last.result).to eq('denied')
+        end
+
         it 'for account role' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
