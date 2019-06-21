@@ -14,6 +14,7 @@ module Barong
     # Adding Grape API
     # Eager loading all app/ folder
     config.eager_load_paths += Dir[Rails.root.join('app')]
+    config.eager_load_paths += Dir[Rails.root.join('lib/barong')]
 
     # Setup the logger
     config.logger = Logger.new(STDOUT)
