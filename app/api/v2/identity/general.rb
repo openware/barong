@@ -13,6 +13,16 @@ module API::V2
         ts = ::Time.now.to_i
         { time: ts }
       end
+
+      desc 'Get barong version'
+      get '/version' do
+        {
+          git_tag: Barong::Application::GIT_TAG,
+          git_sha: Barong::Application::GIT_SHA,
+          build_date: DateTime.rfc3339(Barong::Application::BUILD_DATE),
+          version: Barong::Application::VERSION
+        }
+      end
     end
   end
 end
