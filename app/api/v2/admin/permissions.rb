@@ -135,7 +135,9 @@ module API
               error!({ errors: ["admin.permission.#{update_param_key}_no_change"] }, 422)
             end
 
-            target_permission.update(update_param_key => update_param_value)
+            unless target_permission.update(update_param_key => update_param_value)
+              code_error!(target_permission.errors.details, 422)
+            end
             # clear cached permissions, so they will be freshly refetched on the next call to /auth
             Rails.cache.write('permissions', nil)
 

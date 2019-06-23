@@ -67,7 +67,7 @@ module API
             users.tap { |q| present paginate(q), with: entity }
           end
 
-          desc 'Update user',
+          desc 'Update user attributes',
           security: [{ "BearerToken": [] }],
           failure: [
             { code: 401, message: 'Invalid bearer token' }
@@ -85,11 +85,7 @@ module API
                      type: Boolean,
                      allow_blank: false,
                      desc: 'user 2fa status'
-            optional :role,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'user role'
-            exactly_one_of :state, :otp, :role, message: 'admin.user.one_of_role_state_otp'
+            exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           post '/update' do
             target_user = User.find_by_uid(params[:uid])
@@ -110,11 +106,46 @@ module API
               error!({ errors: ["admin.user.#{update_param_key}_no_change"] }, 422)
             end
 
-            target_user.update(update_param_key => update_param_value)
+            unless target_user.update(target_user.update(update_param_key => update_param_value))
+              code_error!(target_user.errors.details, 422)
+            end
             status 200
           end
 
-          desc 'Update user',
+          desc 'Update user role',
+          security: [{ "BearerToken": [] }],
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ]
+          params do
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uniq id'
+            requires :role,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user role'
+          end
+          post '/role' do
+            target_user = User.find_by_uid(params[:uid])
+
+            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+            error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
+
+            if params[:role] == target_user.role
+              error!({ errors: ["admin.user.role_no_change"] }, 422)
+            end
+
+            unless target_user.update(role: params[:role])
+              code_error!(target_user.errors.details, 422)
+            end
+
+            status 200
+          end
+
+          desc 'Update user attributes',
           security: [{ "BearerToken": [] }],
           failure: [
             { code: 401, message: 'Invalid bearer token' }
@@ -132,11 +163,7 @@ module API
                      type: Boolean,
                      allow_blank: false,
                      desc: 'user 2fa status'
-            optional :role,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'user role'
-            exactly_one_of :state, :otp, :role, message: 'admin.user.one_of_role_state_otp'
+            exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           put do
             target_user = User.find_by_uid(params[:uid])
@@ -157,7 +184,10 @@ module API
               error!({ errors: ["admin.user.#{update_param_key}_no_change"] }, 422)
             end
 
-            target_user.update(update_param_key => update_param_value)
+            unless target_user.update(update_param_key => update_param_value)
+              code_error!(target_user.errors.details, 422)
+            end
+
             status 200
           end
 
@@ -308,7 +338,9 @@ module API
 
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
-              label.update(value: params[:value])
+              unless label.update(value: params[:value])
+                code_error!(label.errors.details, 422)
+              end
               status 200
             end
 
@@ -348,7 +380,9 @@ module API
 
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
-              label.update(value: params[:value])
+              unless label.update(value: params[:value])
+                code_error!(label.errors.details, 422)
+              end
               status 200
             end
 

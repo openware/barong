@@ -41,7 +41,7 @@ module API
                      desc: 'Number of users per page (defaults to 100, maximum is 100).'
           end
           get do
-            activities = API::V2::Queries::ActivityFilter.new(Activity.all).call(permitted_search_params(params))
+            activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'user')).call(permitted_search_params(params))
             activities.tap { |q| present paginate(q), with: API::V2::Entities::ActivityWithUser }
           end
 
