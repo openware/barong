@@ -179,7 +179,7 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid
         }
         expect(response.status).to eq 422
-        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_state_otp\"]}"
       end
 
       it 'renders error if otp is misssing' do
@@ -187,7 +187,7 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid
         }
         expect(response.status).to eq 422
-        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_state_otp\"]}"
       end
 
       it 'renders error if role is misssing' do
@@ -195,7 +195,7 @@ describe API::V2::Admin::Users do
           uid: experimental_user.uid
         }
         expect(response.status).to eq 422
-        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_role_state_otp\"]}"
+        expect(response.body).to eq "{\"errors\":[\"admin.user.one_of_state_otp\"]}"
       end
 
       it 'renders error if uid is incorrect' do
@@ -227,7 +227,7 @@ describe API::V2::Admin::Users do
       end
 
       it 'sets role to admin' do
-        put '/api/v2/admin/users', headers: auth_header, params: {
+        post '/api/v2/admin/users/role', headers: auth_header, params: {
           uid: experimental_user.uid,
           role: 'admin'
         }
