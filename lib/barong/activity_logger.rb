@@ -5,7 +5,7 @@ module Barong
   class ActivityLogger
     ACTION = { post: 'create', put: 'update', get: 'read', delete: 'delete', patch: 'update' }.freeze
 
-    def self.write(options = {})
+    def self.async_write(options = {})
       @activities ||= Queue.new
       @activities.push(options)
 
@@ -19,6 +19,10 @@ module Barong
           end
         end
       end
+    end
+
+    def self.sync_write(options = {})
+      Activity.create(format_params(options))
     end
 
     def self.format_params(params)
