@@ -85,7 +85,15 @@ module Barong
     end
 
     def log_activity(user_id, result, topic = nil)
-      ActivityLogger.write(
+      if Rails.env.test?
+        ActivityLogger.sync_write(activity_params(user_id, result, topic))
+      else
+        ActivityLogger.async_write(activity_params(user_id, result, topic))
+      end
+    end
+
+    def activity_params(user_id, result, topic)
+      {
         user_id: user_id,
         result: result,
         user_agent: @request.env['HTTP_USER_AGENT'],
@@ -94,7 +102,7 @@ module Barong
         topic: topic,
         verb: @request.env['REQUEST_METHOD'],
         payload: @request.params
-      )
+      }
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter
