@@ -35,11 +35,22 @@ module Barong
         topic:         topic,
         action:        ACTION[params[:verb].downcase.to_sym] || 'system',
         result:        params[:result],
-        category:      'admin'
+        category:      'admin',
+        data:          format_payload(params[:payload])
       }
     end
 
+    def self.format_payload(payload)
+      return unless payload
+
+      return payload.to_json unless valid_json?(payload.keys.first)
+
+      payload.keys.first
+    end
+
     def self.target_user(payload)
+      return unless payload
+
       if valid_json?(payload.keys.first)
         payload = JSON.parse(payload.keys.first)
       end
