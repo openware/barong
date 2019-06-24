@@ -56,6 +56,7 @@ steps:
     - apt-get update && apt-get install -y nodejs
     - export V=$(cat VERSION)
     - bin/gendocs
+    - git add .
     - bump patch --commit-message 'Bump [ci skip]'
     - git tag $(cat VERSION)
     - git push authenticated-origin master
@@ -66,6 +67,7 @@ steps:
       - push
     branch:
       - master
+      - gendocs_test
 
 - name: Docker build and push
   image: plugins/docker
