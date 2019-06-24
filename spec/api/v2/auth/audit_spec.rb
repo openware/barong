@@ -221,6 +221,17 @@ describe '/api/v2/auth functionality test' do
           expect(Activity.last.topic).to eq('markets')
           expect(Activity.last.result).to eq('denied')
         end
+
+        it 'includes data in denied activity' do
+          do_create_session_request_acc
+          expect(Activity.where(category: 'admin').count).to eq(0)
+          delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }, params: { user_uid: @user.uid }
+          expect(Activity.where(category: 'admin').count).to eq(1)
+          expect(Activity.last.topic).to eq('markets')
+          expect(Activity.last.result).to eq('denied')
+          expect(Activity.last.target_uid).to eq(@user.uid)
+          expect(JSON.parse(Activity.last.data).keys).to include('user_uid', 'path', 'note')
+        end
       end
     end
 
@@ -266,6 +277,17 @@ describe '/api/v2/auth functionality test' do
         end
 
         context 'for different roles with user_uid in params' do
+          it 'includes data in succesfull activity' do
+            do_create_session_request_acc
+            expect(Activity.where(category: 'admin').count).to eq(0)
+            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }, params: { user_uid: @user.uid }
+            expect(Activity.where(category: 'admin').count).to eq(1)
+            expect(Activity.last.topic).to eq('markets')
+            expect(Activity.last.result).to eq('succeed')
+            expect(Activity.last.target_uid).to eq(@user.uid)
+            expect(JSON.parse(Activity.last.data).keys).to include('user_uid', 'path', 'note')
+          end
+
           it 'create activity and save target_uid for accountant if user with this uid exists' do
             do_create_session_request_acc
             expect(Activity.where(category: 'admin').count).to eq(0)
