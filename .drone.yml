@@ -56,9 +56,10 @@ steps:
     - apt-get update && apt-get install -y nodejs
     - export V=$(cat VERSION)
     - bin/gendocs
+    - git add .
     - bump patch --commit-message 'Bump [ci skip]'
     - git tag $(cat VERSION)
-    - git push authenticated-origin master
+    - git push authenticated-origin ${DRONE_BRANCH}
     - git push --tags authenticated-origin
     - git describe --tags $(git rev-list --tags --max-count=1) > .tags
   when:
@@ -82,14 +83,16 @@ steps:
       - master
 
 - name: Redeploy
-  image: rubykube/microkube:0.1.0
+  image: rubykube/microkube:0.3.0
   environment:
       WEBHOOK_JWT_SECRET:
-          from_secret: microkube_webhook_secret
+        from_secret: webhook_secret
+      WEBHOOK_URL:
+        from_secret: webhook_url
   commands:
     - export latest_image=rubykube/barong:$(cat .tags)
     - cd /home/app
-    - bundle exec rake payload:send[barong,$latest_image,http://www.microkube.com:1337]
+    - bundle exec rake payload:send[barong,$latest_image,$WEBHOOK_URL]
   when:
     branch:
       - master
