@@ -58,9 +58,7 @@ steps:
     - bin/gendocs
     - git add .
     - bump patch --commit-message 'Bump [ci skip]'
-    - git tag $(cat VERSION)
-    - git push authenticated-origin master
-    - git push --tags authenticated-origin
+    - git push authenticated-origin ${DRONE_BRANCH}
     - git describe --tags $(git rev-list --tags --max-count=1) > .tags
   when:
     event:
