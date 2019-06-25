@@ -12,6 +12,233 @@ RESTful API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
+### /admin/metrics
+
+#### GET
+##### Description:
+
+Returns main statistic in the given time period
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| created_from | query |  | No | string |
+| created_to | query |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns main statistic in the given time period |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/activities/admin
+
+#### GET
+##### Description:
+
+Returns array of activities as paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| topic | query |  | No | string |
+| action | query |  | No | string |
+| uid | query |  | No | string |
+| email | query |  | No | string |
+| target_uid | query |  | No | string |
+| range | query |  | No | string |
+| from | query |  | No | string |
+| to | query |  | No | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of activities as paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/activities
+
+#### GET
+##### Description:
+
+Returns array of activities as paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| topic | query |  | No | string |
+| action | query |  | No | string |
+| uid | query |  | No | string |
+| email | query |  | No | string |
+| from | query |  | No | string |
+| to | query |  | No | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of activities as paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/permissions
+
+#### PUT
+##### Description:
+
+Update Permission
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | formData | Permission id | Yes | string |
+| role | formData | permission field - role | No | string |
+| req_type | formData | permission field - request type | No | boolean |
+| path | formData | permission field - request path | No | string |
+| action | formData |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update Permission |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### DELETE
+##### Description:
+
+Deletes permission
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | query | permission id | Yes | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Deletes permission |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### POST
+##### Description:
+
+Create permission
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| role | formData |  | Yes | string |
+| verb | formData |  | Yes | string |
+| path | formData |  | Yes | string |
+| action | formData |  | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create permission |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### GET
+##### Description:
+
+Returns array of permissions as paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of permissions as paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/{uid}
+
+#### GET
+##### Description:
+
+Returns user info
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | path | user uniq id | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns user info |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /admin/users/labels
 
 #### DELETE
@@ -97,24 +324,116 @@ Adds label for user
 | --- | --- |
 | BearerToken | |
 
-### /admin/users/{uid}
-
 #### GET
 ##### Description:
 
-Returns user info
+Returns array of users as paginated collection
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| uid | path | user uniq id | Yes | string |
+| key | query | Label key | Yes | string |
+| value | query | Label value | Yes | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Returns user info |
+| 200 | Returns array of users as paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/labels/update
+
+#### POST
+##### Description:
+
+Update user label scope
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | user uniq id | Yes | string |
+| key | formData | Label key. | Yes | string |
+| scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
+| value | formData | Label value. | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Update user label scope |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/labels/list
+
+#### GET
+##### Description:
+
+Returns existing labels keys and values
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns existing labels keys and values |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/documents/pending
+
+#### GET
+##### Description:
+
+Returns array of users with pending documents as paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| extended | query | When true endpoint returns full information about users | No | boolean |
+| uid | query |  | No | string |
+| email | query |  | No | string |
+| role | query |  | No | string |
+| first_name | query |  | No | string |
+| last_name | query |  | No | string |
+| country | query |  | No | string |
+| level | query |  | No | integer |
+| state | query |  | No | string |
+| range | query |  | No | string |
+| from | query |  | No | string |
+| to | query |  | No | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of users with pending documents as paginated collection |
 | 401 | Invalid bearer token |
 
 ##### Security
@@ -128,7 +447,7 @@ Returns user info
 #### PUT
 ##### Description:
 
-Update user
+Update user attributes
 
 ##### Parameters
 
@@ -137,13 +456,12 @@ Update user
 | uid | formData | user uniq id | Yes | string |
 | state | formData | user state | No | string |
 | otp | formData | user 2fa status | No | boolean |
-| role | formData | user role | No | string |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Update user |
+| 200 | Update user attributes |
 | 401 | Invalid bearer token |
 
 ##### Security
@@ -161,6 +479,18 @@ Returns array of users as paginated collection
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
+| extended | query | When true endpoint returns full information about users | No | boolean |
+| uid | query |  | No | string |
+| email | query |  | No | string |
+| role | query |  | No | string |
+| first_name | query |  | No | string |
+| last_name | query |  | No | string |
+| country | query |  | No | string |
+| level | query |  | No | integer |
+| state | query |  | No | string |
+| range | query |  | No | string |
+| from | query |  | No | string |
+| to | query |  | No | string |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
@@ -177,27 +507,53 @@ Returns array of users as paginated collection
 | --- | --- |
 | BearerToken | |
 
-### /admin/users/search
+### /admin/users/role
 
-#### GET
+#### POST
 ##### Description:
 
-Returns array of users as paginated collection
+Update user role
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| field | query | User model field. | Yes | string |
-| value | query | Value to match (strictly) | Yes | string |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+| uid | formData | user uniq id | Yes | string |
+| role | formData | user role | Yes | string |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Returns array of users as paginated collection |
+| 201 | Update user role |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /admin/users/update
+
+#### POST
+##### Description:
+
+Update user attributes
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | user uniq id | Yes | string |
+| state | formData | user state | No | string |
+| otp | formData | user 2fa status | No | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Update user attributes |
 | 401 | Invalid bearer token |
 
 ##### Security
@@ -220,6 +576,7 @@ Sets new account password
 | reset_password_token | formData | Token from email | Yes | string |
 | password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
+| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -242,7 +599,7 @@ Send password reset instructions
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
-| lang | formData | Client env language | No | string |
+| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -265,6 +622,7 @@ Confirms an account
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | token | formData | Token from email | Yes | string |
+| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -371,6 +729,19 @@ Start a new session
 | 400 | Required params are empty |
 | 404 | Record is not found |
 
+### /identity/version
+
+#### GET
+##### Description:
+
+Get barong version
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Get barong version |
+
 ### /identity/time
 
 #### GET
@@ -410,7 +781,6 @@ List all api keys for current account.
 | ---- | ---------- | ----------- | -------- | ---- |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of api keys per page (defaults to 100, maximum is 1000). | No | integer |
-| totp_code | query | Code from Google Authenticator | Yes | string |
 
 ##### Responses
 
@@ -678,6 +1048,24 @@ Add new phone
 | --- | --- |
 | BearerToken | |
 
+#### GET
+##### Description:
+
+Returns list of user's phones
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns list of user's phones |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /resource/documents
 
 #### POST
@@ -689,10 +1077,10 @@ Upload a new document for current user
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| doc_expire | formData | Document expiration date | Yes | date |
 | doc_type | formData | Document type | Yes | string |
 | doc_number | formData | Document number | Yes | string |
 | upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
+| doc_expire | formData | Document expiration date | No | date |
 
 ##### Responses
 
@@ -926,6 +1314,7 @@ Sets new account password
 | old_password | formData | Previous account password | Yes | string |
 | new_password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
+| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -958,6 +1347,24 @@ Returns user activity
 | 200 | Returns user activity |
 
 ### /resource/users/me
+
+#### DELETE
+##### Description:
+
+Returns current user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| password | query | Account password | Yes | string |
+| otp_code | query | Code from Google Authenticator | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Returns current user |
 
 #### GET
 ##### Description:
@@ -1047,7 +1454,6 @@ Returns current user
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
-| activities | [Activity](#activity) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 

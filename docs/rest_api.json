@@ -33,6 +33,452 @@
     }
   ],
   "paths": {
+    "/admin/metrics": {
+      "get": {
+        "description": "Returns main statistic in the given time period",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "created_from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "created_to",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns main statistic in the given time period"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminMetrics"
+      }
+    },
+    "/admin/activities/admin": {
+      "get": {
+        "description": "Returns array of activities as paginated collection",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "topic",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "action",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "target_uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "type": "string",
+            "default": "created",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of activities as paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminActivitiesAdmin"
+      }
+    },
+    "/admin/activities": {
+      "get": {
+        "description": "Returns array of activities as paginated collection",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "topic",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "action",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of activities as paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminActivities"
+      }
+    },
+    "/admin/permissions": {
+      "put": {
+        "description": "Update Permission",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "Permission id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "role",
+            "description": "permission field - role",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "req_type",
+            "description": "permission field - request type",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "path",
+            "description": "permission field - request path",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "action",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Permission"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "putAdminPermissions"
+      },
+      "delete": {
+        "description": "Deletes permission",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "permission id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletes permission"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "deleteAdminPermissions"
+      },
+      "post": {
+        "description": "Create permission",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "role",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "verb",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "action",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create permission"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "postAdminPermissions"
+      },
+      "get": {
+        "description": "Returns array of permissions as paginated collection",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of permissions as paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminPermissions"
+      }
+    },
+    "/admin/users/{uid}": {
+      "get": {
+        "description": "Returns user info",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uid",
+            "description": "user uniq id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns user info"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminUsersUid"
+      }
+    },
     "/admin/users/labels": {
       "delete": {
         "description": "Deletes label for user",
@@ -200,19 +646,100 @@
           "admin"
         ],
         "operationId": "postAdminUsersLabels"
-      }
-    },
-    "/admin/users/{uid}": {
+      },
       "get": {
-        "description": "Returns user info",
+        "description": "Returns array of users as paginated collection",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
+            "name": "key",
+            "description": "Label key",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "value",
+            "description": "Label value",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 1000).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of users as paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminUsersLabels"
+      }
+    },
+    "/admin/users/labels/update": {
+      "post": {
+        "description": "Update user label scope",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
             "name": "uid",
             "description": "user uniq id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "key",
+            "description": "Label key.",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "scope",
+            "description": "label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "value",
+            "description": "Label value.",
             "type": "string",
             "required": true
           }
@@ -223,8 +750,42 @@
           }
         ],
         "responses": {
+          "201": {
+            "description": "Update user label scope"
+          },
+          "400": {
+            "description": "Required params are empty"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "404": {
+            "description": "Record is not found"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "postAdminUsersLabelsUpdate"
+      }
+    },
+    "/admin/users/labels/list": {
+      "get": {
+        "description": "Returns existing labels keys and values",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
           "200": {
-            "description": "Returns user info"
+            "description": "Returns existing labels keys and values"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -233,12 +794,132 @@
         "tags": [
           "admin"
         ],
-        "operationId": "getAdminUsersUid"
+        "operationId": "getAdminUsersLabelsList"
+      }
+    },
+    "/admin/users/documents/pending": {
+      "get": {
+        "description": "Returns array of users with pending documents as paginated collection",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "extended",
+            "description": "When true endpoint returns full information about users",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "role",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "first_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "last_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "type": "string",
+            "default": "created",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 1000).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of users with pending documents as paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminUsersDocumentsPending"
       }
     },
     "/admin/users": {
       "put": {
-        "description": "Update user",
+        "description": "Update user attributes",
         "produces": [
           "application/json"
         ],
@@ -266,13 +947,6 @@
             "description": "user 2fa status",
             "type": "boolean",
             "required": false
-          },
-          {
-            "in": "formData",
-            "name": "role",
-            "description": "user role",
-            "type": "string",
-            "required": false
           }
         ],
         "security": [
@@ -282,7 +956,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Update user"
+            "description": "Update user attributes"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -299,6 +973,81 @@
           "application/json"
         ],
         "parameters": [
+          {
+            "in": "query",
+            "name": "extended",
+            "description": "When true endpoint returns full information about users",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "email",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "role",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "first_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "last_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "country",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "type": "integer",
+            "format": "int32",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "type": "string",
+            "default": "created",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "required": false
+          },
           {
             "in": "query",
             "name": "page",
@@ -339,43 +1088,79 @@
         "operationId": "getAdminUsers"
       }
     },
-    "/admin/users/search": {
-      "get": {
-        "description": "Returns array of users as paginated collection",
+    "/admin/users/role": {
+      "post": {
+        "description": "Update user role",
         "produces": [
+          "application/json"
+        ],
+        "consumes": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "query",
-            "name": "field",
-            "description": "User model field.",
+            "in": "formData",
+            "name": "uid",
+            "description": "user uniq id",
             "type": "string",
             "required": true
           },
           {
-            "in": "query",
-            "name": "value",
-            "description": "Value to match (strictly)",
+            "in": "formData",
+            "name": "role",
+            "description": "user role",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Update user role"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "postAdminUsersRole"
+      }
+    },
+    "/admin/users/update": {
+      "post": {
+        "description": "Update user attributes",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "uid",
+            "description": "user uniq id",
             "type": "string",
             "required": true
           },
           {
-            "in": "query",
-            "name": "page",
-            "description": "Page number (defaults to 1).",
-            "type": "integer",
-            "format": "int32",
-            "default": 1,
+            "in": "formData",
+            "name": "state",
+            "description": "user state",
+            "type": "string",
             "required": false
           },
           {
-            "in": "query",
-            "name": "limit",
-            "description": "Number of users per page (defaults to 100, maximum is 1000).",
-            "type": "integer",
-            "format": "int32",
-            "default": 100,
+            "in": "formData",
+            "name": "otp",
+            "description": "user 2fa status",
+            "type": "boolean",
             "required": false
           }
         ],
@@ -385,8 +1170,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Returns array of users as paginated collection"
+          "201": {
+            "description": "Update user attributes"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -395,7 +1180,7 @@
         "tags": [
           "admin"
         ],
-        "operationId": "getAdminUsersSearch"
+        "operationId": "postAdminUsersUpdate"
       }
     },
     "/identity/users/password/confirm_code": {
@@ -428,6 +1213,13 @@
             "description": "User password",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "lang",
+            "description": "Language in iso-2 format",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -470,7 +1262,7 @@
           {
             "in": "formData",
             "name": "lang",
-            "description": "Client env language",
+            "description": "Language in iso-2 format",
             "type": "string",
             "required": false
           }
@@ -511,6 +1303,13 @@
             "description": "Token from email",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "lang",
+            "description": "Language in iso-2 format",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -727,6 +1526,23 @@
         "operationId": "postIdentitySessions"
       }
     },
+    "/identity/version": {
+      "get": {
+        "description": "Get barong version",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get barong version"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "operationId": "getIdentityVersion"
+      }
+    },
     "/identity/time": {
       "get": {
         "description": "Get server current unix timestamp.",
@@ -785,13 +1601,6 @@
             "format": "int32",
             "default": 100,
             "required": false
-          },
-          {
-            "in": "query",
-            "name": "totp_code",
-            "description": "Code from Google Authenticator",
-            "type": "string",
-            "required": true
           }
         ],
         "security": [
@@ -1243,6 +2052,29 @@
           "resource"
         ],
         "operationId": "postResourcePhones"
+      },
+      "get": {
+        "description": "Returns list of user's phones",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns list of user's phones"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "resource"
+        ],
+        "operationId": "getResourcePhones"
       }
     },
     "/resource/documents": {
@@ -1255,14 +2087,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "in": "formData",
-            "name": "doc_expire",
-            "description": "Document expiration date",
-            "type": "string",
-            "format": "date",
-            "required": true
-          },
           {
             "in": "formData",
             "name": "doc_type",
@@ -1283,6 +2107,14 @@
             "description": "Array of Rack::Multipart::UploadedFile",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "doc_expire",
+            "description": "Document expiration date",
+            "type": "string",
+            "format": "date",
+            "required": false
           }
         ],
         "security": [
@@ -1675,6 +2507,13 @@
             "description": "User password",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "lang",
+            "description": "Language in iso-2 format",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -1742,6 +2581,37 @@
       }
     },
     "/resource/users/me": {
+      "delete": {
+        "description": "Returns current user",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "password",
+            "description": "Account password",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "otp_code",
+            "description": "Code from Google Authenticator",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Returns current user"
+          }
+        },
+        "tags": [
+          "resource"
+        ],
+        "operationId": "deleteResourceUsersMe"
+      },
       "get": {
         "description": "Returns current user",
         "produces": [
@@ -1937,9 +2807,6 @@
         },
         "documents": {
           "$ref": "#/definitions/Document"
-        },
-        "activities": {
-          "$ref": "#/definitions/Activity"
         },
         "created_at": {
           "type": "string"

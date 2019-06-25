@@ -139,6 +139,19 @@ Creates new user
 | ---- | ----------- | ------ |
 | 201 | Creates new user | [UserWithProfile](#userwithprofile) |
 
+### /users/list
+
+#### POST
+##### Description:
+
+Returns array of users as collection
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Returns array of users as collection | [User](#user) |
+
 ### /users/get
 
 #### POST
@@ -159,6 +172,26 @@ Get users and profile information
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 201 | Get users and profile information | [UserWithProfile](#userwithprofile) |
+
+### /otp/sign
+
+#### POST
+##### Description:
+
+Sign request with barong signature
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| user_uid | formData | Account UID | Yes | string |
+| otp_code | formData | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Sign request with barong signature |
 
 ### /timestamp
 
@@ -217,6 +250,19 @@ Get users and profile information
 | country | string |  | No |
 | metadata | object | Profile additional fields | No |
 
+#### User
+
+Returns array of users as collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string |  | No |
+
 #### APIKey
 
 | Name | Type | Description | Required |
@@ -228,17 +274,6 @@ Get users and profile information
 | secret | string |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
-
-#### User
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
 
 #### UserWithFullInfo
 
@@ -254,7 +289,6 @@ Get users and profile information
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
-| activities | [Activity](#activity) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -277,15 +311,3 @@ Get users and profile information
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
-
-#### Activity
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| user_ip | string |  | No |
-| user_agent | string |  | No |
-| topic | string |  | No |
-| action | string |  | No |
-| result | string |  | No |
-| data | string |  | No |
-| created_at | string |  | No |
