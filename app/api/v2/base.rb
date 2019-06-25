@@ -8,6 +8,20 @@ module API::V2
   class Base < Grape::API
     cascade false
 
+    logger Rails.logger.dup
+    if Rails.env.production?
+      logger.formatter = GrapeLogging::Formatters::Json.new
+    else
+      logger.formatter = GrapeLogging::Formatters::Rails.new
+    end
+    use GrapeLogging::Middleware::RequestLogger,
+        logger:    logger,
+        log_level: (Rails.env.production?)? :warn : :debug,
+        include:   [GrapeLogging::Loggers::Response.new,
+                    GrapeLogging::Loggers::FilterParameters.new,
+                    GrapeLogging::Loggers::ClientEnv.new,
+                    GrapeLogging::Loggers::RequestHeaders.new]
+
     helpers API::V2::Utils
 
     format         :json
