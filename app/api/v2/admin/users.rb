@@ -106,7 +106,7 @@ module API
               error!({ errors: ["admin.user.#{update_param_key}_no_change"] }, 422)
             end
 
-            unless target_user.update(target_user.update(update_param_key => update_param_value))
+            unless target_user.update(update_param_key => update_param_value)
               code_error!(target_user.errors.details, 422)
             end
             status 200
