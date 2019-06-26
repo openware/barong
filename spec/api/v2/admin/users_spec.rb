@@ -563,6 +563,37 @@ describe API::V2::Admin::Users do
     end
   end
 
+  describe 'POST /api/v2/admin/users/update' do
+    let!(:user)     { create(:user, otp: true) }
+    let(:new_state) { 'banned' }
+    let(:request)   { '/api/v2/admin/users/update' }
+
+    context 'admin user' do
+      let(:test_user) { create(:user, role: 'admin') }
+
+      it 'changes state' do
+        post request, headers: auth_header, params: { uid: user.uid, state: new_state }
+
+        expect(response.status).to eq 200
+        expect(user.reload.state). to eq new_state
+      end
+
+      it 'disables otp' do
+        post request, headers: auth_header, params: { uid: user.uid, otp: false }
+
+        expect(response.status).to eq 200
+        expect(user.reload.otp).to eq false
+      end
+
+      it 'renders error when state does not change' do
+        post request, headers: auth_header, params: { uid: user.uid, state: user.state }
+
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.state_no_change\"]}"
+      end
+    end
+  end
+
   describe 'GET /api/v2/admin/users/documents/pending' do
     let(:do_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header}
 
