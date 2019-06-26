@@ -12,7 +12,7 @@ module API::V2
                { code: 401, message: 'Invalid bearer token' }
              ]
         get do
-          current_user.documents.as_json(only: %i[upload doc_type doc_number doc_expire])
+          present current_user.documents, with: API::V2::Entities::Document
         end
 
         desc 'Upload a new document for current user',
@@ -32,40 +32,49 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'Document number'
-          requires :upload,
+          requires :uploads,
+                   allow_blank: false,
+                   type: { value: Array[File], message: 'invalid.upload.type' },
                    desc: 'Array of Rack::Multipart::UploadedFile'
           optional :doc_expire,
-                   type: { value: Date, message: "resource.documents.expire_not_a_date" },
+                   type: { value: Date, message: 'resource.documents.expire_not_a_date' },
                    allow_blank: false,
                    desc: 'Document expiration date'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
         post do
+          unless params[:uploads].all? { |x| x.is_a? Hash }
+            error!({ errors: ['resource.documents.uploads_invalid_type'] }, 422)
+          end
+
           if Barong::App.config.required_docs_expire
             error!({ errors: ['resource.documents.invalid_format'] }, 422) unless /\A\d{4}\-\d{2}\-\d{2}\z/.match?(params[:doc_expire].to_s)
 
             error!({ errors: ['resource.documents.already_expired'] }, 422) if params[:doc_expire] < DateTime.now.to_date
           end
 
-          unless current_user.documents.count <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+          unless current_user.documents.sum { |d| d.uploads.count } <= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error!({ errors: ['resource.documents.limit_reached'] }, 400)
           end
 
-          unless current_user.documents.count + params[:upload].length <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+          unless current_user.documents.sum { |d| d.uploads.count } + params[:uploads].length <= ENV.fetch('DOCUMENTS_LIMIT', 10)
             error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
 
-          params[:upload].each do |file|
-            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
-
+          declared(params).symbolize_keys.tap do |parameter|
+            parameter[:uploads].map! do |file|
+              {
+                io: file['tempfile'],
+                filename: file['filename'],
+                content_type: file['type']
+              }
+            end
+            doc = current_user.documents.new parameter
             code_error!(doc.errors.details, 400) unless doc.save
           end
-          status 201
 
-        rescue Excon::Error => e
-          error!('Connection error', 500)
-          logger.fatal(e)
+          status 201
         end
       end
     end

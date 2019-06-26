@@ -43,11 +43,11 @@ RSpec.describe User, type: :model do
     it do
       user = User.create!(email: 'test@gmail.com', password: 'KeeKi7zoWExzc')
       expect(User.count).to eq 1
-      document1 = user.documents.create!(upload: uploaded_file,
+      document1 = user.documents.create!(uploads: uploaded_file,
                                             doc_type: 'Passport',
                                             doc_number: 'MyString',
                                             doc_expire: '01-01-2020')
-      document2 = user.documents.create!(upload: uploaded_file,
+      document2 = user.documents.create!(uploads: uploaded_file,
                                             doc_type: 'Passport',
                                             doc_number: 'MyString',
                                             doc_expire: '01-02-2020')

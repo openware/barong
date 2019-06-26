@@ -16,7 +16,7 @@ describe 'Documents API test' do
         doc_type: 'Passport',
         doc_expire: '2020-01-22',
         doc_number: 'AA1234BB',
-        upload: [
+        uploads: [
           image
         ]
       }
@@ -39,7 +39,7 @@ describe 'Documents API test' do
                                              doc_type: 'Passport',
                                              doc_expire: '2020-01-22',
                                              doc_number: 'AA1234BB',
-                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
+                                             uploads: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
                                            }
       end
 
@@ -53,7 +53,7 @@ describe 'Documents API test' do
                                              doc_type: 'Passport',
                                              doc_expire: '2020-01-22',
                                              doc_number: 'AA1234BB',
-                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
+                                             uploads: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
                                            }
       end
 
@@ -67,13 +67,13 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           upload: [
+                                           uploads: [
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(201)
-      expect(test_user.documents.length).to eq(2)
+      expect(test_user.documents.sum { |d| d.uploads.count }).to eq(2)
     end
 
     it 'uploads 3 files at once' do
@@ -82,14 +82,14 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           upload: [
+                                           uploads: [
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
                                           ]
                                          }
       expect(response.status).to eq(201)
-      expect(test_user.documents.length).to eq(3)
+      expect(test_user.documents.sum { |d| d.uploads.count }).to eq(3)
     end
 
     it 'doesn\'t upload more than 10 files at once' do
@@ -98,7 +98,7 @@ describe 'Documents API test' do
                                            doc_type: 'Passport',
                                            doc_expire: '2020-01-22',
                                            doc_number: 'AA1234BB',
-                                           upload: [
+                                           uploads: [
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
@@ -135,8 +135,8 @@ describe 'Documents API test' do
       expect_body.to eq(errors: ["resource.document.missing_doc_number", "resource.document.empty_doc_number"])
       expect(response.status).to eq(422)
 
-      post '/api/v2/resource/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(errors: ["resource.document.missing_upload"])
+      post '/api/v2/resource/documents', params: params.except(:uploads), headers: auth_header
+      expect_body.to eq(errors: ["resource.document.missing_uploads", "resource.document.empty_uploads"])
       expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:doc_expire).merge(doc_expire: 'blah'), headers: auth_header
@@ -144,10 +144,11 @@ describe 'Documents API test' do
       expect(response.status).to eq(422)
 
       params0 = params
-      params0[:upload] = [Faker::Avatar.image]
+
+      params0[:uploads] = [Faker::Avatar.image]
       post '/api/v2/resource/documents', params: params0, headers: auth_header
-      expect_body.to eq(errors: ["upload.blank"])
-      expect(response.status).to eq(400)
+      expect_body.to eq(errors: ["resource.documents.uploads_invalid_type"])
+      expect(response.status).to eq(422)
     end
 
     it 'Does not return error when docs expire is optional' do
@@ -177,7 +178,7 @@ describe 'Documents API test' do
       get '/api/v2/resource/documents', headers: auth_header
       response_arr = JSON.parse(response.body)
       expect(response_arr.count).to eq(1)
-      expect(response_arr.last['upload']).to_not be_nil
+      expect(response_arr.last['uploads']).to_not be_nil
       expect(response_arr.last['doc_type']).to eq('Passport')
       expect(response_arr.last['doc_expire']).to eq('2020-01-22')
       expect(response_arr.last['doc_number']).to eq('AA1234BB')
