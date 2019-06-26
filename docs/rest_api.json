@@ -2103,9 +2103,12 @@
           },
           {
             "in": "formData",
-            "name": "upload",
+            "name": "uploads",
             "description": "Array of Rack::Multipart::UploadedFile",
-            "type": "string",
+            "type": "array",
+            "items": {
+              "type": "file"
+            },
             "required": true
           },
           {
@@ -2834,9 +2837,9 @@
     "Document": {
       "type": "object",
       "properties": {
-        "upload": {
-          "type": "string",
-          "description": "file url"
+        "uploads": {
+          "type": "array",
+          "description": "Array of file urls"
         },
         "doc_type": {
           "type": "string",
