@@ -1,11 +1,12 @@
-test:
-  service: Disk
-  root: <%= Rails.root.join("tmp/storage") %>
-
 local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+ 
+# Mount file with any production-ready setup
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3
@@ -27,6 +28,18 @@ local:
 #   storage_account_name: your_account_name
 #   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :storage_access_key) %>
 #   container: your_container_name
+
+# Use rails credentials:edit to set the Aliyun Storage secret (as oss-access-key-id)
+# alibaba:
+#   service: Aliyun
+#   access_key_id:  <%= Rails.application.credentials.dig(:aliyun_storage, :storage_access_id) %>
+#   access_key_secret:  <%= Rails.application.credentials.dig(:aliyun_storage, :storage_access_secret) %>
+#   bucket: your_bucket_name
+#   endpoint: https://oss-cn-beijing.aliyuncs.com
+#   # path prefix, default: /
+#   path: "my-app-files"
+#   # Bucket mode: [public, private], default: public
+#   mode: "public"
 
 # mirror:
 #   service: Mirror

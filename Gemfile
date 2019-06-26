@@ -7,8 +7,12 @@ gem 'api-pagination', '~> 4.8.2'
 
 gem 'env-tweaks', '~> 1.0.0'
 
-gem 'fog-google',  '~> 0.1.0'
-gem 'fog-aws',     '~> 2.0.1'
+# Active storage support
+gem 'google-cloud-storage'
+gem 'aws-sdk-s3'
+gem 'azure-storage'
+gem 'activestorage-aliyun'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'
 # Use mysql as the database for Active Record
@@ -48,7 +52,6 @@ gem 'email_validator', '= 1.6.0', require: 'email_validator/strict'
 
 gem 'countries', require: 'countries/global'
 gem 'browser', require: "browser/browser"
-gem 'carrierwave', '~> 1.2.2'
 gem 'bump'
 
 # Use gem to verify recatpcha on server side

@@ -2,7 +2,7 @@
 
 # User document model
 class Document < ApplicationRecord
-  mount_uploader :upload, UploadUploader
+  has_many_attached :uploads
 
   TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
   STATES = %w[verified pending rejected].freeze
@@ -11,7 +11,7 @@ class Document < ApplicationRecord
 
   belongs_to :user
   serialize :metadata, JSON
-  validates :doc_type, :doc_number, :upload, presence: true
+  validates :doc_type, :doc_number, presence: true
   validates :doc_type, inclusion: { in: TYPES }
 
   validates :doc_number, length: { maximum: 128 },
