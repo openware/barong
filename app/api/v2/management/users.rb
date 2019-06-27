@@ -73,12 +73,40 @@ module API::V2
         end
 
         params do
+          optional :extended,
+                   type: { value: Boolean, message: 'Non boolean extended value' },
+                   default: false,
+                   desc: 'When true endpoint returns full information about users'
+          optional :range,
+                   type: String,
+                   values: { value: -> (p){ %w[created updated].include?(p) }, message: 'Non positive page' },
+                   default: 'created'
+          optional :from,
+                   type: Integer,
+                   desc: "An integer represents the seconds elapsed since Unix epoch."\
+                     "If set, only users FROM the time will be retrieved."
+          optional :to,
+                   type: Integer,
+                   desc: "An integer represents the seconds elapsed since Unix epoch."\
+                     "If set, only users BEFORE the time will be retrieved."
+          optional :page,
+                   type: { value: Integer, message: 'Non integer page' },
+                   values: { value: -> (p){ p.try(:positive?) }, message: 'Non positive page' },
+                   default: 1,
+                   desc: 'Page number (defaults to 1).'
+          optional :limit,
+                   type: { value: Integer, message: 'Non integer limit' },
+                   values: { value: 1..1000, message: 'Invalid limit' },
+                   default: 100,
+                   desc: 'Number of users per page (defaults to 100, maximum is 1000).'
         end
 
         post '/list' do
-          User.all.tap { |u| present u, with: API::V2::Entities::User }
+          entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
+          users = API::V2::Queries::UserFilter.new(User.all).call(params)
+          users.tap { |q| present paginate(q), with: entity }
+          status 200
         end
-
 
         desc 'Creates new user' do
           @settings[:scope] = :write_users

@@ -121,17 +121,10 @@ describe API::V2::Management::Users, type: :request do
       end
 
       context 'users' do
-        let(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
-        let(:second_user) { create(:user, email: 'testb@gmail.com') }
-        let(:third_user) { create(:user, email: 'testd@gmail.com') }
-        let(:fourth_user) { create(:user, email: 'testc@gmail.com') }
-
-        before(:example) {
-          test_user
-          second_user
-          third_user
-          fourth_user
-        }
+        let!(:test_user) { create(:user, email: 'testa@gmail.com', role: 'admin') }
+        let!(:second_user) { create(:user, email: 'testb@gmail.com') }
+        let!(:third_user) { create(:user, email: 'testd@gmail.com') }
+        let!(:fourth_user) { create(:user, email: 'testc@gmail.com') }
 
         def validate_fields(user)
           user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
@@ -162,6 +155,65 @@ describe API::V2::Management::Users, type: :request do
           expect(validate_fields(User.second)).to eq users.second
           expect(validate_fields(User.third)).to eq users.third
           expect(validate_fields(User.last)).to eq users.last
+        end
+
+        context 'pagination test' do
+          let(:users_list_params) do
+            {
+              scope: :read_users,
+              limit: 2
+            }
+          end
+
+          it 'returns 1st page as default, limit 2 users per page' do
+            users_list_params[:page] = 1
+            post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
+
+            expect(response.headers.fetch('Total')).to eq User.all.count.to_s
+            expect(response.headers.fetch('Page')).to eq '1'
+            expect(response.headers.fetch('Per-Page')).to eq '2'
+          end
+
+          it 'returns 2nd page, limit 2 users per page' do
+            users_list_params[:page] = 2
+            post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
+
+            expect(response.headers.fetch('Total')).to eq User.all.count.to_s
+            expect(response.headers.fetch('Page')).to eq '2'
+            expect(response.headers.fetch('Per-Page')).to eq '2'
+          end
+        end
+
+        context 'filtering test' do
+          let(:users_list_params) do
+            {
+              scope: :read_users
+            }
+          end
+
+          it 'returns filtered list of users when only one filter param given created_at and from' do
+            users_list_params[:range] = 'created'
+            User.first.update(created_at: 5.hours.ago)
+            users_list_params[:from] = 8.hours.ago.to_i
+            users_list_params[:to] = 2.hours.ago.to_i
+
+            post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
+
+            expect(response.status).to eq 200
+            expect(json_body.count).to eq (1)
+          end
+
+          it 'returns filtered list of users when only one filter param given updated_at' do
+            users_list_params[:range] = 'updated'
+            User.first.update(updated_at: 5.hours.ago)
+            users_list_params[:from] = 8.hours.ago.to_i
+            users_list_params[:to] = 2.hours.ago.to_i
+
+            post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
+
+            expect(response.status).to eq 200
+            expect(json_body.count).to eq (1)
+          end
         end
       end
     end
