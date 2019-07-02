@@ -1,6 +1,6 @@
 [travis]: https://travis-ci.org/rubykube/barong
 [codeclimate]: https://codeclimate.com/github/rubykube/barong/maintainability
-[peatio.tech]: https://www.peatio.tech
+[openware.com]: https://www.openware.com
 
 # Barong
 [![Build Status](https://travis-ci.org/rubykube/barong.svg?branch=master)][travis]
@@ -8,7 +8,7 @@
 
 # Overview
 
-Barong is oAuth server for [peatio.tech][peatio.tech] stack.
+Barong is oAuth server for [Openware.com][https://www.openware.com] stack.
 
 # Development
 
