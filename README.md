@@ -8,7 +8,7 @@
 
 # Overview
 
-Barong is oAuth server for [Openware.com][https://www.openware.com] stack.
+Barong is oAuth server for [Openware.com][openware.com] stack.
 
 # Development
 
