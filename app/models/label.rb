@@ -53,9 +53,9 @@ private
   # TODO: fix it when EventAPi will be added
   def send_document_review_notification
     if value == 'verified'
-     EventAPI.notify('system.document.verified', uid: user.uid, email: user.email)
+      EventAPI.notify('system.document.verified', uid: user.uid, email: user.email)
     elsif value == 'rejected'
-     EventAPI.notify('system.document.rejected', uid: user.uid, email: user.email)
+      EventAPI.notify('system.document.rejected', uid: user.uid, email: user.email)
     end
   end
 end

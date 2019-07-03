@@ -19,6 +19,8 @@
 
 # Profile model
 class Profile < ApplicationRecord
+  acts_as_eventable prefix: 'profile', on: %i[create]
+
   belongs_to :user
   serialize :metadata, JSON
   validates :first_name, :last_name, :dob, :address,
@@ -66,7 +68,7 @@ class Profile < ApplicationRecord
 
   def as_json_for_event_api
     {
-      user_uid: user.uid,
+      user: user.as_json_for_event_api,
       first_name: first_name,
       last_name: last_name,
       dob: format_iso8601_time(dob),
