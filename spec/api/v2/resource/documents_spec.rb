@@ -193,4 +193,29 @@ describe 'Documents API test' do
     end
     after(:all) { User.destroy_all }
   end
+
+  context 'event API behavior' do
+    let!(:url) { '/api/v2/resource/documents' }
+    let(:request_params) do
+      {
+        doc_type: 'Passport',
+        doc_expire: '2020-01-22',
+        doc_number: 'AA1234BB',
+        upload: [
+          image
+        ]
+      }
+    end
+
+    before do
+      allow(EventAPI).to receive(:notify)
+    end
+
+    it 'receive model.document.created notify' do
+      expect(EventAPI).to receive(:notify).ordered.with('model.user.created', hash_including(:record))
+      expect(EventAPI).to receive(:notify).ordered.with('model.document.created', hash_including(:record))
+
+      post url, headers: auth_header, params: request_params
+    end
+  end
 end

@@ -2,6 +2,8 @@
 
 # User document model
 class Document < ApplicationRecord
+  acts_as_eventable prefix: 'document', on: %i[create]
+
   mount_uploader :upload, UploadUploader
 
   TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
@@ -22,6 +24,20 @@ class Document < ApplicationRecord
 
   validate :doc_expire_not_in_the_past
   after_commit :create_or_update_document_label, on: :create
+
+
+  def as_json_for_event_api
+    {
+      user: user.as_json_for_event_api,
+      upload: upload,
+      doc_type: doc_type,
+      doc_number: doc_number,
+      doc_expire: doc_expire,
+      metadata: metadata,
+      created_at: format_iso8601_time(created_at),
+      updated_at: format_iso8601_time(updated_at)
+    }
+  end
 
   private
 
