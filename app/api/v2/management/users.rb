@@ -49,18 +49,25 @@ module API::V2
           optional :uid, type: String, allow_blank: false, desc: 'User uid'
           optional :email, type: String, allow_blank: false, desc: 'User email'
           optional :phone_num, type: String, allow_blank: false, desc: 'User phone number'
+          optional :extended,
+                   type: { value: Boolean, message: 'Non boolean extended param given' },
+                   default: false,
+                   desc: 'When true endpoint returns full information about users'
           exactly_one_of :uid, :email, :phone_num
         end
 
         post '/get' do
-          declared_params = declared(params, include_missing: false)
+          entity = params[:extended] ? API::V2::Entities::UserWithFullInfo : API::V2::Entities::UserWithProfile
+          declared_params = declared(params.except(:extended), include_missing: false)
+
           if declared_params.key?(:phone_num)
             user = Phone.find_by_number!(declared_params[:phone_num]).user
-            present user, with: API::V2::Entities::UserWithProfile
+            present user, with: entity
             return status 201
           end
+
           user = User.find_by!(declared_params)
-          present user, with: API::V2::Entities::UserWithProfile
+          present user, with: entity
         end
 
         desc 'Returns array of users as collection',
