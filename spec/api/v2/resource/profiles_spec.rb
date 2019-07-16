@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe 'API::V2::Resource::Profiles' do
-
   include_context 'bearer authentication'
   let!(:create_member_permission) do
     create :permission,
@@ -110,6 +109,55 @@ describe 'API::V2::Resource::Profiles' do
       expect(response.status).to eq(200)
       expected_json = request_params.merge(optional_params).to_json
       expect(response.body).to eq(expected_json)
+    end
+  end
+
+  context 'event API behavior' do
+    let!(:url) { '/api/v2/resource/profiles' }
+    let!(:request_params) do
+      {
+        last_name: Faker::Name.last_name,
+        first_name: Faker::Name.first_name,
+        dob: Faker::Date.birthday,
+        country: Faker::Address.country_code_long,
+        city: Faker::Address.city,
+        address: Faker::Address.street_address,
+        postcode: Faker::Address.zip_code
+      }
+    end
+
+    before do
+      allow(EventAPI).to receive(:notify)
+    end
+
+    it 'receive model.profile.created notify' do
+      expect(EventAPI).to receive(:notify).ordered.with('model.user.created', hash_including(:record))
+      expect(EventAPI).to receive(:notify).ordered.with('model.profile.created', hash_including(:record))
+
+      post url, params: request_params, headers: auth_header
+    end
+
+    it 'receive model.profile.created notify with user and profile params' do
+      expect(EventAPI).to receive(:notify).ordered.with('model.user.created', hash_including(:record))
+      expect(EventAPI).to receive(:notify).ordered.with(
+        'model.profile.created',
+        hash_including(
+          record: {
+            user: test_user.as_json_for_event_api,
+            address: anything,
+            city: anything,
+            country: anything,
+            created_at: anything,
+            updated_at: anything,
+            dob: anything,
+            first_name: anything,
+            last_name: anything,
+            postcode: anything
+          }
+        )
+      )
+
+      post url, params: request_params, headers: auth_header
     end
   end
 end

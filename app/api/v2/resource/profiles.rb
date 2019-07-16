@@ -2,6 +2,7 @@
 
 module API::V2
   module Resource
+    # CR functionality over profiles table
     class Profiles < Grape::API
       desc 'Profile related routes'
       resource :profiles do
