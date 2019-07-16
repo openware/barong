@@ -118,9 +118,9 @@ Update Permission
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | formData | Permission id | Yes | string |
+| id | formData | Permission id | Yes | integer |
 | role | formData | permission field - role | No | string |
-| req_type | formData | permission field - request type | No | boolean |
+| verb | formData | permission field - request verb | No | string |
 | path | formData | permission field - request path | No | string |
 | action | formData |  | No | string |
 

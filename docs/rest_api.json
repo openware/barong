@@ -265,7 +265,8 @@
             "in": "formData",
             "name": "id",
             "description": "Permission id",
-            "type": "string",
+            "type": "integer",
+            "format": "int32",
             "required": true
           },
           {
@@ -277,9 +278,9 @@
           },
           {
             "in": "formData",
-            "name": "req_type",
-            "description": "permission field - request type",
-            "type": "boolean",
+            "name": "verb",
+            "description": "permission field - request verb",
+            "type": "string",
             "required": false
           },
           {

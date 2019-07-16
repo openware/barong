@@ -77,13 +77,40 @@ Create a label with 'private' scope and assigns to users
 #### POST
 ##### Description:
 
-Get all labels assigned to users
+Get user collection filtered on label attributes
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | user_uid | formData | User uid | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get user collection filtered on label attributes | [Label](#label) |
+
+### /labels/filter/users
+
+#### POST
+##### Description:
+
+Get all labels assigned to users
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| key | formData | Label key. | Yes | string |
+| value | formData | Label value. | No | string |
+| scope | formData | Label scope. | No | string |
+| extended | formData | When true endpoint returns full information about users | No | boolean |
+| range | formData |  | No | string |
+| from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only labels FROM the time will be retrieved. | No | integer |
+| to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only labels BEFORE the time will be retrieved. | No | integer |
+| page | formData | Page number (defaults to 1). | No | integer |
+| limit | formData | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
 
 ##### Responses
 
@@ -145,6 +172,17 @@ Creates new user
 ##### Description:
 
 Returns array of users as collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| extended | formData | When true endpoint returns full information about users | No | boolean |
+| range | formData |  | No | string |
+| from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only users FROM the time will be retrieved. | No | integer |
+| to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only users BEFORE the time will be retrieved. | No | integer |
+| page | formData | Page number (defaults to 1). | No | integer |
+| limit | formData | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
 
 ##### Responses
 
