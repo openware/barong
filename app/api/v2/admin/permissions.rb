@@ -8,7 +8,7 @@ module API
         resource :permissions do
           helpers do
             def validate_params!(params)
-              unless %w(get post delete put head).include?(params[:verb].downcase)
+              unless %w(get post delete put head patch all).include?(params[:verb].downcase)
                 error!({ errors: ['admin.permissions.invalid_verb'] }, 422)
               end
 
@@ -84,7 +84,7 @@ module API
                      desc: 'permission id'
           end
           delete do
-            target_permission = Permission.find(params[:id])
+            target_permission = Permission.find_by(id: params[:id])
 
             error!({ errors: ['admin.permission.doesnt_exist'] }, 404) if target_permission.nil?
 
@@ -102,17 +102,17 @@ module API
           ]
           params do
             requires :id,
-                     type: String,
+                     type: Integer,
                      allow_blank: false,
                      desc: 'Permission id'
             optional :role,
                      type: String,
                      allow_blank: false,
                      desc: 'permission field - role'
-            optional :req_type,
-                     type: Boolean,
+            optional :verb,
+                     type: String,
                      allow_blank: false,
-                     desc: 'permission field - request type'
+                     desc: 'permission field - request verb'
             optional :path,
                      type: String,
                      allow_blank: false,
@@ -120,10 +120,10 @@ module API
             optional :action,
                      type: String,
                      allow_blank: false
-            exactly_one_of :action, :role, :req_type, :path, message: 'admin.permission.one_of_role_type_path_action'
+            exactly_one_of :action, :role, :verb, :path, message: 'admin.permission.one_of_role_verb_path_action'
           end
           put do
-            target_permission = Permission.find(params[:id])
+            target_permission = Permission.find_by(id: params[:id])
 
             # Ruby Hash returns array on keys and values
             update_param_key = params.except(:id).keys.first
