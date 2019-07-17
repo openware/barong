@@ -204,6 +204,7 @@ Get users and profile information
 | uid | formData | User uid | No | string |
 | email | formData | User email | No | string |
 | phone_num | formData | User phone number | No | string |
+| extended | formData | When true endpoint returns full information about users | No | boolean |
 
 ##### Responses
 
