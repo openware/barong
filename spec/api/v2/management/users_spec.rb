@@ -31,6 +31,9 @@ describe API::V2::Management::Users, type: :request do
       let(:expected_attributes) do
         %i[email uid role level otp state profile created_at updated_at]
       end
+      let(:extended_attributes) do
+        %i[email uid role level otp state profile labels phones documents created_at updated_at]
+      end
       let(:signers) { %i[alex jeff] }
 
       let(:do_request) do
@@ -45,11 +48,29 @@ describe API::V2::Management::Users, type: :request do
         expect(json_body.keys).to eq expected_attributes
       end
 
+      it 'reads extended user info by uid' do
+        data[:uid] = user.uid
+        data[:extended] = true
+        do_request
+
+        expect(response.status).to eq 201
+        expect(json_body.keys).to eq extended_attributes
+      end
+
       it 'reads user info by email' do
         data[:email] = user.email
         do_request
         expect(response.status).to eq 201
         expect(json_body.keys).to eq expected_attributes
+      end
+
+      it 'reads extended user info by email' do
+        data[:email] = user.email
+        data[:extended] = true
+
+        do_request
+        expect(response.status).to eq 201
+        expect(json_body.keys).to eq extended_attributes
       end
 
       let!(:phone) do
@@ -61,6 +82,15 @@ describe API::V2::Management::Users, type: :request do
         do_request
         expect(response.status).to eq 201
         expect(json_body.keys).to eq expected_attributes
+      end
+
+      it 'reads extended user info by user phone' do
+        data[:phone_num] = phone.number
+        data[:extended] = true
+
+        do_request
+        expect(response.status).to eq 201
+        expect(json_body.keys).to eq extended_attributes
       end
 
       it 'allows only one of phone, uid, email' do
