@@ -90,36 +90,35 @@ The fields `foo`, `bar`, `baz`, `qux` (example) are fields which carry useful in
 | ---------- | ----------------------------------- |
 | `record`   | Created user up-to-date attributes.  |
 
-## Format of `model.profile.created` event
+
+ ## Format of `model.document.created` event
 ```ruby
   event: {
     record: {
-      address:"61275 Jack Prairie",
-      city:"East Elbertville",
-      country:"TUV",
-      dob:"1960-03-23",
-      first_name:"Janene",
-      last_name:"Casper",
-      postcode:"84068-9126",
+      doc_type: 'Passport',
+      doc_expire: '2020-01-22',
+      doc_number: 'AA1234BB',
+      upload: [],
       updated_at:"2019-01-28T08:35:29Z",
       created_at:"2019-01-28T08:35:29ZZ",
       user: {
         uid: "ID30DD0DD986",
         email: "example@barong.io",
         role: "member",
-        level: 0,
+        level: 2,
         otp: false,
-        state: "pending",
+        state: "active",
         created_at: "2019-01-28T08:35:29Z",
         updated_at: "2019-01-28T08:35:29Z"
       }
     }
-    name: "model.profile.created"
+    name: "model.document.created"
   }
 ```
 | Field      | Description                         |
 | ---------- | ----------------------------------- |
-| `record`   | Created profile with user up-to-date attributes.  |
+| `record`   | Created document with user up-to-date attributes.  |
+
 
 ## Format of `system.user.email.confirmation.token` event
 ```ruby
