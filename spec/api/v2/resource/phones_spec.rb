@@ -31,58 +31,74 @@ describe 'Api::V2::Resources::Phones' do
     let(:do_request) do
       post '/api/v2/resource/phones', params: params, headers: auth_header
     end
+    let(:phone_number) { nil }
+
     let(:params) { { phone_number: phone_number } }
     let(:mock_sms) { Barong::MockSMS }
 
-    context 'when phone is missing' do
-      let(:phone_number) { nil }
-
-      it 'renders an error' do
-        do_request
-        expect_body.to eq(errors: ["resource.phone.empty_phone_number"])
-        expect_status.to eq 422
-      end
-    end
-
-    context 'when phone is invalid' do
-      let(:phone_number) { '123' }
-
-      it 'renders an error' do
-        do_request
-        expect_body.to eq(errors: ["resource.phone.invalid_num"])
-        expect_status.to eq 400
-      end
-    end
-
-    context 'when phone is already exists' do
-      let!(:phone) do
-        create(:phone, validated_at: validated_at)
-      end
-      let(:phone_number) { phone.number }
-
-      context 'when phone verified' do
-        let(:validated_at) { 1.minutes.ago }
+    describe 'errors: ' do
+      context 'when phone is missing' do
+        let(:phone_number) { nil }
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(errors: ["resource.phone.number_exist"])
+          expect_body.to eq(errors: ["resource.phone.empty_phone_number"])
+          expect_status.to eq 422
+        end
+      end
+
+      context 'when phone is invalid' do
+        let(:phone_number) { '123' }
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(errors: ["resource.phone.invalid_num"])
           expect_status.to eq 400
         end
       end
 
-      context 'when phone verified but number is not sanitized' do
-        let(:validated_at) { 1.minutes.ago }
-        let(:phone_number) { "++#{phone.number}" }
+      context 'when phone is already exists' do
+        let!(:phone) do
+          create(:phone, validated_at: validated_at)
+        end
+        let(:phone_number) { phone.number }
 
-        it 'renders an error' do
-          do_request
-          expect_body.to eq(errors: ["resource.phone.number_exist"])
-          expect_status.to eq 400
+        context 'when phone verified' do
+          let(:validated_at) { 1.minutes.ago }
+
+          it 'renders an error' do
+            do_request
+            expect_body.to eq(errors: ["resource.phone.number_exist"])
+            expect_status.to eq 400
+          end
+        end
+
+        context 'when phone is not verified' do
+          let(:validated_at) { 1.minutes.ago }
+
+          it 'renders an error' do
+            do_request
+            expect_body.to eq(errors: ["resource.phone.number_exist"])
+            expect_status.to eq 400
+          end
+        end
+
+        context 'when phone verified but number is not sanitized' do
+          let(:validated_at) { 1.minutes.ago }
+          let(:phone_number) { "++#{phone.number}" }
+
+          it 'renders an error' do
+            do_request
+            expect_body.to eq(errors: ["resource.phone.number_exist"])
+            expect_status.to eq 400
+          end
         end
       end
+    end
 
+    context 'valid story' do
       context 'when phone is not verified' do
-        let(:validated_at) { nil }
+        let(:phone_number) { build(:phone).number }
 
         it 'assigns a phone to account and send sms' do
           do_request
@@ -91,26 +107,27 @@ describe 'Api::V2::Resources::Phones' do
           expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
         end
       end
-    end
 
-    context 'when phone is valid' do
-      let(:phone_number) { build(:phone).number }
+      context 'when phone is valid' do
+        let(:phone_number) { build(:phone).number }
 
-      it 'creates a phone and send sms' do
-        do_request
-        expect_body.to eq(message: 'Code was sent successfully')
-        expect_status.to eq 201
-        expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
-      end
+        it 'creates a phone and send sms' do
+          do_request
+          expect_body.to eq(message: 'Code was sent successfully')
+          expect_status.to eq 201
+          expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
+        end
 
-      it 'doesnt change code in DB on phone initialize' do
-        do_request
-        expect_body.to eq(message: 'Code was sent successfully')
-        expect_status.to eq 201
-        code_after_create = Phone.last.code
-        # Phone.last initilazes phone
-        code_after_initialize = Phone.last.code
-        expect(code_after_create).to eq code_after_initialize
+        it 'doesnt change code in DB on phone initialize' do
+          do_request
+          expect_body.to eq(message: 'Code was sent successfully')
+          expect_status.to eq 201
+          code_after_create = Phone.last.code
+
+          # Phone.last initilazes phone
+          code_after_initialize = Phone.last.code
+          expect(code_after_create).to eq code_after_initialize
+        end
       end
     end
 
