@@ -195,7 +195,45 @@ describe 'Documents API test' do
   end
 
   context 'event API behavior' do
+    let!(:doc_link) { 'http://storage.googleapis.com/cgcx-barong-docs-bucket/uploads/document/upload/29/Nithf7m-full-screen-hd-wallpaper.jpg?GoogleAccessId=GOOGQBN65D5DW7IOGK727Y5D&Signature=p8IzxyNrkZ%2FVRRwxzG6Cmo%2B49g0%3D&Expires=1563809786' }
     let!(:url) { '/api/v2/resource/documents' }
+    let!(:private) {'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBNU5IbFoydXVoeDIwUXZCeUN1TWxDQkl0OWFnYTg5OUZ1VE12TWkxbVFtNTF1S3RYClhnVktlR1h5VytkOVh6eXVoeWdhU1A3VGMxT2NIeFA1dzdqM3NzQXRML2dCWnp5WlUzZ2x4Q01nbFZ4cWEwc3gKZnNhbElhYk9XcTJESnNweU03UFFhNEgxcGFFZnR1TlVxZitXR3FTTTFuemJvREFqblIrOVdVTHNoVXoxN0N6QwppOVhEODAvbkRENUxmWkl1MGdnSTNiVTlLREI3c2Y5YXhLaGF6c0x3WkVxMlNzblRSZkRyY0pIeDQ4QnRIbHB3CkRSTEc2R0kveUVPRmlhUUZPZzFXZk1XMWtlSmp0bW82eFpXWUNORnZHK3FtM2dieGhiM0ZuK3BiOWl3Z202Ym4KUHJqTzJuaDN2QU0vb24vV205T2U2ZmQwTUI4c2RzakdZRUJtalFJREFRQUJBb0lCQUhWRmJjRVhXeGM4amdwUQptT0lqai9NVy9oOE16T04zNXBBSVA0UUQ2SWpiZTlIdFhwVjlPTEdEN2paVDZkbEpqRmtRb0lnUXNlWkZUNXBOCjdvLzAyRjN3U0RoeGJxYXVWQmFIV1RPd25SNXZnc3NDZXBkeXoyYnp5b2FHcnRUT3BNRUN3eXFXTElONmxIcHoKQUEwd1JJbmJFNk5KMG5YQ3RqM3M2bW80OW1kS0ZicHVJWUNMYlN4Z3JXc3M0YzF0KzBLTUJpUkVadTJPWEJUUgpxYWVOOTZpcEdMUXhuL1BKZWtDYWdLdkxWcm9GanpFN0pleWVwbG5NTmJ0d1hlMzlDQ2pXZGdCbkR3bDV1bjJPCkRzMXQvQUdDNzVqS3ZhOGlaZHkrZmtXWTMyOWdyY3NrenlvakI1cSt3MXRiaFRYcTQ3cEtzeWJPZVlXbWtLaWcKcVpERWM0RUNnWUVBLzZxa0Z4NHd1UmNiKzlmZFhoNDl3U29JUVJNZ0RJcXFnQnEzNXpNcW9FMEV0bnRwc1dTWAoxL1VqMU5ZWWViTzFpcFVTUWNIRjFyZGVuZThPeUN1MkwwTlZJbkUwMFlkZ0RSY2VKVEhETitvOXFKZFI1YlltCnI3WGpqUmhKYmR4eVBUQmI4NnhMYlEyRGMrRlR5UkpHc1hZb3RKMitZTUxTRXM4dXJ3Qmw3clVDZ1lFQTVSNUsKdUcwSEl3SG10amdjYWxKQW94REo1NDZBKzZ6QjBRRzZDSlJ6aFhoQmZrQjdLU000TDM1Zm9VV0prL04yWjFFVAprUXNtdnV2Q0xoZDVvVTBFUWdhMGpiOHdFVzZuUWl1L096UFAzVlZ1ZXplSnZHcDlXWElwdFVoQXBONWQ3aTZ4Cjh4OXB6VUVJcWNkOHNxUjNRK1pNQjBlTHlPcGpsUUwyTFJJQkoza0NnWUFtRWlQektWUzZDeDNvcDZGWUpZcXUKbS9LMHRnTmN1cjFlN0J1Y2V2c0srYzBNMjEzR3c2TDB6cFV5V1ZzMXJEUUpXZDlwR1ZDN2czeThhZCs2b1ArMQpGQUsyYVVNalBGUnFQcG9Ia2R4dkZCdHdZbkFZazhJNUFnM0xjZVZsVGFGWlNUMDRFTnorZFRldzVzblNORDJBCnFZYXdOcGtsMFh6MHZoTkdqZm1melFLQmdEV0VXZGV5UDlTQmdTNVc5T3d3d2tCVWo1U3l5SllBeUZUVm5tcWEKb2xFdXdiMkh1anpscVI0TzJxK0UycG5nYUd2Qm1GeHN5bVFXRllsR21uWiswdHZKVFNzKzJTOTVOVUJUajV0NApncmtrVjJZWWx1ZVh5Q2U0YnQyVlB1UkR2SlVCK3piYXc0L1ovUGdMVEtrOW1VNFc0UE5pVnRoYlIxOXJEYTJCCll4dWhBb0dCQUpqb2RMSHltOTRZcWs0TDRJLzJ2OUZjK055VXk1MUNoSnZoUzZLUTFRdHY4ZVN5dG1ndUpLUjgKZ3g3eSt2VlVqNFJ1TjFxU3JCNFI2VFhkbGlsNmNIUXI2YW1GM2NhQ1l1allUUVJRcEhyQXVWT3ZOT3RPaTlqcgpodmQ5Tkl1N0U4NHhRbDd0K2J4eFhsbG9XZmErSllyK1JzUzJjL082UStYb2hYcmZWRUZOCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='}
+    let!(:public) {'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE1TkhsWjJ1dWh4MjBRdkJ5Q3VNbApDQkl0OWFnYTg5OUZ1VE12TWkxbVFtNTF1S3RYWGdWS2VHWHlXK2Q5WHp5dWh5Z2FTUDdUYzFPY0h4UDV3N2ozCnNzQXRML2dCWnp5WlUzZ2x4Q01nbFZ4cWEwc3hmc2FsSWFiT1dxMkRKc3B5TTdQUWE0SDFwYUVmdHVOVXFmK1cKR3FTTTFuemJvREFqblIrOVdVTHNoVXoxN0N6Q2k5WEQ4MC9uREQ1TGZaSXUwZ2dJM2JVOUtEQjdzZjlheEtoYQp6c0x3WkVxMlNzblRSZkRyY0pIeDQ4QnRIbHB3RFJMRzZHSS95RU9GaWFRRk9nMVdmTVcxa2VKanRtbzZ4WldZCkNORnZHK3FtM2dieGhiM0ZuK3BiOWl3Z202Ym5QcmpPMm5oM3ZBTS9vbi9XbTlPZTZmZDBNQjhzZHNqR1lFQm0KalFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=='}
+    let!(:algorithm) {'RS256'}
+    let!(:private_key) { OpenSSL::PKey.read(Base64.urlsafe_decode64(private)) }
+    let!(:public_key) { OpenSSL::PKey.read(Base64.urlsafe_decode64(public)) }
+    let!(:event) do 
+      {
+        name: 'model.document.created',
+        record: {
+          doc_type: 'Passport',
+          doc_expire: '2020-01-22',
+          doc_number: 'AA1234BB',
+          upload: doc_link,
+          updated_at:"2019-01-28T08:35:29Z",
+          created_at:"2019-01-28T08:35:29ZZ",
+          user: {
+            uid: 'UID12345',
+            email: "example@barong.io",
+            role: "member",
+            level: 2,
+            otp: false,
+            state: "active",
+            created_at: "2019-01-28T08:35:29Z",
+            updated_at: "2019-01-28T08:35:29Z"
+          }
+        }
+      }
+    end
+    let!(:jwt_payload) do 
+      {
+        iss:   'barong',
+        jti:   SecureRandom.uuid,
+        iat:   Time.now.to_i,
+        exp:   Time.now.to_i + 60,
+        event: event
+      }
+    end
     let(:request_params) do
       {
         doc_type: 'Passport',
@@ -216,6 +254,32 @@ describe 'Documents API test' do
       expect(EventAPI).to receive(:notify).ordered.with('model.document.created', hash_including(:record))
 
       post url, headers: auth_header, params: request_params
+    end
+
+    it 'Fails without encoded url' do
+      jwt = JWT::Multisig.generate_jwt jwt_payload, \
+        { barong: private_key },
+        { barong: algorithm }
+
+      expect (JWT::Multisig.verify_jwt jwt.deep_stringify_keys, \
+        { barong: public_key }, { verify_iss: true, iss: "barong", verify_jti: true })
+        .to raise_exception
+
+     
+    end
+
+    it 'Works with encoded url' do
+      event['record']['upload'] = CGI::escape(doc_link)
+      jwt_payload = jwt_payload['event'] = event
+
+      jwt = JWT::Multisig.generate_jwt jwt_payload, \
+        { barong: private_key },
+        { barong: algorithm }
+
+      verification_result = JWT::Multisig.verify_jwt jwt.deep_stringify_keys, \
+        { barong: public_key }, { verify_iss: true, iss: "barong", verify_jti: true }
+
+      expect(verification_result).to eq('')
     end
   end
 end
