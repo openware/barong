@@ -99,6 +99,21 @@ steps:
     event:
       - push
 
+- name: "Redeploy on devkube"
+  image: rubykube/microkube:0.2.0
+  environment:
+    WEBHOOK_JWT_SECRET:
+      from_secret: devkube_webhook_secret
+  commands:
+    - export latest_image=rubykube/barong:$(cat .tags)
+    - cd /home/app
+    - bundle exec rake payload:send[barong,$latest_image,http://www.devkube.com:1337]
+  when:
+    branch:
+      - master
+    event:
+      - push
+
 services:
 - name: database
   image: mariadb
