@@ -96,12 +96,6 @@ describe API::V2::Identity::Sessions do
           expect_any_instance_of(CaptchaService::RecaptchaVerifier).to receive(:verify_recaptcha) { true }
         end
       end
-
-      # context 'when account has enabled 2FA' do
-      # end
-
-      # context 'when user has less than 5 failed attempts' do
-      # end
     end
 
     context 'With Invalid params' do
@@ -124,14 +118,27 @@ describe API::V2::Identity::Sessions do
             expect_body.to eq(errors: ["identity.session.invalid_params"])
             expect(response.status).to eq(401)
           end
-
-          # it 'locks account if user has 5 failed attempts' do
-          # end
         end
       end
     end
 
-    context 'When user has not verified his email or banned' do
+    context 'when user is pending still can login' do
+      let!(:another_email) { 'email@random.com' }
+      let!(:user_pending) do
+        create :user,
+               email: another_email,
+               password: password,
+               password_confirmation: password,
+               state: 'pending'
+      end
+
+      it 'returns 200' do
+        post uri, params: { email: another_email, password: password }
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'When user has is discarded or banned' do
       let!(:another_email) { 'email@random.com' }
       let!(:user_banned) do
         create :user,
@@ -148,18 +155,9 @@ describe API::V2::Identity::Sessions do
       end
 
       it 'returns error on non-active user' do
-        user_banned.update(state: 'not-active')
+        user_banned.update(state: 'discarded')
         post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.not_active"])
-        expect(response.status).to eq(401)
-      end
-
-      it 'returns error on pending user' do
-        user_banned.update(state: 'pending')
-        expect(user_banned.state).to eq('pending')
-
-        post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.not_active"])
+        expect_body.to eq(errors: ["identity.session.discarded"])
         expect(response.status).to eq(401)
       end
     end
@@ -196,7 +194,7 @@ describe API::V2::Identity::Sessions do
       it "return invalid set-cookie header on #logout" do
         do_create_session_request
         expect(session[:uid]).to eq(user.uid)
-  
+
         do_delete_session_request
         expect(response.status).to eq(200)
         expect(response.headers['Set-Cookie']).not_to be_nil
