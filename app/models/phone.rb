@@ -40,9 +40,8 @@ class Phone < ApplicationRecord
     def send_confirmation_sms(phone)
       Rails.logger.info("Sending SMS to #{phone.number}")
 
-      app_name = Barong::App.config.app_name
       send_sms(number: phone.number,
-               content: "Your verification code for #{app_name}: #{phone.code}")
+               content: Barong::App.config.sms_content_template.gsub(/{{code}}/, phone.code))
     end
 
     def send_sms(number:, content:)
