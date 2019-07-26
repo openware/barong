@@ -4,6 +4,7 @@ Barong::App.define do |config|
   config.set(:twilio_phone_number, '+15005550000')
   config.set(:twilio_account_sid, '')
   config.set(:twilio_auth_token, '')
+  config.set(:sms_content_template, 'Your verification code for Barong: {{code}}')
 end
 
 sid = Barong::App.config.twilio_account_sid
@@ -21,4 +22,3 @@ end
 
 Barong::App.define { |c| c.set(:sms_sender, client) }
 Phonelib.strict_check = true
-
