@@ -29,10 +29,10 @@ describe API::V2::Management::Users, type: :request do
         }
       end
       let(:expected_attributes) do
-        %i[email uid role level otp state profile created_at updated_at]
+        %i[email uid role level otp state profile referral_uid created_at updated_at]
       end
       let(:extended_attributes) do
-        %i[email uid role level otp state profile labels phones documents created_at updated_at]
+        %i[email uid role level otp state profile labels phones documents referral_uid created_at updated_at]
       end
       let(:signers) { %i[alex jeff] }
 
@@ -179,12 +179,13 @@ describe API::V2::Management::Users, type: :request do
 
         it 'returns list of users' do
           do_request
+
           users = JSON.parse(response.body)
           expect(User.count).to eq users.count
-          expect(validate_fields(User.first)).to eq users.first
-          expect(validate_fields(User.second)).to eq users.second
-          expect(validate_fields(User.third)).to eq users.third
-          expect(validate_fields(User.last)).to eq users.last
+          expect(validate_fields(User.first)).to eq users.first.except('referral_uid')
+          expect(validate_fields(User.second)).to eq users.second.except('referral_uid')
+          expect(validate_fields(User.third)).to eq users.third.except('referral_uid')
+          expect(validate_fields(User.last)).to eq users.last.except('referral_uid')
         end
 
         context 'pagination test' do

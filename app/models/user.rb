@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many  :activities, dependent: :destroy
 
   validate :role_exists
+  validate :referral_exists
   validates :email,       email: true, presence: true, uniqueness: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?,
@@ -41,7 +42,19 @@ class User < ApplicationRecord
   def role_exists
     return if Permission.pluck(:role).include?(role)
 
-    errors.add(:role, 'doesnt exist')
+    errors.add(:role, 'doesnt_exist')
+  end
+
+  # Check if refferal exist for assignment
+  def referral_exists
+    errors.add(:referral_id, 'doesnt_exist') if referral_id.present? && User.find_by(id: referral_id).blank?
+  end
+
+  def referral_uid
+    user = User.find_by(id: referral_id)
+    return if user.nil?
+
+    user.uid
   end
 
   def role
@@ -88,6 +101,7 @@ class User < ApplicationRecord
       level: level,
       otp: otp,
       state: state,
+      referral_uid: referral_uid,
       created_at: format_iso8601_time(created_at),
       updated_at: format_iso8601_time(updated_at)
     }

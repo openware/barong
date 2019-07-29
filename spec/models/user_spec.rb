@@ -41,6 +41,23 @@ RSpec.describe User, type: :model do
       payload = usr.as_payload
       expect(payload['email']).to eq(usr.email)
     end
+
+    describe '#referral' do
+      let!(:user1) { create(:user) }
+      let!(:user2) { create(:user, referral_id: user1.id) }
+
+      it 'return error when referral doesnt exist' do
+        record = User.new(uid: 'ID122312323', email: 'test@barong.io', password: 'Oo213Wqw')
+        record.referral_id = 0
+        record.valid?
+
+        expect(record.errors[:referral_id]).to eq(['doesnt_exist'])
+      end
+
+      it 'return refferal uid' do
+        expect(user2.referral_uid).to eq user1.uid
+      end
+    end
   end
 
   describe '#password' do

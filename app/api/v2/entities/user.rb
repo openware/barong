@@ -13,6 +13,9 @@ module API
         expose :level, documentation: { type: 'Integer' }
         expose :otp, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
         expose :state, documentation: { type: 'String' }
+        expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
+          user.referral_uid
+        end
       end
     end
   end
