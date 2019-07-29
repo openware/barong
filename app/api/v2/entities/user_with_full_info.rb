@@ -17,6 +17,9 @@ module API
         expose :labels, using: Entities::Label
         expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document
+        expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
+          user.referral_uid
+        end
         # activities, as sensitive and potentialy too big data should be queried separately
 
         with_options(format_with: :iso_timestamp) do

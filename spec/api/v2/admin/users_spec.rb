@@ -32,11 +32,12 @@ describe API::V2::Admin::Users do
 
       it 'returns list of users' do
         do_request
+
         expect(User.count).to eq json_body.count
-        expect(validate_fields(User.first)).to eq json_body.first
-        expect(validate_fields(User.second)).to eq json_body.second
-        expect(validate_fields(User.third)).to eq json_body.third
-        expect(validate_fields(User.fourth)).to eq json_body.fourth
+        expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
+        expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
+        expect(validate_fields(User.third)).to eq json_body.third.except(:referral_uid)
+        expect(validate_fields(User.fourth)).to eq json_body.fourth.except(:referral_uid)
 
         expect(json_body.first.keys).to_not include(:profile)
 
@@ -134,8 +135,8 @@ describe API::V2::Admin::Users do
           get '/api/v2/admin/users', headers: auth_header, params: {
             limit: 2
           }
-          expect(validate_fields(User.first)).to eq json_body.first
-          expect(validate_fields(User.second)).to eq json_body.second
+          expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
+          expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
 
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
@@ -147,8 +148,8 @@ describe API::V2::Admin::Users do
             limit: 2,
             page: 2
           }
-          expect(validate_fields(User.third)).to eq json_body.first
-          expect(validate_fields(User.fourth)).to eq json_body.second
+          expect(validate_fields(User.third)).to eq json_body.first.except(:referral_uid)
+          expect(validate_fields(User.fourth)).to eq json_body.second.except(:referral_uid)
 
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '2'

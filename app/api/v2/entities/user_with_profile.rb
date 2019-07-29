@@ -12,6 +12,9 @@ module API::V2
       expose :otp, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
       expose :state, documentation: { type: 'String' }
       expose :profile, using: Entities::Profile
+      expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
+        user.referral_uid
+      end
 
       with_options(format_with: :iso_timestamp) do
         expose :created_at
