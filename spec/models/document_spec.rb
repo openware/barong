@@ -23,6 +23,29 @@ RSpec.describe Document, type: :model do
     let(:doc_expire) { Date.current.to_s }
     it { is_expected.to be_blank }
 
+    context 'doc_type inclusion validations' do
+      let!(:document) { build :document, doc_type: doc_type }
+      subject do
+        document.valid?
+        document.errors.messages
+      end
+      let(:doc_type) { 'PASSPORT' }
+
+      it { is_expected.to be_blank }
+
+      context 'doc_type is in the list inclusion validation' do
+        let(:doc_type) { 'PASSPORT-BACK' }
+
+        it { is_expected.to be_blank }
+      end
+
+      context 'doc_type is not the list inclusion validation' do
+        let(:doc_type) { 'IDCART' }
+
+        it { is_expected.to eq(doc_type: ['is not included in the list']) }
+      end
+    end
+
     context 'when doc_expire is expired' do
       let(:doc_expire) { 1.day.ago.to_s }
 
