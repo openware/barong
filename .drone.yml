@@ -67,6 +67,7 @@ steps:
       - push
     branch:
       - master
+      - 2-2-stable
 
 - name: Docker build and push
   image: plugins/docker
@@ -81,6 +82,7 @@ steps:
       - push
     branch:
       - master
+      - 2-2-stable
 
 - name: Redeploy
   image: rubykube/microkube:0.3.0
