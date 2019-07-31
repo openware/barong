@@ -122,43 +122,60 @@ describe API::V2::Identity::Sessions do
       end
     end
 
-    context 'when user is pending still can login' do
-      let!(:another_email) { 'email@random.com' }
+    context 'User state related errors' do
+      context 'When user is banned' do
+        let!(:banned_email) { 'email@random.com' }
+        let!(:user_banned) do
+          create :user,
+                 email: banned_email,
+                 password: password,
+                 password_confirmation: password,
+                 state: 'banned'
+        end
+
+        it 'returns error on banned user' do
+          post uri, params: { email: banned_email, password: password }
+          expect_body.to eq(errors: ["identity.session.banned"])
+          expect(response.status).to eq(401)
+        end
+      end
+
+      let!(:pending_email) { 'pendingemail@random.com' }
       let!(:user_pending) do
         create :user,
-               email: another_email,
+               email: pending_email,
                password: password,
                password_confirmation: password,
                state: 'pending'
       end
 
-      it 'returns 200' do
-        post uri, params: { email: another_email, password: password }
-        expect(response.status).to eq(200)
-      end
-    end
+      context 'Default pending_login_allowed policy (false)' do
+        it 'returns error on non-active user' do
+          user_pending.update(state: 'not-active')
+          post uri, params: { email: pending_email, password: password }
+          expect_body.to eq(errors: ["identity.session.not_active"])
+          expect(response.status).to eq(401)
+        end
 
-    context 'When user has is discarded or banned' do
-      let!(:another_email) { 'email@random.com' }
-      let!(:user_banned) do
-        create :user,
-               email: another_email,
-               password: password,
-               password_confirmation: password,
-               state: 'banned'
-      end
+        it 'returns error on pending user' do
+          user_pending.update(state: 'pending')
+          expect(user_pending.state).to eq('pending')
 
-      it 'returns error on banned user' do
-        post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.banned"])
-        expect(response.status).to eq(401)
+          post uri, params: { email: pending_email, password: password }
+          expect_body.to eq(errors: ["identity.session.not_active"])
+          expect(response.status).to eq(401)
+        end
       end
 
-      it 'returns error on non-active user' do
-        user_banned.update(state: 'discarded')
-        post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.discarded"])
-        expect(response.status).to eq(401)
+      context 'When pending_login_allowed set to TRUE' do
+        before do
+          allow(Barong::App.config).to receive(:pending_login_allowed).and_return(true)
+        end
+
+        it 'returns 200 for pending user' do
+          post uri, params: { email: pending_email, password: password }
+          expect(response.status).to eq(200)
+        end
       end
     end
   end

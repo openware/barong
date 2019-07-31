@@ -44,6 +44,15 @@ module API::V2
                          user: user.id, action: 'login', result: 'failed', error_text: 'discarded')
           end
 
+          # if pending login allowed = true then skip validation
+          unless Barong::App.config.pending_login_allowed
+            # if pending login allowed = false AND user is not active, then return 401
+            unless user.active?
+              login_error!(reason: 'Your account is not active', error_code: 401,
+                           user: user.id, action: 'login', result: 'failed', error_text: 'not_active')	
+            end
+          end
+
           unless user.authenticate(declared_params[:password])
             login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
                          action: 'login', result: 'failed', error_text: 'invalid_params')
