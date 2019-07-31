@@ -6,7 +6,11 @@ class Document < ApplicationRecord
 
   mount_uploader :upload, UploadUploader
 
-  TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
+  TYPES = %w[passport passport-front passport-back
+             identity-card identity-card-front identity-card-back
+             driver-license driver-license-front driver-license-back
+             faceid utility-bill ].freeze
+
   STATES = %w[verified pending rejected].freeze
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
@@ -25,11 +29,10 @@ class Document < ApplicationRecord
   validate :doc_expire_not_in_the_past
   after_commit :create_or_update_document_label, on: :create
 
-
   def as_json_for_event_api
     {
       user: user.as_json_for_event_api,
-      upload: upload,
+      upload: CGI::escape(upload.url),
       doc_type: doc_type,
       doc_number: doc_number,
       doc_expire: doc_expire,
@@ -40,6 +43,10 @@ class Document < ApplicationRecord
   end
 
   private
+
+  def doc_type
+    read_attribute(:doc_type).try(:downcase)
+  end
 
   def doc_expire_not_in_the_past
     return if doc_expire.blank?
