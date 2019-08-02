@@ -58,7 +58,7 @@ class Profile < ApplicationRecord
 
   validates :address, length: 1..255,
                       format: {
-                        with: /\A[[:word:]\s\-']+\z/,
+                        with: /\A[[:word:]\s\-,\.;\/]+\z/,
                         message: 'only allows letters, digits "-", "\'", and space'
                       },
                       if: proc { |a| a.address.present? }

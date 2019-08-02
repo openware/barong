@@ -42,6 +42,22 @@ describe 'API::V2::Resource::Profiles' do
       }
     end
 
+    it 'accept / , ; in address' do
+      request_params[:address] = '28/2 Kevin Brook; Miami, USA'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it 'accept . in address' do
+      request_params[:address] = 'Larkin Fork.South, New York/AP'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
     it 'throws an error, cause some of the required params are absent' do
       post url, params: request_params.except(:dob), headers: auth_header
       expect_body.to eq(errors: ["resource.profile.missing_dob"])

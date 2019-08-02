@@ -42,7 +42,7 @@ module API::V2
         end
 
         post do
-          if Barong::App.config.required_docs_expire
+          if Barong::App.config.required_docs_expire == 'true'
             error!({ errors: ['resource.documents.invalid_format'] }, 422) unless /\A\d{4}\-\d{2}\-\d{2}\z/.match?(params[:doc_expire].to_s)
 
             error!({ errors: ['resource.documents.already_expired'] }, 422) if params[:doc_expire] < DateTime.now.to_date
