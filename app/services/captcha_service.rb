@@ -2,12 +2,11 @@
 
 require 'digest'
 require 'net/http'
-require 'recaptcha/verify'
 
 module CaptchaService
   # Google recaptcha verifier
   class RecaptchaVerifier
-    include Recaptcha::Verify
+    include Recaptcha::Adapters::ControllerMethods
 
     attr_reader :request
 

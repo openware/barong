@@ -17,7 +17,7 @@ steps:
       - pull_request
 
 - name: Run rspec
-  image: ruby:2.6.0
+  image: ruby:2.6.3
   environment:
     DATABASE_HOST: database
     EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -35,7 +35,7 @@ steps:
       - pull_request
 
 - name: Bump and tag
-  image: ruby:2.6.0
+  image: ruby:2.6.3
   environment:
     DATABASE_HOST: database
     EVENT_API_RABBITMQ_HOST: rabbitmq

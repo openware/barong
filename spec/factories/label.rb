@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :label do
-    key { ::Faker::Internet.slug(nil, '-') }
-    value { ::Faker::Internet.slug(nil, '-') }
+    key { ::Faker::Internet.slug(glue: '-') }
+    value { ::Faker::Internet.slug(glue: '-') }
     scope { 'public' }
     user { create(:user) }
   end

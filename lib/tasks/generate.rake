@@ -1,27 +1,29 @@
 # frozen_string_literal: true
 
 # To execute with optional user and api keys amount
-# rake api_keys:create -- --n=1000
+# rake generate:users -- --n=1000
 
-namespace 'api_keys' do
+namespace 'generate' do
   desc 'Build Application container'
-  task :create => :environment do
+  task :users => :environment do
     ### Parse options
     options = {}
 
     o = OptionParser.new
 
-    o.banner = 'Usage: rake api_keys:create [-n=100]'
-    o.on('--n NUMBER', '--number NUMBER') { |num| options[:num] = num.to_i }
+    o.banner = 'Usage: rake generate:users [-n=100]'
+    o.on('-n NUMBER', '--number NUMBER') { |num| options[:num] = num.to_i }
 
-    args = o.order!(ARGV) {} # protect from wrong params
+    args = o.order!(ARGV) {}
     o.parse!(args)
 
     options[:num] = 10 if options[:num].nil?
     result_arr = []
 
     options[:num].times do |i|
-      u = User.create(email: "example#{i}@barong.io", password: 'Tecohvi0', level: 3, state: 'active')
+      email = Faker::Internet.email
+      passwd = Faker::Internet.password(min_length: 10, special_characters: true)
+      u = User.create(email: email, password: passwd, level: 3, state: 'active')
 
       api_key = APIKey.create(user_id: u.id, kid: SecureRandom.hex(8), algorithm: 'HS256')
       secret = SecureRandom.hex(16)
@@ -29,7 +31,7 @@ namespace 'api_keys' do
       result_arr.push({
         'uid' => u.uid,
         'email' => u.email,
-        'password' => 'Tecohvi0',
+        'password' => passwd,
         'kid' => api_key.kid,
         'secret' => secret
       })

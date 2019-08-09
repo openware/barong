@@ -14,8 +14,8 @@ describe 'Labels API.' do
   end
   let(:post_params) do
     {
-      key: ::Faker::Internet.slug(nil, '-'),
-      value: ::Faker::Internet.slug(nil, '-')
+      key: ::Faker::Internet.slug(glue: '-'),
+      value: ::Faker::Internet.slug(glue: '-')
     }
   end
 

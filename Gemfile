@@ -32,7 +32,7 @@ gem 'grape-swagger', '~> 0.28'
 gem 'grape-swagger-entity', '~> 0.2'
 gem 'grape_logging', '~> 1.8.0'
 gem 'memoist', '~> 0.16'
-gem 'jwt', '~> 2.1'
+gem 'jwt', '<= 2.1'
 gem 'jwt-multisig', '~> 1.0'
 gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
@@ -65,7 +65,7 @@ group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails',  '~> 4.11'
-  gem 'faker',              '~> 1.8'
+  gem 'faker',              '~> 2.1'
 end
 
 group :development do
