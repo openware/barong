@@ -9,6 +9,6 @@ FactoryBot.define do
     topic { %w[session password otp account].sample }
     action { %w[otp::enable login logout signup].sample }
     result { %w[succeed failed].sample }
-    data { {data: Faker::Lorem.sentence(3, true, 4)}.to_json }
+    data { {data: Faker::Lorem.sentence(word_count: 3, supplemental: true, random_words_to_add: 4)}.to_json }
   end
 end

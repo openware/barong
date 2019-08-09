@@ -137,8 +137,9 @@ module EventAPI
           exp:   Time.now.to_i + 60,
           event: event_payload
         }
-        private_key = OpenSSL::PKey.read(Base64.urlsafe_decode64(Barong::App.config.event_api_jwt_private_key))
-        algorithm   = ENV.fetch('EVENT_API_JWT_ALGORITHM', 'RS256')
+        private_key = Barong::App.config.keystore.private_key
+        algorithm   = 'RS256'
+
         jwt         = JWT::Multisig.generate_jwt jwt_payload, \
           { Middlewares.application_name.to_sym => private_key },
           { Middlewares.application_name.to_sym => algorithm }
