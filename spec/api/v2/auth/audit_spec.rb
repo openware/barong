@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe '/api/v2/auth functionality test' do
-  before(:all) do
+  before do
     create :permission, role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users'
     create :permission, role: 'member'
     create :permission, role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets'
@@ -41,7 +41,7 @@ describe '/api/v2/auth functionality test' do
       context 'acts as expected with different roles with another permission type match' do
         before do
           Permission.delete_all
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
 
         it 'for accountant' do
@@ -65,7 +65,7 @@ describe '/api/v2/auth functionality test' do
       context 'acts as expected with different roles without any permissions' do
         before do
           Permission.delete_all
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
           expect(Permission.all.count).to eq(0)
         end
 
@@ -94,7 +94,7 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets')
           Permission.create(role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users')
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets')
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
       end
 
@@ -103,7 +103,7 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets')
           Permission.create(role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users')
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets')
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
 
         it 'works for general topic' do
@@ -173,7 +173,7 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets', topic: 'tech_support')
           Permission.create(role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users', topic: 'administrating')
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets', topic: 'accounting')
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
         context 'for different roles' do
           it 'accountant' do
@@ -210,7 +210,7 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets', topic: 'tech_support')
           Permission.create(role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users', topic: 'administrating')
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets', topic: 'accounting')
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
 
         it 'for different roles' do
@@ -244,7 +244,7 @@ describe '/api/v2/auth functionality test' do
           Permission.create(role: 'technical', action: 'AUDIT', verb: 'post', path: 'api/v2/admin/wallets')
           Permission.create(role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users')
           Permission.create(role: 'accountant', action: 'AUDIT', verb: 'delete', path: 'api/v2/admin/markets')
-          Rails.cache.write('permissions', nil)
+          Rails.cache.delete('permissions')
         end
 
         context 'for different roles without params' do

@@ -68,7 +68,7 @@ module API
             code_error!(permission.errors.details, 422) unless permission.save
 
             # clear cached permissions, so they will be freshly refetched on the next call to /auth
-            Rails.cache.write('permissions', nil)
+            Rails.cache.delete('permissions')
             status 200
           end
 
@@ -90,7 +90,7 @@ module API
 
             target_permission.destroy
             # clear cached permissions, so they will be freshly refetched on the next call to /auth
-            Rails.cache.write('permissions', nil)
+            Rails.cache.delete('permissions')
 
             status 200
           end
@@ -139,7 +139,7 @@ module API
               code_error!(target_permission.errors.details, 422)
             end
             # clear cached permissions, so they will be freshly refetched on the next call to /auth
-            Rails.cache.write('permissions', nil)
+            Rails.cache.delete('permissions')
 
             status 200
           end

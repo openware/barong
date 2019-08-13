@@ -10,6 +10,7 @@ describe '/api/v2/auth functionality test' do
     end
     let!(:create_permissions) do
       Permission.create(role: 'superadmin', action: 'ACCEPT', verb: 'get', path: 'api/v2/admin/users/list')
+      Rails.cache.delete('permissions')
       @admin = User.create(email: 'superadmin@admin.io', password: 'Tecohvi0', role: 'superadmin', state: 'active')
     end
 

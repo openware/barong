@@ -71,7 +71,7 @@ RSpec.describe Label, type: :model do
         user.update_level
         expect(user.reload.level).to eq 1
       end
-      
+
       it 'does not change level if user has document verified label' do
         expect do
           create_label_with_level(user, document_verified_level)
