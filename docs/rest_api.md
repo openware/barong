@@ -12,6 +12,90 @@ RESTful API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
+### /admin/restrictions
+
+#### PUT
+##### Description:
+
+Update restriction
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | formData | Restriction id | Yes | integer |
+| scope | formData |  | No | string |
+| value | formData |  | No | string |
+| state | formData |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update restriction |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### POST
+##### Description:
+
+Create restriction
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| scope | formData |  | Yes | string |
+| value | formData |  | Yes | string |
+| state | formData |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create restriction |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### GET
+##### Description:
+
+Returns array of restrictions as a paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| scope | query |  | No | string |
+| range | query |  | No | string |
+| from | query |  | No | string |
+| to | query |  | No | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of restrictions per page (defaults to 100, maximum is 1000). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of restrictions as a paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /admin/metrics
 
 #### GET

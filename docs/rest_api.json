@@ -33,6 +33,208 @@
     }
   ],
   "paths": {
+    "/admin/restrictions": {
+      "put": {
+        "description": "Update restriction",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "description": "Restriction id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "scope",
+            "type": "string",
+            "enum": [
+              "continent",
+              "country",
+              "city",
+              "ip",
+              "ip_subnet"
+            ],
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "value",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "state",
+            "type": "string",
+            "enum": [
+              "enabled",
+              "disabled"
+            ],
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update restriction"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "putAdminRestrictions"
+      },
+      "post": {
+        "description": "Create restriction",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "scope",
+            "type": "string",
+            "enum": [
+              "continent",
+              "country",
+              "city",
+              "ip",
+              "ip_subnet"
+            ],
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "value",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "state",
+            "type": "string",
+            "default": "enabled",
+            "enum": [
+              "enabled",
+              "disabled"
+            ],
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create restriction"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "postAdminRestrictions"
+      },
+      "get": {
+        "description": "Returns array of restrictions as a paginated collection",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "scope",
+            "type": "string",
+            "enum": [
+              "continent",
+              "country",
+              "city",
+              "ip",
+              "ip_subnet"
+            ],
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "type": "string",
+            "default": "created",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of restrictions per page (defaults to 100, maximum is 1000).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of restrictions as a paginated collection"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminRestrictions"
+      }
+    },
     "/admin/metrics": {
       "get": {
         "description": "Returns main statistic in the given time period",
