@@ -25,7 +25,7 @@ describe '/api/v2/auth functionality test' do
   describe 'testing workability with session' do
     context 'with valid session' do
       before do
-        Rails.cache.write('permissions', nil)
+        Rails.cache.delete('permissions')
         do_create_session_request
       end
 
@@ -82,7 +82,7 @@ describe '/api/v2/auth functionality test' do
 
     context 'testing restrictions' do
       before do
-        Rails.cache.write('permissions', nil)
+        Rails.cache.delete('permissions')
         do_create_session_request
         expect(response.status).to eq(200)
       end
@@ -120,7 +120,7 @@ describe '/api/v2/auth functionality test' do
     let(:signature) { OpenSSL::HMAC.hexdigest(algorithm, secret, data) }
 
     before do
-      Rails.cache.write('permissions', nil)
+      Rails.cache.delete('permissions')
       SecretStorage.store_secret(secret, api_key.kid)
       allow(TOTPService).to receive(:validate?)
         .with(test_user.uid, otp_code) { true }

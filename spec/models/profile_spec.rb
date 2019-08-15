@@ -32,7 +32,7 @@ RSpec.describe Profile, type: :model do
     it { should validate_presence_of(:address) }
     it { should validate_presence_of(:city) }
     it { should validate_presence_of(:postcode) }
-  
+
     describe 'squish_spaces' do
       let!(:create_member_permission) do
         create :permission,
@@ -44,7 +44,7 @@ RSpec.describe Profile, type: :model do
                          city: '  New  York ',
                          postcode: '  AB   135-144  '
       end
-  
+
       it 'squishes spaces' do
         profile.reload
         expect(profile.first_name).to eq 'First Name'

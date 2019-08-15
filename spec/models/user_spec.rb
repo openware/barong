@@ -56,7 +56,7 @@ RSpec.describe User, type: :model do
 
     after(:all) { User.destroy_all }
   end
-  
+
   describe 'Iso8601TimeFormat' do
     let!(:user) { create(:user) }
     around(:each) { |example| Time.use_zone('Pacific/Midway') { example.run } }

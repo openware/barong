@@ -26,6 +26,8 @@ module Barong
 
     # main: switch between cookie and api key logic, return bearer token
     def auth
+      validate_restrictions!
+
       auth_type = 'cookie'
       auth_type = 'api_key' if api_key_headers?
       auth_owner = method("#{auth_type}_owner").call
@@ -63,13 +65,26 @@ module Barong
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
     end
 
+    def validate_restrictions!
+      restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) do
+        Restriction.where(state: 'enabled').to_a
+      end
+
+      ips = restrictions.select { |r| r.scope == 'ip' }.map { |r| r.value }
+      restrict! if ips.include? @request.remote_ip
+
+      ip_ranges = restrictions.select { |r| r.scope == 'ip_subnet' }.map { |r| r.value }
+      restrict! if ip_ranges.any? { |r| IPAddr.new(r).include? @request.remote_ip }
+    end
+
+    def restrict!
+      error!({ errors: ['authz.access_restricted'] }, 401)
+    end
+
     def validate_permissions!(user)
       # Caches Permission.all result to optimize
-      permissions = Rails.cache.read('permissions')
-      if permissions.nil?
-        permissions = Permission.all.to_ary
-        Rails.cache.write('permissions', permissions, expires_in: 5.minutes)
-      end
+      permissions = Rails.cache.fetch('permissions') { Permission.all.to_ary }
+
       permissions.select! { |a| a.role == user.role && ( a.verb == @request.env['REQUEST_METHOD'] || a.verb == 'ALL' ) && @path.starts_with?(a.path) }
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 

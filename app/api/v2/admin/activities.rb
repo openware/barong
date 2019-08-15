@@ -63,7 +63,7 @@ module API
                      type: { value: String, message: 'admin.activity.non_string_target_uid' }
             optional :range,
                      type: String,
-                     values: { value: -> (p){ %w[created].include?(p) }, message: 'admin.user.invalid_range' },
+                     values: { value: -> (p){ %w[created].include?(p) }, message: 'admin.activity.invalid_range' },
                      default: 'created'
             optional :from
             optional :to

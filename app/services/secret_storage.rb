@@ -3,7 +3,7 @@
 module SecretStorage
   Error = Class.new(StandardError)
 
-   class <<self
+  class <<self
 
     def server_available?
       read_data('sys/health').present?

@@ -46,7 +46,7 @@ module API
                      type: String
             optional :range,
                      type: String,
-                     values: { value: -> (p){ %w[created updated].include?(p) }, message: 'admin.user.non_positive_page' },
+                     values: { value: -> (p){ %w[created updated].include?(p) }, message: 'admin.user.invalid_range' },
                      default: 'created'
             optional :from
             optional :to
@@ -219,7 +219,7 @@ module API
                      type: String
             optional :range,
                      type: String,
-                     values: { value: ->(p) { %w[created updated].include?(p) }, message: 'admin.user.non_positive_page' },
+                     values: { value: ->(p) { %w[created updated].include?(p) }, message: 'admin.user.invalid_range' },
                      default: 'created'
             optional :from
             optional :to

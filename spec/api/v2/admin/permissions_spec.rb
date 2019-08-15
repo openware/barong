@@ -75,7 +75,7 @@ describe API::V2::Admin::Permissions do
     context 'successful response' do
       let(:do_request) {  post '/api/v2/admin/permissions', params: { role: 'admin', action: 'accept', verb: 'put', path: 'api/v2/admin'}, headers: auth_header }
       it 'creates new permission' do
-        expect { do_request }.to change { Permission.count }.from(2).to(3)
+        expect { do_request }.to change { Permission.count }.by(1)
         expect(response).to be_successful
       end
     end
@@ -86,7 +86,7 @@ describe API::V2::Admin::Permissions do
       let(:do_request) { delete '/api/v2/admin/permissions', params: { id: create_member_permission.id }, headers: auth_header }
 
       it 'delete permission' do
-        expect { do_request }.to change { Permission.count }.from(2).to(1)
+        expect { do_request }.to change { Permission.count }.by(-1)
         expect(response).to be_successful
       end
     end
