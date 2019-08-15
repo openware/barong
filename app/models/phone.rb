@@ -73,21 +73,20 @@ class Phone < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180503073934
 #
 # Table name: phones
 #
-#  id           :integer          not null, primary key
-#  country      :string(255)
+#  id           :bigint           not null, primary key
+#  user_id      :integer          unsigned, not null
+#  country      :string(255)      not null
 #  number       :string(255)      not null
-#  validated_at :datetime
 #  code         :string(5)
-#  user_id      :integer             unsigned, not null
+#  validated_at :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
 # Indexes
 #
-#  index_phones_on_user_id     (user_id)
-#  index_phones_on_number      (number)
+#  index_phones_on_number   (number)
+#  index_phones_on_user_id  (user_id)
 #

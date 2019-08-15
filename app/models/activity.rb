@@ -28,3 +28,25 @@ class Activity < ApplicationRecord
     !new_record?
   end
 end
+
+# == Schema Information
+#
+# Table name: activities
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           not null
+#  target_uid :string(255)
+#  category   :string(255)
+#  user_ip    :string(255)      not null
+#  user_agent :string(255)      not null
+#  topic      :string(255)      not null
+#  action     :string(255)      not null
+#  result     :string(255)      not null
+#  data       :text(65535)
+#  created_at :datetime
+#
+# Indexes
+#
+#  index_activities_on_target_uid  (target_uid)
+#  index_activities_on_user_id     (user_id)
+#

@@ -32,3 +32,21 @@ class APIKey < ApplicationRecord
     self.state == 'active'
   end
 end
+
+# == Schema Information
+#
+# Table name: apikeys
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           unsigned, not null
+#  kid        :string(255)      not null
+#  algorithm  :string(255)      not null
+#  scope      :string(255)
+#  state      :string(255)      default("active"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_apikeys_on_user_id  (user_id)
+#
