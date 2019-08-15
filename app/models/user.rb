@@ -109,6 +109,6 @@ class User < ApplicationRecord
   end
 
   def random_uid
-    "ID#{SecureRandom.hex(5).upcase}"
+    "%s%s" % [Barong::App.config.barong_uid_prefix.upcase, SecureRandom.hex(5).upcase]
   end
 end

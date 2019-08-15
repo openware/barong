@@ -12,8 +12,8 @@ module Barong
       end
 
       def set(key, default = nil)
-        if by_env(key)
-          config[key] = by_env(key)
+        if env(key)
+          config[key] = env(key)
 
         elsif Rails.application.credentials[key]
           config[key] = Rails.application.credentials[key]
@@ -21,12 +21,20 @@ module Barong
         else
           raise Error, "Config #{key} missing" if default.nil?
           config[key] = default
-
         end
+        validate!(key, config[key])
       end
 
-      def by_env(key)
+      def env(key)
         ENV[key.to_s.upcase]
+      end
+
+      def validate!(key, value)
+        case key
+        when :barong_uid_prefix
+          raise Error.new('Invalid prefix') \
+            unless /^[A-z]{2,6}$/ =~ value
+        end
       end
 
     end
