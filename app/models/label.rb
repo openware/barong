@@ -82,3 +82,21 @@ end
   #
   #  fk_rails_c02659cdf4  (user_id => users.id) ON DELETE => cascade
   #
+
+# == Schema Information
+#
+# Table name: labels
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           unsigned, not null
+#  key        :string(255)      not null
+#  value      :string(255)      not null
+#  scope      :string(255)      default("public"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_labels_on_user_id                    (user_id)
+#  index_labels_on_user_id_and_key_and_scope  (user_id,key,scope)
+#

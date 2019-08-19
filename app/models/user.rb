@@ -126,3 +126,25 @@ class User < ApplicationRecord
     "%s%s" % [Barong::App.config.barong_uid_prefix.upcase, SecureRandom.hex(5).upcase]
   end
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id              :bigint           not null, primary key
+#  uid             :string(255)      not null
+#  email           :string(255)      not null
+#  password_digest :string(255)      not null
+#  role            :string(255)      default("member"), not null
+#  level           :integer          default(0), not null
+#  otp             :boolean          default(FALSE)
+#  state           :string(255)      default("pending"), not null
+#  referral_id     :bigint
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#  index_users_on_uid    (uid) UNIQUE
+#
