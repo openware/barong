@@ -30,7 +30,8 @@ USER app
 COPY --chown=app:app Gemfile Gemfile.lock $APP_HOME/
 
 # Install dependencies
-RUN bundle install --jobs=$(nproc) --deployment
+RUN gem install bundler
+RUN bundle install --jobs=$(nproc) --deployment --binstubs
 
 # Copy the main application.
 COPY --chown=app:app . $APP_HOME
