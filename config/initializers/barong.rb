@@ -40,6 +40,7 @@ Barong::App.define do |config|
   config.set(:app_name, 'Barong')
   config.set(:barong_domain, 'barong.io')
   config.set(:barong_uid_prefix, 'ID')
+  config.set(:allow_remember, false)
 end
 
 Rails.application.config.x.keystore = kstore

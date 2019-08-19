@@ -20,6 +20,8 @@ module API::V2
           optional :captcha_response,
                    types: { value: [String, Hash], message: 'identity.session.invalid_captcha_format' },
                    desc: 'Response from captcha widget'
+          optional :remember_me,
+                   type: Boolean
           optional :otp_code,
                    type: String,
                    desc: 'Code from Google Authenticator'
@@ -53,6 +55,13 @@ module API::V2
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
 
+            if Barong::App.config.allow_remember && params[:remember_me]
+              exp = (Time.now + 30.days).to_i
+              agent = request.env["HTTP_USER_AGENT"] # check for not nil
+              jwt = codec.encode(uid: user.uid, ip: request.ip, agent: agent, exp: exp)
+              cookies[:device_jwt] = { value: jwt, expires: Time.now + 30.days, domain: Barong::App.config.barong_domain }
+            end
+
             present user, with: API::V2::Entities::User
             return status 200
           end
@@ -74,13 +83,61 @@ module API::V2
           status(200)
         end
 
+        desc 'Renew current session by jwt',
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 404, message: 'Record is not found' }
+        ]
+        post '/renew' do
+          error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless cookies[:device_jwt]
+          error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless Barong::App.config.allow_remember
+
+          ip, uid, agent = codec.decode_and_verify(
+                                  cookies[:device_jwt],
+                                  pub_key: Barong::App.config.keystore.public_key,
+                                  sub: 'session',
+                                ).slice(:ip, :uid, :agent).values
+
+          user = User.find_by(uid: uid)
+          error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless user
+
+          if user.state == 'banned'
+            login_error!(reason: 'Your account is banned', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'banned')
+          end
+
+          if user.state == 'discarded'
+            login_error!(reason: 'Your account is discarded', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'discarded')
+          end
+
+          if user.otp
+            login_error!(reason: 'Login with remembered device with enabled 2FA', error_code: 422,
+              user: user.id, action: 'login::device', result: 'failed', error_text: 'enabled_2fa')
+          end
+
+          unless request.ip == ip
+            login_error!(reason: 'Invalid device JWT IP', error_code: 422,
+              user: user.id, action: 'login::device', result: 'failed', error_text: 'invalid_jwt')
+          end
+
+          unless request.env["HTTP_USER_AGENT"] == agent
+            login_error!(reason: 'Invalid device JWT agent', error_code: 422,
+              user: user.id, action: 'login::device', result: 'failed', error_text: 'invalid_jwt')
+          end
+
+          activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+          session[:uid] = user.uid
+
+          present user, with: API::V2::Entities::User
+          return status 200
+        end
+
         desc 'Destroy current session',
           failure: [
             { code: 400, message: 'Required params are empty' },
             { code: 404, message: 'Record is not found' }
         ]
-        params do
-        end
         delete do
           user = User.find_by!(uid: session[:uid])
           error!({ errors: ['identity.session.invalid'] }, 401) unless user

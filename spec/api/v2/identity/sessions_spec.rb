@@ -96,6 +96,24 @@ describe API::V2::Identity::Sessions do
           expect_any_instance_of(CaptchaService::RecaptchaVerifier).to receive(:verify_recaptcha) { true }
         end
       end
+
+      context 'remember_me' do
+        let(:params) do
+          {
+            email: email,
+            password: password,
+            remember_me: true
+          }
+        end
+
+        before { allow(Barong::App.config).to receive(:barong_domain).and_return('www.example.com') }
+
+        it '' do
+          do_request
+
+          expect(cookies).to include 'device_jwt'
+        end
+      end
     end
 
     context 'With Invalid params' do

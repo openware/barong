@@ -33,7 +33,7 @@ module API
           end
 
           rescue_from :all do |e|
-            # report_exception(e)
+            report_exception(e)
             error!({ errors: ['server.internal_error'] }, 500)
           end
         end
