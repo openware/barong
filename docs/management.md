@@ -232,6 +232,31 @@ Sign request with barong signature
 | ---- | ----------- |
 | 201 | Sign request with barong signature |
 
+### /documents
+
+#### POST
+##### Description:
+
+Push documents to barong DB
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+| doc_type | formData | Document type | Yes | string |
+| doc_number | formData | Document number | Yes | string |
+| filename | formData | Document name | Yes | string |
+| file_ext | formData | Document file extension | Yes | string |
+| upload | formData | Base64 encoded document | Yes | string |
+| doc_expire | formData | Document expiration date | No | date |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Push documents to barong DB | [UserWithProfile](#userwithprofile) |
+
 ### /timestamp
 
 #### POST
@@ -262,7 +287,7 @@ Get all labels assigned to users
 
 #### UserWithProfile
 
-Get users and profile information
+Push documents to barong DB
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -273,6 +298,7 @@ Get users and profile information
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | profile | [Profile](#profile) |  | No |
+| referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -301,6 +327,7 @@ Returns array of users as collection
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
+| referral_uid | string | UID of referrer | No |
 
 #### APIKey
 
@@ -328,6 +355,7 @@ Returns array of users as collection
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 

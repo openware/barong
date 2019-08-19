@@ -1509,6 +1509,7 @@ Returns current user
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
+| referral_uid | string | UID of referrer | No |
 
 #### UserWithProfile
 
@@ -1521,6 +1522,7 @@ Returns current user
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | profile | [Profile](#profile) |  | No |
+| referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -1538,6 +1540,7 @@ Returns current user
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 

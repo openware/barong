@@ -2940,6 +2940,10 @@
         },
         "state": {
           "type": "string"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
         }
       }
     },
@@ -2968,6 +2972,10 @@
         },
         "profile": {
           "$ref": "#/definitions/Profile"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
         },
         "created_at": {
           "type": "string"
@@ -3010,6 +3018,10 @@
         },
         "documents": {
           "$ref": "#/definitions/Document"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
         },
         "created_at": {
           "type": "string"
