@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '~> 2.6.0'
+ruby '~> 2.6'
 
 gem 'api-pagination', '~> 4.8.2'
 
@@ -86,6 +86,3 @@ group :test do
   gem 'shoulda-matchers',    '~> 4.0.0.rc1'
   gem 'rails-controller-testing'
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
