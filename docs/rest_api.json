@@ -34,6 +34,39 @@
   ],
   "paths": {
     "/admin/restrictions": {
+      "delete": {
+        "description": "Delete restriction",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Restriction id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete restriction"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "deleteAdminRestrictions"
+      },
       "put": {
         "description": "Update restriction",
         "produces": [

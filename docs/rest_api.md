@@ -14,6 +14,30 @@ RESTful API for barong OAuth server
 
 ### /admin/restrictions
 
+#### DELETE
+##### Description:
+
+Delete restriction
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | query | Restriction id | Yes | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Delete restriction |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 #### PUT
 ##### Description:
 
