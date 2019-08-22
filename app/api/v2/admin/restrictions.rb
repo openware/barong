@@ -99,6 +99,29 @@ module API
             Rails.cache.delete('restrictions')
             status 200
           end
+
+          desc 'Delete restriction',
+          security: [{ 'BearerToken': [] }],
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ]
+          params do
+            requires :id,
+                     type: Integer,
+                     allow_blank: false,
+                     desc: 'Restriction id'
+          end
+          delete do
+            target_restriction = Restriction.find_by(id: params[:id])
+
+            error!({ errors: ['admin.restriction.doesnt_exist'] }, 404) if target_restriction.nil?
+
+            target_restriction.destroy
+            # clear cached restrictions, so they will be freshly refetched on the next call to /auth
+            Rails.cache.delete('restrictions')
+
+            status 200
+          end
         end
       end
     end
