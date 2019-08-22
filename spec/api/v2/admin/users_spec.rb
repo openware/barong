@@ -48,12 +48,12 @@ describe API::V2::Admin::Users do
 
       it 'returns filtered list of users when only one filter param given created_at and from' do
         params[:range] = 'created'
-        User.first.update(created_at: 1.day.ago)
-        params[:from] = User.last.created_at.to_i
+        test_user.update(created_at: 1.day.ago)
+        params[:from] = fourth_user.created_at.to_i
         do_search_request
 
         expect(response.status).to eq 200
-        expect(json_body.count).to eq (User.all.count - 1)
+        expect(json_body).not_to include(test_user)
       end
 
       it 'returns filtered list of users when only one filter param given (user attribute) level' do

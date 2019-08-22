@@ -104,4 +104,27 @@ describe API::V2::Admin::Restrictions do
       }.to change { restriction.reload.scope }.to('ip_subnet').and change { restriction.reload.value }.to '192.168.0.1/24'
     end
   end
+
+  describe 'DELETE /api/v2/admin/restrictions' do
+    let!(:restriction) { create(:restriction, scope: 'ip', value: '127.0.0.1') }
+
+    context 'successful response' do
+      let(:do_request) { delete '/api/v2/admin/restrictions', params: { id: restriction.id }, headers: auth_header }
+
+      it 'delete restriction' do
+        expect { do_request }.to change { Restriction.count }.by(-1)
+        expect(response).to be_successful
+      end
+    end
+
+    context 'unsuccessful response' do
+      it 'return error while restriction doesnt exist' do
+        delete '/api/v2/admin/restrictions', headers: auth_header, params: { id: 0 }
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '404'
+        expect(result['errors']).to eq(['admin.restriction.doesnt_exist'])
+      end
+    end
+  end
 end
