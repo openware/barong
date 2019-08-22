@@ -15,7 +15,8 @@ class AuthorizeController < ActionController::Metal
 
     response.status = 200
     return if req.restricted?('pass') # check if request is whitelisted
-    request.session_options[:skip] = true # false by default (always sets set-cookie header)
+
+    request.session_options[:expire_after] = Barong::App.config.session_expire_time.to_i.seconds
 
     response.headers['Authorization'] = req.auth # sets bearer token
   rescue Barong::Authorize::AuthError => e # returns error from validations
