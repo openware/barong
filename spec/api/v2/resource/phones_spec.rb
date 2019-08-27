@@ -33,8 +33,7 @@ describe 'Api::V2::Resources::Phones' do
     end
     let(:phone_number) { nil }
 
-    let(:params) { { phone_number: phone_number } }
-    let(:mock_sms) { Barong::MockSMS }
+    let(:params) { { phone_number: phone_number, channel: 'sms' } }
 
     describe 'errors: ' do
       context 'when phone is missing' do
@@ -97,73 +96,35 @@ describe 'Api::V2::Resources::Phones' do
     end
 
     context 'valid story' do
+      before do
+        allow(Phone).to receive(:send_code).and_return(OpenStruct.new(status: 'pending'))
+      end
+
       context 'when phone is not verified' do
         let(:phone_number) { build(:phone).number }
 
         it 'assigns a phone to account and send sms' do
           do_request
-          expect_body.to eq(message: 'Code was sent successfully')
+          expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
-          expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
-        end
-
-        it 'sends a default sms content' do
-          do_request
-
-          expect_body.to eq(message: 'Code was sent successfully')
-          expect_status.to eq 201
-          expect(mock_sms.messages.last.body).to start_with('Your verification code for Barong: ')
-        end
-
-        it 'sends a custom message with content before code' do
-          allow(Barong::App.config).to receive(:sms_content_template).and_return('Please confirm your phone with the following code: {{code}}')
-
-          do_request
-
-          expect_body.to eq(message: 'Code was sent successfully')
-          expect_status.to eq 201
-          expect(mock_sms.messages.last.body).to start_with('Please confirm your phone with the following code: ')
-        end
-
-        it 'sends a custom message with content after code' do
-          allow(Barong::App.config).to receive(:sms_content_template).and_return('{{code}} - this is your confirmation code')
-          do_request
-
-          expect_body.to eq(message: 'Code was sent successfully')
-          expect_status.to eq 201
-          expect(mock_sms.messages.last.body).to end_with(' - this is your confirmation code')
-        end
-
-        it 'sends a custom message with code in the midle of the content' do
-          allow(Barong::App.config).to receive(:sms_content_template).and_return('Following code: {{code}} should be used for phone confirmation')
-          do_request
-
-          expect_body.to eq(message: 'Code was sent successfully')
-          expect_status.to eq 201
-          expect(mock_sms.messages.last.body).to start_with('Following code: ')
-          expect(mock_sms.messages.last.body).to end_with(' should be used for phone confirmation')
         end
       end
 
       context 'when phone is valid' do
         let(:phone_number) { build(:phone).number }
 
-        it 'creates a phone and send sms' do
+        it 'creates a phone and send code via sms channel' do
           do_request
-          expect_body.to eq(message: 'Code was sent successfully')
+          expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
-          expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
         end
 
-        it 'doesnt change code in DB on phone initialize' do
-          do_request
-          expect_body.to eq(message: 'Code was sent successfully')
-          expect_status.to eq 201
-          code_after_create = Phone.last.code
+        it 'creates a phone and send code via call channel' do
+          params['channel'] = 'call'
 
-          # Phone.last initilazes phone
-          code_after_initialize = Phone.last.code
-          expect(code_after_create).to eq code_after_initialize
+          do_request
+          expect_body.to eq(message: 'Code was sent successfully via call')
+          expect_status.to eq 201
         end
       end
     end
@@ -173,10 +134,11 @@ describe 'Api::V2::Resources::Phones' do
       let(:international_phone) { '447418084106' }
 
       it 'creates a phone and send sms' do
+        allow(Phone).to receive(:send_code).and_return(OpenStruct.new(status: 'pending'))
+
         do_request
-        expect_body.to eq(message: 'Code was sent successfully')
+        expect_body.to eq(message: 'Code was sent successfully via sms')
         expect_status.to eq 201
-        expect(mock_sms.messages.last.to).to eq "+#{international_phone}"
         expect(Phone.last.number).to eq(international_phone)
       end
     end
@@ -250,48 +212,53 @@ describe 'Api::V2::Resources::Phones' do
       let(:international_phone) { '447418084106' }
 
       it 'renders an error' do
-      do_request
-      expect_body.to eq(errors: ["resource.phone.number_exist"])
-      expect_status.to eq 400
+        do_request
+        expect_body.to eq(errors: ["resource.phone.number_exist"])
+        expect_status.to eq 400
+      end
+    end
+
+    context 'when phone is not found in test_user' do
+      let!(:phone) { create(:phone) }
+      let(:phone_number) { phone.number }
+
+      it 'rendens an error' do
+        allow(Phone).to receive(:verify_code).and_return(OpenStruct.new(status: 'pending'))
+
+        do_request
+        expect_body.to eq(errors: ["resource.phone.doesnt_exist"])
+        expect_status.to eq 404
+      end
+    end
+
+    context 'when phone is found in test_user but code is invalid' do
+      let!(:phone) { create(:phone, user: test_user) }
+      let(:phone_number) { phone.number }
+
+      it 'rendens an error' do
+        allow(Phone).to receive(:verify_code).and_return(OpenStruct.new(status: 'pending'))
+
+        do_request
+        expect_body.to eq(errors: ["resource.phone.verification_invalid"])
+        expect_status.to eq 404
+      end
+    end
+
+    context 'when phone and code is valid' do
+      let(:phone) { create(:phone, user: test_user) }
+      let(:phone_number) { phone.number }
+
+      it 'responses with success' do
+        allow(Phone).to receive(:verify_code).and_return(OpenStruct.new(status: 'approved'))
+
+        set_level(test_user, 1)
+        do_request
+        expect_body.to eq(message: 'Phone was verified successfully')
+        expect_status.to eq 201
+        expect(phone.reload.validated_at).to be
+        test_user.update_level
+        expect(test_user.reload.level).to eq 2
+      end
     end
   end
-
-  context 'when phone is not found in test_user' do
-    let!(:phone) { create(:phone) }
-    let(:phone_number) { phone.number }
-
-    it 'rendens an error' do
-      do_request
-      expect_body.to eq(errors: ["resource.phone.verification_invalid"])
-      expect_status.to eq 404
-    end
-  end
-
-  context 'when phone is found in test_user but code is invalid' do
-    let!(:phone) { create(:phone, user: test_user) }
-    let(:phone_number) { phone.number }
-
-    it 'rendens an error' do
-      do_request
-      expect_body.to eq(errors: ["resource.phone.verification_invalid"])
-      expect_status.to eq 404
-    end
-  end
-
-  context 'when phone and code is valid' do
-    let(:phone) { create(:phone, user: test_user) }
-    let(:phone_number) { phone.number }
-    let(:verification_code) { phone.code }
-
-    it 'responses with success' do
-      set_level(test_user, 1)
-      do_request
-      expect_body.to eq(message: 'Phone was verified successfully')
-      expect_status.to eq 201
-      expect(phone.reload.validated_at).to be
-      test_user.update_level
-      expect(test_user.reload.level).to eq 2
-    end
-  end
-end
 end
