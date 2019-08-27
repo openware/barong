@@ -4,20 +4,16 @@
 # Class Phone
 #
 class Phone < ApplicationRecord
+  TWILIO_CHANNELS = %w[call sms].freeze
+
   belongs_to :user
 
   validates :number, phone: true
 
-  before_create  :generate_code
   before_validation :parse_country
   before_validation :sanitize_number
 
   scope :verified, -> { where.not(validated_at: nil) }
-
-  def regenerate_code
-    generate_code
-    save
-  end
 
   #FIXME: Clean code below
   class << self
@@ -37,30 +33,33 @@ class Phone < ApplicationRecord
       parse(unsafe_phone).international(false)
     end
 
-    def send_confirmation_sms(phone)
-      Rails.logger.info("Sending SMS to #{phone.number}")
+    def send_confirmation(phone, channel)
+      Rails.logger.info("Sending code to #{phone.number} via #{channel}")
 
-      send_sms(number: phone.number,
-               content: Barong::App.config.sms_content_template.gsub(/{{code}}/, phone.code))
+      send_code(number: phone.number, channel: channel)
     end
 
-    def send_sms(number:, content:)
-      from_phone = Barong::App.config.twilio_phone_number
+    def send_code(number:, channel:)
+      verify_client.services(@service_sid)
+                   .verifications
+                   .create(to: '+' + number, channel: channel)
+    end
 
-      client = Barong::App.config.sms_sender
-      client.messages.create(
-        from: from_phone,
-        to:   '+' + number,
-        body: content
-      )
+    def verify_code(number:, code:)
+      verify_client.services(@service_sid)
+                   .verification_checks
+                   .create(to: '+' + number, code: code)
+    end
+
+    def verify_client
+      client = Barong::App.config.barong_twilio_client
+      @service_sid = Barong::App.config.barong_twilio_service_sid
+
+      client.verify
     end
   end
 
   private
-
-  def generate_code
-    self.code = rand.to_s[2..6]
-  end
 
   def parse_country
     data = Phonelib.parse(number)
