@@ -39,9 +39,15 @@ module API::V2
                          user: user.id, action: 'login', result: 'failed', error_text: 'banned')
           end
 
-          if user.state == 'discarded'
-            login_error!(reason: 'Your account is discarded', error_code: 401,
-                         user: user.id, action: 'login', result: 'failed', error_text: 'discarded')
+          if user.state == 'deleted'
+            login_error!(reason: 'Your account is deleted', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'deleted')
+          end
+
+          # if user is not active or pending, then return 401
+          unless user.state.in?(%w[active pending])
+            login_error!(reason: 'Your account is not active', error_code: 401,
+                         user: user.id, action: 'login', result: 'failed', error_text: 'not_active')
           end
 
           unless user.authenticate(declared_params[:password])
@@ -53,7 +59,7 @@ module API::V2
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
 
-            present user, with: API::V2::Entities::User
+            present user, with: API::V2::Entities::UserWithFullInfo
             return status 200
           end
 
@@ -70,7 +76,7 @@ module API::V2
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
           session[:uid] = user.uid
 
-          present user, with: API::V2::Entities::User
+          present user, with: API::V2::Entities::UserWithFullInfo
           status(200)
         end
 

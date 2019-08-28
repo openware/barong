@@ -27,7 +27,7 @@ describe API::V2::Admin::Users do
       let(:do_search_request) { get '/api/v2/admin/users', headers: auth_header, params: params }
 
       def validate_fields(user)
-        user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid').symbolize_keys
+        user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid', 'data').symbolize_keys
       end
 
       it 'returns list of users' do

@@ -7,7 +7,7 @@ users:
     password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
     role: "admin"
     state: "active"
-    level: 3
+    level: 1
 
 levels:
   - key: email

@@ -5,6 +5,8 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Users < Grape::API
+      use ActionDispatch::Session::CookieStore
+
       helpers do
         def parse_refid!
           error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless /\AID\w{10}$/.match?(params[:refid])
@@ -41,10 +43,13 @@ module API::V2
           optional :captcha_response,
                    types: [String, Hash],
                    desc: 'Response from captcha widget'
+          optional :data,
+                   type: String,
+                   desc: 'Any additional key: value pairs in json string format'
         end
         post do
           declared_params = declared(params, include_missing: false)
-          user_params = declared_params.slice('email', 'password')
+          user_params = declared_params.slice('email', 'password', 'data')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 
@@ -57,6 +62,9 @@ module API::V2
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
           publish_confirmation(user, language, Barong::App.config.barong_domain)
+          session[:uid] = user.uid
+
+          present user, with: API::V2::Entities::UserWithFullInfo
           status 201
         end
 
@@ -119,13 +127,15 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            current_user.after_confirmation if token_uniq?(payload[:jti])
+            session[:uid] = current_user.uid
+            current_user.labels.create(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
 
             EventAPI.notify('system.user.email.confirmed',
                             user: current_user.as_json_for_event_api,
                             language: language,
                             domain: Barong::App.config.barong_domain)
 
+            present current_user, with: API::V2::Entities::UserWithFullInfo
             status 201
           end
         end

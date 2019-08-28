@@ -14,7 +14,7 @@ describe "Default seeds.yml template" do
                                      "password" => "123AZErty@",
                                      "role" => "admin",
                                      "state" => "active",
-                                     "level" => 3
+                                     "level" => 1
                                    }
                                  ])
     expect(seeds["levels"].size).to eq(3)
@@ -177,7 +177,7 @@ describe Barong::Seed do
           "email" => "admin@peatio.tech",
           "password" => "123aZE@654",
           "role" => "admin",
-          "level" => 2
+          "level" => 0
         }
       ]
     }
@@ -191,7 +191,7 @@ describe Barong::Seed do
       expect(user.email).to eq("admin@peatio.tech")
       expect(user.role).to eq("admin")
       expect(user.state).to eq("pending")
-      expect(user.level).to eq(2)
+      expect(user.level).to eq(0)
     end
   end
 

@@ -25,7 +25,7 @@ describe 'API::V2::Resource::Profiles' do
         dob: Faker::Date.birthday,
         country: Faker::Address.country_code_long,
         city: Faker::Address.city,
-        address: Faker::Address.street_address,
+        address: Faker::Address.state,
         postcode: Faker::Address.zip_code
       }
     end
@@ -183,7 +183,7 @@ describe 'API::V2::Resource::Profiles' do
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
         dob: Faker::Date.birthday,
-        address: Faker::Address.street_address,
+        address: Faker::Address.state,
         postcode: Faker::Address.zip_code,
         city: Faker::Address.city,
         country: Faker::Address.country_code_long
@@ -211,7 +211,7 @@ describe 'API::V2::Resource::Profiles' do
         dob: Faker::Date.birthday,
         country: Faker::Address.country_code_long,
         city: Faker::Address.city,
-        address: Faker::Address.street_address,
+        address: Faker::Address.state,
         postcode: Faker::Address.zip_code
       }
     end
@@ -233,7 +233,7 @@ describe 'API::V2::Resource::Profiles' do
         'model.profile.created',
         hash_including(
           record: {
-            user: test_user.as_json_for_event_api,
+            user: anything,
             address: anything,
             city: anything,
             country: anything,

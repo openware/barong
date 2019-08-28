@@ -76,7 +76,7 @@ describe 'Api::V1::Profiles' do
       expect_body.to eq errors: ['resource.user.invalid_otp']
     end
 
-    it 'marks user as discarded with turned on 2fa and valid otp' do
+    it 'marks user as deleted with turned on 2fa and valid otp' do
       test_user.update(otp: true)
       delete '/api/v2/resource/users/me', headers: auth_header, params: {
         password: 'Tecohvi0',
@@ -84,16 +84,16 @@ describe 'Api::V1::Profiles' do
       }
 
       expect(response.status).to eq 200
-      expect(test_user.reload.state).to eq 'discarded'
+      expect(test_user.reload.state).to eq 'deleted'
     end
 
-    it 'marks user as discarded with turned off 2fa' do
+    it 'marks user as deleted with turned off 2fa' do
       delete '/api/v2/resource/users/me', headers: auth_header, params: {
         password: 'Tecohvi0'
       }
 
       expect(response.status).to eq 200
-      expect(test_user.reload.state).to eq 'discarded'
+      expect(test_user.reload.state).to eq 'deleted'
     end
   end
 

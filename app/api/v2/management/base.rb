@@ -38,7 +38,8 @@ module API::V2
         Entities::Profile,
         Entities::User,
         Entities::UserWithProfile,
-        Entities::UserWithFullInfo
+        Entities::UserWithFullInfo,
+        Entities::UserWithKYC
       ],
       api_version: 'v2',
       doc_version: '2.0.30-alpha', # Used to be BARONG::VERSION

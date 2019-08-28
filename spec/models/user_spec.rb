@@ -8,6 +8,14 @@ RSpec.describe User, type: :model do
            role: 'member'
   end
   context 'User model basic syntax' do
+    ## Test of data length
+    it { should validate_length_of(:data) }
+
+    # 1100 char string
+    let(:big_str) { "string bar"*11 }
+
+    it { should_not allow_value(big_str).for(:data)}
+
     ## Test of validations
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:password) }
@@ -110,6 +118,175 @@ RSpec.describe User, type: :model do
     it 'parses date to iso8601' do
       expect(user.format_iso8601_time(user.created_at.to_date)).to \
         eq user.created_at.to_date.iso8601
+    end
+  end
+
+  describe 'States and labels dependency' do
+    let(:reqs_list) { {} }
+    let!(:create_permissions) do
+      create :permission, role: 'member'
+    end
+
+    before do
+      allow(BarongConfig).to receive(:list) { reqs_list }
+    end
+
+    describe 'testing workability with ALL mapping type' do
+      let!(:user) { create(:user, state: 'pending') }
+      let(:reqs_list) {
+        {
+          "activation_requirements" => {
+              "phone" => "verified",
+              "documents" => "verified"
+            },
+          "state_triggers" => {
+            "active_one_of_1_label" => ['email'],
+            "active_one_of_3_labels" => ['first', 'second', 'third']
+          }
+        }
+      }
+
+      context 'changing state on adding label' do
+        context 'sucessfully' do
+          it 'changes state when only one label required' do
+            # email required
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'email', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active_one_of_1_label')
+          end
+
+          it 'changes state when 2 label required' do
+            # [phone documents] required
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'phone', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'documents', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active')
+          end
+
+          it 'changes state when one out of 3 label required' do
+            # first or second third required
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'first', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active_one_of_3_labels')
+
+            user.labels.find_by_key('first').destroy
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'third', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active_one_of_3_labels')
+
+            user.labels.find_by_key('third').destroy
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'second', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active_one_of_3_labels')
+          end
+        end
+
+        context 'not enough labels' do
+          it 'doesnt change state if provided 1 out of 2 labels only' do
+            # [phone documents] required
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'documents', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('pending')
+          end
+        end
+      end
+
+      context 'changing state on deleting' do
+        context 'ALL policy' do
+          let!(:give_user_active_state) do
+            user.labels.create(key: 'phone', value: 'verified', scope: 'private')
+            user.labels.create(key: 'documents', value: 'verified', scope: 'private')
+          end
+
+          it 'recalculates from active to  when remove all active labels' do
+            expect(user.state).to  eq('active')
+            Label.find_by(key: 'documents', user: user).destroy
+            Label.find_by(key: 'phone', user: user).destroy
+
+            user.reload
+
+            expect(user.state).to eq('pending')
+          end
+
+          it 'recalculates from active_2_labels to active when pending one of active labels on ALL policy' do
+            expect(user.state).to eq('active')
+            Label.find_by(key: 'documents', user: user).destroy
+            user.reload
+
+            expect(user.state).to eq('pending')
+          end
+        end
+      end
+    end
+
+    describe 'testing workability with ANY mapping type' do
+      let!(:user) { create(:user, state: 'pending') }
+      let(:reqs_list) {
+        {
+          "activation_requirements" => {
+            "email" => "verified"
+          },
+          "state_triggers" => {
+            "locked" => ['trade', 'withdraw']
+          }
+        }
+      }
+
+      context 'changing state on adding label' do
+        context 'sucessfully' do
+          it 'changes state when only when 1 label out of 2 matches' do
+            expect(user.state).to eq('pending')
+
+            user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
+            expect(user.state).to eq('locked')
+          end
+        end
+
+        context 'not enough labels' do
+          it 'doesnt change state when no label matches' do
+            expect(user.state).to eq('pending')
+            user.labels.create(key: 'random', value: 'suspicious', scope: 'private')
+
+            expect(user.state).to eq('pending')
+          end
+        end
+      end
+
+      context 'changing state on deleting' do
+        context 'ANY policy' do
+          let!(:give_user_locked_state) do
+            user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
+            user.labels.create(key: 'withdraw', value: 'suspicious', scope: 'private')
+          end
+
+          it 'doesnt recalculate state if remove one of ANY and another one of ANY still here with ANY policy' do
+            expect(user.state).to eq('locked')
+
+            user.labels.find_by(key: 'trade').destroy
+            user.reload
+
+            expect(user.state).to eq('locked')
+          end
+
+          it 'recalculates if removed all of ANY and there is no more match' do
+            expect(user.state).to eq('locked')
+
+            user.labels.find_by(key: 'trade').destroy
+            user.labels.find_by(key: 'withdraw').destroy
+
+            user.reload
+            expect(user.state).to eq('pending')
+          end
+        end
+      end
     end
   end
 end

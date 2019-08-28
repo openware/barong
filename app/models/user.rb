@@ -13,8 +13,10 @@ class User < ApplicationRecord
   has_many  :api_keys,   dependent: :destroy, class_name: 'APIKey'
   has_many  :activities, dependent: :destroy
 
+  validates_length_of :data, :maximum => 1024
   validate :role_exists
   validate :referral_exists
+  validates :data, data_is_json: true
   validates :email,       email: true, presence: true, uniqueness: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?,
@@ -65,15 +67,8 @@ class User < ApplicationRecord
     new_record? || password.present?
   end
 
-  def after_confirmation
-    add_level_label(:email)
-    self.state = 'active'
-    save
-  end
-
   # FIXME: Clean level micro code
   def update_level
-    tags = []
     user_level = 0
     tags = labels.with_private_scope
                  .map { |l| [l.key, l.value].join ':' }
@@ -88,9 +83,25 @@ class User < ApplicationRecord
     update(level: user_level)
   end
 
-  def add_level_label(key, value = 'verified')
-    labels.find_or_create_by(key: key, scope: 'private')
-          .update!(value: value)
+  def update_state
+    @resulting_state = 'pending'
+
+    unless active?
+      if BarongConfig.list['activation_requirements'] <= (labels.with_private_scope.map { |l| { l.key => l.value }}.inject(:merge) || {})
+        @resulting_state = 'active'
+      end
+    end
+
+    # FIXME BarongConfig should be a feature of Barong::App
+    BarongConfig.list['state_triggers'].each do |state, triggers|
+      triggers.each { |trigger|
+        labels.pluck(:key).each { |label|
+          @resulting_state = state if label.start_with?(trigger)
+        }
+      }
+    end
+
+    update(state: @resulting_state) if @resulting_state != self.state
   end
 
   def as_json_for_event_api

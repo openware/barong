@@ -41,32 +41,16 @@ describe API::V2::Management::Users, type: :request do
                   multisig_jwt_management_api_v2({ data: data }, *signers)
       end
 
-      it 'reads user info by uid' do
-        data[:uid] = user.uid
-        do_request
-        expect(response.status).to eq 201
-        expect(json_body.keys).to eq expected_attributes
-      end
-
       it 'reads extended user info by uid' do
         data[:uid] = user.uid
-        data[:extended] = true
         do_request
 
         expect(response.status).to eq 201
         expect(json_body.keys).to eq extended_attributes
       end
 
-      it 'reads user info by email' do
+      it 'reads full user info by email' do
         data[:email] = user.email
-        do_request
-        expect(response.status).to eq 201
-        expect(json_body.keys).to eq expected_attributes
-      end
-
-      it 'reads extended user info by email' do
-        data[:email] = user.email
-        data[:extended] = true
 
         do_request
         expect(response.status).to eq 201
@@ -77,16 +61,8 @@ describe API::V2::Management::Users, type: :request do
         create(:phone, validated_at: 1.minutes.ago, user_id: user.id)
       end
 
-      it 'reads user info by user phone' do
+      it 'reads full user info by user phone' do
         data[:phone_num] = phone.number
-        do_request
-        expect(response.status).to eq 201
-        expect(json_body.keys).to eq expected_attributes
-      end
-
-      it 'reads extended user info by user phone' do
-        data[:phone_num] = phone.number
-        data[:extended] = true
 
         do_request
         expect(response.status).to eq 201
@@ -157,7 +133,7 @@ describe API::V2::Management::Users, type: :request do
         let!(:fourth_user) { create(:user, email: 'testc@gmail.com') }
 
         def validate_fields(user)
-          user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid')
+          user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid', 'data')
         end
 
         include_context 'bearer authentication'
@@ -388,7 +364,7 @@ describe API::V2::Management::Users, type: :request do
               dob: Faker::Date.birthday,
               country: Faker::Address.country_code_long,
               city: Faker::Address.city,
-              address: Faker::Address.street_address,
+              address: Faker::Address.state,
               postcode: Faker::Address.zip_code
             }
           end
@@ -407,7 +383,7 @@ describe API::V2::Management::Users, type: :request do
               dob: Faker::Date.birthday,
               country: Faker::Address.country_code_long,
               city: Faker::Address.city,
-              address: Faker::Address.street_address
+              address: Faker::Address.state
             }
           end
 
@@ -425,7 +401,7 @@ describe API::V2::Management::Users, type: :request do
               dob: Faker::Date.birthday,
               country: 'a',
               city: Faker::Address.city,
-              address: Faker::Address.street_address,
+              address: Faker::Address.state,
               postcode: Faker::Address.zip_code
             }
           end

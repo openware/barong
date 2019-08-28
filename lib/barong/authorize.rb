@@ -39,7 +39,10 @@ module Barong
       error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
       user = User.find_by!(uid: session[:uid])
-      error!({ errors: ['authz.user_not_active'] }, 401) unless user.active?
+
+      unless user.state.in?(%w[active pending])
+        error!({ errors: ['authz.user_not_active'] }, 401)
+      end
 
       validate_permissions!(user)
 
@@ -158,7 +161,9 @@ module Barong
     end
 
     def validate_user!(user)
-      error!({ errors: ['authz.invalid_session'] }, 401) unless user.active?
+      unless user.state.in?(%w[active pending])
+        error!({ errors: ['authz.invalid_session'] }, 401)
+      end
 
       error!({ errors: ['authz.disabled_2fa'] }, 401) unless user.otp
     end

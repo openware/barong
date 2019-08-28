@@ -286,7 +286,6 @@ describe 'Api::V2::Resources::Phones' do
     it 'responses with success' do
       set_level(test_user, 1)
       do_request
-      expect_body.to eq(message: 'Phone was verified successfully')
       expect_status.to eq 201
       expect(phone.reload.validated_at).to be
       test_user.update_level

@@ -80,10 +80,10 @@ module Barong
           logger.info "Created user for '#{user.email}'"
 
           # Set correct level with labels
-          levels = levels = Level.where(id: 1..user.level)
+          levels = Level.where(id: 1..user.level)
           raise ConfigError.new("No enough levels found in database to grant the user to level #{user.level}") if levels.count < user.level
           levels.find_each do |level|
-            user.add_level_label(level.key, level.value)
+            user.labels.create(key: level.key, value: level.value, scope: 'private')
           end
 
           @result.push(email: user.email, password: user.password, level: user.level)

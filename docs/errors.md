@@ -38,7 +38,7 @@ identity.session.invalid_login_params   Invalid Email or Password
 identity.session.invalid                Invalid Session
 identity.captcha.required               captcha_response is required'
 identity.captcha.mandatory_fields       Mandatory fields must be filled in
-identity.session.discarded              Your account is discarded
+identity.session.deleted                Your account is deleted
 identity.session.not_active             Your account is not active
 identity.session.banned                 Your account is banned
 identity.session.invalid_params         Invalid Email or Password
