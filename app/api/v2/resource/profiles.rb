@@ -36,7 +36,6 @@ module API::V2
           optional :country, type: String
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
-
         post do
           return error!({ errors: ['resource.profile.exist'] }, 409) unless current_user.profile.nil?
 
@@ -45,6 +44,34 @@ module API::V2
 
           present profile, with: API::V2::Entities::Profile
           status 201
+        end
+
+        desc 'Update a profile for current_user',
+             security: [{ "BearerToken": [] }],
+             failure: [
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Validation errors' }
+             ]
+        params do
+          optional :first_name, type: String
+          optional :last_name, type: String
+          optional :dob, type: Date
+          optional :address, type: String
+          optional :postcode, type: String
+          optional :city, type: String
+          optional :country, type: String
+          optional :metadata, type: Hash, desc: 'Any key:value pairs'
+        end
+        put do
+          target_profile = current_user.profile
+          return error!({ errors: ['resource.profile.doesnt_exist'] }, 404) if target_profile.nil?
+
+          unless target_profile.update(declared(params, include_missing: false))
+            code_error!(target_profile.errors.details, 422)
+          end
+
+          present target_profile, with: API::V2::Entities::Profile
         end
       end
     end
