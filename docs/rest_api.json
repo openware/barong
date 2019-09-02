@@ -2415,44 +2415,44 @@
             "in": "formData",
             "name": "first_name",
             "type": "string",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "last_name",
             "type": "string",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "dob",
             "type": "string",
             "format": "date",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "address",
             "type": "string",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "postcode",
             "type": "string",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "city",
             "type": "string",
-            "required": true
+            "required": false
           },
           {
             "in": "formData",
             "name": "country",
             "type": "string",
-            "required": true
+            "required": false
           }
         ],
         "security": [
@@ -2943,6 +2943,9 @@
           "type": "string"
         },
         "country": {
+          "type": "string"
+        },
+        "state": {
           "type": "string"
         },
         "metadata": {

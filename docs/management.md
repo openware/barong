@@ -313,6 +313,7 @@ Push documents to barong DB
 | postcode | string |  | No |
 | city | string |  | No |
 | country | string |  | No |
+| state | string |  | No |
 | metadata | object | Profile additional fields | No |
 
 #### User

@@ -1234,13 +1234,13 @@ Create a profile for current_user
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| first_name | formData |  | Yes | string |
-| last_name | formData |  | Yes | string |
-| dob | formData |  | Yes | date |
-| address | formData |  | Yes | string |
-| postcode | formData |  | Yes | string |
-| city | formData |  | Yes | string |
-| country | formData |  | Yes | string |
+| first_name | formData |  | No | string |
+| last_name | formData |  | No | string |
+| dob | formData |  | No | date |
+| address | formData |  | No | string |
+| postcode | formData |  | No | string |
+| city | formData |  | No | string |
+| country | formData |  | No | string |
 
 ##### Responses
 
@@ -1521,6 +1521,7 @@ Returns current user
 | postcode | string |  | No |
 | city | string |  | No |
 | country | string |  | No |
+| state | string |  | No |
 | metadata | object | Profile additional fields | No |
 
 #### User
