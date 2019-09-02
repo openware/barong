@@ -38,5 +38,13 @@ rescue Barong::KeyStore::Fatal
 
 end
 
-Rails.application.config.x.keystore = Barong::KeyStore.new(pkey)
-Barong::App.config.keystore = Barong::KeyStore.new(pkey)
+kstore = Barong::KeyStore.new(pkey)
+
+Barong::App.define do |config|
+  config.set(:app_name, 'Barong')
+  config.set(:barong_domain, 'barong.io')
+  config.set(:barong_uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
+end
+
+Rails.application.config.x.keystore = kstore
+Barong::App.config.keystore = kstore

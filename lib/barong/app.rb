@@ -11,17 +11,29 @@ module Barong
         yield self
       end
 
-      def set(key, default = nil)
-        if by_env(key)
-          config[key] = by_env(key)
+      def set(key, default = nil, options = {})
+        value = fetch!(key, default)
+
+        validate!(key, value, options)
+        value = type!(key, value, options)
+
+        config[key] = value
+      end
+
+      private
+
+      def fetch!(key, default)
+        if env(key)
+          return env(key)
 
         elsif Rails.application.credentials[key]
-          config[key] = Rails.application.credentials[key]
+          return Rails.application.credentials[key]
+
+        elsif !default.nil?
+          return default
 
         else
           raise Error, "Config #{key} missing" if default.nil?
-          config[key] = default
-
         end
       end
 
@@ -29,6 +41,36 @@ module Barong
         ENV[key.to_s.upcase]
       end
 
+      def validate!(key, value, options)
+        regex!(key, value, options[:regex]) if options[:regex]
+        values!(key, value, options[:values]) if options[:values]
+      end
+
+      def type!(key, value, options)
+        return value unless options[:type]
+
+        case options[:type]
+        when :bool
+          values!(key, value, %w(true false))
+          return value == 'true'
+
+        when :integer
+          regex!(key, value,  /^\d+$/)
+          return value
+        end
+      end
+
+      def regex!(key, value, regex)
+        unless regex =~ value
+          raise Error.new("#{key.to_s.upcase} does not match regex #{regex.inspect}")
+        end
+      end
+
+      def values!(key, value, values)
+        unless values.include?(value)
+          raise Error.new("#{key.to_s.upcase} invalid, enbled values: #{values.to_s}")
+        end
+      end
     end
   end
 end
