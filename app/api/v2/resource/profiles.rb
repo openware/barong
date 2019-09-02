@@ -27,13 +27,13 @@ module API::V2
                { code: 422, message: 'Validation errors' }
              ]
         params do
-          requires :first_name, type: String
-          requires :last_name, type: String
-          requires :dob, type: Date
-          requires :address, type: String
-          requires :postcode, type: String
-          requires :city, type: String
-          requires :country, type: String
+          optional :first_name, type: String
+          optional :last_name, type: String
+          optional :dob, type: Date
+          optional :address, type: String
+          optional :postcode, type: String
+          optional :city, type: String
+          optional :country, type: String
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 
@@ -43,14 +43,7 @@ module API::V2
           profile = current_user.create_profile(declared(params, include_missing: false))
           code_error!(profile.errors.details, 422) if profile.errors.any?
 
-          label =
-            current_user.labels.new(
-              key: 'profile',
-              value: 'verified',
-              scope: 'private'
-            )
-          code_error!(label.errors.details, 422) unless label.save
-
+          present profile, with: API::V2::Entities::Profile
           status 201
         end
       end

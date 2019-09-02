@@ -12,6 +12,7 @@
 #  postcode   :string(255)
 #  city       :string(255)
 #  country    :string(255)
+#  state      :integer          unsigned
 #  metadata   :text(65535)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -26,9 +27,12 @@ class Profile < ApplicationRecord
   acts_as_eventable prefix: 'profile', on: %i[create]
 
   belongs_to :user
+
+  enum state: %w[partial completed]
+
+  OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
+
   serialize :metadata, JSON
-  validates :first_name, :last_name, :dob, :address,
-            :city, :country, :postcode, presence: true
 
   validates :first_name, length: 1..255,
                          format: {
@@ -48,7 +52,7 @@ class Profile < ApplicationRecord
                      message: 'only allows letters, digits "-", "\'", and space'
                    },
                    if: proc { |a| a.city.present? }
-  validate :validate_country_format
+  validate :validate_country_format, if: ->(p) { p.country.present? }
   validates :postcode, length: 2..255,
                        format: {
                          with: /\A[[:word:]\s\-]+\z/,
@@ -64,7 +68,14 @@ class Profile < ApplicationRecord
                       if: proc { |a| a.address.present? }
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
-  before_validation :squish_spaces
+
+  before_validation do
+    squish_spaces
+    self.state = profile_full? ? 'completed' : 'partial'
+  end
+
+  after_commit :update_profile_label, on: :update
+  after_commit :create_profile_label, on: :create
 
   def full_name
     "#{first_name} #{last_name}"
@@ -100,5 +111,24 @@ class Profile < ApplicationRecord
     last_name&.squish!
     city&.squish!
     postcode&.squish!
+  end
+
+  def profile_full?
+    attributes.select { |k, _v| OPTIONAL_PARAMS.include?(k) }.all? { |_k, v| v.present? }
+  end
+
+  def update_profile_label
+    profile_label = user.labels.find_by(key: :profile)
+    return unless profile_full? && profile_label.present?
+
+    profile_label.update(value: :verified)
+  end
+
+  def create_profile_label
+    if profile_full?
+      user.add_level_label(:profile)
+    else
+      user.add_level_label(:profile, :partial)
+    end
   end
 end
