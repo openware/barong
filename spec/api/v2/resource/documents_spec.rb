@@ -151,20 +151,20 @@ describe 'Documents API test' do
     end
 
     it 'Does not return error when docs expire is optional' do
-      allow(Barong::App.config).to receive(:required_docs_expire).and_return('false')
+      allow(Barong::App.config).to receive(:required_docs_expire).and_return(false)
       post '/api/v2/resource/documents', params: params.except(:doc_expire), headers: auth_header
       expect(response.status).to eq(201)
     end
 
     it 'Returns error when docs expire is not optional' do
-      allow(Barong::App.config).to receive(:required_docs_expire).and_return('true')
+      allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
       post '/api/v2/resource/documents', params: params.except(:doc_expire), headers: auth_header
       expect(response.status).to eq(422)
       expect_body.to eq({ errors: ["resource.documents.invalid_format"] })
     end
 
     it 'Returns error when docs expire is not optional and date in past' do
-      allow(Barong::App.config).to receive(:required_docs_expire).and_return('true')
+      allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
       post '/api/v2/resource/documents', params: params.merge({doc_expire: DateTime.now.to_date - 1}), headers: auth_header
       expect(response.status).to eq(422)
       expect_body.to eq({ errors: ["resource.documents.already_expired"] })
