@@ -20,5 +20,5 @@ else
   client = Twilio::REST::Client.new(sid, token)
 end
 
-Barong::App.define { |c| c.set(:sms_sender, client) }
+Barong::App.set(:sms_sender, client)
 Phonelib.strict_check = true
