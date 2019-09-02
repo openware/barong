@@ -131,9 +131,11 @@ module API::V2
             current_user.labels.create(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
 
             EventAPI.notify('system.user.email.confirmed',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain)
+                            record: {
+                              user: current_user.as_json_for_event_api,
+                              language: language,
+                              domain: Barong::App.config.barong_domain
+                            })
 
             present current_user, with: API::V2::Entities::UserWithFullInfo
             status 201
@@ -169,10 +171,12 @@ module API::V2
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
             EventAPI.notify('system.user.password.reset.token',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain,
-                            token: token)
+                            record: {
+                              user: current_user.as_json_for_event_api,
+                              language: language,
+                              domain: Barong::App.config.barong_domain,
+                              token: token
+                            })
             status 201
           end
 
@@ -227,10 +231,11 @@ module API::V2
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 
             EventAPI.notify('system.user.password.reset',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain)
-
+                            record: {
+                              user: current_user.as_json_for_event_api,
+                              language: language,
+                              domain: Barong::App.config.barong_domain
+                            })
             status 201
           end
         end

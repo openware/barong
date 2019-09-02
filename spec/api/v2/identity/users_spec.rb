@@ -27,14 +27,18 @@ describe API::V2::Identity::Users do
         params[:lang] = 'FR'
         do_request
 
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'FR'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
+          hash_including({record: hash_including(language: 'FR')})
+        )
       end
 
       it 'accept LOWERCASE letters and transforms to UPCASE letters' do
         params[:lang] = 'fr'
         do_request
 
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'FR'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
+          hash_including({ record: hash_including(language: 'FR') })
+        )
       end
     end
 
@@ -42,14 +46,18 @@ describe API::V2::Identity::Users do
       it 'use default EN if no language provided' do
         do_request
 
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'EN'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
+          hash_including({ record: hash_including(language: 'EN') })
+        )
       end
 
       it 'use default EN if empty string provided as language' do
         params[:lang] = ''
         do_request
 
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'EN'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
+          hash_including({ record: hash_including(language: 'EN') })
+        )
       end
     end
   end
@@ -135,7 +143,9 @@ describe API::V2::Identity::Users do
         do_request
 
         expect(EventAPI).to have_received(:notify).with('model.user.created', record: hash_including(email: 'vadid.email@gmail.com'))
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'UA'))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
+          hash_including({ record: hash_including(language: 'UA') })
+        )
       end
     end
 
@@ -147,8 +157,8 @@ describe API::V2::Identity::Users do
 
         do_request
 
-        expect(EventAPI).to have_received(:notify).with('model.user.created', record: hash_including(email: 'vadid.email@gmail.com'))
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including(language: 'EN'))
+        expect(EventAPI).to have_received(:notify).with('model.user.created', hash_including({ record: hash_including(email: 'vadid.email@gmail.com') }))
+        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including({ record: hash_including(language: 'EN') }))
       end
     end
   end

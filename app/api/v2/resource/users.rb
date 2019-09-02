@@ -42,7 +42,10 @@ module API::V2
           verify_otp! if current_user.otp
 
           current_user.labels.create(key: 'delete', value: 'by_user', scope: 'private')
-          EventAPI.notify('system.user.account.deleted', current_user.as_json_for_event_api)
+          EventAPI.notify(
+            'system.user.account.deleted',
+            record: { user: current_user.as_json_for_event_api }
+          )
 
           status(200)
         end
@@ -118,10 +121,11 @@ module API::V2
           language = params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
 
           EventAPI.notify('system.user.password.change',
-                          user: current_user.as_json_for_event_api,
-                          language: language,
-                          domain: Barong::App.config.barong_domain)
-
+                          record: {
+                            user: current_user.as_json_for_event_api,
+                            language: language,
+                            domain: Barong::App.config.barong_domain
+                          })
           status 201
         end
       end
