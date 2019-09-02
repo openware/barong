@@ -16,6 +16,7 @@ module API
         expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
           user.referral_uid
         end
+        expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
         with_options(format_with: :iso_timestamp) do
           expose :created_at
           expose :updated_at
