@@ -58,20 +58,6 @@ describe 'API::V2::Resource::Profiles' do
       expect(profile).to be
     end
 
-    it 'throws an error, cause some of the required params are absent' do
-      post url, params: request_params.except(:dob), headers: auth_header
-      expect_body.to eq(errors: ["resource.profile.missing_dob"])
-      expect(response.status).to eq(422)
-
-      post url, params: request_params.except(:first_name), headers: auth_header
-      expect_body.to eq(errors: ["resource.profile.missing_first_name"])
-      expect(response.status).to eq(422)
-
-      post url, headers: auth_header
-      expect_body.to eq(errors: ["resource.profile.missing_first_name", "resource.profile.missing_last_name", "resource.profile.missing_dob", "resource.profile.missing_address", "resource.profile.missing_postcode", "resource.profile.missing_city", "resource.profile.missing_country"])
-      expect(response.status).to eq(422)
-    end
-
     it 'creates new profile with only required fields' do
       post url, params: request_params, headers: auth_header
       expect(response.status).to eq(201)
@@ -95,10 +81,98 @@ describe 'API::V2::Resource::Profiles' do
       expect(profile.metadata.symbolize_keys).to eq(optional_params[:metadata])
     end
 
-    it 'renders an error when field is invalid' do
-      post url, params: request_params.merge(first_name: ''), headers: auth_header
-      expect_status.to eq(422)
-      expect_body.to eq(errors: ["first_name.blank"])
+    context 'create another one profile' do
+      before do
+        post url, params: request_params.merge(optional_params), headers: auth_header
+      end
+
+      it 'doesn\'t create new profile' do
+        post url, params: request_params.merge(optional_params), headers: auth_header
+
+        result = json_body
+
+        expect(response.status).to eq(409)
+        expect(*result[:errors]).to eq('resource.profile.exist')
+      end
+    end
+
+    context 'partial creating profile' do
+      context 'empty params' do
+
+        before do
+          post url, params: {}, headers: auth_header
+        end
+
+        subject { Profile.last }
+
+        it { expect(response.status).to eq(201) }
+
+        it { Profile::OPTIONAL_PARAMS.each { |p| expect(json_body[p].blank?).to be_truthy } }
+
+        it { expect(json_body[:state]).to eq('partial') }
+
+        it { expect(subject).to be }
+
+        it { Profile::OPTIONAL_PARAMS.each { |p| expect(subject.attributes[p].blank?).to be_truthy } }
+
+        it { expect(subject.metadata.blank?).to be_truthy }
+
+        it { expect(subject.state).to eq('partial') }
+
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('partial') }
+      end
+
+      context 'several params' do
+
+        let(:params) { { last_name: Faker::Name.last_name, first_name: Faker::Name.first_name } }
+
+        subject { Profile.find_by(params) }
+
+        before do
+          post url, params: params, headers: auth_header
+        end
+
+        it { expect(response.status).to eq(201) }
+
+        it { expect(json_body[:first_name].nil?).to be_falsey }
+
+        it { expect(json_body[:last_name].nil?).to be_falsey }
+
+        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(JSON.parse(response.body)[p].blank?).to be_truthy } }
+
+        it { expect(json_body[:state]).to eq('partial') }
+
+        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(subject.attributes[p.to_sym].blank?).to be_truthy } }
+
+        it { expect(subject.metadata.blank?).to be_truthy }
+
+        it { expect(subject.state).to eq('partial') }
+
+        it { expect(subject.user.labels.find_by(key: :profile).value).to eq('partial') }
+      end
+
+      context 'full profile params' do
+
+        subject { Profile.find_by(request_params) }
+
+        before do
+          post url, params: request_params, headers: auth_header
+        end
+
+        it { expect(response.status).to eq(201) }
+
+        it { request_params.keys.each { |p| expect(json_body[p].present?).to be_truthy } }
+
+        it { expect(json_body[:state]).to eq('completed') }
+
+        it { request_params.stringify_keys.keys.each { |p| expect(subject.attributes[p].present?).to be_truthy } }
+
+        it { expect(subject.metadata.blank?).to be_truthy }
+
+        it { expect(subject.state).to eq('completed') }
+
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
+      end
     end
   end
 
@@ -123,7 +197,7 @@ describe 'API::V2::Resource::Profiles' do
 
       get url, headers: auth_header
       expect(response.status).to eq(200)
-      expected_json = request_params.merge(optional_params).to_json
+      expected_json = request_params.merge(state: 'completed').merge(optional_params).to_json
       expect(response.body).to eq(expected_json)
     end
   end

@@ -21,36 +21,144 @@
 require 'rails_helper'
 
 RSpec.describe Profile, type: :model do
-    ## Test of relationships
-    it { should belong_to(:user) }
-    it { should validate_presence_of(:first_name) }
-    it { should validate_length_of(:first_name).is_at_most(255) }
-    it { should validate_length_of(:city).is_at_most(255) }
-    it { should validate_length_of(:last_name).is_at_most(255) }
-    it { should validate_presence_of(:last_name) }
-    it { should validate_presence_of(:dob) }
-    it { should validate_presence_of(:address) }
-    it { should validate_presence_of(:city) }
-    it { should validate_presence_of(:postcode) }
+  ## Test of relationships
+  it { should belong_to(:user) }
+  it { should validate_length_of(:first_name).is_at_most(255) }
+  it { should validate_length_of(:city).is_at_most(255) }
+  it { should validate_length_of(:last_name).is_at_most(255) }
 
-    describe 'squish_spaces' do
-      let!(:create_member_permission) do
-        create :permission,
-               role: 'member'
-      end
-      let!(:profile) do
-        create :profile, first_name: '  First  Name ',
-                         last_name: '  Last   Name  ',
-                         city: '  New  York ',
-                         postcode: '  AB   135-144  '
-      end
+  describe 'squish_spaces' do
+    let!(:create_member_permission) do
+      create :permission,
+              role: 'member'
+    end
+    let!(:profile) do
+      create :profile, first_name: '  First  Name ',
+                        last_name: '  Last   Name  ',
+                        city: '  New  York ',
+                        postcode: '  AB   135-144  '
+    end
 
-      it 'squishes spaces' do
-        profile.reload
-        expect(profile.first_name).to eq 'First Name'
-        expect(profile.last_name).to eq 'Last Name'
-        expect(profile.city).to eq 'New York'
-        expect(profile.postcode).to eq 'AB 135-144'
+    it 'squishes spaces' do
+      profile.reload
+      expect(profile.first_name).to eq 'First Name'
+      expect(profile.last_name).to eq 'Last Name'
+      expect(profile.city).to eq 'New York'
+      expect(profile.postcode).to eq 'AB 135-144'
+    end
+  end
+
+  describe 'creating partial priofile' do
+    let!(:create_member_permission) do
+      create :permission,
+              role: 'member'
+    end
+    let!(:user) { create(:user) }
+
+    subject { Profile.create(params.merge(user: user)) }
+
+    context 'empty params' do
+      let!(:params) { {} }
+
+      it { expect(subject).to be_valid }
+
+      it { expect(subject.first_name.nil?).to be_truthy }
+
+      it { expect(subject.last_name.nil?).to be_truthy }
+
+      it { expect(subject.dob.nil?).to be_truthy }
+
+      it { expect(subject.address.nil?).to be_truthy }
+
+      it { expect(subject.postcode.nil?).to be_truthy }
+
+      it { expect(subject.city.nil?).to be_truthy }
+
+      it { expect(subject.country.nil?).to be_truthy }
+
+      it { expect(subject.metadata.nil?).to be_truthy }
+
+      it { expect(subject.state).to eq('partial') }
+
+      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('partial') }
+
+      context 'add empty params' do
+
+        let!(:params) {
+          {
+            last_name: Faker::Name.last_name,
+            first_name: Faker::Name.first_name,
+            dob: Faker::Date.birthday,
+            country: Faker::Address.country_code_long,
+            city: Faker::Address.city,
+            address: Faker::Address.street_address,
+            postcode: Faker::Address.zip_code
+          }
+        }
+
+        before do
+          subject.update(params)
+        end
+
+        it { expect(subject).to be_valid }
+
+        it { expect(subject.first_name.present?).to be_truthy }
+
+        it { expect(subject.last_name.present?).to be_truthy }
+
+        it { expect(subject.dob.present?).to be_truthy }
+
+        it { expect(subject.address.present?).to be_truthy }
+
+        it { expect(subject.postcode.present?).to be_truthy }
+
+        it { expect(subject.city.present?).to be_truthy }
+
+        it { expect(subject.country.present?).to be_truthy }
+
+        it { expect(subject.metadata.nil?).to be_truthy }
+
+        it { expect(subject.state).to eq('completed') }
+
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
       end
     end
+
+    context 'all profile params' do
+
+      let!(:params) {
+        {
+          last_name: Faker::Name.last_name,
+          first_name: Faker::Name.first_name,
+          dob: Faker::Date.birthday,
+          country: Faker::Address.country_code_long,
+          city: Faker::Address.city,
+          address: Faker::Address.street_address,
+          postcode: Faker::Address.zip_code
+        }
+      }
+
+      it { expect(subject).to be_valid }
+
+      it { expect(subject.first_name.present?).to be_truthy }
+
+      it { expect(subject.last_name.present?).to be_truthy }
+
+      it { expect(subject.dob.present?).to be_truthy }
+
+      it { expect(subject.address.present?).to be_truthy }
+
+      it { expect(subject.postcode.present?).to be_truthy }
+
+      it { expect(subject.city.present?).to be_truthy }
+
+      it { expect(subject.country.present?).to be_truthy }
+
+      it { expect(subject.metadata.present?).to be_falsey }
+
+      it { expect(subject.state).to eq('completed') }
+
+      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
+    end
+  end
 end
