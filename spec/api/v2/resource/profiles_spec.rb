@@ -250,4 +250,69 @@ describe 'API::V2::Resource::Profiles' do
       post url, params: request_params, headers: auth_header
     end
   end
+
+  describe 'PUT /api/v2/resource/profiles' do
+    let!(:url) { '/api/v2/resource/profiles' }
+    let!(:request_params) do
+      {
+        last_name: Faker::Name.last_name,
+        first_name: Faker::Name.first_name,
+        dob: Faker::Date.birthday,
+        country: Faker::Address.country_code_long,
+        city: Faker::Address.city,
+        address: Faker::Address.street_address,
+        postcode: Faker::Address.zip_code
+      }
+    end
+
+    context 'user without profile' do
+      it 'renders an error when profile doesnt exist' do
+        put url, params: request_params, headers: auth_header
+
+        expect_status.to eq(404)
+        expect_body.to eq(errors: ['resource.profile.doesnt_exist'])
+      end
+    end
+
+    context 'user with profile' do
+      let!(:profile) { create(:profile, user: test_user)}
+
+      it 'returns completed profile' do
+        put url, params: request_params, headers: auth_header
+
+        expect(response.status).to eq(200)
+        profile = Profile.find_by(request_params)
+        expect(profile).to be
+        expect(json_body[:state]).to eq('completed')
+        expect(profile.state).to eq('completed')
+        expect(profile.metadata).to be_blank
+      end
+    end
+
+    context 'user with partial profile' do
+      let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil) }
+
+      it 'returns partial profile' do
+        put url, params: request_params.except(:first_name), headers: auth_header
+
+        expect(response.status).to eq(200)
+        profile = Profile.find_by(request_params.except(:first_name))
+        expect(profile).to be
+        expect(json_body[:state]).to eq('partial')
+        expect(profile.state).to eq('partial')
+        expect(profile.metadata).to be_blank
+      end
+
+      it 'returns completed profile' do
+        put url, params: request_params, headers: auth_header
+
+        expect(response.status).to eq(200)
+        profile = Profile.find_by(request_params)
+        expect(profile).to be
+        expect(json_body[:state]).to eq('completed')
+        expect(profile.state).to eq('completed')
+        expect(profile.metadata).to be_blank
+      end
+    end
+  end
 end
