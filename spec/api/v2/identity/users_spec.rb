@@ -9,7 +9,8 @@ describe API::V2::Identity::Users do
            verb: 'all'
     create :permission,
            role: 'member',
-           verb: 'all'
+           verb: 'all',
+           path: 'tasty_endpoint'
   end
 
   describe 'language behaviour on POST /api/v2/identity/users' do
@@ -270,6 +271,10 @@ describe API::V2::Identity::Users do
   end
 
   describe 'session opening on  /api/v2/identity/users' do
+    before do
+      Rails.cache.delete('permissions')
+    end
+
     let(:email) { 'valid@email.com' }
     let(:do_request) { post '/api/v2/identity/users', params: params }
     let(:params) { { email: email, password: 'Tecohvi0' } }
@@ -277,7 +282,7 @@ describe API::V2::Identity::Users do
       Barong::App.config.session_expire_time.to_i.seconds
     end
     let(:check_session) do
-      get '/api/v2/auth/api/v2/tasty_endpoint'
+      get '/api/v2/auth/tasty_endpoint'
     end
 
     it 'Check current credentials and returns session' do
@@ -329,6 +334,10 @@ describe API::V2::Identity::Users do
   end
 
   describe 'session opening on  /api/v2/identity/users/email/confirm_code' do
+    before do
+      Rails.cache.delete('permissions')
+    end
+
     let(:user) { create(:user, state: 'pending', email: 'valid_email@email.com') }
     let(:do_request) { post '/api/v2/identity/users/email/confirm_code', params: params }
     let(:params) { { token: codec.encode(sub: 'confirmation', email: user.email, uid: user.uid) } }
@@ -336,7 +345,7 @@ describe API::V2::Identity::Users do
       Barong::App.config.session_expire_time.to_i.seconds
     end
     let(:check_session) do
-      get '/api/v2/auth/api/v2/random'
+      get '/api/v2/auth/tasty_endpoint'
     end
 
     it 'Gives label email verified and opens a session' do
