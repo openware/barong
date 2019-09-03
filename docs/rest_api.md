@@ -877,6 +877,7 @@ Creates new user
 | refid | formData | Referral uid | No | string |
 | lang | formData | Client env language | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
+| data | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 
@@ -1652,6 +1653,7 @@ Returns current user
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | additional phone and profile info | No |
 
 #### UserWithProfile
 
@@ -1668,7 +1670,7 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### UserWithFullInfo
+#### UserWithKYC
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1705,6 +1707,23 @@ Returns current user
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+
+#### UserWithFullInfo
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean |  | No |
+| state | string |  | No |
+| referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+| labels | [Label](#label) |  | No |
+| phones | [Phone](#phone) |  | No |
+| profile | [Profile](#profile) |  | No |
 
 #### Activity
 

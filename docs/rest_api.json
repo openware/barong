@@ -1837,6 +1837,13 @@
             "description": "Response from captcha widget",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "data",
+            "description": "Any additional key: value pairs in json string format",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -3223,6 +3230,10 @@
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "additional phone and profile info"
         }
       }
     },
@@ -3264,7 +3275,7 @@
         }
       }
     },
-    "UserWithFullInfo": {
+    "UserWithKYC": {
       "type": "object",
       "properties": {
         "email": {
@@ -3353,6 +3364,49 @@
         },
         "updated_at": {
           "type": "string"
+        }
+      }
+    },
+    "UserWithFullInfo": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "otp": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "labels": {
+          "$ref": "#/definitions/Label"
+        },
+        "phones": {
+          "$ref": "#/definitions/Phone"
+        },
+        "profile": {
+          "$ref": "#/definitions/Profile"
         }
       }
     },

@@ -204,7 +204,6 @@ Get users and profile information
 | uid | formData | User uid | No | string |
 | email | formData | User email | No | string |
 | phone_num | formData | User phone number | No | string |
-| extended | formData | When true endpoint returns full information about users | No | boolean |
 
 ##### Responses
 
@@ -329,6 +328,7 @@ Returns array of users as collection
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | additional phone and profile info | No |
 
 #### APIKey
 
@@ -352,13 +352,12 @@ Returns array of users as collection
 | level | integer |  | No |
 | otp | boolean |  | No |
 | state | string |  | No |
-| profile | [Profile](#profile) |  | No |
-| labels | [Label](#label) |  | No |
-| phones | [Phone](#phone) |  | No |
-| documents | [Document](#document) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+| labels | [Label](#label) |  | No |
+| phones | [Phone](#phone) |  | No |
+| profile | [Profile](#profile) |  | No |
 
 #### Phone
 
@@ -367,6 +366,24 @@ Returns array of users as collection
 | country | string |  | No |
 | number | string |  | No |
 | validated_at | s (g) |  | No |
+
+#### UserWithKYC
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean |  | No |
+| state | string |  | No |
+| profile | [Profile](#profile) |  | No |
+| labels | [Label](#label) |  | No |
+| phones | [Phone](#phone) |  | No |
+| documents | [Document](#document) |  | No |
+| referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
 
 #### Document
 
