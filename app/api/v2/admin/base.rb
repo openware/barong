@@ -23,6 +23,7 @@ module API::V2
       mount Admin::Activities
       mount Admin::Metrics
       mount Admin::Restrictions
+      mount Admin::Profiles
     end
   end
 end
