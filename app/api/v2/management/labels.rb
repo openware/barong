@@ -101,14 +101,27 @@ module API::V2
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
+          optional :replace, type: Boolean, default: true, desc: 'When true label will be created if not exist'
         end
         put do
-          label = user.labels.find_by!(key: params[:key], scope: 'private')
-          label.update(value: params[:value])
+          label = user.labels.find_by(key: params[:key], scope: 'private')
 
-          if label.errors.any?
-            error!(label.errors.as_json(full_messages: true), 422)
+          if label.nil?
+            if params[:replace]
+              label = Label.create(
+                user_id: user.id,
+                key: params[:key],
+                value: params[:value],
+                scope: params[:scope] || 'private'
+              )
+            else
+              error!({ error: 'label doesnt exist' }, 404)
+            end
+          else
+            label.update(value: params[:value])
           end
+
+          error!(label.errors.as_json(full_messages: true), 422) if label.errors.any?
 
           present label, with: API::V2::Entities::Label
         end

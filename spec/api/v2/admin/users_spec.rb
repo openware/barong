@@ -483,6 +483,71 @@ describe API::V2::Admin::Users do
     end
   end
 
+  describe 'POST /api/v2/admin/users/labels/update' do
+    let(:user) { create(:user, role: 'admin') }
+    let(:data) do
+      {
+        uid: user.uid,
+        key: 'phone',
+        value: 'verified',
+        scope: 'private'
+      }
+    end
+    let(:do_request) do
+      post '/api/v2/admin/users/labels/update', headers: auth_header, params: data
+    end
+
+    context 'with default replace policy(true)' do
+      it 'creates a label' do
+        expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+        do_request
+        expect(response.status).to eq 200
+        expect(user.labels.find_by(key: 'phone')).not_to eq(nil)
+      end
+
+      context 'when data is incomplete' do
+        let(:data) do
+          {
+            uid: user.uid,
+            key: 'phone',
+            scope: 'private'
+          }
+        end
+
+        it 'receive an error' do
+          expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+          do_request
+          expect(response.status).to eq 422
+          expect(response.body).to eq "{\"errors\":[\"admin.user.missing_value\",\"admin.user.empty_value\"]}"
+          expect(user.labels.find_by(key: 'phone')).to eq(nil)
+        end
+      end
+    end
+
+    context 'with false replace policy' do
+      let(:data) do
+        {
+          uid: user.uid,
+          key: 'phone',
+          value: 'verified',
+          scope: 'private',
+          replace: false
+        }
+      end
+
+      it 'receives an error' do
+        expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+        do_request
+        expect(response.status).to eq 404
+        expect(user.labels.find_by(key: 'phone')).to eq(nil)
+        expect(response.body).to eq "{\"errors\":[\"admin.label.doesnt_exist\"]}"
+      end
+    end
+  end
+
   describe 'GET /api/v2/admin/users/labels' do
     let(:params) { { key: 'document', value: 'pending' } }
     let(:do_request) { get '/api/v2/admin/users/labels', headers: auth_header, params: params }
