@@ -12,6 +12,92 @@ RESTful API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
+### /admin/profiles
+
+#### DELETE
+##### Description:
+
+Delete a profile for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | query |  | Yes | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Delete a profile for user |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### PUT
+##### Description:
+
+Update a profile for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| id | formData |  | Yes | integer |
+| first_name | formData |  | No | string |
+| last_name | formData |  | No | string |
+| dob | formData |  | No | date |
+| address | formData |  | No | string |
+| postcode | formData |  | No | string |
+| city | formData |  | No | string |
+| country | formData |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update a profile for user |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### GET
+##### Description:
+
+Return all profiles
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of profiles per page (defaults to 100, maximum is 100). | No | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Return all profiles |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /admin/restrictions
 
 #### DELETE
@@ -1224,6 +1310,37 @@ Return current user documents list
 | BearerToken | |
 
 ### /resource/profiles
+
+#### PUT
+##### Description:
+
+Update a profile for current_user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| first_name | formData |  | No | string |
+| last_name | formData |  | No | string |
+| dob | formData |  | No | date |
+| address | formData |  | No | string |
+| postcode | formData |  | No | string |
+| city | formData |  | No | string |
+| country | formData |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Update a profile for current_user |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
 
 #### POST
 ##### Description:

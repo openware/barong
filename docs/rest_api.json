@@ -33,6 +33,175 @@
     }
   ],
   "paths": {
+    "/admin/profiles": {
+      "delete": {
+        "description": "Delete a profile for user",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete a profile for user"
+          },
+          "400": {
+            "description": "Required params are empty"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "deleteAdminProfiles"
+      },
+      "put": {
+        "description": "Update a profile for user",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "id",
+            "type": "integer",
+            "format": "int32",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "first_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "last_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "dob",
+            "type": "string",
+            "format": "date",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "postcode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "city",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "country",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update a profile for user"
+          },
+          "400": {
+            "description": "Required params are empty"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "putAdminProfiles"
+      },
+      "get": {
+        "description": "Return all profiles",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of profiles per page (defaults to 100, maximum is 100).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all profiles"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "getAdminProfiles"
+      }
+    },
     "/admin/restrictions": {
       "delete": {
         "description": "Delete restriction",
@@ -2402,6 +2571,80 @@
       }
     },
     "/resource/profiles": {
+      "put": {
+        "description": "Update a profile for current_user",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "first_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "last_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "dob",
+            "type": "string",
+            "format": "date",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "address",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "postcode",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "city",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "country",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update a profile for current_user"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "resource"
+        ],
+        "operationId": "putResourceProfiles"
+      },
       "post": {
         "description": "Create a profile for current_user",
         "produces": [
