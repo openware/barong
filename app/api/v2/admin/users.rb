@@ -231,7 +231,7 @@ module API
 
             users = API::V2::Queries::UserFilter.new(users_with_pending_docs).call(params)
 
-            entity = params[:extended] ? API::V2::Entities::UserWithFullInfo : API::V2::Entities::User
+            entity = params[:extended] ? API::V2::Entities::UserWithKYC : API::V2::Entities::User
             users.all.tap { |q| present paginate(q), with: entity }
           end
 
@@ -435,7 +435,7 @@ module API
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-            present target_user, with: API::V2::Entities::UserWithFullInfo
+            present target_user, with: API::V2::Entities::UserWithKYC
           end
         end
       end

@@ -53,6 +53,7 @@ module API::V2
       Entities::Profile,
       Entities::User,
       Entities::UserWithProfile,
+      Entities::UserWithKYC,
       Entities::UserWithFullInfo,
       Entities::Phone,
       Entities::Activity

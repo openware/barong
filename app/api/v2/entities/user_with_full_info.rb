@@ -13,19 +13,18 @@ module API
         expose :level, documentation: { type: 'Integer' }
         expose :otp, documentation: { type: 'Boolean' }
         expose :state, documentation: { type: 'String' }
-        expose :profile, using: Entities::Profile
-        expose :labels, using: Entities::Label
-        expose :phones, using: Entities::Phone
-        expose :documents, using: Entities::Document
         expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
           user.referral_uid
         end
-        # activities, as sensitive and potentialy too big data should be queried separately
-
         with_options(format_with: :iso_timestamp) do
           expose :created_at
           expose :updated_at
         end
+
+        expose :labels, using: Entities::Label
+        expose :phones, using: Entities::Phone
+        expose :profile, using: Entities::Profile
+        # activities, as sensitive and potentialy too big data should be queried separately
       end
     end
   end

@@ -5,7 +5,11 @@ require 'spec_helper'
 describe API::V2::Identity::Users do
   let!(:create_member_permission) do
     create :permission,
-           role: 'member'
+           role: 'member',
+           verb: 'all'
+    create :permission,
+           role: 'member',
+           verb: 'all'
   end
 
   describe 'language behaviour on POST /api/v2/identity/users' do
@@ -13,6 +17,7 @@ describe API::V2::Identity::Users do
     let(:params) { { email: 'valid@email.com', password: 'Tecohvi0' } }
 
     before do
+      Rails.cache.delete('permissions')
       allow(EventAPI).to receive(:notify)
     end
 
@@ -237,6 +242,60 @@ describe API::V2::Identity::Users do
     end
   end
 
+  describe 'POST /api/v2/identity/users with data field' do
+    let(:do_request) { post '/api/v2/identity/users', params: params }
+    let(:params) do
+      { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ',
+        data: data }
+    end
+
+    context 'when data is not json compatible' do
+      let(:data) { 'phone_number: 380969999999' }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["data.invalid_format"])
+      end
+    end
+
+    context 'valid data' do
+      let(:data) { "{\"phone_number\":\"380969999999\"}" }
+
+      it 'creates user' do
+        do_request
+        expect_status_to_eq 201
+      end
+    end
+  end
+
+  describe 'session opening on  /api/v2/identity/users' do
+    let(:email) { 'valid@email.com' }
+    let(:do_request) { post '/api/v2/identity/users', params: params }
+    let(:params) { { email: email, password: 'Tecohvi0' } }
+    let(:session_expire_time) do
+      Barong::App.config.session_expire_time.to_i.seconds
+    end
+    let(:check_session) do
+      get '/api/v2/auth/api/v2/tasty_endpoint'
+    end
+
+    it 'Check current credentials and returns session' do
+      do_request
+      user = User.find_by(email: email)
+
+      expect(user).not_to be(nil)
+      expect(session[:uid]).to eq(user.uid)
+      expect(session.options.to_hash[:expire_after]).to eq(
+        session_expire_time
+      )
+      expect_status.to eq(201)
+
+      check_session
+      expect(response.status).to eq(200)
+    end
+  end
+
   describe 'POST /api/v2/identity/users/email/generate_code' do
     let(:params) { { email: 'invalid@email.com' } }
     let(:do_request) { post '/api/v2/identity/users/email/generate_code', params: params }
@@ -266,6 +325,32 @@ describe API::V2::Identity::Users do
         do_request
         expect_status_to_eq 201
       end
+    end
+  end
+
+  describe 'session opening on  /api/v2/identity/users/email/confirm_code' do
+    let(:user) { create(:user, state: 'pending', email: 'valid_email@email.com') }
+    let(:do_request) { post '/api/v2/identity/users/email/confirm_code', params: params }
+    let(:params) { { token: codec.encode(sub: 'confirmation', email: user.email, uid: user.uid) } }
+    let(:session_expire_time) do
+      Barong::App.config.session_expire_time.to_i.seconds
+    end
+    let(:check_session) do
+      get '/api/v2/auth/api/v2/random'
+    end
+
+    it 'Gives label email verified and opens a session' do
+      do_request
+
+      expect(user).not_to be(nil)
+      expect(session[:uid]).to eq(user.uid)
+      expect(session.options.to_hash[:expire_after]).to eq(
+        session_expire_time
+      )
+      expect_status.to eq(201)
+
+      check_session
+      expect(response.status).to eq(200)
     end
   end
 

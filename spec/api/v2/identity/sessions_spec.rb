@@ -4,9 +4,11 @@ describe API::V2::Identity::Sessions do
   include ActiveSupport::Testing::TimeHelpers
   let!(:create_member_permission) do
     create :permission,
-           role: 'member'
+           role: 'member',
+           verb: 'all'
   end
   before do
+    Rails.cache.delete('permissions')
     allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: true, geetest: false)
   end
 
@@ -28,13 +30,32 @@ describe API::V2::Identity::Sessions do
         Barong::App.config.session_expire_time.to_i.seconds
       end
       let(:check_session) do
-        get '/api/v2/identity/sessions/authorize/resource/users/me'
+        get '/api/v2/auth/api/v2/tasty_endpoint'
       end
       let(:params) do
         {
           email: email,
           password: password
         }
+      end
+
+      it 'Check current credentials and returns session' do
+        do_request
+        expect(session[:uid]).to eq(user.uid)
+        expect(session.options.to_hash[:expire_after]).to eq(
+          session_expire_time
+        )
+        expect_status.to eq(200)
+
+        check_session
+        expect(response.status).to eq(200)
+      end
+
+       it 'Expires a session after configured time' do
+        do_request
+        travel session_expire_time + 30.minutes
+        check_session
+        expect(response.status).to eq(401)
       end
 
       let(:captcha_response) { nil }
@@ -122,43 +143,48 @@ describe API::V2::Identity::Sessions do
       end
     end
 
-    context 'when user is pending still can login' do
-      let!(:another_email) { 'email@random.com' }
+    context 'User state related errors' do
+      context 'When user is banned' do
+        let!(:banned_email) { 'email@random.com' }
+        let!(:user_banned) do
+          create :user,
+                 email: banned_email,
+                 password: password,
+                 password_confirmation: password,
+                 state: 'banned'
+        end
+
+        it 'returns error on banned user' do
+          post uri, params: { email: banned_email, password: password }
+          expect_body.to eq(errors: ["identity.session.banned"])
+          expect(response.status).to eq(401)
+        end
+      end
+
+      let!(:pending_email) { 'pendingemail@random.com' }
       let!(:user_pending) do
         create :user,
-               email: another_email,
+               email: pending_email,
                password: password,
                password_confirmation: password,
                state: 'pending'
       end
 
-      it 'returns 200' do
-        post uri, params: { email: another_email, password: password }
-        expect(response.status).to eq(200)
-      end
-    end
+      context 'Allow pending user to login by default' do
+        it 'returns error on non-active user' do
+          user_pending.update(state: 'not-active')
+          post uri, params: { email: pending_email, password: password }
+          expect_body.to eq(errors: ["identity.session.not_active"])
+          expect(response.status).to eq(401)
+        end
 
-    context 'When user has is discarded or banned' do
-      let!(:another_email) { 'email@random.com' }
-      let!(:user_banned) do
-        create :user,
-               email: another_email,
-               password: password,
-               password_confirmation: password,
-               state: 'banned'
-      end
+        it 'sucessfull login for pending user' do
+          user_pending.update(state: 'pending')
+          expect(user_pending.state).to eq('pending')
 
-      it 'returns error on banned user' do
-        post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.banned"])
-        expect(response.status).to eq(401)
-      end
-
-      it 'returns error on non-active user' do
-        user_banned.update(state: 'discarded')
-        post uri, params: { email: another_email, password: password }
-        expect_body.to eq(errors: ["identity.session.discarded"])
-        expect(response.status).to eq(401)
+          post uri, params: { email: pending_email, password: password }
+          expect(response.status).to eq(200)
+        end
       end
     end
   end

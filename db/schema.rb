@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 2019_09_02_032709) do
     t.string "email", null: false
     t.string "password_digest", null: false
     t.string "role", default: "member", null: false
+    t.text "data"
     t.integer "level", default: 0, null: false
     t.boolean "otp", default: false
     t.string "state", default: "pending", null: false

@@ -15,8 +15,6 @@ class Label < ApplicationRecord
     end
   end
 
-  scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
-
   scope :with_private_scope, -> { where(scope: 'private') }
 
   validates :user_id, :key, :value, :scope, presence: true
@@ -33,8 +31,9 @@ class Label < ApplicationRecord
             length: 3..255,
             format: { with: /\A[a-z0-9_-]+\z/ }
 
-  after_commit :update_level_if_label_defined, on: %i[create update]
-  after_destroy :update_level_if_label_defined
+  after_commit :update_state_if_label_defined, :update_level_if_label_defined, on: %i[create update]
+  after_destroy :update_state_if_label_defined, :update_level_if_label_defined
+
   before_validation :normalize_fields
 
 private
@@ -42,6 +41,12 @@ private
   def normalize_fields
     self.key = key.to_s.downcase.squish
     self.value = value.to_s.downcase.squish
+  end
+
+  def update_state_if_label_defined
+    return unless scope == 'private' || previous_changes[:scope]&.include?('private')
+
+    user.update_state
   end
 
   def update_level_if_label_defined

@@ -113,8 +113,9 @@ module API::V2
           error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless phone
 
           phone.update(validated_at: Time.current)
-          current_user.add_level_label(:phone)
-          { message: 'Phone was verified successfully' }
+          current_user.labels.create(key: 'phone', value: 'verified', scope: 'private')
+
+          present current_user, with: API::V2::Entities::UserWithFullInfo
         end
       end
     end

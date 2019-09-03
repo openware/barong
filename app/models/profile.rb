@@ -126,9 +126,9 @@ class Profile < ApplicationRecord
 
   def create_profile_label
     if profile_full?
-      user.add_level_label(:profile)
+      user.labels.create(key: 'profile', value: 'verified', scope: 'private')
     else
-      user.add_level_label(:profile, :partial)
+      user.labels.create(key: 'profile', value: 'partial', scope: 'private')
     end
   end
 end

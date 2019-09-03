@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-describe API::V2::Entities::UserWithFullInfo do
+describe API::V2::Entities::UserWithKYC do
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
   end
   let(:record) { create(:user) }
 
-  subject { OpenStruct.new API::V2::Entities::UserWithFullInfo.represent(record).serializable_hash }
+  subject { OpenStruct.new API::V2::Entities::UserWithKYC.represent(record).serializable_hash }
 
   it { expect(subject.email).to eq record.email }
   it { expect(subject.uid).to eq record.uid }

@@ -27,7 +27,7 @@ module API::V2
       resource :users do
         desc 'Returns current user'
         get '/me' do
-          present current_user, with: API::V2::Entities::User
+          present current_user, with: API::V2::Entities::UserWithFullInfo
           status(200)
         end
 
@@ -41,8 +41,8 @@ module API::V2
 
           verify_otp! if current_user.otp
 
-          current_user.update(state: 'discarded')
-          EventAPI.notify('system.user.account.discarded', current_user.as_json_for_event_api)
+          current_user.labels.create(key: 'delete', value: 'by_user', scope: 'private')
+          EventAPI.notify('system.user.account.deleted', current_user.as_json_for_event_api)
 
           status(200)
         end
