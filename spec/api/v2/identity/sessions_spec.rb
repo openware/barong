@@ -205,6 +205,19 @@ describe API::V2::Identity::Sessions do
              password: password,
              password_confirmation: password
     end
+
+    context 'With invalid session' do
+      let(:do_create_session_request) { post uri, params: params }
+      let(:do_delete_session_request) { delete uri }
+
+
+      it 'receives 404 on delete session' do
+        do_delete_session_request
+        expect(response.status).to eq(404)
+        expect(response.body).to eq("{\"errors\":[\"identity.session.not_found\"]}")
+      end
+    end
+
     context 'With valid session' do
       let(:do_create_session_request) { post uri, params: params }
       let(:do_delete_session_request) { delete uri }

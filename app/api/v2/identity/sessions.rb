@@ -88,8 +88,8 @@ module API::V2
         params do
         end
         delete do
-          user = User.find_by!(uid: session[:uid])
-          error!({ errors: ['identity.session.invalid'] }, 401) unless user
+          user = User.find_by(uid: session[:uid])
+          error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 
