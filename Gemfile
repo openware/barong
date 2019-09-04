@@ -9,6 +9,7 @@ gem 'env-tweaks', '~> 1.0.0'
 
 gem 'fog-google',  '~> 0.1.0'
 gem 'fog-aws',     '~> 2.0.1'
+gem 'fog-aliyun',  '~> 0.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use mysql as the database for Active Record

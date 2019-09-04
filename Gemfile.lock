@@ -117,6 +117,11 @@ GEM
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.1)
+    fog-aliyun (0.3.5)
+      fog-core
+      fog-json
+      ipaddress (~> 0.8)
+      xml-simple (~> 1.1)
     fog-aws (2.0.1)
       fog-core (~> 1.38)
       fog-json (~> 1.0)
@@ -351,6 +356,7 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
+    xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -372,6 +378,7 @@ DEPENDENCIES
   env-tweaks (~> 1.0.0)
   factory_bot_rails (~> 4.11)
   faker (~> 2.1)
+  fog-aliyun (~> 0.3.5)
   fog-aws (~> 2.0.1)
   fog-google (~> 0.1.0)
   grape (~> 1.0)
