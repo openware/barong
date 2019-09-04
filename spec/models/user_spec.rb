@@ -131,6 +131,43 @@ RSpec.describe User, type: :model do
       allow(BarongConfig).to receive(:list) { reqs_list }
     end
 
+    context 'function testing' do
+      let!(:user) { create(:user) }
+      let!(:user_with_no_labels) { create(:user) }
+      let!(:user_with_labels) do
+        create(:label, user_id: user.id, key: 'email', value: 'verified', scope: 'private')
+        create(:label, user_id: user.id, key: 'phone', value: 'verified', scope: 'private')
+      end
+      let(:reqs_list) {
+        {
+          "activation_requirements" => {
+              "phone" => "verified",
+              "documents" => "verified"
+            },
+          "state_triggers" => {
+            "active_one_of_1_label" => ['email'],
+            "active_one_of_3_labels" => ['first', 'second', 'third']
+          }
+        }
+      }
+
+      context 'labels_include?' do
+        it { expect(user.labels_include?({ 'email' => 'verified' })).to be_truthy }
+
+        it { expect(user.labels_include?({ 'email' => 'pending' })).to be_falsey }
+
+        it { expect(user.labels_include?({ 'email' => 'verified', 'phone' => 'verified' })).to be_truthy }
+
+        it { expect(user.labels_include?({ 'email' => 'verified', 'phone' => 'pending' })).to be_falsey }
+      end
+
+      context 'private_labels_to_hash' do
+        it { expect(user.private_labels_to_hash).to eq({ 'email' => 'verified', 'phone' => 'verified' }) }
+
+        it { expect(user_with_no_labels.private_labels_to_hash).to eq({}) }
+      end
+    end
+
     describe 'testing workability with ALL mapping type' do
       let!(:user) { create(:user, state: 'pending') }
       let(:reqs_list) {
@@ -154,6 +191,26 @@ RSpec.describe User, type: :model do
 
             user.labels.create(key: 'email', value: 'verified', scope: 'private')
             expect(user.state).to  eq('active_one_of_1_label')
+          end
+
+          it 'rollback from active to pending only in case of deleted one of activation reqs' do
+            # [phone documents] required
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'phone', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('pending')
+
+            user.labels.create(key: 'documents', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active')
+
+            user.labels.create(key: 'random', value: 'verified', scope: 'private')
+            expect(user.state).to  eq('active')
+
+            user.labels.last.destroy
+            expect(user.state).to  eq('active')
+
+            user.labels.find_by_key('phone').destroy
+            expect(user.state).to  eq('pending')
           end
 
           it 'changes state when 2 label required' do

@@ -13,6 +13,7 @@ module API
         expose :level, documentation: { type: 'Integer' }
         expose :otp, documentation: { type: 'Boolean' }
         expose :state, documentation: { type: 'String' }
+        expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
         expose :profile, using: Entities::Profile
         expose :labels, using: Entities::Label
         expose :phones, using: Entities::Phone

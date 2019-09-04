@@ -86,10 +86,9 @@ class User < ApplicationRecord
   def update_state
     @resulting_state = 'pending'
 
-    unless active?
-      if BarongConfig.list['activation_requirements'] <= (labels.with_private_scope.map { |l| { l.key => l.value }}.inject(:merge) || {})
-        @resulting_state = 'active'
-      end
+    # check if user has all required labels for activation
+    if labels_include?(BarongConfig.list['activation_requirements'])
+      @resulting_state = 'active'
     end
 
     # FIXME BarongConfig should be a feature of Barong::App
@@ -102,6 +101,20 @@ class User < ApplicationRecord
     end
 
     update(state: @resulting_state) if @resulting_state != self.state
+  end
+
+  # check if given key: values hash is a subset of private user labels
+  def labels_include?(labels_hash)
+    labels_hash <= private_labels_to_hash
+  end
+
+  # Select all key-value pairs from user labels with private scope, merge in one hash
+  def private_labels_to_hash
+    key_value_arr = self.labels.with_private_scope.map do
+      |l| { l.key => l.value }
+    end
+    key_value_hash = key_value_arr.inject(:merge)
+    key_value_hash || {}
   end
 
   def as_json_for_event_api
