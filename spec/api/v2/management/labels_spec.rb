@@ -202,6 +202,62 @@ describe API::V2::Management::Labels, type: :request do
           expect_body.to eq(error: 'user_uid is missing, user_uid is empty, key is missing, key is empty, value is missing, value is empty')
         end
       end
+
+      context 'when label doesnt exist yet with default replace policy' do
+        let(:data) do
+          {
+            user_uid: user.uid,
+            key: 'phone',
+            value: 'verified'
+          }
+        end
+
+        it 'creates a label' do
+          expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+          do_request
+          expect(response.status).to eq 200
+          expect(user.labels.find_by(key: 'phone')).not_to eq(nil)
+        end
+
+        context 'when data is incomplete' do
+          let(:data) do
+            {
+              user_uid: user.uid,
+              key: 'phone'
+            }
+          end
+
+          it 'receive an error' do
+            expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+            do_request
+            expect(response.status).to eq 422
+            expect(response.body).to eq "{\"error\":\"value is missing, value is empty\"}"
+            expect(user.labels.find_by(key: 'phone')).to eq(nil)
+          end
+        end
+      end
+
+      context 'when label doesnt exist yet with false replace policy' do
+        let(:data) do
+          {
+            user_uid: user.uid,
+            key: 'phone',
+            value: 'verified',
+            replace: false
+          }
+        end
+
+        it 'receives an error' do
+          expect(user.labels.find_by(key: 'phone')).to eq(nil)
+
+          do_request
+          expect(response.status).to eq 404
+          expect(user.labels.find_by(key: 'phone')).to eq(nil)
+          expect(response.body).to eq "{\"error\":\"label doesnt exist\"}"
+        end
+      end
     end
 
     describe 'delete label' do

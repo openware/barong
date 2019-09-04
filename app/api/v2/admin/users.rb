@@ -302,7 +302,7 @@ module API
               status 200
             end
 
-            desc 'Update user label scope',
+            desc 'Update user label value',
             security: [{ 'BearerToken': [] }],
             failure: [
               { code: 400, message: 'Required params are empty' },
@@ -327,6 +327,10 @@ module API
                        type: String,
                        allow_blank: false,
                        desc: 'Label value.'
+              optional :replace,
+                       type: { value: Boolean, message: 'admin.user.non_boolean_replace' },
+                       default: true,
+                       desc: 'When true label will be created if not exist'
             end
             post '/update' do
               declared_params = declared(params, include_missing: false)
@@ -336,11 +340,22 @@ module API
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 
-              error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
-
-              unless label.update(value: params[:value])
-                code_error!(label.errors.details, 422)
+              if label.nil?
+                if declared_params[:replace]
+                  label = Label.create(
+                    user_id: target_user.id,
+                    key: declared_params[:key],
+                    value: declared_params[:value],
+                    scope: declared_params[:scope]
+                  )
+                else
+                  error!({ errors: ['admin.label.doesnt_exist'] }, 404)
+                end
+              else
+                label.update(value: params[:value])
               end
+              code_error!(label.errors.details, 422) if label.errors.any?
+
               status 200
             end
 
