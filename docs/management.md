@@ -46,6 +46,7 @@ Update a label with 'private' scope
 | user_uid | formData | User uid | Yes | string |
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
+| replace | formData | When true label will be created if not exist | No | boolean |
 
 ##### Responses
 
@@ -296,6 +297,7 @@ Push documents to barong DB
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
+| data | string | additional phone and profile info | No |
 | profile | [Profile](#profile) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
@@ -353,6 +355,7 @@ Returns array of users as collection
 | otp | boolean |  | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 | labels | [Label](#label) |  | No |
@@ -377,6 +380,7 @@ Returns array of users as collection
 | level | integer |  | No |
 | otp | boolean |  | No |
 | state | string |  | No |
+| data | string | additional phone and profile info | No |
 | profile | [Profile](#profile) |  | No |
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |

@@ -1112,7 +1112,7 @@
     },
     "/admin/users/labels/update": {
       "post": {
-        "description": "Update user label scope",
+        "description": "Update user label value",
         "produces": [
           "application/json"
         ],
@@ -1147,6 +1147,14 @@
             "description": "Label value.",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "replace",
+            "description": "When true label will be created if not exist",
+            "type": "boolean",
+            "default": true,
+            "required": false
           }
         ],
         "security": [
@@ -1156,7 +1164,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Update user label scope"
+            "description": "Update user label value"
           },
           "400": {
             "description": "Required params are empty"
@@ -3260,6 +3268,10 @@
         "state": {
           "type": "string"
         },
+        "data": {
+          "type": "string",
+          "description": "additional phone and profile info"
+        },
         "profile": {
           "$ref": "#/definitions/Profile"
         },
@@ -3296,6 +3308,10 @@
         },
         "state": {
           "type": "string"
+        },
+        "data": {
+          "type": "string",
+          "description": "additional phone and profile info"
         },
         "profile": {
           "$ref": "#/definitions/Profile"
@@ -3392,6 +3408,10 @@
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "additional phone and profile info"
         },
         "created_at": {
           "type": "string"

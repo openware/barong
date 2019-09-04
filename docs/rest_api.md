@@ -550,7 +550,7 @@ Returns array of users as paginated collection
 #### POST
 ##### Description:
 
-Update user label scope
+Update user label value
 
 ##### Parameters
 
@@ -560,12 +560,13 @@ Update user label scope
 | key | formData | Label key. | Yes | string |
 | scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 | value | formData | Label value. | Yes | string |
+| replace | formData | When true label will be created if not exist | No | boolean |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Update user label scope |
+| 201 | Update user label value |
 | 400 | Required params are empty |
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
@@ -1665,6 +1666,7 @@ Returns current user
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
+| data | string | additional phone and profile info | No |
 | profile | [Profile](#profile) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
@@ -1680,6 +1682,7 @@ Returns current user
 | level | integer |  | No |
 | otp | boolean |  | No |
 | state | string |  | No |
+| data | string | additional phone and profile info | No |
 | profile | [Profile](#profile) |  | No |
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
@@ -1719,6 +1722,7 @@ Returns current user
 | otp | boolean |  | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 | labels | [Label](#label) |  | No |
