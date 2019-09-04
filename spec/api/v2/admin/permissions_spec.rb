@@ -103,31 +103,33 @@ describe API::V2::Admin::Permissions do
 
   describe 'PUT /api/v2/admin/permissions' do
     context 'successful response' do
+      let(:permission) { Permission.find_by(id: create_admin_permission.id) }
+
       it 'returns updated path for permission' do
         put '/api/v2/admin/permissions', params: { id: create_admin_permission.id , path: 'api/v2/admin' }, headers: auth_header
 
         expect(response).to be_successful
-        expect(Permission.find_by(id: create_admin_permission.id).path).to eq 'api/v2/admin'
+        expect(permission.path).to eq 'api/v2/admin'
       end
 
       it 'returns updated verb for permission' do
         put '/api/v2/admin/permissions', params: { id: create_admin_permission.id , verb: 'PUT' }, headers: auth_header
 
         expect(response).to be_successful
-        expect(Permission.find_by(id: create_admin_permission.id).verb).to eq 'PUT'
+        expect(permission.verb).to eq 'PUT'
+      end
+
+      it 'returns updated fileds for permission' do
+        put '/api/v2/admin/permissions', params: { id: create_admin_permission.id , verb: 'POST', action: 'all', path: 'api/v2' }, headers: auth_header
+
+        expect(response).to be_successful
+        expect(permission.verb).to eq 'POST'
+        expect(permission.action).to eq 'ALL'
+        expect(permission.path).to eq 'api/v2'
       end
      end
 
     context 'unsuccessful response' do
-      it 'return error while putting one more params' do
-        put '/api/v2/admin/permissions', params: { id: 0 , action: 'accept', role: 'admin'}, headers: auth_header
-
-        result = JSON.parse(response.body)
-
-        expect(response.code).to eq '422'
-        expect(result['errors']).to eq(['admin.permission.one_of_role_verb_path_action'])
-      end
-
       it 'return error while permission doesnt exist' do
         put '/api/v2/admin/permissions', params: { id: 0, action: 'accept' }, headers: auth_header
 
@@ -135,15 +137,6 @@ describe API::V2::Admin::Permissions do
 
         expect(response.code).to eq '404'
         expect(result['errors']).to eq(['admin.permission.doesnt_exist'])
-      end
-
-      it 'return error while permission action doesnt change' do
-        put '/api/v2/admin/permissions', params: { id: create_admin_permission.id, action: 'ACCEPT' }, headers: auth_header
-
-        result = JSON.parse(response.body)
-
-        expect(response.code).to eq '422'
-        expect(result['errors']).to eq(['admin.permission.action_no_change'])
       end
     end
   end

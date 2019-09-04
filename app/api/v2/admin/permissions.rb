@@ -120,22 +120,12 @@ module API
             optional :action,
                      type: String,
                      allow_blank: false
-            exactly_one_of :action, :role, :verb, :path, message: 'admin.permission.one_of_role_verb_path_action'
           end
           put do
             target_permission = Permission.find_by(id: params[:id])
-
-            # Ruby Hash returns array on keys and values
-            update_param_key = params.except(:id).keys.first
-            update_param_value = params.except(:id).values.first
-
             error!({ errors: ['admin.permission.doesnt_exist'] }, 404) if target_permission.nil?
 
-            if update_param_value == target_permission[update_param_key]
-              error!({ errors: ["admin.permission.#{update_param_key}_no_change"] }, 422)
-            end
-
-            unless target_permission.update(update_param_key => update_param_value)
+            unless target_permission.update(declared(params, include_missing: false))
               code_error!(target_permission.errors.details, 422)
             end
             # clear cached permissions, so they will be freshly refetched on the next call to /auth
