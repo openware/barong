@@ -58,6 +58,7 @@ module API::V2
           unless user.otp
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             session[:uid] = user.uid
+            publish_session_create(user)
 
             present user, with: API::V2::Entities::UserWithFullInfo
             return status 200
@@ -75,6 +76,7 @@ module API::V2
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
           session[:uid] = user.uid
+          publish_session_create(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
           status(200)
