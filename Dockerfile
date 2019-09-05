@@ -11,6 +11,8 @@ ARG RAILS_ENV=production
 ARG UID=1000
 ARG GID=1000
 
+ARG MAXMINDDB_LINK
+ENV MAXMINDDB_LINK=${MAXMINDDB_LINK:-https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz}
 # Devise requires secret key to be set during image build or it raises an error
 # preventing from running any scripts.
 # Users should override this variable by passing environment variable on container start.
@@ -35,6 +37,13 @@ RUN bundle install --jobs=$(nproc) --deployment --binstubs
 
 # Copy the main application.
 COPY --chown=app:app . $APP_HOME
+
+# Download MaxMind Country DB
+RUN wget -O ${APP_HOME}/geolite.tar.gz ${MAXMINDDB_LINK} \
+      && mkdir -p ${APP_HOME}/geolite \
+      && tar xzf ${APP_HOME}/geolite.tar.gz -C ${APP_HOME}/geolite --strip-components 1 \
+      && rm ${APP_HOME}/geolite.tar.gz
+ENV BARONG_MAXMINDDB_PATH=${APP_HOME}/geolite/GeoLite2-Country.mmdb
 
 # Initialize application configuration & assets.
 RUN ./bin/init_config \
