@@ -260,7 +260,6 @@
             "enum": [
               "continent",
               "country",
-              "city",
               "ip",
               "ip_subnet"
             ],
@@ -317,7 +316,6 @@
             "enum": [
               "continent",
               "country",
-              "city",
               "ip",
               "ip_subnet"
             ],
@@ -372,7 +370,6 @@
             "enum": [
               "continent",
               "country",
-              "city",
               "ip",
               "ip_subnet"
             ],
