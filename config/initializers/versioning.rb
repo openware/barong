@@ -4,9 +4,9 @@
 # Instead of editing this file, please use bin/gendocs.
 module Barong
   class Application
-    GIT_TAG =    '2.3.17'
-    GIT_SHA =    '4b77b44'
-    BUILD_DATE = '2019-09-05 08:36:20+00:00'
+    GIT_TAG =    '2.3.18'
+    GIT_SHA =    'd40147e'
+    BUILD_DATE = '2019-09-05 15:34:02+00:00'
     VERSION =    GIT_TAG
   end
 end
