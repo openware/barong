@@ -55,12 +55,21 @@ private
     send_document_review_notification if key == 'document'
   end
 
-  # TODO: fix it when EventAPi will be added
+  def as_json_for_event_api
+    {
+      id: id,
+      user: user.as_json_for_event_api,
+      key: key,
+      value: value
+    }
+  end
+
+  # TODO: Fix it when EventAPI will be added.
   def send_document_review_notification
     if value == 'verified'
-      EventAPI.notify('system.document.verified', uid: user.uid, email: user.email)
+      EventAPI.notify('system.document.verified', record: as_json_for_event_api)
     elsif value == 'rejected'
-      EventAPI.notify('system.document.rejected', uid: user.uid, email: user.email)
+      EventAPI.notify('system.document.rejected', record: as_json_for_event_api)
     end
   end
 end

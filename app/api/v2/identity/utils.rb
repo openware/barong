@@ -89,10 +89,12 @@ module API::V2
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
           'system.user.email.confirmation.token',
-          user: user.as_json_for_event_api,
-          language: language,
-          domain: domain,
-          token: token
+          record: {
+            user: user.as_json_for_event_api,
+            language: language,
+            domain: domain,
+            token: token
+          }
         )
       end
     end
