@@ -72,16 +72,13 @@ module Barong
       restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) { fetch_restrictions }
 
       request_ip = @request.remote_ip
+      country = Barong::GeoIP.info(ip: request_ip, key: :country)
+      continent = Barong::GeoIP.info(ip: request_ip, key: :continent)
 
       restrict! if restrictions['ip'].include?(request_ip)
       restrict! if restrictions['ip_subnet'].any? { |r| IPAddr.new(r).include?(request_ip) }
-
-      scopes = Restriction::LOCATION_SCOPES
-      values = Barong::GeoIP.info(request_ip, *scopes)
-
-      Hash[scopes.zip(values)].each do |scope, value|
-        restrict! if value && restrictions[scope].any? { |r| r.casecmp?(value) }
-      end
+      restrict! if restrictions['continent'].any? { |r| r.casecmp?(continent) }
+      restrict! if restrictions['country'].any? { |r| r.casecmp?(country) }
     end
 
     def fetch_restrictions

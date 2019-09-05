@@ -72,24 +72,6 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'geoip' do
-      context 'restricts with city' do
-        let!(:restriction) { create(:restriction, value: 'London', scope: 'city') }
-
-        it 'with restricted ip' do
-          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
-          get auth_request
-          expect(response.status).to eq(401)
-          expect(response.headers['Authorization']).to be_nil
-          expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
-        end
-
-        it 'with non-restricted ip' do
-          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
-          get auth_request
-          expect(response.status).to eq(200)
-        end
-      end
-
       context 'restricts with country' do
         let!(:restriction) { create(:restriction, value: 'japan', scope: 'country') }
 

@@ -6,51 +6,23 @@ module Barong
     class << self
       attr_accessor :lang
 
-      # Usage: country, city = Barong::GeoIP.info(request_ip, :country, :city)
-      def info(ip, *keys)
-        record = reader.get(ip)
-        keys.map { |key| fetch(record, key) }
-      end
-
       # Usage: city = Barong::GeoIP.get(ip: ip, key: :city)
-      def get(ip:, key:)
-        fetch(reader.get(ip), key)
-      end
-
-    private
-      def reader
-        @reader ||= MaxMind::DB.new(Barong::App.config.barong_maxminddb_path, mode: MaxMind::DB::MODE_MEMORY)
-      end
-
-      def fetch(record, key)
+      def info(ip:, key:)
+        record = reader.get(ip)
         return unless record
 
         case key.to_sym
         when :country
-          return country(record)
+          return record['country']['names'][lang] if record['country']
         when :continent
-          return continent(record)
-        when :city
-          return city(record)
+          return record['continent']['names'][lang] if record['continent']
         end
       end
 
-      def country(record)
-        record['country']['names'][lang] if record['country']
-      end
+    private
 
-      def continent(record)
-        record['continent']['names'][lang] if record['continent']
-      end
-
-      def city(record)
-        if record['city']
-          record['city']['names'][lang]
-        elsif record['subdivisions']
-          record['subdivisions'].first['names'][lang]
-        else
-          nil
-        end
+      def reader
+        @reader ||= MaxMind::DB.new(Barong::App.config.barong_maxminddb_path, mode: MaxMind::DB::MODE_MEMORY)
       end
     end
   end

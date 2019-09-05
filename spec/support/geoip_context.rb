@@ -11,13 +11,11 @@ shared_context 'geoip mock' do
         when '196.245.163.202'
           {
             'country' => { 'names' => { 'en' => 'United Kingdom' } },
-            'city' => { 'names' => { 'en' => 'London' } },
             'continent' => { 'names' => { 'en' => 'Europe' } }
           }
         when '140.227.60.114'
           {
             'country' => { 'names' => { 'en' => 'Japan' } },
-            'city' => { 'names' => { 'en' => 'Tokyo' } },
             'continent' => { 'names' => { 'en' => 'Asia' } }
           }
         else
