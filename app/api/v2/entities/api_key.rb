@@ -19,9 +19,7 @@ module API::V2
       private
 
       def secret
-        secret = SecureRandom.hex(16)
-        SecretStorage.store_secret(secret, object.kid)
-        secret
+        SecretStorage.get_secret(object.kid)
       end
     end
   end
