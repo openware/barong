@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Sessions do
+  include_context 'geoip mock'
+
   include ActiveSupport::Testing::TimeHelpers
   let!(:create_member_permission) do
     create :permission,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Restriction < ApplicationRecord
-  SCOPES = %w[continent country city ip ip_subnet]
+  SCOPES = %w[continent country ip ip_subnet]
   STATES = %w[enabled disabled]
   SUBNET_REGEX = /\A([0-9]{1,3}\.){3}[0-9]{1,3}\/([0-9]|[1-2][0-9]|3[0-2])\z/
 

@@ -40,8 +40,12 @@ Barong::App.define do |config|
   config.set(:app_name, 'Barong')
   config.set(:barong_domain, 'barong.io')
   config.set(:barong_uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
-  config.set(:barong_config, 'barong.yml')
+  config.set(:barong_config, 'config/barong.yml', type: :path)
+  config.set(:barong_maxminddb_path, '', type: :path)
+  config.set(:barong_geoip_lang, 'en', values: %w[en de es fr ja ru])
 end
+
+Barong::GeoIP.lang = Barong::App.config.barong_geoip_lang
 
 Rails.application.config.x.keystore = kstore
 Barong::App.config.keystore = kstore

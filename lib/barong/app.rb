@@ -53,10 +53,17 @@ module Barong
         when :bool
           values!(key, value, %w(true false))
           return value == 'true'
-
         when :integer
           regex!(key, value,  /^\d+$/)
           return value
+        when :path
+          return Rails.root.join(value).tap { |p| path!(key, p) }
+        end
+      end
+
+      def path!(key, path)
+        unless File.exists?(path)
+          raise Error.new("#{key.to_s.upcase} path is invalid #{path.to_s}")
         end
       end
 

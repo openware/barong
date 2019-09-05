@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe '/api/v2/auth functionality test' do
+  include_context 'geoip mock'
+
   let(:uri) { '/api/v2/identity/sessions' }
   let!(:create_permissions) do
     create :permission, role: 'member', action: 'ACCEPT', verb: 'all', path: 'tasty_endpoint'
@@ -58,6 +60,7 @@ describe '/api/v2/auth functionality test' do
 
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
+        expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
       end
 
       it 'request with non-restricted ip' do
@@ -65,6 +68,44 @@ describe '/api/v2/auth functionality test' do
         get auth_request
 
         expect(response.status).to eq(200)
+      end
+    end
+
+    context 'geoip' do
+      context 'restricts with country' do
+        let!(:restriction) { create(:restriction, value: 'japan', scope: 'country') }
+
+        it 'with restricted ip' do
+          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
+          get auth_request
+          expect(response.status).to eq(401)
+          expect(response.headers['Authorization']).to be_nil
+          expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
+        end
+
+        it 'with non-restricted ip' do
+          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
+          get auth_request
+          expect(response.status).to eq(200)
+        end
+      end
+
+      context 'restricts with continent' do
+        let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent') }
+
+        it 'with restricted ip' do
+          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
+          get auth_request
+          expect(response.status).to eq(401)
+          expect(response.headers['Authorization']).to be_nil
+          expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
+        end
+
+        it 'with non-restricted ip' do
+          allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
+          get auth_request
+          expect(response.status).to eq(200)
+        end
       end
     end
   end
