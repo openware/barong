@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe '/api/v2/auth functionality test' do
+  include_context 'geoip mock'
+
   let(:uri) { '/api/v2/identity/sessions' }
   let!(:create_permissions) do
     create :permission, role: 'admin'

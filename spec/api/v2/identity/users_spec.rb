@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe API::V2::Identity::Users do
+  include_context 'geoip mock'
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member',

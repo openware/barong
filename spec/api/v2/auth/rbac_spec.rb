@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+
 describe '/api/v2/auth functionality test' do
+  include_context 'geoip mock'
+
   let(:do_protected_request) { get '/api/v2/auth/api/v2/resource/users/me' }
 
   describe 'testing rbac workability' do

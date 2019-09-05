@@ -69,15 +69,28 @@ module Barong
     end
 
     def validate_restrictions!
-      restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) do
-        Restriction.where(state: 'enabled').to_a
+      restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) { fetch_restrictions }
+
+      request_ip = @request.remote_ip
+
+      restrict! if restrictions['ip'].include?(request_ip)
+      restrict! if restrictions['ip_subnet'].any? { |r| IPAddr.new(r).include?(request_ip) }
+
+      scopes = Restriction::LOCATION_SCOPES
+      values = Barong::GeoIP.info(request_ip, *scopes)
+
+      Hash[scopes.zip(values)].each do |scope, value|
+        restrict! if value && restrictions[scope].any? { |r| r.casecmp?(value) }
       end
+    end
 
-      ips = restrictions.select { |r| r.scope == 'ip' }.map { |r| r.value }
-      restrict! if ips.include? @request.remote_ip
+    def fetch_restrictions
+      enabled = Restriction.where(state: 'enabled').to_a
 
-      ip_ranges = restrictions.select { |r| r.scope == 'ip_subnet' }.map { |r| r.value }
-      restrict! if ip_ranges.any? { |r| IPAddr.new(r).include? @request.remote_ip }
+      Restriction::SCOPES.inject(Hash.new) do |table, scope|
+        scope_restrictions = enabled.select { |r| r.scope == scope }.map!(&:value)
+        table.tap { |t| t[scope] = scope_restrictions }
+      end
     end
 
     def restrict!
