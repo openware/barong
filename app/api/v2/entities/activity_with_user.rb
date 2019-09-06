@@ -2,7 +2,7 @@
 
 module API::V2
   module Entities
-    class ActivityWithUser < Base
+    class ActivityWithUser < API::V2::Entities::Base
       expose :user_ip, documentation: { type: 'String' }
       expose :user_agent, documentation: { type: 'String' }
       expose :topic, documentation: { type: 'String' }

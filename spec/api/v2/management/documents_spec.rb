@@ -69,15 +69,6 @@ describe API::V2::Management::Documents, type: :request do
     end
 
     it 'push documents to user twice' do
-      params = {
-        uid: user.uid,
-        doc_type: 'Passport',
-        filename: 'documents_test',
-        file_ext: '.jpg',
-        doc_expire: '2020-01-22',
-        doc_number: 'AA1234BB',
-        upload: Base64.strict_encode64(File.open('spec/fixtures/files/documents_test.jpg').read)
-      }
       post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({ data: params }, *signers)
 
       expect(response.status).to eq 201
@@ -86,6 +77,14 @@ describe API::V2::Management::Documents, type: :request do
       post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({ data: params }, *signers)
       expect(response.status).to eq 201
       expect(user.documents.length).to eq(1)
+    end
+
+    it 'does not update user lables with flag' do
+      expect {
+        post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({
+                                                    data: params.merge(update_labels: false) },
+                                                    *signers)
+      }.not_to change { user.reload.labels.count }
     end
   end
 end

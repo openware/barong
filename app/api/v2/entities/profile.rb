@@ -2,7 +2,7 @@
 
 module API::V2
   module Entities
-    class Profile < Base
+    class Profile < API::V2::Entities::Base
       expose :first_name, documentation: { type: 'String' }
       expose :last_name, documentation: { type: 'String' }
       expose :dob, documentation: { type: 'Date', desc: 'Birthday date' }
