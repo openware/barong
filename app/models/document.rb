@@ -21,8 +21,11 @@ class Document < ApplicationRecord
                          }, if: proc { |a| a.doc_number.present? }
 
   validate :doc_expire_not_in_the_past
-  after_commit :create_or_update_document_label, on: :create
+  after_commit :create_or_update_document_label,
+               on: :create,
+               if: -> { update_labels }
 
+  attr_writer :update_labels
 
   def as_json_for_event_api
     {
@@ -38,6 +41,10 @@ class Document < ApplicationRecord
   end
 
   private
+
+  def update_labels
+    @update_labels.nil? ? true : @update_labels
+  end
 
   def doc_expire_not_in_the_past
     return if doc_expire.blank?

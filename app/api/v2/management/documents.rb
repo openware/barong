@@ -44,9 +44,13 @@ module API::V2
                    type: String,
                    desc: 'Base64 encoded document'
           optional :doc_expire,
-                   type: { value: Date, message: "management.documents.expire_not_a_date" },
+                   type: { value: Date, message: 'management.documents.expire_not_a_date' },
                    allow_blank: false,
                    desc: 'Document expiration date'
+          optional :update_labels,
+                   type: { value: Boolean, message: 'management.documents.update_labels_inalid' },
+                   default: true,
+                   desc: 'If set to false, user label will not be created/updated'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
 

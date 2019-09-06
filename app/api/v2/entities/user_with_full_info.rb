@@ -4,7 +4,7 @@ module API
   module V2
     module Entities
       # User information containing profile, labels and documents
-      class UserWithFullInfo < Base
+      class UserWithFullInfo < API::V2::Entities::Base
         expose :email, documentation: { type: 'String' }
         expose :uid, documentation: { type: 'String' }
         expose :role, documentation: { type: 'String' }

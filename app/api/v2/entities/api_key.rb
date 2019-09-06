@@ -2,7 +2,7 @@
 
 module API::V2
   module Entities
-    class APIKey < Base
+    class APIKey < API::V2::Entities::Base
       expose :kid, documentation: { type: 'String', desc: 'jwt public key' }
       expose :algorithm, documentation: { type: 'String', desc: 'cryptographic hash function type' }
       expose :scope, documentation: { type: 'String', desc: 'serialized array of scopes' }

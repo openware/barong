@@ -2,7 +2,7 @@
 
 module API::V2
   module Entities
-    class Label < Base
+    class Label < API::V2::Entities::Base
       expose :key, documentation: { type: 'String', desc: 'Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.' }
       expose :value, documentation: { type: 'String', desc: 'Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.' }
       expose :scope, documentation: { type: 'String', desc: "Label scope: 'public' or 'private'" }
