@@ -4,7 +4,7 @@ module API
   module V2
     module Entities
       # User information containing profile, labels and documents
-      class UserWithKYC < Grape::Entity
+      class UserWithKYC < Base
         format_with(:iso_timestamp) { |d| d&.utc&.iso8601 }
 
         expose :email, documentation: { type: 'String' }
