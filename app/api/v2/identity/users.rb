@@ -9,7 +9,7 @@ module API::V2
 
       helpers do
         def parse_refid!
-          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless /\AID\w{10}$/.match?(params[:refid])
+          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.barong_uid_prefix.upcase)
           user = User.find_by_uid(params[:refid])
           error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
 
