@@ -2,7 +2,7 @@
 
 module API::V2
   module Entities
-    class Profile < Grape::Entity
+    class Profile < Base
       expose :first_name, documentation: { type: 'String' }
       expose :last_name, documentation: { type: 'String' }
       expose :dob, documentation: { type: 'Date', desc: 'Birthday date' }

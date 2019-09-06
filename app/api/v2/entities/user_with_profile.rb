@@ -2,9 +2,7 @@
 
 module API::V2
   module Entities
-    class UserWithProfile < Grape::Entity
-      format_with(:iso_timestamp) { |d| d&.utc&.iso8601 }
-
+    class UserWithProfile < Base
       expose :email, documentation: { type: 'String' }
       expose :uid, documentation: { type: 'String' }
       expose :role, documentation: { type: 'String' }

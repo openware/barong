@@ -4,9 +4,7 @@ module API
   module V2
     module Entities
       # User information containing profile, labels and documents
-      class UserWithFullInfo < Grape::Entity
-        format_with(:iso_timestamp) { |d| d&.utc&.iso8601 }
-
+      class UserWithFullInfo < Base
         expose :email, documentation: { type: 'String' }
         expose :uid, documentation: { type: 'String' }
         expose :role, documentation: { type: 'String' }

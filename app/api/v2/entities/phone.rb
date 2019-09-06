@@ -4,7 +4,7 @@ module API
   module V2
     module Entities
       # Phone request response
-      class Phone < Grape::Entity
+      class Phone < Base
         expose :country, documentation: { type: 'String' }
         expose :number, documentation: { type: 'String' }
         expose :validated_at, documentation: { type: 'Datetime' }
