@@ -119,11 +119,9 @@ module API
           ]
           params do
             requires :uid,
-                     type: String,
                      allow_blank: false,
                      desc: 'user uniq id'
             requires :role,
-                     type: String,
                      allow_blank: false,
                      desc: 'user role'
           end
@@ -338,7 +336,7 @@ module API
               target_user = User.find_by_uid(declared_params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-              label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
+              label = Label.find_by_key_and_user_id(declared_params[:key], target_user.id)
 
               if label.nil?
                 if declared_params[:replace]
@@ -352,10 +350,11 @@ module API
                   error!({ errors: ['admin.label.doesnt_exist'] }, 404)
                 end
               else
-                label.update(value: params[:value])
+                label.update(value: declared_params[:value], scope: declared_params[:scope])
               end
               code_error!(label.errors.details, 422) if label.errors.any?
-
+              
+              present label, with: API::V2::Entities::Label
               status 200
             end
 
@@ -391,13 +390,14 @@ module API
               target_user = User.find_by_uid(declared_params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-              label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
-
+              label = Label.find_by_key_and_user_id(declared_params[:key], target_user.id)
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
-              unless label.update(value: params[:value])
+              unless label.update(value: declared_params[:value], scope: declared_params[:scope])
                 code_error!(label.errors.details, 422)
               end
+
+              present label, with: API::V2::Entities::Label
               status 200
             end
 
@@ -427,7 +427,6 @@ module API
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
-
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
               label.destroy

@@ -546,6 +546,23 @@ describe API::V2::Admin::Users do
         expect(response.body).to eq "{\"errors\":[\"admin.label.doesnt_exist\"]}"
       end
     end
+
+    context 'existing label' do
+        let!(:label) { create(:label, user: user, key: 'phone', value: 'verified', scope: 'private')}
+
+        it 'return updated label' do       
+          expect(user.labels.find_by(key: 'phone')).to eq(label)   
+          data[:scope] = 'public'
+
+          do_request
+
+          result = JSON.parse(response.body)
+          expect(response.status).to eq 200
+          expect(result['scope']).to eq('public')
+          expect(result['key']).to eq('phone')
+          expect(result['value']).to eq('verified')
+        end
+    end
   end
 
   describe 'GET /api/v2/admin/users/labels' do
