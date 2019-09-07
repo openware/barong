@@ -97,6 +97,38 @@ describe 'Api::V1::Profiles' do
     end
   end
 
+  describe 'POST /api/v2/resource/otp/disable' do
+    let(:valid_otp_code) { '1357' }
+    let(:invalid_otp_code) { '1234' }
+
+    before do
+      allow(TOTPService).to receive(:validate?)
+        .with(test_user.uid, valid_otp_code) { true }
+      allow(TOTPService).to receive(:validate?)
+        .with(test_user.uid, invalid_otp_code) { false }
+    end
+
+    it 'with dasbled 2fa' do
+      post '/api/v2/resource/otp/disable', headers: auth_header, params: { code: valid_otp_code }
+      expect_body.to eq errors: ['resource.otp.not_enabled']
+    end
+
+    it 'with invalid code' do
+      test_user.update(otp: true)
+      post '/api/v2/resource/otp/disable', headers: auth_header, params: { code: invalid_otp_code }
+      expect_body.to eq errors: ['resource.otp.invalid']
+    end
+
+    it 'disables 2fa' do
+      test_user.update(otp: true)
+      expect {
+        post '/api/v2/resource/otp/disable', headers: auth_header, params: { code: valid_otp_code }
+      }.to change { test_user.reload.otp }.from(true).to(false)
+
+      expect(response.status).to eq 200
+    end
+  end
+
   describe 'POST /api/v2/resource/users/activity' do
     it 'allows only [password, otp, session, all] as a topic parameter' do
       get '/api/v2/resource/users/activity/invalid', headers: auth_header
