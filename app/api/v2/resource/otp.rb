@@ -62,6 +62,40 @@ module API::V2
           200
         end
 
+        desc 'Disable 2FA',
+             security: [{ "BearerToken": [] }],
+             failure: [
+               { code: 400, message: '2FA has not been enabled for this account or code is missing' },
+               { code: 401, message: 'Invalid bearer token' },
+               { code: 422, message: 'Validation errors' }
+             ]
+        params do
+          requires :code,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'Code from Google Authenticator'
+        end
+        post '/disable' do
+          unless current_user.otp
+            otp_error!(reason: '2FA has not been enabled for this account', error_code: 400,
+                       user: current_user.id, action: 'disable 2FA', error_text: 'not_enabled')
+          end
+
+          unless TOTPService.validate?(current_user.uid, declared(params)[:code])
+            otp_error!(reason: 'OTP code is invalid', error_code: 422,
+                       user: current_user.id, action: 'disable 2FA', error_text: 'invalid')
+          end
+
+          unless current_user.update(otp: false)
+            otp_error!(reason: current_user.errors.full_messages.to_sentence, error_code: 422,
+              user: current_user.id, action: 'disable 2FA')
+          end
+
+          activity_record(user: current_user.id, action: 'disable 2FA', result: 'succeed', topic: 'otp')
+
+          status 200
+        end
+
         desc 'Verify 2FA code',
              security: [{ "BearerToken": [] }],
              failure: [
