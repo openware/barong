@@ -1108,6 +1108,34 @@ Verify 2FA code
 | --- | --- |
 | BearerToken | |
 
+### /resource/otp/disable
+
+#### POST
+##### Description:
+
+Disable 2FA
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| code | formData | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Disable 2FA |
+| 400 | 2FA has not been enabled for this account or code is missing |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /resource/otp/enable
 
 #### POST

@@ -2255,6 +2255,49 @@
         "operationId": "postResourceOtpVerify"
       }
     },
+    "/resource/otp/disable": {
+      "post": {
+        "description": "Disable 2FA",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "code",
+            "description": "Code from Google Authenticator",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Disable 2FA"
+          },
+          "400": {
+            "description": "2FA has not been enabled for this account or code is missing"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "resource"
+        ],
+        "operationId": "postResourceOtpDisable"
+      }
+    },
     "/resource/otp/enable": {
       "post": {
         "description": "Enable 2FA",

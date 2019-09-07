@@ -250,6 +250,7 @@ Push documents to barong DB
 | file_ext | formData | Document file extension | Yes | string |
 | upload | formData | Base64 encoded document | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
+| update_labels | formData | If set to false, user label will not be created/updated | No | boolean |
 
 ##### Responses
 
