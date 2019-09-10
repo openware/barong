@@ -4,7 +4,7 @@
 class Document < ApplicationRecord
   acts_as_eventable prefix: 'document', on: %i[create]
 
-  mount_uploader :upload, UploadUploader
+  mount_uploader :upload, Barong::App.config.uploader
 
   TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
   STATES = %w[verified pending rejected].freeze
