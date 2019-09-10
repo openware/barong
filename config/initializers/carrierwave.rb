@@ -10,7 +10,7 @@ Barong::App.define do |config|
   config.set(:storage_access_key, '')
   config.set(:storage_secret_key, '')
   config.set(:storage_region, '')
-  config.set(:uploader, UploadUploader)
+  config.write(:uploader, UploadUploader)
 end
 
 CarrierWave.configure do |config|
@@ -32,7 +32,7 @@ CarrierWave.configure do |config|
     }
     config.fog_directory = Barong::App.config.storage_bucket_name
   elsif 'AliCloud'.casecmp?(Barong::App.config.storage_provider)
-    Barong::App.set(:uploader, AliUploader)
+    Barong::App.write(:uploader, AliUploader)
 
     config.fog_provider = 'fog/aliyun'
     config.fog_credentials = {

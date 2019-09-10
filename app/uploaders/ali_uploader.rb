@@ -13,9 +13,9 @@ class AliUploader < UploadUploader
 
   def client
     @_client ||= Aliyun::OSS::Client.new(
-     endpoint:          "oss-#{Barong::App.config.storage_region}.aliyuncs.com",
-     access_key_id:     Barong::App.config.storage_access_key,
-     access_key_secret: Barong::App.config.storage_secret_key,
+      endpoint:          "oss-#{Barong::App.config.storage_region}.aliyuncs.com",
+      access_key_id:     Barong::App.config.storage_access_key,
+      access_key_secret: Barong::App.config.storage_secret_key,
     )
   end
 end
