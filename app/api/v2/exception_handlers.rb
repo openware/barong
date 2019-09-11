@@ -33,7 +33,7 @@ module API
           end
 
           rescue_from :all do |e|
-            Rails.logger.error e
+            Rails.logger.error "#{e.message}\n#{e.backtrace[0..5].join("\n")}"
             error!({ errors: ['server.internal_error'] }, 500)
           end
         end

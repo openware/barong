@@ -20,6 +20,10 @@ module Barong
         config[key] = value
       end
 
+      def write(key, value)
+        config[key] = value
+      end
+
       private
 
       def fetch!(key, default)
