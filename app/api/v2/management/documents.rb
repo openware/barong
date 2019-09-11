@@ -45,7 +45,7 @@ module API::V2
                    desc: 'Base64 encoded document'
           optional :doc_expire,
                    type: { value: Date, message: 'management.documents.expire_not_a_date' },
-                   allow_blank: false,
+                   allow_blank: true,
                    desc: 'Document expiration date'
           optional :update_labels,
                    type: { value: Boolean, message: 'management.documents.update_labels_inalid' },
@@ -55,7 +55,7 @@ module API::V2
         end
 
         post do
-          user = User.find_by!(uid: params[:uid])
+          user = User.find_by(uid: params[:uid])
           error!(errors: ['user doesnt exist']) unless user
 
           file = parse_file_data(params[:upload], params[:filename], params[:file_ext])

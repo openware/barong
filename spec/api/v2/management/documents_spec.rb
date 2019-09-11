@@ -86,5 +86,23 @@ describe API::V2::Management::Documents, type: :request do
                                                     *signers)
       }.not_to change { user.reload.labels.count }
     end
+
+    context 'with empty doc_expire' do
+      it 'required doc expire' do
+        allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
+        expect {
+          post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({ data: params.merge(doc_expire: nil) }, *signers)
+        }.not_to change { Document.count }
+        expect(response.status).to eq 422
+      end
+
+      it 'optional doc expire' do
+        allow(Barong::App.config).to receive(:required_docs_expire).and_return(false)
+        expect {
+          post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({ data: params.merge(doc_expire: nil) }, *signers)
+        }.to change { Document.count }.by 1
+        expect(response.status).to eq 201
+      end
+    end
   end
 end

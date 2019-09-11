@@ -36,7 +36,7 @@ module API::V2
                    desc: 'Array of Rack::Multipart::UploadedFile'
           optional :doc_expire,
                    type: { value: Date, message: "resource.documents.expire_not_a_date" },
-                   allow_blank: false,
+                   allow_blank: true,
                    desc: 'Document expiration date'
           optional :metadata, type: Hash, desc: 'Any key:value pairs'
         end
