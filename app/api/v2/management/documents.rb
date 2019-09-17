@@ -51,7 +51,9 @@ module API::V2
                    type: { value: Boolean, message: 'management.documents.update_labels_inalid' },
                    default: true,
                    desc: 'If set to false, user label will not be created/updated'
-          optional :metadata, type: Hash, desc: 'Any key:value pairs'
+          optional :metadata,
+                   type: String,
+                   desc: 'Any additional key: value pairs in json string format'
         end
 
         post do

@@ -38,7 +38,7 @@ module API::V2
                    type: { value: Date, message: "resource.documents.expire_not_a_date" },
                    allow_blank: true,
                    desc: 'Document expiration date'
-          optional :metadata, type: Hash, desc: 'Any key:value pairs'
+          optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
         end
 
         post do
@@ -59,7 +59,7 @@ module API::V2
           params[:upload].each do |file|
             doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
 
-            code_error!(doc.errors.details, 400) unless doc.save
+            code_error!(doc.errors.details, 422) unless doc.save
           end
           status 201
 
