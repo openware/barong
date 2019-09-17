@@ -32,8 +32,6 @@ class Profile < ApplicationRecord
 
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
 
-  serialize :metadata, JSON
-
   validates :first_name, length: 1..255,
                          format: {
                            with: /\A[[:word:]\s\-']+\z/,
@@ -66,6 +64,7 @@ class Profile < ApplicationRecord
                         message: 'only allows letters, digits "-", "\'", and space'
                       },
                       if: proc { |a| a.address.present? }
+  validates :metadata, data_is_json: true
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
 

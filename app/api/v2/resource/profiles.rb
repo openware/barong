@@ -34,7 +34,7 @@ module API::V2
           optional :postcode, type: String
           optional :city, type: String
           optional :country, type: String
-          optional :metadata, type: Hash, desc: 'Any key:value pairs'
+          optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
         end
 
         post do
@@ -64,7 +64,7 @@ module API::V2
           optional :postcode, type: String
           optional :city, type: String
           optional :country, type: String
-          optional :metadata, type: Hash, desc: 'Any key:value pairs'
+          optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
         end
 
         put do

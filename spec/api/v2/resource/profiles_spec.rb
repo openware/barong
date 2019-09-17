@@ -11,7 +11,7 @@ describe 'API::V2::Resource::Profiles' do
       metadata: {
         gender: Faker::Creature::Dog.gender,
         place_of_birth: Faker::Address.city
-      }
+      }.to_json
     }
   end
 
@@ -78,7 +78,13 @@ describe 'API::V2::Resource::Profiles' do
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
       expect(profile).to be
-      expect(profile.metadata.symbolize_keys).to eq(optional_params[:metadata])
+      expect(profile.metadata).to eq(optional_params[:metadata])
+    end
+
+    it 'renders an error if metadata is not json' do
+      post url, params: request_params.merge({ metadata: '{ bar: baz }' }), headers: auth_header
+      expect_status_to_eq 422
+      expect_body.to eq(errors: ["metadata.invalid_format"])
     end
 
     context 'create another one profile' do

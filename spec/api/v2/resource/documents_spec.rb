@@ -24,9 +24,7 @@ describe 'Documents API test' do
 
     let!(:optional_params) do
       {
-        metadata: {
-          country: Faker::Address.country
-        }
+        metadata: { country: Faker::Address.country }.to_json
       }
     end
 
@@ -123,7 +121,13 @@ describe 'Documents API test' do
     it 'Creates document with optional params and returns success' do
       post '/api/v2/resource/documents', headers: auth_header, params: params.merge(optional_params)
       expect(response.status).to eq(201)
-      expect(last_document.metadata.symbolize_keys).to eq(optional_params[:metadata])
+      expect(last_document.metadata).to eq(optional_params[:metadata])
+    end
+
+    it 'renders an error if metadata is not json' do
+      post '/api/v2/resource/documents', headers: auth_header, params: params.merge({metadata: '{ bar: baz }'})
+      expect_status_to_eq 422
+      expect_body.to eq(errors: ["metadata.invalid_format"])
     end
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
@@ -147,7 +151,7 @@ describe 'Documents API test' do
       params0[:upload] = [Faker::Avatar.image]
       post '/api/v2/resource/documents', params: params0, headers: auth_header
       expect_body.to eq(errors: ["upload.blank"])
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(422)
     end
 
     it 'Does not return error when docs expire is optional' do
