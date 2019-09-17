@@ -235,3 +235,23 @@ permissions:
  - { role: broker, verb: get, path: api/v2/ranger, action: accept }
  # applogic access
  - { role: broker, verb: all, path: api/v2/applogic, action: accept }
+
+ # Manager
+ # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
+ - { role: manager, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: manager, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: manager, verb: all, path: api/v2/barong/resource, action: accept }
+ # ranger access
+ - { role: manager, verb: get, path: api/v2/ranger, action: accept }
+ # applogic access
+ - { role: manager, verb: all, path: api/v2/applogic, action: accept }
+
+ # Partner
+ # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
+ - { role: partner, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: partner, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: partner, verb: all, path: api/v2/barong/resource, action: accept }
+ # ranger access
+ - { role: partner, verb: get, path: api/v2/ranger, action: accept }
+ # applogic access
+ - { role: partner, verb: all, path: api/v2/applogic, action: accept }
