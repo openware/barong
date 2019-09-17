@@ -48,6 +48,7 @@ module API::V2
       }
     },
     models: [
+      Entities::Level,
       Entities::Label,
       Entities::APIKey,
       Entities::Profile,
