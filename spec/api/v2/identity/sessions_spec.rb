@@ -189,6 +189,21 @@ describe API::V2::Identity::Sessions do
         end
       end
     end
+
+    context 'event API behavior' do
+      before do
+        allow(EventAPI).to receive(:notify)
+      end
+
+      it 'receive system.session.create notify' do
+        allow_any_instance_of(Grape::Request).to receive(:ip).and_return('192.168.0.1')
+        post uri, params: { email: email, password: password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+
+        expect(EventAPI).to have_received(:notify).with('system.session.create',
+          hash_including({ record: hash_including(user: anything, user_ip: '192.168.0.1', user_agent: 'random-browser') })
+        )
+      end
+    end
   end
 
   describe 'DELETE /api/v2/identity/sessions' do

@@ -97,6 +97,15 @@ module API::V2
           }
         )
       end
+
+      def publish_session_create(user)
+        EventAPI.notify('system.session.create',
+                        record: {
+                          user: user.as_json_for_event_api,
+                          user_ip: request.ip,
+                          user_agent: request.env['HTTP_USER_AGENT']
+                        })
+      end
     end
   end
 end
