@@ -44,7 +44,6 @@ module EventAPI
         tokens << record.class.event_api_settings.fetch(:prefix) { record.class.name.underscore.gsub(/\//, '_') }
         tokens << partial_event_name.to_s
         full_event_name = tokens.join('.')
-        return if event_payload.key?(:changes) && event_payload[:changes].key?(:updated_at)
 
         EventAPI.notify(full_event_name, event_payload)
       end
@@ -64,12 +63,12 @@ module EventAPI
         previous_record.created_at ||= current_record.created_at
         previous_record.updated_at ||= current_record.created_at
 
-        before = previous_record.as_json_for_event_api.compact
         after  = current_record.as_json_for_event_api.compact
+        before = previous_record.as_json_for_event_api.compact.delete_if { |atr, val| after[atr] == val }
 
         notify :updated, \
           record:  after,
-          changes: before.delete_if { |attribute, value| after[attribute] == value }
+          changes: before.except(:updated_at)
       end
     end
 

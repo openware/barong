@@ -1,6 +1,5 @@
 activation_requirements:
   email: 'verified'
-  phone: 'verified'
 state_triggers:
   banned:
     - ban

@@ -96,6 +96,32 @@ event: {
 | ---------- | ----------------------------------- |
 | `record`   | Created user up-to-date attributes. |
 
+## Format of `model.user.updated` event
+
+```ruby
+event: {
+    record: {
+    uid: "ID30DD0DD986",
+    email: "example@barong.io",
+    role: "member",
+    level: 1,
+    otp: false,
+    state: "pending",
+    created_at: "2019-01-28T08:35:29Z",
+    updated_at: "2019-01-28T08:35:29Z"
+  },
+  changes: {
+    level: 0
+  }
+  name: "model.user.updated"
+}
+```
+
+| Field      | Description                         |
+| ---------- | ----------------------------------- |
+| `record`   | Created user up-to-date attributes. |
+| `changes`   | The changed user attributes and their values. |
+
 ## Format of `model.document.created` event
 
 ```ruby

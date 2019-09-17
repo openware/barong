@@ -346,4 +346,24 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'event api behaviour' do
+    let!(:user) { create(:user) }
+
+    context 'user updated' do
+      before do
+        allow(EventAPI).to receive(:notify)
+      end
+
+      it 'receives event with change info' do
+        user.update(level: 2)
+
+        expect(EventAPI).to have_received(:notify).with('model.user.updated',
+                                                        hash_including(
+                                                          changes: { level: 0 },
+                                                          record: hash_including(uid: user.uid, level: 2, email: user.email)
+                                                        ))
+      end
+    end
+  end
 end
