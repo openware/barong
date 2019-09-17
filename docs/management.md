@@ -251,6 +251,7 @@ Push documents to barong DB
 | upload | formData | Base64 encoded document | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
 | update_labels | formData | If set to false, user label will not be created/updated | No | boolean |
+| metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 

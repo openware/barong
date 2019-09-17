@@ -12,6 +12,26 @@ RESTful API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
+### /admin/levels
+
+#### GET
+##### Description:
+
+Returns array of permissions as paginated collection
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Returns array of permissions as paginated collection |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /admin/profiles
 
 #### DELETE
@@ -57,6 +77,7 @@ Update a profile for user
 | postcode | formData |  | No | string |
 | city | formData |  | No | string |
 | country | formData |  | No | string |
+| metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 
@@ -1305,6 +1326,7 @@ Upload a new document for current user
 | doc_number | formData | Document number | Yes | string |
 | upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
+| metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 
@@ -1357,6 +1379,7 @@ Update a profile for current_user
 | postcode | formData |  | No | string |
 | city | formData |  | No | string |
 | country | formData |  | No | string |
+| metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 
@@ -1388,6 +1411,7 @@ Create a profile for current_user
 | postcode | formData |  | No | string |
 | city | formData |  | No | string |
 | country | formData |  | No | string |
+| metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
 
@@ -1634,6 +1658,14 @@ Returns current user
 
 ### Models
 
+
+#### Level
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | Level identifier, level number | No |
+| key | string | Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
+| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
 
 #### Label
 
