@@ -6,12 +6,11 @@ class Document < ApplicationRecord
 
   mount_uploader :upload, Barong::App.config.uploader
 
-  TYPES = ['Passport', 'Identity card', 'Driver license', 'Utility Bill'].freeze
   STATES = %w[verified pending rejected].freeze
 
   belongs_to :user
   validates :doc_type, :doc_number, :upload, presence: true
-  validates :doc_type, inclusion: { in: TYPES }
+  validates :doc_type, inclusion: { in: DocumentTypes.list }
   validates :doc_expire, presence: true, if: -> { Barong::App.config.required_docs_expire }
   validates :metadata, data_is_json: true
 
