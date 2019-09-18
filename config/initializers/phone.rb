@@ -1,4 +1,9 @@
+require_dependency 'barong/mock_sms'
+
 Barong::App.define do |config|
+  config.set(:barong_twilio_service, 'sms')
+  config.write(:barong_twilio_provider, TwilioSmsSendService)
+
   config.set(:barong_twilio_phone_number, '+15005550000')
   config.set(:barong_twilio_account_sid, '')
   config.set(:barong_twilio_auth_token, '')
@@ -15,9 +20,15 @@ if sid == '' || token == ''
     Rails.logger.fatal('No Twilio sid or token')
     raise 'FATAL: Twilio setup is invalid'
   end
-else
+  client = Barong::MockSMS.new(sid, token)
+  Barong::App.write(:barong_twilio_provider, TwilioSmsSendService)
+elsif Barong::App.config.barong_twilio_service == 'verify'
   client = Twilio::REST::Client.new(sid, token)
   service = client.verify.services.create(friendly_name: Barong::App.config.app_name) unless service_sid.present?
+  Barong::App.write(:barong_twilio_provider, TwilioVerifyService)
+else
+  client = Twilio::REST::Client.new(sid, token)
+  Barong::App.write(:barong_twilio_provider, TwilioSmsSendService)
 end
 
 Barong::App.set(:barong_twilio_client, client) if client

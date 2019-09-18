@@ -10,6 +10,7 @@ class Phone < ApplicationRecord
 
   validates :number, phone: true
 
+  before_create :generate_code
   before_validation :parse_country
   before_validation :sanitize_number
 
@@ -32,34 +33,13 @@ class Phone < ApplicationRecord
     def international(unsafe_phone)
       parse(unsafe_phone).international(false)
     end
-
-    def send_confirmation(phone, channel)
-      Rails.logger.info("Sending code to #{phone.number} via #{channel}")
-
-      send_code(number: phone.number, channel: channel)
-    end
-
-    def send_code(number:, channel:)
-      verify_client.services(@service_sid)
-                   .verifications
-                   .create(to: '+' + number, channel: channel)
-    end
-
-    def verify_code(number:, code:)
-      verify_client.services(@service_sid)
-                   .verification_checks
-                   .create(to: '+' + number, code: code)
-    end
-
-    def verify_client
-      client = Barong::App.config.barong_twilio_client
-      @service_sid = Barong::App.config.barong_twilio_service_sid
-
-      client.verify
-    end
   end
 
   private
+
+  def generate_code
+    self.code = rand.to_s[2..6]
+  end
 
   def parse_country
     data = Phonelib.parse(number)
