@@ -2,6 +2,8 @@
 
 # Resposible for storing configurations
 class Label < ApplicationRecord
+  acts_as_eventable prefix: 'label', on: %i[create update]
+
   belongs_to :user
 
   SCOPES =
@@ -36,6 +38,16 @@ class Label < ApplicationRecord
 
   before_validation :normalize_fields
 
+
+  def as_json_for_event_api
+    {
+      id: id,
+      user: user.as_json_for_event_api,
+      key: key,
+      value: value
+    }
+  end
+
 private
 
   def normalize_fields
@@ -53,15 +65,6 @@ private
     return unless scope == 'private' || previous_changes[:scope]&.include?('private')
     user.update_level
     send_document_review_notification if key == 'document'
-  end
-
-  def as_json_for_event_api
-    {
-      id: id,
-      user: user.as_json_for_event_api,
-      key: key,
-      value: value
-    }
   end
 
   # TODO: Fix it when EventAPI will be added.
