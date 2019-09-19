@@ -228,4 +228,27 @@ RSpec.describe Label, type: :model do
       expect(label.reload.value).to eq 'verified'
     end
   end
+
+  context 'event api behaviour' do
+    let!(:user) { create(:user, state: 'pending') }
+    let(:label) { create(:label, user_id: user.id) }
+
+    before do
+      allow(EventAPI).to receive(:notify)
+    end
+
+    it 'receives event with label create' do
+      label
+
+      expect(EventAPI).to have_received(:notify).with('model.label.created',
+                                                      hash_including(
+                                                        record: hash_including(
+                                                          id: label.id,
+                                                          key: label.key,
+                                                          value: label.value,
+                                                          user: hash_including(uid: user.uid, level: 0, email: user.email)
+                                                        )
+                                                      ))
+    end
+  end
 end

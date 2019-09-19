@@ -122,6 +122,64 @@ event: {
 | `record`   | Created user up-to-date attributes. |
 | `changes`   | The changed user attributes and their values. |
 
+## Format of `model.label.created` event
+
+```ruby
+event: {
+  record: {
+    id: 1,
+    key: "email",
+    value: "verified",
+    user: {
+      uid: "ID30DD0DD986",
+      email: "example@barong.io",
+      role: "member",
+      level: 2,
+      otp: false,
+      state: "active",
+      created_at: "2019-01-28T08:35:29Z",
+      updated_at: "2019-01-28T08:35:29Z"
+    }
+  },
+  name: "model.label.created"
+}
+```
+
+| Field      | Description                         |
+| ---------- | ----------------------------------- |
+| `record`   | Created label up-to-date attributes. |
+
+## Format of `model.label.updated` event
+
+```ruby
+event: {
+  record: {
+    id: 1,
+    key: "new_key",
+    value: "verified",
+    user: {
+      uid: "ID30DD0DD986",
+      email: "example@barong.io",
+      role: "member",
+      level: 2,
+      otp: false,
+      state: "active",
+      created_at: "2019-01-28T08:35:29Z",
+      updated_at: "2019-01-28T08:35:29Z"
+    }
+  },
+  changes: {
+    key: "old_key"
+  }
+  name: "model.label.updated"
+}
+```
+
+| Field      | Description                         |
+| ---------- | ----------------------------------- |
+| `record`   | Created label up-to-date attributes. |
+| `changes`   | The changed label attributes and their values. |
+
 ## Format of `model.document.created` event
 
 ```ruby

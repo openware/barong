@@ -38,13 +38,12 @@ class Label < ApplicationRecord
 
   before_validation :normalize_fields
 
-
   def as_json_for_event_api
     {
       id: id,
-      user: user.as_json_for_event_api,
       key: key,
-      value: value
+      value: value,
+      user: user.as_json_for_event_api
     }
   end
 
@@ -63,6 +62,7 @@ private
 
   def update_level_if_label_defined
     return unless scope == 'private' || previous_changes[:scope]&.include?('private')
+
     user.update_level
     send_document_review_notification if key == 'document'
   end
