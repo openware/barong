@@ -1247,6 +1247,7 @@ Resend activation code
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | phone_number | formData | Phone number with country code | Yes | string |
+| channel | formData | The verification method to use | No | string |
 
 ##### Responses
 
@@ -1276,6 +1277,7 @@ Add new phone
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | phone_number | formData | Phone number with country code | Yes | string |
+| channel | formData | The verification method to use | No | string |
 
 ##### Responses
 

@@ -2470,6 +2470,18 @@
             "description": "Phone number with country code",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "channel",
+            "description": "The verification method to use",
+            "type": "string",
+            "default": "sms",
+            "enum": [
+              "call",
+              "sms"
+            ],
+            "required": false
           }
         ],
         "security": [
@@ -2516,6 +2528,18 @@
             "description": "Phone number with country code",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "channel",
+            "description": "The verification method to use",
+            "type": "string",
+            "default": "sms",
+            "enum": [
+              "call",
+              "sms"
+            ],
+            "required": false
           }
         ],
         "security": [
