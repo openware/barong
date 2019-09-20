@@ -52,6 +52,7 @@ module API::V2
 
           APIKey.transaction do
             raise ActiveRecord::Rollback unless api_key.save
+
             SecretStorage.store_secret(SecureRandom.hex(16), api_key.kid)
           rescue SecretStorage::Error
             api_key.errors.add(:api_key, 'could_not_save_secret')

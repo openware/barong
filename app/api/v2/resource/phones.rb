@@ -15,7 +15,7 @@ module API::V2
           error!({ errors: ['resource.phone.invalid_num'] }, 400) \
             unless Phone.valid?(phone_number)
 
-              error!({ errors: ['resource.phone.number_exist'] }, 400) \
+          error!({ errors: ['resource.phone.number_exist'] }, 400) \
             if Phone.verified.exists?(number: phone_number)
         end
       end
@@ -44,19 +44,24 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'Phone number with country code'
+          optional :channel,
+                   type: String,
+                   default: 'sms',
+                   values: { value: -> { Phone::TWILIO_CHANNELS }, message: 'resource.phone.invalid_channel'},
+                   desc: 'The verification method to use'
         end
         post do
           declared_params = declared(params)
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          error!({errors: ['resource.phone.exists']}, 400) if current_user.phones.exists?(number: phone_number)
+          error!({ errors: ['resource.phone.exists'] }, 400) if current_user.phones.exists?(number: phone_number)
 
           phone = current_user.phones.create(number: phone_number)
           code_error!(phone.errors.details, 422) if phone.errors.any?
 
-          Phone.send_confirmation_sms(phone)
-          { message: 'Code was sent successfully' }
+          Barong::App.config.barong_twilio_provider.send_confirmation(phone, declared_params[:channel])
+          { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end
 
         desc 'Resend activation code',
@@ -72,17 +77,22 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'Phone number with country code'
+          optional :channel,
+                   type: String,
+                   default: 'sms',
+                   values: { value: -> { Phone::TWILIO_CHANNELS }, message: 'resource.phone.invalid_channel'},
+                   desc: 'The verification method to use'
         end
         post '/send_code' do
           declared_params = declared(params)
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          phone = current_user.phones.find_by!(number: phone_number)
-          code_error!(phone.errors.details, 422) unless phone.regenerate_code
+          phone = current_user.phones.find_by(number: phone_number)
+          error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
-          Phone.send_confirmation_sms(phone)
-          { message: 'Code was sent successfully' }
+          Barong::App.config.barong_twilio_provider.send_confirmation(phone, declared_params[:channel])
+          { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end
 
         desc 'Verify a phone',
@@ -107,10 +117,11 @@ module API::V2
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          phone = current_user.phones.find_by(number: phone_number,
-                                                 code: declared_params[:verification_code])
+          phone = current_user.phones.find_by(number: phone_number)
+          error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
-          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless phone
+          verification = Barong::App.config.barong_twilio_provider.verify_code(number: phone_number, code: declared_params[:verification_code], user: current_user)
+          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless verification.status == 'approved'
 
           phone.update(validated_at: Time.current)
           current_user.labels.create(key: 'phone', value: 'verified', scope: 'private')

@@ -4,20 +4,17 @@
 # Class Phone
 #
 class Phone < ApplicationRecord
+  TWILIO_CHANNELS = %w[call sms].freeze
+
   belongs_to :user
 
   validates :number, phone: true
 
-  before_create  :generate_code
+  before_create :generate_code
   before_validation :parse_country
   before_validation :sanitize_number
 
   scope :verified, -> { where.not(validated_at: nil) }
-
-  def regenerate_code
-    generate_code
-    save
-  end
 
   #FIXME: Clean code below
   class << self
@@ -35,24 +32,6 @@ class Phone < ApplicationRecord
 
     def international(unsafe_phone)
       parse(unsafe_phone).international(false)
-    end
-
-    def send_confirmation_sms(phone)
-      Rails.logger.info("Sending SMS to #{phone.number}")
-
-      send_sms(number: phone.number,
-               content: Barong::App.config.sms_content_template.gsub(/{{code}}/, phone.code))
-    end
-
-    def send_sms(number:, content:)
-      from_phone = Barong::App.config.twilio_phone_number
-
-      client = Barong::App.config.sms_sender
-      client.messages.create(
-        from: from_phone,
-        to:   '+' + number,
-        body: content
-      )
     end
   end
 
