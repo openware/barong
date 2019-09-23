@@ -15,10 +15,14 @@ class TwilioVerifyService
                    .create(to: '+' + number, channel: channel)
     end
 
-    def verify_code(number:, code:, user:)
-      verify_client.services(@service_sid)
-                   .verification_checks
-                   .create(to: '+' + number, code: code)
+    # return true if twilio accepts given code for the given number
+    def verify_code?(number:, code:, user:)
+      status = verify_client.services(@service_sid)
+                            .verification_checks
+                            .create(to: '+' + number, code: code)
+                            .status
+
+      status == 'approved'
     end
 
     def verify_client

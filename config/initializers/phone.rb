@@ -30,14 +30,12 @@ when 'twilio_verify'
   client = Twilio::REST::Client.new(sid, token)
   service = client.verify.services.create(friendly_name: Barong::App.config.app_name) unless service_sid.present?
   Barong::App.write(:barong_twilio_provider, TwilioVerifyService)
-
 when 'mock'
   if Rails.env.production?
-    Rails.logger.fatal('mock phone verification service must not be used in production')
-    raise 'FATAL: mock phone verification service must not be used in production'
+    Rails.logger.info("WARNING! Don't use mock phone verification service in production")
   end
-  client = Barong::MockSMS.new(sid, token)
-  Barong::App.write(:barong_twilio_provider, TwilioSmsSendService)
+  Barong::App.write(:barong_twilio_provider, MockPhoneVerifyService)
+
 else
   raise "Unknown phone verification service #{Barong::App.config.barong_phone_verification}"
 end
