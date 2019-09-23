@@ -32,7 +32,7 @@ when 'twilio_verify'
   Barong::App.write(:barong_twilio_provider, TwilioVerifyService)
 when 'mock'
   if Rails.env.production?
-    Rails.logger.info('ATTENTION! Carefully user mock phone verification service in production')
+    Rails.logger.info("WARNING! Don't use mock phone verification service in production")
   end
   Barong::App.write(:barong_twilio_provider, MockPhoneVerifyService)
 
