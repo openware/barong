@@ -102,7 +102,7 @@ describe 'Api::V2::Resources::Phones' do
 
       context 'valid story' do
         before do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(OpenStruct.new(status: 'pending'))
+          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(false)
         end
 
         context 'when phone is not verified' do
@@ -139,7 +139,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:international_phone) { '447418084106' }
 
         it 'creates a phone and send sms' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(OpenStruct.new(status: 'pending'))
+          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(false)
 
           do_request
           expect_body.to eq(message: 'Code was sent successfully via sms')
@@ -228,7 +228,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'rendens an error' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code).and_return(OpenStruct.new(status: 'pending'))
+          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
           expect_body.to eq(errors: ["resource.phone.doesnt_exist"])
@@ -241,7 +241,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'rendens an error' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code).and_return(OpenStruct.new(status: 'pending'))
+          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
           expect_body.to eq(errors: ["resource.phone.verification_invalid"])
@@ -254,7 +254,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'responses with success' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code).and_return(OpenStruct.new(status: 'approved'))
+          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(true)
 
           set_level(test_user, 1)
           do_request
@@ -279,7 +279,7 @@ describe 'Api::V2::Resources::Phones' do
       let(:mock_sms) { Barong::MockSMS }
 
       before do
-        allow(Barong::App.config).to receive(:barong_twilio_provider).and_return(TwilioSmsSendService)
+        allow(Barong::App.config).to receive(:barong_twilio_provider).and_return(MockPhoneVerifyService)
       end
 
       context 'when phone is not verified' do
@@ -418,14 +418,15 @@ describe 'Api::V2::Resources::Phones' do
         end
       end
 
-      context 'when phone is found in test_user but code is invalid' do
+      context 'when phone is found in test_user but code is invalid still approves because of mock provider' do
         let!(:phone) { create(:phone, user: test_user) }
         let(:phone_number) { phone.number }
 
-        it 'rendens an error' do
+        it 'approves phone' do
           do_request
-          expect_body.to eq(errors: ['resource.phone.verification_invalid'])
-          expect_status.to eq 404
+
+          expect_status.to eq 201
+          expect(phone.reload.validated_at).to be
         end
       end
 

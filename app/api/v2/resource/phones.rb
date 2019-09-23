@@ -120,8 +120,8 @@ module API::V2
           phone = current_user.phones.find_by(number: phone_number)
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
-          verification = Barong::App.config.barong_twilio_provider.verify_code(number: phone_number, code: declared_params[:verification_code], user: current_user)
-          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless verification.status == 'approved'
+          verification = Barong::App.config.barong_twilio_provider.verify_code?(number: phone_number, code: declared_params[:verification_code], user: current_user)
+          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless verification
 
           phone.update(validated_at: Time.current)
           current_user.labels.create(key: 'phone', value: 'verified', scope: 'private')
