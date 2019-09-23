@@ -30,7 +30,7 @@ class Document < ApplicationRecord
   def as_json_for_event_api
     {
       user: user.as_json_for_event_api,
-      upload: upload,
+      upload: CGI::escape(upload.url),
       doc_type: doc_type,
       doc_number: doc_number,
       doc_expire: doc_expire,
