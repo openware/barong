@@ -37,7 +37,7 @@ module API
             { code: 422, message: 'Validation errors' }
           ]
           params do
-            requires :id, type: Integer
+            requires :uid, type: String
             optional :first_name, type: String
             optional :last_name, type: String
             optional :dob, type: Date
@@ -49,10 +49,10 @@ module API
           end
 
           put do
-            target_profile = Profile.find_by(id: params[:id])
+            target_profile = User.find_by(uid: params[:uid])&.profile
             return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
 
-            unless target_profile.update(declared(params, include_missing: false))
+            unless target_profile.update(declared(params.except(:uid), include_missing: false))
               code_error!(target_profile.errors.details, 422)
             end
 
@@ -67,11 +67,11 @@ module API
             { code: 422, message: 'Validation errors' }
           ]
           params do
-            requires :id, type: Integer
+            requires :uid, type: String
           end
 
           delete do
-            target_profile = Profile.find_by(id: params[:id])
+            target_profile = User.find_by(uid: params[:uid])&.profile
             return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
 
             present target_profile.destroy, with: API::V2::Entities::Profile
