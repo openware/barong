@@ -52,7 +52,7 @@ describe API::V2::Admin::Profiles do
 
   describe 'DELETE /api/v2/admin/profiles' do
     context 'successful response' do
-      let(:do_request) { delete '/api/v2/admin/profiles', params: { id: profile1.id }, headers: auth_header }
+      let(:do_request) { delete '/api/v2/admin/profiles', params: { uid: profile1.user.uid }, headers: auth_header }
 
       it 'delete profile' do
         expect { do_request }.to change { Profile.count }.by(-1)
@@ -65,7 +65,7 @@ describe API::V2::Admin::Profiles do
 
     context 'unsuccessful response' do
       it 'return error while profiles doesnt exist' do
-        delete '/api/v2/admin/profiles', params: { id: 0 }, headers: auth_header
+        delete '/api/v2/admin/profiles', params: { uid: '0' }, headers: auth_header
 
         result = JSON.parse(response.body)
         expect(response.code).to eq '404'
@@ -89,7 +89,7 @@ describe API::V2::Admin::Profiles do
 
     context 'successful response' do
       it 'returns completed profile' do
-        put '/api/v2/admin/profiles', params: request_params.merge(id: profile2.id), headers: auth_header
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: profile2.user.uid), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
@@ -104,7 +104,7 @@ describe API::V2::Admin::Profiles do
       let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil) }
 
       it 'returns partial profile' do
-        put '/api/v2/admin/profiles', params: request_params.except(:first_name).merge(id: profile.id), headers: auth_header
+        put '/api/v2/admin/profiles', params: request_params.except(:first_name).merge(uid: test_user.uid), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params.except(:first_name))
@@ -115,7 +115,7 @@ describe API::V2::Admin::Profiles do
       end
 
       it 'returns completed profile' do
-        put '/api/v2/admin/profiles', params: request_params.merge(id: profile.id), headers: auth_header
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: test_user.uid), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
@@ -128,7 +128,7 @@ describe API::V2::Admin::Profiles do
 
     context 'unccessful response' do
       it 'renders an error when profile doesnt exist' do
-        put '/api/v2/admin/profiles', params: { id: 0 }, headers: auth_header
+        put '/api/v2/admin/profiles', params: { uid: '0' }, headers: auth_header
         expect_status.to eq(404)
         expect_body.to eq(errors: ['admin.profiles.doesnt_exist'])
       end
