@@ -43,7 +43,7 @@ Delete a profile for user
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | query |  | Yes | integer |
+| uid | query |  | Yes | string |
 
 ##### Responses
 
@@ -69,7 +69,7 @@ Update a profile for user
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| id | formData |  | Yes | integer |
+| uid | formData |  | Yes | string |
 | first_name | formData |  | No | string |
 | last_name | formData |  | No | string |
 | dob | formData |  | No | date |

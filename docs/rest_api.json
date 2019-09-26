@@ -67,9 +67,8 @@
         "parameters": [
           {
             "in": "query",
-            "name": "id",
-            "type": "integer",
-            "format": "int32",
+            "name": "uid",
+            "type": "string",
             "required": true
           }
         ],
@@ -108,9 +107,8 @@
         "parameters": [
           {
             "in": "formData",
-            "name": "id",
-            "type": "integer",
-            "format": "int32",
+            "name": "uid",
+            "type": "string",
             "required": true
           },
           {
