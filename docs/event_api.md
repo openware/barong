@@ -122,6 +122,79 @@ event: {
 | `record`   | Created user up-to-date attributes. |
 | `changes`   | The changed user attributes and their values. |
 
+
+## Format of `model.user.created` event
+
+```ruby
+event: {
+  record: {
+    address:"Illinois",
+    city:"New Garfieldbury",
+    country:"COD",
+    dob:"1984-05-22",
+    first_name:"Irina",
+    last_name:"Heathcote",
+    postcode:"10029",
+    created_at:"2019-10-02T08:14:20Z",
+    updated_at:"2019-10-02T08:14:20Z",
+    user: {
+      email: "clarisa_larkin@sawayn.info",
+      level: 0,
+      otp: false,
+      referral_uid: nil,
+      role: "member",
+      state: "pending",
+      uid: "IDEA819FB3F1",
+      updated_at: "2019-10-02T08:14:20Z"
+      created_at: "2019-10-02T08:14:20Z"
+    }
+  },
+  name: "model.profile.created"
+}
+```
+
+| Field      | Description                            |
+| ---------- | -------------------------------------- |
+| `record`   | Created profile up-to-date attributes. |
+
+## Format of `model.user.updated` event
+
+```ruby
+event: {
+  record: {
+    address:"Illinois",
+    city:"New Garfieldbury",
+    country:"COD",
+    created_at:"2019-10-02T08:14:20Z",
+    dob:"1984-05-22",
+    first_name:"Irina",
+    last_name:"Heathcote",
+    postcode:"10029",
+    updated_at:"2019-10-02T08:14:20Z",
+    user: {
+      email: "clarisa_larkin@sawayn.info",
+      level: 0,
+      otp: false,
+      referral_uid: nil,
+      role: "member",
+      state: "pending",
+      uid: "IDEA819FB3F1",
+      updated_at: "2019-10-02T08:14:20Z"
+      created_at: "2019-10-02T08:14:20Z"
+    }
+  },
+  changes: {
+    first_name: "Vernell"
+  },
+  name: "model.profile.updated"
+}
+```
+
+| Field      | Description                         |
+| ---------- | ----------------------------------- |
+| `record`   |  Profile up-to-date attributes. |
+| `changes`   | The changed profile attributes and their values. |
+
 ## Format of `model.label.created` event
 
 ```ruby

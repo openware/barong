@@ -24,7 +24,7 @@
 
 # Profile model
 class Profile < ApplicationRecord
-  acts_as_eventable prefix: 'profile', on: %i[create]
+  acts_as_eventable prefix: 'profile', on: %i[create update]
 
   belongs_to :user
 
