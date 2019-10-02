@@ -24,7 +24,10 @@ describe '/api/v2/auth functionality test' do
   end
 
   let(:do_destroy_session_request) { delete '/api/v2/identity/sessions', headers: { 'HTTP_USER_AGENT': 'legacy-browser' } }
-  let(:do_create_session_request) { post '/api/v2/identity/sessions', params: params, headers: { 'HTTP_USER_AGENT': 'legacy-browser' } }
+  let(:do_create_session_request) do
+    post '/api/v2/identity/sessions', params: params, headers: { 'HTTP_USER_AGENT': 'legacy-browser' } 
+    @csrf = json_body[:csrf_token]
+  end
   let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
 
   describe 'testing session hash validations' do
@@ -37,7 +40,7 @@ describe '/api/v2/auth functionality test' do
         do_create_session_request
         expect(response.status).to eq(200)
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(200)
         expect(response.headers['Authorization']).not_to be_nil
@@ -50,7 +53,7 @@ describe '/api/v2/auth functionality test' do
         do_create_session_request
         expect(response.status).to eq(200)
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'new-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'new-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
       end
@@ -59,7 +62,7 @@ describe '/api/v2/auth functionality test' do
         do_create_session_request
         expect(response.status).to eq(200)
 
-        post auth_request, headers: { 'REMOTE_ADDR': '128.0.0.12' }
+        post auth_request, headers: { 'REMOTE_ADDR': '128.0.0.12', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
       end
@@ -68,7 +71,7 @@ describe '/api/v2/auth functionality test' do
         do_create_session_request
         expect(response.status).to eq(200)
 
-        post auth_request, headers: { 'REMOTE_ADDR': '128.0.0.12', 'HTTP_USER_AGENT': 'new-browser' }
+        post auth_request, headers: { 'REMOTE_ADDR': '128.0.0.12', 'HTTP_USER_AGENT': 'new-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
       end
@@ -85,7 +88,7 @@ describe '/api/v2/auth functionality test' do
         do_create_session_request
         expect(response.status).to eq(200)
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(200)
         expect(response.headers['Authorization']).not_to be_nil
@@ -97,7 +100,7 @@ describe '/api/v2/auth functionality test' do
           travel session_expire_time - 5.minutes
 
           # renew session with private request
-          post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+          post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
 
           expect(response.status).to eq(200)
           expect(response.headers['Authorization']).not_to be_nil
@@ -107,7 +110,7 @@ describe '/api/v2/auth functionality test' do
         expect(Time.current).to be > (start_time + session_expire_time)
 
         travel session_expire_time + 10.minutes
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
       end
     end
@@ -124,7 +127,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
         expect(Rails.cache.read(session[:id])).not_to be_nil
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
 
         expect(Rails.cache.read(session[:id])).not_to be_nil
         expect(response.status).to eq(200)
@@ -135,7 +138,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
         expect(Rails.cache.read(session[:id])).to be_nil
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
       end
     end
@@ -146,18 +149,18 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
         expect(Rails.cache.read(session[:id])).not_to be_nil
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
 
         expect(Rails.cache.read(session[:id])).not_to be_nil
         expect(response.status).to eq(200)
         expect(response.headers['Authorization']).not_to be_nil
         expect(response.headers['Authorization']).to include "Bearer"
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'new-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'new-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(Rails.cache.read(session[:id])).to be_nil
 
-        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser' }
+        post auth_request, headers: { 'HTTP_USER_AGENT': 'legacy-browser', 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
       end
     end

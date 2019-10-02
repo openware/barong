@@ -57,10 +57,11 @@ module API::V2
 
           unless user.otp
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            open_session(user)
+            token = SecureRandom.hex(10)
+            open_session(token, user)
             publish_session_create(user)
 
-            present user, with: API::V2::Entities::UserWithFullInfo
+            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: token
             return status 200
           end
 
@@ -75,10 +76,11 @@ module API::V2
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
-          open_session(user)
+          token = SecureRandom.hex(10)
+          open_session(token, user)
           publish_session_create(user)
 
-          present user, with: API::V2::Entities::UserWithFullInfo
+          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: token
           status(200)
         end
 
@@ -92,7 +94,7 @@ module API::V2
         delete do
           id = session[:id]
           info = Rails.cache.fetch(session[:id]) do
-            error!({ errors: ['identity.session.not_found'] }, 404) 
+            error!({ errors: ['identity.session.not_found'] }, 404)
           end
 
           user = User.find_by(uid: info[:uid])

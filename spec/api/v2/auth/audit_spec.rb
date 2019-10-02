@@ -21,11 +21,22 @@ describe '/api/v2/auth functionality test' do
 
   let(:uri) { '/api/v2/identity/sessions' }
 
-  let(:do_create_session_request_acc) { post uri, params: { email: @accountant_user.email, password: @accountant_user.password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' }}
-  let(:do_create_session_request_adm) { post uri, params: { email: @admin_user.email, password: @admin_user.password, otp_code: '1357' }, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
-  let(:do_create_session_request_tech) { post uri, params: { email: @technical_user.email, password: @technical_user.password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
-
-  let(:do_create_session_request) { post uri, params: { email: @user.email, password: @user.password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
+  let(:do_create_session_request) do
+    post '/api/v2/identity/sessions', params: { email: @user.email, password: @user.password }, headers: { 'HTTP_USER_AGENT': 'random-browser' } 
+    @csrf = json_body[:csrf_token]
+  end
+  let(:do_create_session_request_acc) do
+    post '/api/v2/identity/sessions', params: { email: @accountant_user.email, password: @accountant_user.password }, headers: { 'HTTP_USER_AGENT': 'random-browser' } 
+    @csrf = json_body[:csrf_token]
+  end
+  let(:do_create_session_request_adm) do
+    post '/api/v2/identity/sessions', params: { email: @admin_user.email, password: @admin_user.password }, headers: { 'HTTP_USER_AGENT': 'random-browser' } 
+    @csrf = json_body[:csrf_token]
+  end
+  let(:do_create_session_request_tech) do
+    post '/api/v2/identity/sessions', params: { email:  @technical_user.email, password: @technical_user.password }, headers: { 'HTTP_USER_AGENT': 'random-browser' } 
+    @csrf = json_body[:csrf_token]
+  end
   let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
   let(:protected_request) { '/api/v2/resource/users/me' }
 
@@ -34,9 +45,9 @@ describe '/api/v2/auth functionality test' do
       User.all.each { |u| u.update(otp: false) }
     end
     let(:do_some_requests) do
-      delete '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
-      post '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
-      put '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+      delete '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
+      post '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
+      put '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
     end
 
     context 'records activity if path doesnt match with AUDIT permission path but matches with DROP or BLANK' do
@@ -52,7 +63,6 @@ describe '/api/v2/auth functionality test' do
           do_create_session_request_acc
           do_some_requests
           expect(Activity.where(category: 'admin', result: 'denied').count).to eq(3)
-
         end
 
         it 'for admin' do
@@ -111,7 +121,7 @@ describe '/api/v2/auth functionality test' do
         it 'works for general topic' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          get '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          get '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('general')
           expect(Activity.last.result).to eq('denied')
@@ -120,7 +130,7 @@ describe '/api/v2/auth functionality test' do
         it 'works for patch request' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          patch '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          patch '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('general')
           expect(Activity.last.action).to eq('update')
@@ -130,7 +140,7 @@ describe '/api/v2/auth functionality test' do
         it 'works for non - put post patch get delete requests' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          head '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          head '/api/v2/auth/api/v2/admin', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('general')
           expect(Activity.last.action).to eq('system')
@@ -140,7 +150,7 @@ describe '/api/v2/auth functionality test' do
         it 'for account role' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('markets')
           expect(Activity.last.result).to eq('denied')
@@ -149,7 +159,7 @@ describe '/api/v2/auth functionality test' do
         it 'for admin role' do
           do_create_session_request_adm
           expect(Activity.where(category: 'admin').count).to eq(0)
-          put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('users')
           expect(Activity.last.result).to eq('denied')
@@ -158,7 +168,7 @@ describe '/api/v2/auth functionality test' do
         it 'for technical role' do
           do_create_session_request_tech
           expect(Activity.where(category: 'admin').count).to eq(0)
-          post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('wallets')
           expect(Activity.last.result).to eq('denied')
@@ -181,7 +191,7 @@ describe '/api/v2/auth functionality test' do
           it 'accountant' do
             do_create_session_request_acc
             expect(Activity.where(category: 'admin').count).to eq(0)
-            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('accounting')
             expect(Activity.last.result).to eq('succeed')
@@ -190,7 +200,7 @@ describe '/api/v2/auth functionality test' do
           it 'technical' do
             do_create_session_request_tech
             expect(Activity.where(category: 'admin').count).to eq(0)
-            post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('tech_support')
             expect(Activity.last.result).to eq('succeed')
@@ -199,7 +209,7 @@ describe '/api/v2/auth functionality test' do
           it 'admin' do
             do_create_session_request_adm
             expect(Activity.where(category: 'admin').count).to eq(0)
-            put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('administrating')
             expect(Activity.last.result).to eq('succeed')
@@ -218,7 +228,7 @@ describe '/api/v2/auth functionality test' do
         it 'for different roles' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          delete '/api/v2/auth/api/v2/admin/markets', params: { uid: @user.uid } ,headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+          delete '/api/v2/auth/api/v2/admin/markets', params: { uid: @user.uid } ,headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('markets')
           expect(Activity.last.result).to eq('denied')
@@ -227,7 +237,7 @@ describe '/api/v2/auth functionality test' do
         it 'includes data in denied activity' do
           do_create_session_request_acc
           expect(Activity.where(category: 'admin').count).to eq(0)
-          delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }, params: { user_uid: @user.uid }
+          delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }, params: { user_uid: @user.uid }
           expect(Activity.where(category: 'admin').count).to eq(1)
           expect(Activity.last.topic).to eq('markets')
           expect(Activity.last.result).to eq('denied')
@@ -253,7 +263,7 @@ describe '/api/v2/auth functionality test' do
           it 'accountant' do
             do_create_session_request_acc
             expect(Activity.where(category: 'admin').count).to eq(0)
-            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('markets')
             expect(Activity.last.result).to eq('succeed')
@@ -262,7 +272,7 @@ describe '/api/v2/auth functionality test' do
           it 'technical' do
             do_create_session_request_tech
             expect(Activity.where(category: 'admin').count).to eq(0)
-            post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            post '/api/v2/auth/api/v2/admin/wallets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('wallets')
             expect(Activity.last.result).to eq('succeed')
@@ -271,7 +281,7 @@ describe '/api/v2/auth functionality test' do
           it 'admin' do
             do_create_session_request_adm
             expect(Activity.where(category: 'admin').count).to eq(0)
-            put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT' => 'random-browser' }
+            put '/api/v2/auth/api/v2/admin/users', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('users')
             expect(Activity.last.result).to eq('succeed')
@@ -282,7 +292,7 @@ describe '/api/v2/auth functionality test' do
           it 'includes data in succesfull activity' do
             do_create_session_request_acc
             expect(Activity.where(category: 'admin').count).to eq(0)
-            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }, params: { user_uid: @user.uid }
+            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }, params: { user_uid: @user.uid }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('markets')
             expect(Activity.last.result).to eq('succeed')
@@ -293,7 +303,7 @@ describe '/api/v2/auth functionality test' do
           it 'create activity and save target_uid for accountant if user with this uid exists' do
             do_create_session_request_acc
             expect(Activity.where(category: 'admin').count).to eq(0)
-            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT' => 'random-browser' }, params: { user_uid: @user.uid }
+            delete '/api/v2/auth/api/v2/admin/markets', headers: { 'HTTP_USER_AGENT': 'random-browser', 'X-CSRF-Token': @csrf }, params: { user_uid: @user.uid }
             expect(Activity.where(category: 'admin').count).to eq(1)
             expect(Activity.last.topic).to eq('markets')
             expect(Activity.last.result).to eq('succeed')

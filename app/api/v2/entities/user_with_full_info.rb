@@ -14,6 +14,16 @@ module API
         expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
           user.referral_uid
         end
+        expose(
+          :csrf_token,
+          documentation: {
+            type: String,
+            desc: 'csrf protection token'
+          },
+          if: ->(_, options) { options[:csrf_token] }
+        ) do |user, options|
+          options[:csrf_token]
+        end
         expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
 
         with_options(format_with: :iso_timestamp) do

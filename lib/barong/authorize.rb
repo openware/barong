@@ -67,6 +67,7 @@ module Barong
       {
         user_ip: @request.ip,
         user_agent: @request.env['HTTP_USER_AGENT'],
+        csrf_token: headers['X-CSRF-Token'],
         uid: user.uid
       }
     end

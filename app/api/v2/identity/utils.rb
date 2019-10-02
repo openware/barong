@@ -7,15 +7,16 @@ module API::V2
         request.session
       end
 
-      def open_session(user)
+      def open_session(token, user)
         session[:id] = generate_session_id
-        Rails.cache.write(session[:id], session_params(user), expires_in: Barong::App.config.session_expire_time.to_i.seconds)
+        Rails.cache.write(session[:id], session_params(token, user), expires_in: Barong::App.config.session_expire_time.to_i.seconds)
       end
 
-      def session_params(user)
+      def session_params(token, user)
         {
           user_ip: request.ip,
           user_agent: request.env['HTTP_USER_AGENT'],
+          csrf_token: token,
           uid: user.uid
         }
       end

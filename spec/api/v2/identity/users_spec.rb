@@ -288,13 +288,16 @@ describe API::V2::Identity::Users do
     end
 
     let(:email) { 'valid@email.com' }
-    let(:do_request) { post '/api/v2/identity/users', params: params }
+    let(:do_request) do
+      post '/api/v2/identity/users', params: params
+      @csrf = json_body[:csrf_token]
+    end
     let(:params) { { email: email, password: 'Tecohvi0' } }
     let(:session_expire_time) do
       Barong::App.config.session_expire_time.to_i.seconds
     end
     let(:check_session) do
-      get '/api/v2/auth/tasty_endpoint'
+      get '/api/v2/auth/tasty_endpoint', headers: { 'X-CSRF-Token': @csrf }
     end
 
     it 'Check current credentials and returns session' do
@@ -349,13 +352,16 @@ describe API::V2::Identity::Users do
     end
 
     let(:user) { create(:user, state: 'pending', email: 'valid_email@email.com') }
-    let(:do_request) { post '/api/v2/identity/users/email/confirm_code', params: params }
+    let(:do_request) do
+      post '/api/v2/identity/users/email/confirm_code', params: params
+      @csrf = json_body[:csrf_token]
+    end
     let(:params) { { token: codec.encode(sub: 'confirmation', email: user.email, uid: user.uid) } }
     let(:session_expire_time) do
       Barong::App.config.session_expire_time.to_i.seconds
     end
     let(:check_session) do
-      get '/api/v2/auth/tasty_endpoint'
+      get '/api/v2/auth/tasty_endpoint', headers: { 'X-CSRF-Token': @csrf }
     end
 
     it 'Gives label email verified and opens a session' do

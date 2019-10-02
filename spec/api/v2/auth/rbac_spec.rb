@@ -5,7 +5,7 @@ require 'spec_helper'
 describe '/api/v2/auth functionality test' do
   include_context 'geoip mock'
 
-  let(:do_protected_request) { get '/api/v2/auth/api/v2/resource/users/me' }
+  let(:do_protected_request) { get '/api/v2/auth/api/v2/resource/users/me', headers: { 'X-CSRF-Token': @csrf } }
 
   describe 'testing rbac workability' do
     before(:example) do
@@ -18,7 +18,10 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'with cookies' do
-      let(:do_create_session_request_superadm) { post  '/api/v2/identity/sessions', params: { email: 'superadmin@admin.io', password: 'Tecohvi0' }}
+      let(:do_create_session_request_superadm) do
+        post '/api/v2/identity/sessions', params: { email: 'superadmin@admin.io', password: 'Tecohvi0' }
+        @csrf = json_body[:csrf_token]
+      end
 
       context 'not enough permissions' do
         it 'denies access for user with missing cookies' do
@@ -30,7 +33,7 @@ describe '/api/v2/auth functionality test' do
         it 'denies access for non-accountant user with valid cookies trying to GET accountant api' do
           do_create_session_request_superadm
 
-          get '/api/v2/auth/api/v2/accountant/documents'
+          get '/api/v2/auth/api/v2/accountant/documents', headers: { 'X-CSRF-Token': @csrf }
 
           expect(response.status).to eq(401)
           expect(response.body).to eq("{\"errors\":[\"authz.invalid_permission\"]}")
@@ -40,12 +43,12 @@ describe '/api/v2/auth functionality test' do
         it 'denies POST for endpoint but allowing GET for admin user according to permissions' do
           do_create_session_request_superadm
 
-          post '/api/v2/auth/api/v2/admin/users/list'
+          post '/api/v2/auth/api/v2/admin/users/list', headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(401)
           expect(response.body).to eq("{\"errors\":[\"authz.invalid_permission\"]}")
           expect(response.headers['Authorization']).to be_nil
 
-          get '/api/v2/auth/api/v2/admin/users/list'
+          get '/api/v2/auth/api/v2/admin/users/list', headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(200)
           expect(response.headers['Authorization']).not_to be_nil
           expect(response.headers['Authorization']).to include "Bearer"
@@ -53,7 +56,7 @@ describe '/api/v2/auth functionality test' do
 
         it 'denies access because of the typo in the path' do
           do_create_session_request_superadm
-          get '/api/v2/auth/api/v2/admon/users/list'
+          get '/api/v2/auth/api/v2/admon/users/list', headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(401)
           expect(response.body).to eq("{\"errors\":[\"authz.invalid_permission\"]}")
         end
@@ -63,7 +66,7 @@ describe '/api/v2/auth functionality test' do
         it 'allowes access with for user with valid cookies, verb, role and path' do
           do_create_session_request_superadm
 
-          get '/api/v2/auth/api/v2/admin/users/list'
+          get '/api/v2/auth/api/v2/admin/users/list', headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(200)
           expect(response.headers['Authorization']).not_to be_nil
           expect(response.headers['Authorization']).to include "Bearer"

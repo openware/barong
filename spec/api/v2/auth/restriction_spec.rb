@@ -17,7 +17,11 @@ describe '/api/v2/auth functionality test' do
       password: user.password
     }
   end
-  let(:do_create_session_request) { post uri, params: params }
+
+  let(:do_create_session_request) do
+    post '/api/v2/identity/sessions', params: params
+    @csrf = json_body[:csrf_token]
+  end
   let(:auth_request) { '/api/v2/auth/tasty_endpoint' }
 
   describe 'test restrictions' do
@@ -32,7 +36,7 @@ describe '/api/v2/auth functionality test' do
 
       it 'request with restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.1')
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
@@ -40,13 +44,13 @@ describe '/api/v2/auth functionality test' do
 
       it 'request with non-restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.2')
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(200)
       end
 
       it 'request with disabled restriction' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.3')
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(200)
       end
     end
@@ -56,7 +60,7 @@ describe '/api/v2/auth functionality test' do
 
       it 'request with restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.32.42')
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(401)
         expect(response.headers['Authorization']).to be_nil
@@ -65,7 +69,7 @@ describe '/api/v2/auth functionality test' do
 
       it 'request with non-restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.33.3')
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(200)
       end
@@ -77,7 +81,7 @@ describe '/api/v2/auth functionality test' do
 
         it 'with restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
-          get auth_request
+          get auth_request, headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(401)
           expect(response.headers['Authorization']).to be_nil
           expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
@@ -85,7 +89,7 @@ describe '/api/v2/auth functionality test' do
 
         it 'with non-restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
-          get auth_request
+          get auth_request, headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(200)
         end
       end
@@ -95,7 +99,7 @@ describe '/api/v2/auth functionality test' do
 
         it 'with restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
-          get auth_request
+          get auth_request, headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(401)
           expect(response.headers['Authorization']).to be_nil
           expect(response.body).to eq("{\"errors\":[\"authz.access_restricted\"]}")
@@ -103,7 +107,7 @@ describe '/api/v2/auth functionality test' do
 
         it 'with non-restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
-          get auth_request
+          get auth_request, headers: { 'X-CSRF-Token': @csrf }
           expect(response.status).to eq(200)
         end
       end

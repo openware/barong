@@ -27,12 +27,15 @@ describe API::V2::Identity::Sessions do
     let(:otp_enabled) { false }
 
     context 'With valid params' do
-      let(:do_request) { post uri, params: params }
+      let(:do_request) do
+        post uri, params: params
+        @csrf = json_body[:csrf_token]
+      end
       let(:session_expire_time) do
         Barong::App.config.session_expire_time.to_i.seconds
       end
       let(:check_session) do
-        get '/api/v2/auth/api/v2/tasty_endpoint'
+        get '/api/v2/auth/api/v2/tasty_endpoint', headers: { 'X-CSRF-Token': @csrf }
       end
       let(:params) do
         {

@@ -20,7 +20,10 @@ describe '/api/v2/auth functionality test' do
     }
   end
 
-  let(:do_create_session_request) { post uri, params: params }
+  let(:do_create_session_request) do
+    post '/api/v2/identity/sessions', params: params
+    @csrf = json_body[:csrf_token]
+  end
   let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
   let(:protected_request) { '/api/v2/resource/users/me' }
 
@@ -32,33 +35,21 @@ describe '/api/v2/auth functionality test' do
       end
 
       it 'returns bearer token on valid session' do
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
 
         expect(response.status).to eq(200)
         expect(response.headers['Authorization']).not_to be_nil
         expect(response.headers['Authorization']).to include "Bearer"
       end
 
-      it 'returns set-cookie header with updated expiration' do
-        expect {
-          get auth_request
-        }.to change { response.cookies }
-
-        expect(response.status).to eq(200)
-        expect(response.headers['Set-Cookie']).not_to be_nil
-        expect(
-          Time.parse(response.headers['Set-Cookie'].split(';')[-2].split('=')[1])
-        ).to be_within(10).of(Time.now + 30.minutes)
-      end
-
       it 'allows any type of request' do
         available_types = %w[post get put head delete patch]
         available_types.each do |ping|
-          method("#{ping}").call auth_request
+          method("#{ping}").call auth_request, headers: { 'X-CSRF-Token': @csrf }
 
           expect(response.headers['Authorization']).not_to be_nil
 
-          get protected_request, headers: { 'Authorization' => response.headers['Authorization'] }
+          get protected_request, headers: { 'X-CSRF-Token': @csrf, 'Authorization': response.headers['Authorization'] }
           expect(response.status).to eq(200)
         end
       end
@@ -66,7 +57,7 @@ describe '/api/v2/auth functionality test' do
 
     context 'testing session related errors' do
       it 'renders error if no session or api key headers provided' do
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
       end
@@ -76,7 +67,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
         user.update(state: 'banned')
 
-        get auth_request
+        get auth_request, headers: { 'X-CSRF-Token': @csrf }
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"errors\":[\"authz.user_not_active\"]}")
       end
@@ -89,7 +80,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
       end
 
-      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping' }
+      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping', headers: { 'X-CSRF-Token': @csrf } }
 
       it 'receives access error if path is blacklisted' do
         do_restricted_request
@@ -97,7 +88,7 @@ describe '/api/v2/auth functionality test' do
         expect(response.body).to eq("{\"errors\":[\"authz.permission_denied\"]}")
       end
 
-      let(:do_whitelisted_request) { put '/api/v2/auth/api/v2/peatio/public/ping' }
+      let(:do_whitelisted_request) { put '/api/v2/auth/api/v2/peatio/public/ping', headers: { 'X-CSRF-Token': @csrf } }
 
       it 'receives access error if path is blacklisted' do
         do_whitelisted_request
