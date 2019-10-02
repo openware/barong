@@ -161,4 +161,28 @@ RSpec.describe Profile, type: :model do
       it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
     end
   end
+
+  context 'event api behaviour' do
+    let!(:permission) { create(:permission, role: 'member') }
+    let!(:user) { create(:user, state: 'pending', role: 'member') }
+    let!(:profile) { create(:profile, user_id: user.id, first_name: old_name) }
+    let!(:old_name) { Faker::Name.first_name }
+    let!(:new_name) { Faker::Name.first_name }
+
+    let(:profile_update) { profile.update(first_name: new_name ) }
+
+    before do
+      allow(EventAPI).to receive(:notify)
+    end
+
+    it 'receives event with label create' do
+      profile_update
+
+      expect(EventAPI).to have_received(:notify).with('model.profile.updated',
+                                                      hash_including(
+                                                      changes: { first_name: old_name },
+                                                      record: hash_including(first_name: new_name)
+                                                     ))
+    end
+  end
 end
