@@ -57,7 +57,7 @@ module API::V2
 
           unless user.otp
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            session[:uid] = user.uid
+            open_session(user)
             publish_session_create(user)
 
             present user, with: API::V2::Entities::UserWithFullInfo
@@ -75,7 +75,7 @@ module API::V2
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
-          session[:uid] = user.uid
+          open_session(user)
           publish_session_create(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
@@ -90,11 +90,17 @@ module API::V2
         params do
         end
         delete do
-          user = User.find_by(uid: session[:uid])
-          error!({ errors: ['identity.session.not_found'] }, 404) unless user
+          id = session[:id]
+          info = Rails.cache.fetch(session[:id]) do
+            error!({ errors: ['identity.session.not_found'] }, 404) 
+          end
+
+          user = User.find_by(uid: info[:uid])
+          error!({ errors: ['identity.session.user_not_found'] }, 404) unless user
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 
+          Rails.cache.delete(session[:id])
           session.destroy
           status(200)
         end

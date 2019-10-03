@@ -20,7 +20,7 @@ describe '/api/v2/auth functionality test' do
     }
   end
 
-  let(:do_create_session_request) { post uri, params: params, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
+  let(:do_create_session_request) { post uri, params: params }
   let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
   let(:protected_request) { '/api/v2/resource/users/me' }
 

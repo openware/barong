@@ -36,9 +36,13 @@ module Barong
 
     # cookies validations
     def cookie_owner
-      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
+      session_hash = Rails.cache.fetch(session[:id]) do
+        error!({ errors: ['authz.invalid_session'] }, 401)
+      end
 
-      user = User.find_by!(uid: session[:uid])
+      user = User.find_by!(uid: session_hash[:uid])
+
+      validate_session!(session_hash, user)
 
       unless user.state.in?(%w[active pending])
         error!({ errors: ['authz.user_not_active'] }, 401)
@@ -47,6 +51,24 @@ module Barong
       validate_permissions!(user)
 
       user # returns user(whose session is inside cookie)
+    end
+
+    def validate_session!(session_hash, user)
+      unless session_hash == valid_params(user)
+        Rails.cache.delete(session[:id])
+        session.destroy
+        error!({ errors: ['authz.invalid_session'] }, 401)
+      end
+
+      Rails.cache.write(session[:id], session_hash, expires_in: Barong::App.config.session_expire_time.to_i.seconds)
+    end
+
+    def valid_params(user)
+      {
+        user_ip: @request.ip,
+        user_agent: @request.env['HTTP_USER_AGENT'],
+        uid: user.uid
+      }
     end
 
     # api key validations

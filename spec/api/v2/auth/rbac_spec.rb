@@ -18,7 +18,7 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'with cookies' do
-      let(:do_create_session_request_superadm) { post  '/api/v2/identity/sessions', params: { email: 'superadmin@admin.io', password: 'Tecohvi0' }, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
+      let(:do_create_session_request_superadm) { post  '/api/v2/identity/sessions', params: { email: 'superadmin@admin.io', password: 'Tecohvi0' }}
 
       context 'not enough permissions' do
         it 'denies access for user with missing cookies' do

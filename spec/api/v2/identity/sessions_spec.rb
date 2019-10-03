@@ -43,10 +43,8 @@ describe API::V2::Identity::Sessions do
 
       it 'Check current credentials and returns session' do
         do_request
-        expect(session[:uid]).to eq(user.uid)
-        expect(session.options.to_hash[:expire_after]).to eq(
-          session_expire_time
-        )
+        expect(Rails.cache.read(session[:id])).not_to be_nil
+
         expect_status.to eq(200)
 
         check_session
@@ -241,15 +239,15 @@ describe API::V2::Identity::Sessions do
 
       it 'Deletes session' do
         do_create_session_request
-        expect(session[:uid]).to eq(user.uid)
+        expect(Rails.cache.read(session[:id])).not_to be_nil
 
         do_delete_session_request
-        expect(session[:uid]).to eq(nil)
+        expect(session[:id]).to eq(nil)
       end
 
       it "return invalid set-cookie header on #logout" do
         do_create_session_request
-        expect(session[:uid]).to eq(user.uid)
+        expect(Rails.cache.read(session[:id])).not_to be_nil
 
         do_delete_session_request
         expect(response.status).to eq(200)

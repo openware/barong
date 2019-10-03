@@ -33,9 +33,17 @@ require_dependency 'barong/jwt'
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
+module DefaultUserAgent
+  def post(uri, params = {}, headers = {})
+    super uri, params, { 'HTTP_USER_AGENT' => 'random-browser' }.merge(headers)
+  end
+
+  def get(uri, params = {}, headers = {})
+    super uri, params, { 'HTTP_USER_AGENT' => 'random-browser' }.merge(headers)
+  end
+end
+
 RSpec.configure do |config|
-
-
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

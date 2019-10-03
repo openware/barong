@@ -62,7 +62,7 @@ module API::V2
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
           publish_confirmation(user, language, Barong::App.config.barong_domain)
-          session[:uid] = user.uid
+          open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
           status 201
@@ -127,7 +127,7 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            session[:uid] = current_user.uid
+            open_session(current_user)
             current_user.labels.create(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
 
             EventAPI.notify('system.user.email.confirmed',

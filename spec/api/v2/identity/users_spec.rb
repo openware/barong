@@ -302,10 +302,8 @@ describe API::V2::Identity::Users do
       user = User.find_by(email: email)
 
       expect(user).not_to be(nil)
-      expect(session[:uid]).to eq(user.uid)
-      expect(session.options.to_hash[:expire_after]).to eq(
-        session_expire_time
-      )
+      expect(Rails.cache.read(session[:id])).not_to be_nil
+
       expect_status.to eq(201)
 
       check_session
@@ -364,10 +362,8 @@ describe API::V2::Identity::Users do
       do_request
 
       expect(user).not_to be(nil)
-      expect(session[:uid]).to eq(user.uid)
-      expect(session.options.to_hash[:expire_after]).to eq(
-        session_expire_time
-      )
+      expect(Rails.cache.read(session[:id])).not_to be_nil
+
       expect_status.to eq(201)
 
       check_session

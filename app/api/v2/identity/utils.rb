@@ -4,8 +4,27 @@ module API::V2
   module Identity
     module Utils
       def session
-        request.session_options[:expire_after] = Barong::App.config.session_expire_time.to_i.seconds
         request.session
+      end
+
+      def open_session(user)
+        session[:id] = generate_session_id
+        Rails.cache.write(session[:id], session_params(user), expires_in: Barong::App.config.session_expire_time.to_i.seconds)
+      end
+
+      def session_params(user)
+        {
+          user_ip: request.ip,
+          user_agent: request.env['HTTP_USER_AGENT'],
+          uid: user.uid
+        }
+      end
+
+      def generate_session_id
+        loop do
+          id = SecureRandom.hex(10)
+          return id if Rails.cache.read(id).nil?
+        end
       end
 
       def codec
@@ -35,6 +54,7 @@ module API::V2
         return if CaptchaService::RecaptchaVerifier.new(request: request).verify_recaptcha(model: user,
                                                                            skip_remote_ip: true,
                                                                            response: response)
+
         error!({ errors: [captcha_error_message] }, error_statuses.last)
       rescue StandardError
         error!({ errors: [captcha_error_message] }, error_statuses.last)
