@@ -3,14 +3,15 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '~> 2.6.5'
 
+gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'
 
 gem 'env-tweaks', '~> 1.0.0'
 
-gem 'fog-google',  '~> 0.1.0'
-gem 'fog-aws',     '~> 2.0.1'
 gem 'fog-aliyun',  '~> 0.3.5'
-gem 'aliyun-sdk',  '~> 0.7.0'
+gem 'fog-aws',     '~> 2.0.1'
+gem 'fog-google',  '~> 0.1.0'
+gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use mysql as the database for Active Record
@@ -25,7 +26,6 @@ gem 'mini_racer', platforms: :ruby
 gem 'maxmind-db', '~> 1.0'
 
 gem 'kaminari'
-
 gem 'peatio', '~> 0.4.4'
 gem 'rack-cors', '~> 1.0.2'
 
@@ -42,9 +42,8 @@ gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.25.4'
 gem 'vault',        '~> 0.1'
-gem 'redis-rails', '~> 5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 
 gem 'bcrypt', '~> 3.1'
 # Email validators. Lock at 1.6.0 to use /strict dependency

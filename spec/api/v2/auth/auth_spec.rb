@@ -20,7 +20,7 @@ describe '/api/v2/auth functionality test' do
     }
   end
 
-  let(:do_create_session_request) { post uri, params: params, headers: { 'HTTP_USER_AGENT' => 'random-browser' } }
+  let(:do_create_session_request) { post uri, params: params }
   let(:auth_request) { '/api/v2/auth/not_in_the_rules_path' }
   let(:protected_request) { '/api/v2/resource/users/me' }
 
@@ -37,18 +37,6 @@ describe '/api/v2/auth functionality test' do
         expect(response.status).to eq(200)
         expect(response.headers['Authorization']).not_to be_nil
         expect(response.headers['Authorization']).to include "Bearer"
-      end
-
-      it 'returns set-cookie header with updated expiration' do
-        expect {
-          get auth_request
-        }.to change { response.cookies }
-
-        expect(response.status).to eq(200)
-        expect(response.headers['Set-Cookie']).not_to be_nil
-        expect(
-          Time.parse(response.headers['Set-Cookie'].split(';')[-2].split('=')[1])
-        ).to be_within(10).of(Time.now + 30.minutes)
       end
 
       it 'allows any type of request' do

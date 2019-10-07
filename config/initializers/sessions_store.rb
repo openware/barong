@@ -1,5 +1,4 @@
 # frozen_string_literal:true
 
-# Store sessions in cookies
-Rails.application.config.session_store :cookie_store, key: '_barong_session'
-Barong::App.set(:session_expire_time, '1800', type: :integer)
+# Store sessions in cache
+Rails.application.config.session_store :cache_store, key: '_barong_session', expire_after: 24.hours.seconds

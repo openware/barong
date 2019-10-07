@@ -29,7 +29,7 @@ describe API::V2::Identity::Sessions do
     context 'With valid params' do
       let(:do_request) { post uri, params: params }
       let(:session_expire_time) do
-        Barong::App.config.session_expire_time.to_i.seconds
+        Barong::App.config.session_expire_time
       end
       let(:check_session) do
         get '/api/v2/auth/api/v2/tasty_endpoint'
@@ -43,17 +43,15 @@ describe API::V2::Identity::Sessions do
 
       it 'Check current credentials and returns session' do
         do_request
-        expect(session[:uid]).to eq(user.uid)
-        expect(session.options.to_hash[:expire_after]).to eq(
-          session_expire_time
-        )
+
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
         expect_status.to eq(200)
 
         check_session
         expect(response.status).to eq(200)
       end
 
-       it 'Expires a session after configured time' do
+      it 'Expires a session after configured time' do
         do_request
         travel session_expire_time + 30.minutes
         check_session
@@ -241,20 +239,20 @@ describe API::V2::Identity::Sessions do
 
       it 'Deletes session' do
         do_create_session_request
-        expect(session[:uid]).to eq(user.uid)
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
 
         do_delete_session_request
-        expect(session[:uid]).to eq(nil)
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(nil)
       end
 
       it "return invalid set-cookie header on #logout" do
         do_create_session_request
-        expect(session[:uid]).to eq(user.uid)
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
 
         do_delete_session_request
         expect(response.status).to eq(200)
         expect(response.headers['Set-Cookie']).not_to be_nil
-        expect(response.headers['Set-Cookie']).to include "_session_id"
+        expect(response.headers['Set-Cookie']).to include "barong_session"
       end
     end
   end

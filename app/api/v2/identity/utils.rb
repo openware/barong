@@ -4,12 +4,20 @@ module API::V2
   module Identity
     module Utils
       def session
-        request.session_options[:expire_after] = Barong::App.config.session_expire_time.to_i.seconds
         request.session
       end
 
       def codec
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
+      end
+
+      def open_session(user)
+        session.merge!(
+          "uid": user.uid,
+          "user_ip": request.ip,
+          "user_agent": request.env['HTTP_USER_AGENT'],
+          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time
+        )
       end
 
       def language
@@ -35,6 +43,7 @@ module API::V2
         return if CaptchaService::RecaptchaVerifier.new(request: request).verify_recaptcha(model: user,
                                                                            skip_remote_ip: true,
                                                                            response: response)
+
         error!({ errors: [captcha_error_message] }, error_statuses.last)
       rescue StandardError
         error!({ errors: [captcha_error_message] }, error_statuses.last)

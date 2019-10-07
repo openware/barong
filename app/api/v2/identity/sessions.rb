@@ -5,8 +5,6 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Sessions < Grape::API
-      use ActionDispatch::Session::CookieStore
-
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
@@ -57,7 +55,7 @@ module API::V2
 
           unless user.otp
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            session[:uid] = user.uid
+            open_session(user)
             publish_session_create(user)
 
             present user, with: API::V2::Entities::UserWithFullInfo
@@ -75,7 +73,7 @@ module API::V2
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
-          session[:uid] = user.uid
+          open_session(user)
           publish_session_create(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
