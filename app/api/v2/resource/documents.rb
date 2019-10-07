@@ -64,8 +64,8 @@ module API::V2
           status 201
 
         rescue Excon::Error => e
-          error!('Connection error', 500)
           logger.fatal(e)
+          error!('Connection error', 500)
         end
       end
     end
