@@ -58,6 +58,22 @@ describe 'API::V2::Resource::Profiles' do
       expect(profile).to be
     end
 
+    it 'accept # \ : " & ( ) in address' do
+      request_params[:address] = '28/2 \"Kevin & Brook": (Miami, USA)'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it "accept ' in address" do
+      request_params[:address] = "'Larkin Fork' South New York"
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
     it 'creates new profile with only required fields' do
       post url, params: request_params, headers: auth_header
       expect(response.status).to eq(201)
