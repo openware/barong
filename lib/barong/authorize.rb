@@ -40,6 +40,8 @@ module Barong
 
       user = User.find_by!(uid: session[:uid])
 
+      validate_session!
+
       unless user.state.in?(%w[active pending])
         error!({ errors: ['authz.user_not_active'] }, 401)
       end
@@ -47,6 +49,26 @@ module Barong
       validate_permissions!(user)
 
       user # returns user(whose session is inside cookie)
+    end
+
+    def validate_session!
+      unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
+             Time.now.to_i < session[:expire_time] &&
+             find_ip.include?(@request.remote_ip)
+        session.destroy
+        error!({ errors: ['authz.client_session_mismatch'] }, 401)
+      end
+
+      session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
+    end
+
+    def find_ip
+      ip_addr = IPAddr.new(session[:user_ip])
+      if ip_addr.ipv4?
+        ip_addr.mask(16)
+      else
+        ip_addr.mask(96)
+      end
     end
 
     # api key validations

@@ -60,8 +60,4 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.cache_store = :redis_store, Barong::App.config.redis_url
-  config.session_store :cookie_store,
-                       key: '_barong_session',
-                       domain: :all,
-                       tld_length: 2
 end

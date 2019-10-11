@@ -59,7 +59,7 @@ module Barong
           return value == 'true'
         when :integer
           regex!(key, value,  /^\d+$/)
-          return value
+          return value.to_i
         when :path
           return Rails.root.join(value).tap { |p| path!(key, p) }
         end

@@ -291,7 +291,7 @@ describe API::V2::Identity::Users do
     let(:do_request) { post '/api/v2/identity/users', params: params }
     let(:params) { { email: email, password: 'Tecohvi0' } }
     let(:session_expire_time) do
-      Barong::App.config.session_expire_time.to_i.seconds
+      Barong::App.config.session_expire_time
     end
     let(:check_session) do
       get '/api/v2/auth/tasty_endpoint'
@@ -302,10 +302,7 @@ describe API::V2::Identity::Users do
       user = User.find_by(email: email)
 
       expect(user).not_to be(nil)
-      expect(session[:uid]).to eq(user.uid)
-      expect(session.options.to_hash[:expire_after]).to eq(
-        session_expire_time
-      )
+      expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
       expect_status.to eq(201)
 
       check_session
@@ -354,7 +351,7 @@ describe API::V2::Identity::Users do
     let(:do_request) { post '/api/v2/identity/users/email/confirm_code', params: params }
     let(:params) { { token: codec.encode(sub: 'confirmation', email: user.email, uid: user.uid) } }
     let(:session_expire_time) do
-      Barong::App.config.session_expire_time.to_i.seconds
+      Barong::App.config.session_expire_time
     end
     let(:check_session) do
       get '/api/v2/auth/tasty_endpoint'
@@ -364,10 +361,7 @@ describe API::V2::Identity::Users do
       do_request
 
       expect(user).not_to be(nil)
-      expect(session[:uid]).to eq(user.uid)
-      expect(session.options.to_hash[:expire_after]).to eq(
-        session_expire_time
-      )
+      expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
       expect_status.to eq(201)
 
       check_session

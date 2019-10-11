@@ -5,8 +5,6 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Users < Grape::API
-      use ActionDispatch::Session::CookieStore
-
       helpers do
         def parse_refid!
           error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.barong_uid_prefix.upcase)
@@ -62,7 +60,7 @@ module API::V2
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
           publish_confirmation(user, language, Barong::App.config.barong_domain)
-          session[:uid] = user.uid
+          open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
           status 201
@@ -127,8 +125,8 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            session[:uid] = current_user.uid
-            current_user.labels.create(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
+            current_user.labels.create!(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
+            open_session(current_user)
 
             EventAPI.notify('system.user.email.confirmed',
                             record: {
