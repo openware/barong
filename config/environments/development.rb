@@ -59,5 +59,5 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.cache_store = :redis_store, Barong::App.config.redis_url
+  config.cache_store = :redis_cache_store, { driver: :hiredis, url: Barong::App.config.redis_url }
 end
