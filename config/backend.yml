@@ -44,6 +44,17 @@ services:
         # Continue with the default entrypoint
         ./entrypoint.sh
 
+  minio:
+    image: minio/minio
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: changemeEXAMPLE
+      MINIO_SECRET_KEY: changemeEXAMPLEKEY
+    command: server /data
+
   rabbitmq:
     image: rabbitmq:3.7.6-management
     volumes:
@@ -56,3 +67,4 @@ volumes:
   db_data:
   redis_data:
   rabbitmq_data:
+  minio-data:
