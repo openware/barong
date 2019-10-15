@@ -8,9 +8,18 @@ gem 'api-pagination', '~> 4.8.2'
 
 gem 'env-tweaks', '~> 1.0.0'
 
-gem 'fog-aliyun',  '~> 0.3.5'
-gem 'fog-aws',     '~> 2.0.1'
-gem 'fog-google',  '~> 0.1.0'
+# storage related gems
+gem 'carrierwave', '~> 2.0'
+# fog's core, shared behaviors without API and provider specifics
+gem 'fog-core', '~> 2.1.0'
+# alicloud support
+gem 'fog-aliyun', '~> 0.3.5'
+# aws support (amazon)
+gem 'fog-aws', '~> 3.5.2'
+# gcp support (google)
+gem 'fog-google', '~> 1.9.1'
+##
+
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
@@ -51,7 +60,6 @@ gem 'email_validator', '= 1.6.0', require: 'email_validator/strict'
 
 gem 'countries', require: 'countries/global'
 gem 'browser', require: "browser/browser"
-gem 'carrierwave', '~> 1.2.2'
 gem 'bump'
 
 # Use gem to verify recatpcha on server side
