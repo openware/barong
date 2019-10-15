@@ -66,7 +66,7 @@ steps:
     event:
       - push
     branch:
-      - master
+      - test_redis
 
 - name: Docker build and push
   image: plugins/docker
