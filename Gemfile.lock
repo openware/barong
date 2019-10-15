@@ -291,8 +291,6 @@ GEM
     recaptcha (5.1.0)
       json
     redis (4.1.2)
-    redis-store (1.8.0)
-      redis (>= 4, < 5)
     regexp_parser (1.6.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -412,7 +410,6 @@ DEPENDENCIES
   rails-controller-testing
   recaptcha
   redis (~> 4.0)
-  redis-store (~> 1.8.0)
   rspec-rails (~> 3.8)
   shoulda-matchers (~> 4.0.0.rc1)
   spring
