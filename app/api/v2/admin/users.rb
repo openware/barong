@@ -96,6 +96,10 @@ module API
 
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
+            if target_user.superadmin? && !current_user.superadmin?
+              error!({ errors: ['admin.user.superadmin_change'] }, 422)
+            end
+
             error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
 
             if update_param_key == 'otp' && update_param_value == true
@@ -131,6 +135,10 @@ module API
             target_user = User.find_by_uid(params[:uid])
 
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+            if target_user.superadmin? && !current_user.superadmin?
+              error!({ errors: ['admin.user.superadmin_change'] }, 422)
+            end
 
             error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
 
@@ -173,6 +181,10 @@ module API
             update_param_value = params.except(:uid).values.first
 
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+            if target_user.superadmin? && !current_user.superadmin?
+              error!({ errors: ['admin.user.superadmin_change'] }, 422)
+            end
 
             error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
 
@@ -293,6 +305,11 @@ module API
 
               target_user = User.find_by_uid(params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+              if target_user.superadmin? && !current_user.superadmin?
+                error!({ errors: ['admin.user.superadmin_change'] }, 422)
+              end
+
               declared_params[:user_id] = target_user.id
 
               label = Label.new(declared_params.except(:uid))
@@ -337,6 +354,10 @@ module API
 
               target_user = User.find_by_uid(declared_params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+              if target_user.superadmin? && !current_user.superadmin?
+                error!({ errors: ['admin.user.superadmin_change'] }, 422)
+              end
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 
@@ -391,6 +412,10 @@ module API
               target_user = User.find_by_uid(declared_params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
+              if target_user.superadmin? && !current_user.superadmin?
+                error!({ errors: ['admin.user.superadmin_change'] }, 422)
+              end
+
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
@@ -425,6 +450,10 @@ module API
 
               target_user = User.find_by_uid(params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+              if target_user.superadmin? && !current_user.superadmin?
+                error!({ errors: ['admin.user.superadmin_change'] }, 422)
+              end
 
               label = Label.find_by_key_and_user_id_and_scope(declared_params[:key], target_user.id, declared_params[:scope])
 

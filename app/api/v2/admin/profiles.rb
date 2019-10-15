@@ -52,6 +52,10 @@ module API
             target_profile = User.find_by(uid: params[:uid])&.profile
             return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
 
+            if target_profile.user.superadmin? && !current_user.superadmin?
+              error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
+            end
+
             unless target_profile.update(declared(params.except(:uid), include_missing: false))
               code_error!(target_profile.errors.details, 422)
             end
@@ -73,6 +77,10 @@ module API
           delete do
             target_profile = User.find_by(uid: params[:uid])&.profile
             return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
+
+            if target_profile.user.superadmin? && !current_user.superadmin?
+              error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
+            end
 
             present target_profile.destroy, with: API::V2::Entities::Profile
           end

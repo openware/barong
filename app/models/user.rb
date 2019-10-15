@@ -41,6 +41,10 @@ class User < ApplicationRecord
     self.state == 'active'
   end
 
+  def superadmin?
+    self.role == 'superadmin'
+  end
+
   def role_exists
     return if Permission.pluck(:role).include?(role)
 
