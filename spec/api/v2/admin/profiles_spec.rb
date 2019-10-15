@@ -7,6 +7,8 @@ describe API::V2::Admin::Profiles do
   let!(:create_admin_permission) do
     create :permission,
            role: 'admin'
+    create :permission,
+           role: 'superadmin'
   end
 
   let!(:create_member_permission) do
@@ -71,6 +73,19 @@ describe API::V2::Admin::Profiles do
         expect(response.code).to eq '404'
         expect(result['errors']).to eq(['admin.profiles.doesnt_exist'])
       end
+
+      let!(:superadmin_with_profile) do
+        @user = create :user, role: 'superadmin'
+        create :profile, user_id: @user.id
+      end
+
+      it 'return error when non-superadmin user updates superadmin' do
+        delete '/api/v2/admin/profiles', params: { uid: @user.uid }, headers: auth_header
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '422'
+        expect(result['errors']).to eq(['admin.profiles.superadmin_change'])
+      end
     end
   end
 
@@ -97,6 +112,38 @@ describe API::V2::Admin::Profiles do
         expect(json_body[:state]).to eq('completed')
         expect(profile.state).to eq('completed')
         expect(profile.metadata).to be_blank
+      end
+
+      let!(:superadmin_with_profile) do
+        @user = create :user, role: 'superadmin'
+        create :profile, user_id: @user.id
+      end
+
+      it 'return error when non-superadmin user updates superadmin' do
+        test_user.update!(role: 'superadmin')
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: @user.uid), headers: auth_header
+
+        expect(response.status).to eq(200)
+        profile = Profile.find_by(request_params)
+        expect(profile).to be
+        expect(json_body[:state]).to eq('completed')
+        expect(profile.state).to eq('completed')
+        expect(profile.metadata).to be_blank
+      end
+    end
+
+    context 'unsuccessful response' do
+      let!(:superadmin_with_profile) do
+        @user = create :user, role: 'superadmin'
+        create :profile, user_id: @user.id
+      end
+
+      it 'return error when non-superadmin user updates superadmin' do
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: @user.uid), headers: auth_header
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '422'
+        expect(result['errors']).to eq(['admin.profiles.superadmin_change'])
       end
     end
 

@@ -6,6 +6,8 @@ describe API::V2::Admin::Users do
   let!(:create_admin_permission) do
     create :permission,
            role: 'admin'
+    create :permission,
+           role: 'superadmin'
   end
   let!(:create_member_permission) do
     create :permission,
@@ -167,12 +169,26 @@ describe API::V2::Admin::Users do
       let(:user_with_api_keys) { create(:user, state: "active", otp: true) }
       let!(:api_key1) { create(:api_key, user: user_with_api_keys) }
       let!(:api_key2) { create(:api_key, user: user_with_api_keys) }
+
       it 'renders error if uid is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
           state: 'active'
         }
         expect(response.status).to eq 422
         expect(response.body).to eq "{\"errors\":[\"admin.user.missing_uid\",\"admin.user.empty_uid\"]}"
+      end
+
+      let!(:superadmin) { create(:user, role: 'superadmin') }
+
+      it 'renders error when non-superadmin user updates superadmin' do
+        put '/api/v2/admin/users', headers: auth_header, params: {
+          uid: superadmin.uid,
+          state: 'active'
+        }
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '422'
+        expect(result['errors']).to eq(['admin.user.superadmin_change'])
       end
 
       it 'renders error if state is misssing' do
@@ -348,6 +364,20 @@ describe API::V2::Admin::Users do
         }
         expect(response.status).to eq 422
         expect(response.body).to eq "{\"errors\":[\"admin.user.missing_uid\",\"admin.user.empty_uid\"]}"
+      end
+
+      let!(:superadmin) { create(:user, role: 'superadmin') }
+
+      it 'renders error when non-superadmin user updates superadmin' do
+        post '/api/v2/admin/users/labels', headers: auth_header, params: {
+          uid: superadmin.uid,
+          key: 'email',
+          value: 'vedified'
+        }
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '422'
+        expect(result['errors']).to eq(['admin.user.superadmin_change'])
       end
 
       it 'renders error when key is missing' do
@@ -633,6 +663,7 @@ describe API::V2::Admin::Users do
     let!(:user)     { create(:user, otp: true) }
     let(:new_state) { 'banned' }
     let(:request)   { '/api/v2/admin/users/update' }
+    let!(:superadmin) { create(:user, role: 'superadmin') }
 
     context 'admin user' do
       let(:test_user) { create(:user, role: 'admin') }
@@ -644,11 +675,28 @@ describe API::V2::Admin::Users do
         expect(user.reload.state). to eq new_state
       end
 
+      it 'changes state when superadmin user updates superadmin' do
+        test_user.update!(role: 'superadmin')
+        post request, headers: auth_header, params: { uid: superadmin.uid, state: 'banned' }
+
+        result = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(superadmin.reload.state). to eq 'banned'
+      end
+
       it 'disables otp' do
         post request, headers: auth_header, params: { uid: user.uid, otp: false }
 
         expect(response.status).to eq 200
         expect(user.reload.otp).to eq false
+      end
+
+      it 'renders error when non-superadmin user updates superadmin' do
+        post request, headers: auth_header, params: { uid: superadmin.uid, state: 'banned' }
+
+        result = JSON.parse(response.body)
+        expect(response.code).to eq '422'
+        expect(result['errors']).to eq(['admin.user.superadmin_change'])
       end
 
       it 'renders error when state does not change' do
@@ -797,8 +845,8 @@ describe API::V2::Admin::Users do
         let(:second_user) { create(:user) }
 
         before(:example) do
-          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id)
-          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id)
+          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago)
+          create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id, created_at: 5.minutes.ago)
         end
 
         it 'returns users sorted by time of label creation' do
