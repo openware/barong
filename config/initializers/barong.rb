@@ -44,6 +44,7 @@ Barong::App.define do |config|
   config.set(:barong_maxminddb_path, '', type: :path)
   config.set(:session_expire_time, '1800', type: :integer)
   config.set(:barong_geoip_lang, 'en', values: %w[en de es fr ja ru])
+  config.set(:barong_csrf_protection, 'false', type: :bool)
 end
 
 Barong::GeoIP.lang = Barong::App.config.barong_geoip_lang

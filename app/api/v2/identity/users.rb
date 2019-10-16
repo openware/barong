@@ -60,9 +60,10 @@ module API::V2
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
           publish_confirmation(user, language, Barong::App.config.barong_domain)
-          open_session(user)
+          token = SecureRandom.hex(10)
+          open_session(token, user)
 
-          present user, with: API::V2::Entities::UserWithFullInfo
+          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: token
           status 201
         end
 
@@ -126,7 +127,9 @@ module API::V2
             end
 
             current_user.labels.create!(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
-            open_session(current_user)
+
+            token = SecureRandom.hex(10)
+            open_session(token, current_user)
 
             EventAPI.notify('system.user.email.confirmed',
                             record: {
@@ -135,7 +138,7 @@ module API::V2
                               domain: Barong::App.config.barong_domain
                             })
 
-            present current_user, with: API::V2::Entities::UserWithFullInfo
+            present current_user, with: API::V2::Entities::UserWithFullInfo, csrf_token: token
             status 201
           end
         end

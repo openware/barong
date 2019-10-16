@@ -26,6 +26,7 @@ module Barong
 
     # main: switch between cookie and api key logic, return bearer token
     def auth
+      validate_csrf! if Barong::App.config.barong_csrf_protection
       validate_restrictions!
 
       auth_type = 'cookie'
@@ -101,6 +102,12 @@ module Barong
       restrict! if restrictions['ip_subnet'].any? { |r| IPAddr.new(r).include?(request_ip) }
       restrict! if restrictions['continent'].any? { |r| r.casecmp?(continent) }
       restrict! if restrictions['country'].any? { |r| r.casecmp?(country) }
+    end
+
+    def validate_csrf!
+      error!({ errors: ['authz.missing_csrf_token'] }, 401) unless headers['X-CSRF-Token']
+
+      error!({ errors: ['authz.csrf_token_mismatch'] }, 401) unless headers['X-CSRF-Token'] == session[:csrf_token]
     end
 
     def fetch_restrictions

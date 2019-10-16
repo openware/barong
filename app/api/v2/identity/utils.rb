@@ -11,12 +11,13 @@ module API::V2
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
       end
 
-      def open_session(user)
+      def open_session(token, user)
         session.merge!(
           "uid": user.uid,
           "user_ip": request.ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
-          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time
+          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time,
+          "csrf_token": token
         )
       end
 
