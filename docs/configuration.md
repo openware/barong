@@ -12,6 +12,8 @@
 | `barong_required_docs_expire` | true | `false` `true` | force Barong to validate or not validate `expires_in` parameter at document creation. with `false` still can be sent and recorded but with no time validation |
 | `barong_doc_num_limit` | 10 | any amount number | number of maximum documents that can be attached to uniq user |
 | `barong_geoip_lang` | en | `en`, `de`, `es`, `fr`, `ja`, `ru`  | internal GeoIP lang `Barong::GeoIP.lang`, which configures the language of detected country/continent name |
+| `barong_csrf_protection` | true | `true`, `false` | while turned on (`true`) exposes csrf_token on session create and requires X-CSRF-Token on every private POST PUT PATCH DELETE TRACE on AuthZ level |
+
 
 ### Storage configuration
 More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)

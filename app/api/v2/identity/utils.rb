@@ -11,12 +11,16 @@ module API::V2
       end
 
       def open_session(user)
+        csrf_token = SecureRandom.hex(10)
         session.merge!(
           "uid": user.uid,
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
-          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time
+          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time,
+          "csrf_token": csrf_token
         )
+
+        csrf_token
       end
 
       def language

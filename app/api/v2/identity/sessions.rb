@@ -55,10 +55,10 @@ module API::V2
 
           unless user.otp
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            open_session(user)
+            csrf_token = open_session(user)
             publish_session_create(user)
 
-            present user, with: API::V2::Entities::UserWithFullInfo
+            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
             return status 200
           end
 
@@ -73,10 +73,10 @@ module API::V2
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
-          open_session(user)
+          csrf_token = open_session(user)
           publish_session_create(user)
 
-          present user, with: API::V2::Entities::UserWithFullInfo
+          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
           status(200)
         end
 

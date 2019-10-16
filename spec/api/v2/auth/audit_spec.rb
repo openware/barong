@@ -4,7 +4,8 @@ require 'spec_helper'
 
 describe '/api/v2/auth functionality test' do
   include_context 'geoip mock'
-
+  before do
+  end
   before do
     create :permission, role: 'admin', action: 'AUDIT', verb: 'put', path: 'api/v2/admin/users'
     create :permission, role: 'member'
