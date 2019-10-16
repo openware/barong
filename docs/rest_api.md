@@ -1,7 +1,7 @@
 # Barong
 RESTful API for barong OAuth server
 
-## Version: 2.0.30-alpha
+## Version: 2.3.38
 
 ### Security
 **BearerToken**  

@@ -2,7 +2,7 @@
   "info": {
     "title": "Barong",
     "description": "RESTful API for barong OAuth server",
-    "version": "2.0.30-alpha"
+    "version": "2.3.38"
   },
   "swagger": "2.0",
   "produces": [
