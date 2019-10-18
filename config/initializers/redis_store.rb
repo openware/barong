@@ -1,9 +1,7 @@
 # encoding: UTF-8
 # frozen_string_literal: true
 
-Barong::App.define do |config|
-  config.set(:redis_url, 'redis://localhost:6379/1')
-end
+Barong::App.set(:redis_url, 'redis://localhost:6379/1')
 
 class Rack::Session::Redis
   def set_session(env, session_id, new_session, options)
