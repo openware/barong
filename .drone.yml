@@ -35,7 +35,7 @@ steps:
       - pull_request
 
 - name: Bump and tag
-  image: quay.io/openware/sdk:0.0.11
+  image: quay.io/openware/sdk-tools:0.0.3
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
