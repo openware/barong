@@ -2,6 +2,10 @@
 
 module API::V2
   module Utils
+    def remote_ip
+      env['action_dispatch.remote_ip'].to_s
+    end
+
     def code_error!(errors, code)
       final = errors.inject([]) do |result, (key, errs)|
         result.concat(
