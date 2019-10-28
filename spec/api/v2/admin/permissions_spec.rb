@@ -40,7 +40,7 @@ describe API::V2::Admin::Permissions do
   describe 'POST /api/v2/admin/permissions' do
     context 'unsuccessful response' do
       it 'returns error while invalid verb creating' do
-        post '/api/v2/admin/permissions', params: { role: 'admin', action: 'drop', verb: 'options', path: 'api/v2'}, headers: auth_header
+        post '/api/v2/admin/permissions', params: { role: 'admin', action: 'drop', verb: 'options', path: 'api/v2' }, headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.code).to eq '422'
@@ -48,7 +48,7 @@ describe API::V2::Admin::Permissions do
       end
 
       it 'returns error while invalid action creating' do
-        post '/api/v2/admin/permissions', params: { role: 'admin', action: 'delete', verb: 'put', path: 'api/v2'}, headers: auth_header
+        post '/api/v2/admin/permissions', params: { role: 'admin', action: 'delete', verb: 'put', path: 'api/v2' }, headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.code).to eq '422'
@@ -56,7 +56,7 @@ describe API::V2::Admin::Permissions do
       end
 
       it 'returns error while invalid role creating' do
-        post '/api/v2/admin/permissions', params: { role: 'supertrader', action: 'accept', verb: 'put', path: 'api/v2'}, headers: auth_header
+        post '/api/v2/admin/permissions', params: { role: 'supertrader', action: 'accept', verb: 'put', path: 'api/v2' }, headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.code).to eq '422'
@@ -64,7 +64,7 @@ describe API::V2::Admin::Permissions do
       end
 
       it 'returns error while empty action creating' do
-        post '/api/v2/admin/permissions', params: { role: 'supertrader', action: '', verb: 'put', path: 'api/v2'}, headers: auth_header
+        post '/api/v2/admin/permissions', params: { role: 'supertrader', action: '', verb: 'put', path: 'api/v2' }, headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.code).to eq '422'
@@ -73,7 +73,7 @@ describe API::V2::Admin::Permissions do
     end
 
     context 'successful response' do
-      let(:do_request) {  post '/api/v2/admin/permissions', params: { role: 'admin', action: 'accept', verb: 'put', path: 'api/v2/admin'}, headers: auth_header }
+      let(:do_request) { post '/api/v2/admin/permissions', params: { role: 'admin', action: 'accept', verb: 'put', path: 'api/v2/admin' }, headers: auth_header }
       it 'creates new permission' do
         expect { do_request }.to change { Permission.count }.by(1)
         expect(response).to be_successful
@@ -127,7 +127,7 @@ describe API::V2::Admin::Permissions do
         expect(permission.action).to eq 'ALL'
         expect(permission.path).to eq 'api/v2'
       end
-     end
+    end
 
     context 'unsuccessful response' do
       it 'return error while permission doesnt exist' do

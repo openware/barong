@@ -55,6 +55,9 @@ module API
             requires :action,
                      type: String,
                      allow_blank: false
+            optional :topic,
+                     type: String,
+                     allow_blank: false
           end
           post do
             validate_params!(params)
@@ -118,6 +121,9 @@ module API
                      allow_blank: false,
                      desc: 'permission field - request path'
             optional :action,
+                     type: String,
+                     allow_blank: false
+            optional :topic,
                      type: String,
                      allow_blank: false
           end
