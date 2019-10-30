@@ -338,6 +338,7 @@ Update Permission
 | verb | formData | permission field - request verb | No | string |
 | path | formData | permission field - request path | No | string |
 | action | formData |  | No | string |
+| topic | formData |  | No | string |
 
 ##### Responses
 
@@ -389,6 +390,7 @@ Create permission
 | verb | formData |  | Yes | string |
 | path | formData |  | Yes | string |
 | action | formData |  | Yes | string |
+| topic | formData |  | No | string |
 
 ##### Responses
 

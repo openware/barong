@@ -726,6 +726,12 @@
             "name": "action",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "topic",
+            "type": "string",
+            "required": false
           }
         ],
         "security": [
@@ -811,6 +817,12 @@
             "name": "action",
             "type": "string",
             "required": true
+          },
+          {
+            "in": "formData",
+            "name": "topic",
+            "type": "string",
+            "required": false
           }
         ],
         "security": [
