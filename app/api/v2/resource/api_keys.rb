@@ -4,6 +4,7 @@ module API::V2
   module Resource
     # Responsible for CRUD for api keys
     class APIKeys < Grape::API
+      helpers ::API::V2::NamedParams
       helpers do
         def otp_protected!
           unless current_user.otp
@@ -136,8 +137,7 @@ module API::V2
           { code: 401, message: 'Invalid bearer token' }
         ]
         params do
-          optional :page,      type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-          optional :limit,     type: Integer, default: 100, range: 1..1000, desc: 'Number of api keys per page (defaults to 100, maximum is 1000).'
+          use :pagination_filters
         end
         get do
           current_user.api_keys.tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }

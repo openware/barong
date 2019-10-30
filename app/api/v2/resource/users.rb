@@ -3,6 +3,7 @@
 module API::V2
   module Resource
     class Users < Grape::API
+      helpers ::API::V2::NamedParams
       helpers do
         def password_error!(options = {})
           options[:topic] = 'password'
@@ -52,12 +53,11 @@ module API::V2
 
         desc 'Returns user activity'
         params do
-          optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-          optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of activity per page (defaults to 100, maximum is 1000).'
           requires :topic,
                    type: String,
                    allow_blank: { value: false, message: 'resource.user.empty_topic' },
                    desc: 'Topic of user activity. Allowed: [all, password, session, otp]'
+          use :pagination_filters
         end
         get '/activity/:topic' do
           validate_topic!(params[:topic])

@@ -85,8 +85,6 @@ module API::V2
             { code: 400, message: 'Required params are empty' },
             { code: 404, message: 'Record is not found' }
         ]
-        params do
-        end
         delete do
           user = User.find_by(uid: session[:uid])
           error!({ errors: ['identity.session.not_found'] }, 404) unless user
