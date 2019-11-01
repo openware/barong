@@ -1,9 +1,9 @@
-
 # frozen_string_literal: true
 
 module API::V2
   module Management
     class Users < Grape::API
+      helpers ::API::V2::NamedParams
       helpers do
         def profile_param_keys
           %w[first_name last_name dob address
@@ -83,24 +83,8 @@ module API::V2
                    type: String,
                    values: { value: -> (p){ %w[created updated].include?(p) }, message: 'Non positive page' },
                    default: 'created'
-          optional :from,
-                   type: Integer,
-                   desc: "An integer represents the seconds elapsed since Unix epoch."\
-                     "If set, only users FROM the time will be retrieved."
-          optional :to,
-                   type: Integer,
-                   desc: "An integer represents the seconds elapsed since Unix epoch."\
-                     "If set, only users BEFORE the time will be retrieved."
-          optional :page,
-                   type: { value: Integer, message: 'Non integer page' },
-                   values: { value: -> (p){ p.try(:positive?) }, message: 'Non positive page' },
-                   default: 1,
-                   desc: 'Page number (defaults to 1).'
-          optional :limit,
-                   type: { value: Integer, message: 'Non integer limit' },
-                   values: { value: 1..1000, message: 'Invalid limit' },
-                   default: 100,
-                   desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+          use :timeperiod_filters
+          use :pagination_filters
         end
 
         post '/list' do

@@ -5,19 +5,20 @@ module API
     module Admin
       # Admin functionality over users table
       class Users < Grape::API
-        helpers do
-          def permitted_search_params(params)
-            params.slice(:uid, :email, :role, :first_name, :last_name, :country, :level, :state, :from, :to, :range)
-          end
-
-          def search(field, value)
-            error!({ errors: ['admin.user.non_user_field'] }, 422) unless User.attribute_names.include?(field)
-
-            User.where("#{field}": value).order('email ASC')
-          end
-        end
-
         resource :users do
+          helpers ::API::V2::NamedParams
+          helpers do
+            def permitted_search_params(params)
+              params.slice(:uid, :email, :role, :first_name, :last_name, :country, :level, :state, :from, :to, :range)
+            end
+
+            def search(field, value)
+              error!({ errors: ['admin.user.non_user_field'] }, 422) unless User.attribute_names.include?(field)
+
+              User.where("#{field}": value).order('email ASC')
+            end
+          end
+
           desc 'Returns array of users as paginated collection',
           security: [{ "BearerToken": [] }],
           failure: [
@@ -48,18 +49,8 @@ module API
                      type: String,
                      values: { value: -> (p){ %w[created updated].include?(p) }, message: 'admin.user.invalid_range' },
                      default: 'created'
-            optional :from
-            optional :to
-            optional :page,
-                     type: { value: Integer, message: 'admin.user.non_integer_page' },
-                     values: { value: -> (p){ p.try(:positive?) }, message: 'admin.user.non_positive_page' },
-                     default: 1,
-                     desc: 'Page number (defaults to 1).'
-            optional :limit,
-                     type: { value: Integer, message: 'admin.user.non_integer_limit' },
-                     values: { value: 1..100, message: 'admin.user.invalid_limit' },
-                     default: 100,
-                     desc: 'Number of users per page (defaults to 100, maximum is 100).'
+            use :timeperiod_filters
+            use :pagination_filters
           end
           get do
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
@@ -233,10 +224,8 @@ module API
                      type: String,
                      values: { value: ->(p) { %w[created updated].include?(p) }, message: 'admin.user.invalid_range' },
                      default: 'created'
-            optional :from
-            optional :to
-            optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-            optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+            use :timeperiod_filters
+            use :pagination_filters
           end
           get '/documents/pending' do
             users_with_pending_docs = User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).order('labels.updated_at ASC')
@@ -271,8 +260,7 @@ module API
             params do
               requires :key,      type: String, desc: 'Label key'
               requires :value,    type: String, desc: 'Label value'
-              optional :page,     type: Integer, default: 1,   integer_gt_zero: true, desc: 'Page number (defaults to 1).'
-              optional :limit,    type: Integer, default: 100, range: 1..1000, desc: 'Number of users per page (defaults to 100, maximum is 1000).'
+              use :pagination_filters
             end
             get do
               users = User.joins(:labels).where(labels: { key: params[:key], value: params[:value] })

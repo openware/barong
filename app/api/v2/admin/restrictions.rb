@@ -6,6 +6,8 @@ module API
       # Admin functionality over restrictions table
       class Restrictions < Grape::API
         resource :restrictions do
+          helpers ::API::V2::NamedParams
+
           desc 'Returns array of restrictions as a paginated collection',
           security: [{ 'BearerToken': [] }],
           failure: [
@@ -19,18 +21,7 @@ module API
                      type: String,
                      values: { value: ->(p) { %w[created updated].include?(p) }, message: 'admin.restriction.invalid_range' },
                      default: 'created'
-            optional :from
-            optional :to
-            optional :page,
-                     type: { value: Integer, message: 'admin.restriction.non_integer_page' },
-                     values: { value: -> (p){ p.try(:positive?) }, message: 'admin.restriction.non_positive_page'},
-                     default: 1,
-                     desc: 'Page number (defaults to 1).'
-            optional :limit,
-                     type: { value: Integer, message: 'admin.restriction.non_integer_limit' },
-                     values: { value: 1..1000, message: 'admin.restriction.invalid_limit' },
-                     default: 100,
-                     desc: 'Number of restrictions per page (defaults to 100, maximum is 1000).'
+            use :pagination_filters
           end
           get do
             restrictions = Restriction.all

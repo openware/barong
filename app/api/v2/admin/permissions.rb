@@ -6,6 +6,7 @@ module API
       # Admin functionality over permissions table
       class Permissions < Grape::API
         resource :permissions do
+          helpers ::API::V2::NamedParams
           helpers do
             def validate_params!(params)
               unless %w(get post delete put head patch all).include?(params[:verb].downcase)
@@ -22,16 +23,7 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           params do
-            optional :page,
-                     type: { value: Integer, message: 'admin.user.non_integer_page' },
-                     values: { value: -> (p){ p.try(:positive?) }, message: 'admin.user.non_positive_page'},
-                     default: 1,
-                     desc: 'Page number (defaults to 1).'
-            optional :limit,
-                     type: { value: Integer, message: 'admin.user.non_integer_limit' },
-                     values: { value: 1..100, message: 'admin.user.invalid_limit' },
-                     default: 100,
-                     desc: 'Number of users per page (defaults to 100, maximum is 100).'
+            use :pagination_filters
           end
           get do
             Permission.all.tap { |q| present paginate(q) }

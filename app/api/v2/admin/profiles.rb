@@ -6,6 +6,7 @@ module API
       # Admin functionality over profiles table
       class Profiles < Grape::API
         resource :profiles do
+          helpers ::API::V2::NamedParams
 
           desc 'Return all profiles',
              security: [{ "BearerToken": [] }],
@@ -13,16 +14,7 @@ module API
                { code: 401, message: 'Invalid bearer token' },
              ]
           params do
-            optional :page,
-                     type: { value: Integer, message: 'admin.profiles.non_integer_page' },
-                     values: { value: -> (p){ p.try(:positive?) }, message: 'admin.profiles.non_positive_page'},
-                     default: 1,
-                     desc: 'Page number (defaults to 1).'
-            optional :limit,
-                     type: { value: Integer, message: 'admin.profiles.non_integer_limit' },
-                     values: { value: 1..100, message: 'admin.profiles.invalid_limit' },
-                     default: 100,
-                     desc: 'Number of profiles per page (defaults to 100, maximum is 100).'
+            use :pagination_filters
           end
 
           get do
