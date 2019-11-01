@@ -1,10 +1,329 @@
 # Change Log
 
-[Full Changelog](https://github.com/rubykube/barong/compare/2.2.22...HEAD)
+## [2.3.39](https://github.com/rubykube/barong/tree/2.3.39) (2019-10-15)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.38...2.3.39)
+
+**Merged pull requests:**
+
+- Update storage-related gems [\#957](https://github.com/rubykube/barong/pull/957) ([ec](https://github.com/ec))
+- Protect superadmin against changes from non-superadmin users [\#955](https://github.com/rubykube/barong/pull/955) ([ec](https://github.com/ec))
+
+## [2.3.38](https://github.com/rubykube/barong/tree/2.3.38) (2019-10-15)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.37...2.3.38)
+
+## [2.3.37](https://github.com/rubykube/barong/tree/2.3.37) (2019-10-11)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.36...2.3.37)
+
+**Merged pull requests:**
+
+- Server side sessions implementation \(cache store\) [\#949](https://github.com/rubykube/barong/pull/949) ([ec](https://github.com/ec))
+
+## [2.3.36](https://github.com/rubykube/barong/tree/2.3.36) (2019-10-10)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.35...2.3.36)
+
+**Merged pull requests:**
+
+- Feature: allow \# \ \(\) & ' : " in profile residental address field [\#950](https://github.com/rubykube/barong/pull/950) ([ymasiuk](https://github.com/ymasiuk))
+
+## [2.3.35](https://github.com/rubykube/barong/tree/2.3.35) (2019-10-07)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.34...2.3.35)
+
+**Merged pull requests:**
+
+- Add ability to configure aws\_signature\_version && endpoint [\#947](https://github.com/rubykube/barong/pull/947) ([ec](https://github.com/ec))
+
+## [2.3.34](https://github.com/rubykube/barong/tree/2.3.34) (2019-10-02)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.33...2.3.34)
+
+**Merged pull requests:**
+
+- Update ruby to 2.6.5 for security reasons [\#946](https://github.com/rubykube/barong/pull/946) ([ec](https://github.com/ec))
+- Profile act as eventable on update [\#945](https://github.com/rubykube/barong/pull/945) ([ec](https://github.com/ec))
+
+## [2.3.33](https://github.com/rubykube/barong/tree/2.3.33) (2019-09-26)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.32...2.3.33)
+
+**Merged pull requests:**
+
+- Use uid instead of id on profile update && delete api [\#943](https://github.com/rubykube/barong/pull/943) ([ec](https://github.com/ec))
+
+## [2.3.32](https://github.com/rubykube/barong/tree/2.3.32) (2019-09-23)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.31...2.3.32)
+
+**Merged pull requests:**
+
+- Use CGI::escape instead of pure url in documents event api [\#942](https://github.com/rubykube/barong/pull/942) ([ec](https://github.com/ec))
+
+## [2.3.31](https://github.com/rubykube/barong/tree/2.3.31) (2019-09-23)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.30...2.3.31)
+
+**Closed issues:**
+
+- Missing model.user.updated event description [\#931](https://github.com/rubykube/barong/issues/931)
+- Expose levels configuration [\#929](https://github.com/rubykube/barong/issues/929)
+- Update Label\#create and Label\#update in admin and management API [\#896](https://github.com/rubykube/barong/issues/896)
+
+**Merged pull requests:**
+
+- Introduce MockPhoneVerifyService [\#941](https://github.com/rubykube/barong/pull/941) ([ec](https://github.com/ec))
+
+## [2.3.30](https://github.com/rubykube/barong/tree/2.3.30) (2019-09-20)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.29...2.3.30)
+
+**Merged pull requests:**
+
+- Change twilio API [\#928](https://github.com/rubykube/barong/pull/928) ([chumaknadya](https://github.com/chumaknadya))
+
+## [2.3.29](https://github.com/rubykube/barong/tree/2.3.29) (2019-09-20)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.28...2.3.29)
+
+**Merged pull requests:**
+
+- Add missing labels event api documentation [\#937](https://github.com/rubykube/barong/pull/937) ([ec](https://github.com/ec))
+
+## [2.3.28](https://github.com/rubykube/barong/tree/2.3.28) (2019-09-18)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.27...2.3.28)
+
+**Merged pull requests:**
+
+- Make labels acts\_as\_eventable on: \[create update\] [\#936](https://github.com/rubykube/barong/pull/936) ([ec](https://github.com/ec))
+
+## [2.3.27](https://github.com/rubykube/barong/tree/2.3.27) (2019-09-18)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.26...2.3.27)
+
+**Merged pull requests:**
+
+- Define DocumentTypes class for flexible doc type configuration [\#935](https://github.com/rubykube/barong/pull/935) ([ec](https://github.com/ec))
+
+## [2.3.26](https://github.com/rubykube/barong/tree/2.3.26) (2019-09-17)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.25...2.3.26)
+
+**Merged pull requests:**
+
+- Update seeds.yml [\#934](https://github.com/rubykube/barong/pull/934) ([ec](https://github.com/ec))
+- Event API changes: remove blocking check for on\_update events [\#933](https://github.com/rubykube/barong/pull/933) ([ec](https://github.com/ec))
+- Simple GET levels requirements endpoint for admin [\#932](https://github.com/rubykube/barong/pull/932) ([ec](https://github.com/ec))
+- Get rid of serialize: JSON, accept metadata as json instead of pure hash [\#930](https://github.com/rubykube/barong/pull/930) ([ec](https://github.com/ec))
+
+## [2.3.25](https://github.com/rubykube/barong/tree/2.3.25) (2019-09-17)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.24...2.3.25)
+
+**Closed issues:**
+
+- Missing enable of OTP in rake task [\#890](https://github.com/rubykube/barong/issues/890)
+- Missing storage\_region env config for carrierwave [\#880](https://github.com/rubykube/barong/issues/880)
+- Missing check on vault connection while creating api\_key [\#879](https://github.com/rubykube/barong/issues/879)
+
+**Merged pull requests:**
+
+- Add system.session.create event with user and request\_ip data [\#916](https://github.com/rubykube/barong/pull/916) ([chumaknadya](https://github.com/chumaknadya))
+
+## [2.3.24](https://github.com/rubykube/barong/tree/2.3.24) (2019-09-12)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.23...2.3.24)
+
+**Merged pull requests:**
+
+- Allow blank doc\_expire for documents controllers [\#927](https://github.com/rubykube/barong/pull/927) ([dnfd](https://github.com/dnfd))
+- Add AliCloud Uploader [\#926](https://github.com/rubykube/barong/pull/926) ([dnfd](https://github.com/dnfd))
+
+## [2.3.23](https://github.com/rubykube/barong/tree/2.3.23) (2019-09-07)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.21...2.3.23)
+
+**Merged pull requests:**
+
+- Add ability to disable 2fa [\#925](https://github.com/rubykube/barong/pull/925) ([dnfd](https://github.com/dnfd))
+- Use Barong::App.config.barong\_uid\_prefix in referral validation [\#923](https://github.com/rubykube/barong/pull/923) ([ec](https://github.com/ec))
+- Add ability to skip label creation on doc save [\#922](https://github.com/rubykube/barong/pull/922) ([dnfd](https://github.com/dnfd))
+- Avoid no method error UTC for nil entities [\#921](https://github.com/rubykube/barong/pull/921) ([ec](https://github.com/ec))
+
+## [2.3.21](https://github.com/rubykube/barong/tree/2.3.21) (2019-09-05)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.20...2.3.21)
+
+**Merged pull requests:**
+
+- Add ability to restrict by geoip [\#920](https://github.com/rubykube/barong/pull/920) ([dnfd](https://github.com/dnfd))
+
+## [2.3.20](https://github.com/rubykube/barong/tree/2.3.20) (2019-09-05)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.19...2.3.20)
+
+**Merged pull requests:**
+
+- Handle Vault errors on POST /api/v2/resource/api\_keys [\#918](https://github.com/rubykube/barong/pull/918) ([dnfd](https://github.com/dnfd))
+
+## [2.3.19](https://github.com/rubykube/barong/tree/2.3.19) (2019-09-05)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.18...2.3.19)
+
+**Merged pull requests:**
+
+- Fix structure of event API messages [\#912](https://github.com/rubykube/barong/pull/912) ([shal](https://github.com/shal))
+
+## [2.3.18](https://github.com/rubykube/barong/tree/2.3.18) (2019-09-05)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.17...2.3.18)
+
+**Merged pull requests:**
+
+- Add :upload in list of params to be filtered [\#919](https://github.com/rubykube/barong/pull/919) ([ec](https://github.com/ec))
+
+## [2.3.17](https://github.com/rubykube/barong/tree/2.3.17) (2019-09-04)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.16...2.3.17)
+
+**Merged pull requests:**
+
+- UPDATES: sessions delete, permissions update, log error on 500 [\#917](https://github.com/rubykube/barong/pull/917) ([chumaknadya](https://github.com/chumaknadya))
+
+## [2.3.16](https://github.com/rubykube/barong/tree/2.3.16) (2019-09-04)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.15...2.3.16)
+
+**Merged pull requests:**
+
+- Support 'if not exist - create' logic on labels update [\#915](https://github.com/rubykube/barong/pull/915) ([ec](https://github.com/ec))
+- Fix rollback to pending state, add missing :data in entities [\#914](https://github.com/rubykube/barong/pull/914) ([ec](https://github.com/ec))
+- Add AliCloud Carrierwave storage provider [\#911](https://github.com/rubykube/barong/pull/911) ([dnfd](https://github.com/dnfd))
+
+## [2.3.15](https://github.com/rubykube/barong/tree/2.3.15) (2019-09-03)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.14...2.3.15)
+
+**Merged pull requests:**
+
+- Switch to State - Label dependency [\#907](https://github.com/rubykube/barong/pull/907) ([ec](https://github.com/ec))
+
+## [2.3.14](https://github.com/rubykube/barong/tree/2.3.14) (2019-09-03)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.13...2.3.14)
+
+**Merged pull requests:**
+
+- Ability to update and delete users profiles [\#913](https://github.com/rubykube/barong/pull/913) ([ec](https://github.com/ec))
+
+## [2.3.13](https://github.com/rubykube/barong/tree/2.3.13) (2019-09-02)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.12...2.3.13)
+
+**Merged pull requests:**
+
+- Ability create Profile with empty fields. Add state to Profile model. [\#910](https://github.com/rubykube/barong/pull/910) ([mnaichuk](https://github.com/mnaichuk))
+
+## [2.3.12](https://github.com/rubykube/barong/tree/2.3.12) (2019-09-02)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.11...2.3.12)
+
+**Merged pull requests:**
+
+- Update Barong::App validations [\#904](https://github.com/rubykube/barong/pull/904) ([dnfd](https://github.com/dnfd))
+
+## [2.3.11](https://github.com/rubykube/barong/tree/2.3.11) (2019-08-26)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.10...2.3.11)
+
+**Merged pull requests:**
+
+- Update nokogiri version \(Command injection\) [\#906](https://github.com/rubykube/barong/pull/906) ([dnfd](https://github.com/dnfd))
+
+## [2.3.10](https://github.com/rubykube/barong/tree/2.3.10) (2019-08-22)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.9...2.3.10)
+
+**Closed issues:**
+
+- How to configure session expire time? [\#900](https://github.com/rubykube/barong/issues/900)
+
+**Merged pull requests:**
+
+- Add session autorenew [\#903](https://github.com/rubykube/barong/pull/903) ([dnfd](https://github.com/dnfd))
+- Add endpoint for delete restriction [\#902](https://github.com/rubykube/barong/pull/902) ([chumaknadya](https://github.com/chumaknadya))
+
+## [2.3.9](https://github.com/rubykube/barong/tree/2.3.9) (2019-08-19)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.8...2.3.9)
+
+**Merged pull requests:**
+
+- Small fixes in document and profile model \(\#887\) [\#901](https://github.com/rubykube/barong/pull/901) ([ec](https://github.com/ec))
+
+## [2.3.8](https://github.com/rubykube/barong/tree/2.3.8) (2019-08-19)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.7...2.3.8)
+
+**Merged pull requests:**
+
+- Update models' annotations [\#895](https://github.com/rubykube/barong/pull/895) ([dnfd](https://github.com/dnfd))
+
+## [2.3.7](https://github.com/rubykube/barong/tree/2.3.7) (2019-08-19)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.6...2.3.7)
+
+**Merged pull requests:**
+
+- Updating to ruby 2.6.3 and rails 5.2.3 [\#867](https://github.com/rubykube/barong/pull/867) ([mod](https://github.com/mod))
+
+## [2.3.6](https://github.com/rubykube/barong/tree/2.3.6) (2019-08-15)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.5...2.3.6)
+
+**Merged pull requests:**
+
+- Management API to push documents for user [\#894](https://github.com/rubykube/barong/pull/894) ([ec](https://github.com/ec))
+- Add ability to configure uid prefix [\#893](https://github.com/rubykube/barong/pull/893) ([ec](https://github.com/ec))
+
+## [2.3.5](https://github.com/rubykube/barong/tree/2.3.5) (2019-08-15)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.4...2.3.5)
+
+**Merged pull requests:**
+
+- Add Restrictions [\#891](https://github.com/rubykube/barong/pull/891) ([dnfd](https://github.com/dnfd))
+
+## [2.3.4](https://github.com/rubykube/barong/tree/2.3.4) (2019-08-09)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.3...2.3.4)
+
+**Closed issues:**
+
+- Permissions are not checked [\#889](https://github.com/rubykube/barong/issues/889)
+- event\_api\_jwt\_private\_key Error  [\#888](https://github.com/rubykube/barong/issues/888)
+
+**Merged pull requests:**
+
+- Simple rake task to create users and api keys [\#816](https://github.com/rubykube/barong/pull/816) ([ec](https://github.com/ec))
+
+## [2.3.3](https://github.com/rubykube/barong/tree/2.3.3) (2019-08-02)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.25...2.3.3)
+
+## [2.2.25](https://github.com/rubykube/barong/tree/2.2.25) (2019-08-02)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.24...2.2.25)
+
+**Merged pull requests:**
+
+- Allow additional symbols ' / , : in residential address && Switch to string in required\_docs\_expire config [\#887](https://github.com/rubykube/barong/pull/887) ([ec](https://github.com/ec))
+- Add rake task for load users and referrals [\#885](https://github.com/rubykube/barong/pull/885) ([mnaichuk](https://github.com/mnaichuk))
+
+## [2.2.24](https://github.com/rubykube/barong/tree/2.2.24) (2019-07-31)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.23...2.2.24)
+
+**Merged pull requests:**
+
+- Extend doc\_type inclusion list, make validation case insensitive [\#884](https://github.com/rubykube/barong/pull/884) ([ec](https://github.com/ec))
+
+## [2.2.23](https://github.com/rubykube/barong/tree/2.2.23) (2019-07-31)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.2...2.2.23)
+
+**Closed issues:**
+
+- Make phone code message configurable [\#876](https://github.com/rubykube/barong/issues/876)
+- Add verb PATCH to available verbs for admin audit  [\#868](https://github.com/rubykube/barong/issues/868)
+
+**Merged pull requests:**
+
+- Add ability to get referral uid && Expose referral\_uid in user, user\_with\_profile, user\_with\_full\_info entities [\#882](https://github.com/rubykube/barong/pull/882) ([chumaknadya](https://github.com/chumaknadya))
+
+## [2.3.2](https://github.com/rubykube/barong/tree/2.3.2) (2019-07-26)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.3.1...2.3.2)
+
+**Merged pull requests:**
+
+- Allow pending user to open session [\#881](https://github.com/rubykube/barong/pull/881) ([ec](https://github.com/ec))
+- Add ability to configure phone verification sms content [\#877](https://github.com/rubykube/barong/pull/877) ([ec](https://github.com/ec))
+
+## [2.3.1](https://github.com/rubykube/barong/tree/2.3.1) (2019-07-25)
+[Full Changelog](https://github.com/rubykube/barong/compare/2.2.22...2.3.1)
 
 **Closed issues:**
 
 - An error occurred while installing mysql2 \(0.5.2\), and Bundler cannot continue. Make sure that `gem install mysql2 -v '0.5.2' --source 'https://rubygems.org/'` succeeds before bundling. [\#873](https://github.com/rubykube/barong/issues/873)
+
+**Merged pull requests:**
+
+- Feature: Add redeploy on devkube step to drone [\#874](https://github.com/rubykube/barong/pull/874) ([alinetskyi](https://github.com/alinetskyi))
+- \[ci skip\] Release 2.2.0 [\#836](https://github.com/rubykube/barong/pull/836) ([ec](https://github.com/ec))
 
 ## [2.2.22](https://github.com/rubykube/barong/tree/2.2.22) (2019-07-17)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.21...2.2.22)
@@ -36,7 +355,7 @@
 **Merged pull requests:**
 
 - Move to active storage [\#858](https://github.com/rubykube/barong/pull/858) ([ec](https://github.com/ec))
-- Fix /api/v2/admin/users/update [\#857](https://github.com/rubykube/barong/pull/857) ([denisfd](https://github.com/denisfd))
+- Fix /api/v2/admin/users/update [\#857](https://github.com/rubykube/barong/pull/857) ([dnfd](https://github.com/dnfd))
 
 ## [2.2.19](https://github.com/rubykube/barong/tree/2.2.19) (2019-06-25)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.18...2.2.19)
@@ -49,10 +368,10 @@
 
 **Merged pull requests:**
 
-- Add docs in bump and update redeploy step [\#856](https://github.com/rubykube/barong/pull/856) ([denisfd](https://github.com/denisfd))
-- skip tag [\#855](https://github.com/rubykube/barong/pull/855) ([denisfd](https://github.com/denisfd))
-- Generate docs in CI [\#854](https://github.com/rubykube/barong/pull/854) ([denisfd](https://github.com/denisfd))
-- Use JSON logs in production [\#849](https://github.com/rubykube/barong/pull/849) ([denisfd](https://github.com/denisfd))
+- Add docs in bump and update redeploy step [\#856](https://github.com/rubykube/barong/pull/856) ([dnfd](https://github.com/dnfd))
+- skip tag [\#855](https://github.com/rubykube/barong/pull/855) ([dnfd](https://github.com/dnfd))
+- Generate docs in CI [\#854](https://github.com/rubykube/barong/pull/854) ([dnfd](https://github.com/dnfd))
+- Use JSON logs in production [\#849](https://github.com/rubykube/barong/pull/849) ([dnfd](https://github.com/dnfd))
 
 ## [2.2.18](https://github.com/rubykube/barong/tree/2.2.18) (2019-06-24)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.17...2.2.18)
@@ -104,10 +423,12 @@
 - Implement api keys scope logic [\#779](https://github.com/rubykube/barong/issues/779)
 - API Keys seed feature [\#778](https://github.com/rubykube/barong/issues/778)
 - Add readable logs in AuthZ lib [\#777](https://github.com/rubykube/barong/issues/777)
+- Admin feature: delete nil / unverified records from DB [\#758](https://github.com/rubykube/barong/issues/758)
+- Assymetric api keys support [\#732](https://github.com/rubykube/barong/issues/732)
 
 **Merged pull requests:**
 
-- Disable APIKeys when user state or otp changes [\#829](https://github.com/rubykube/barong/pull/829) ([denisfd](https://github.com/denisfd))
+- Disable APIKeys when user state or otp changes [\#829](https://github.com/rubykube/barong/pull/829) ([dnfd](https://github.com/dnfd))
 
 ## [2.2.10](https://github.com/rubykube/barong/tree/2.2.10) (2019-06-10)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.9...2.2.10)
@@ -121,10 +442,6 @@
 
 ## [2.2.9](https://github.com/rubykube/barong/tree/2.2.9) (2019-06-05)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.8...2.2.9)
-
-**Merged pull requests:**
-
-- Update seeds.yml [\#838](https://github.com/rubykube/barong/pull/838) ([pkucherenk0](https://github.com/pkucherenk0))
 
 ## [2.2.8](https://github.com/rubykube/barong/tree/2.2.8) (2019-06-04)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.2.7...2.2.8)
@@ -166,8 +483,9 @@
 
 **Merged pull requests:**
 
+- Update seeds.yml [\#838](https://github.com/rubykube/barong/pull/838) ([pkucherenk0](https://github.com/pkucherenk0))
 - Add metrics namespace in admin module [\#834](https://github.com/rubykube/barong/pull/834) ([ec](https://github.com/ec))
-- Add endpoint to list all user's phones [\#831](https://github.com/rubykube/barong/pull/831) ([denisfd](https://github.com/denisfd))
+- Add endpoint to list all user's phones [\#831](https://github.com/rubykube/barong/pull/831) ([dnfd](https://github.com/dnfd))
 - Added admin endpoints to get activities [\#828](https://github.com/rubykube/barong/pull/828) ([gfedorenko](https://github.com/gfedorenko))
 - Add management otp sign endpoint and specs [\#827](https://github.com/rubykube/barong/pull/827) ([ec](https://github.com/ec))
 - Avoid nil language bug on user creation event [\#820](https://github.com/rubykube/barong/pull/820) ([ec](https://github.com/ec))
@@ -192,6 +510,7 @@
 **Merged pull requests:**
 
 - Add GET /labels/list to return key, value, scope of all existing labels [\#824](https://github.com/rubykube/barong/pull/824) ([ec](https://github.com/ec))
+- Make :doc\_expire an optional field [\#823](https://github.com/rubykube/barong/pull/823) ([ec](https://github.com/ec))
 - \[ci skip\] Release 2.1.0 [\#822](https://github.com/rubykube/barong/pull/822) ([ec](https://github.com/ec))
 - Add DELETE /resource/users/me to allow user to block his account [\#811](https://github.com/rubykube/barong/pull/811) ([ec](https://github.com/ec))
 
@@ -499,14 +818,15 @@
 **Merged pull requests:**
 
 - Change regex validations to support different language characters [\#726](https://github.com/rubykube/barong/pull/726) ([ec](https://github.com/ec))
+- Add an ability to specify CORS\(multiple\) [\#716](https://github.com/rubykube/barong/pull/716) ([ec](https://github.com/ec))
 
 ## [2.0.25-alpha](https://github.com/rubykube/barong/tree/2.0.25-alpha) (2019-01-16)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.0.24-alpha...2.0.25-alpha)
 
 **Merged pull requests:**
 
-- Add an ability to specify CORS\(multiple\) [\#716](https://github.com/rubykube/barong/pull/716) ([ec](https://github.com/ec))
 - Updating to ruby 2.6.0 [\#707](https://github.com/rubykube/barong/pull/707) ([mod](https://github.com/mod))
+- Add ability to lock account, add filter for state on admin index [\#701](https://github.com/rubykube/barong/pull/701) ([ec](https://github.com/ec))
 
 ## [2.0.24-alpha](https://github.com/rubykube/barong/tree/2.0.24-alpha) (2019-01-11)
 [Full Changelog](https://github.com/rubykube/barong/compare/2.0.23-alpha...2.0.24-alpha)
@@ -543,7 +863,6 @@
 - Add users entity on login and /me [\#706](https://github.com/rubykube/barong/pull/706) ([ec](https://github.com/ec))
 - Small fixes of event api and lock feature [\#705](https://github.com/rubykube/barong/pull/705) ([ec](https://github.com/ec))
 - Small fixes of event api and lock feature [\#704](https://github.com/rubykube/barong/pull/704) ([ec](https://github.com/ec))
-- Add ability to lock account, add filter for state on admin index [\#701](https://github.com/rubykube/barong/pull/701) ([ec](https://github.com/ec))
 - Add ability to lock account, add filter for state on admin index [\#700](https://github.com/rubykube/barong/pull/700) ([ec](https://github.com/ec))
 
 ## [2.0.21-alpha](https://github.com/rubykube/barong/tree/2.0.21-alpha) (2018-12-26)
@@ -707,7 +1026,6 @@
 
 **Merged pull requests:**
 
-- Added missing validations on password update functionality [\#674](https://github.com/rubykube/barong/pull/674) ([ec](https://github.com/ec))
 - Make documents invisible publicly by changing fog policy [\#673](https://github.com/rubykube/barong/pull/673) ([ec](https://github.com/ec))
 - Make documents invisible publicly by changing fog policy [\#672](https://github.com/rubykube/barong/pull/672) ([ec](https://github.com/ec))
 
@@ -728,6 +1046,7 @@
 
 **Merged pull requests:**
 
+- Added missing validations on password update functionality [\#674](https://github.com/rubykube/barong/pull/674) ([ec](https://github.com/ec))
 - Fix activities [\#664](https://github.com/rubykube/barong/pull/664) ([alinetskyi](https://github.com/alinetskyi))
 - Fix share cookies for development, fix Bump [\#658](https://github.com/rubykube/barong/pull/658) ([alinetskyi](https://github.com/alinetskyi))
 
@@ -767,7 +1086,7 @@
 **Merged pull requests:**
 
 - Add RabbitMQ middleware for event api [\#653](https://github.com/rubykube/barong/pull/653) ([vpetrusenko](https://github.com/vpetrusenko))
-- Add rack-attack and some API usage limits [\#652](https://github.com/rubykube/barong/pull/652) ([denisfd](https://github.com/denisfd))
+- Add rack-attack and some API usage limits [\#652](https://github.com/rubykube/barong/pull/652) ([dnfd](https://github.com/dnfd))
 - Fix account unlocking \(account should be unlocked after 1 hour by default\) [\#649](https://github.com/rubykube/barong/pull/649) ([m-an](https://github.com/m-an))
 
 ## [1.8.37](https://github.com/rubykube/barong/tree/1.8.37) (2018-11-17)
@@ -828,7 +1147,6 @@
 - Allow to configure scopes from env [\#618](https://github.com/rubykube/barong/pull/618) ([rxx](https://github.com/rxx))
 - Verify captcha serverside if it's enabled [\#617](https://github.com/rubykube/barong/pull/617) ([chumaknadya](https://github.com/chumaknadya))
 - Allow to configure smtp url address [\#616](https://github.com/rubykube/barong/pull/616) ([rxx](https://github.com/rxx))
-- Dont let not active accounts to sign in [\#608](https://github.com/rubykube/barong/pull/608) ([rxx](https://github.com/rxx))
 - Save scopes in APIKey as serialized array \(closes \#585\) [\#597](https://github.com/rubykube/barong/pull/597) ([ysv](https://github.com/ysv))
 - Update api\_keys.md [\#592](https://github.com/rubykube/barong/pull/592) ([calj](https://github.com/calj))
 - README.md update steps to get project running [\#578](https://github.com/rubykube/barong/pull/578) ([skatkov](https://github.com/skatkov))
@@ -864,6 +1182,7 @@
 **Merged pull requests:**
 
 - Fix message error [\#609](https://github.com/rubykube/barong/pull/609) ([mnaichuk](https://github.com/mnaichuk))
+- Dont let not active accounts to sign in [\#608](https://github.com/rubykube/barong/pull/608) ([rxx](https://github.com/rxx))
 - \#PPBB-45: Allow to configure multiple CORS at barong [\#607](https://github.com/rubykube/barong/pull/607) ([rxx](https://github.com/rxx))
 
 ## [1.8.31](https://github.com/rubykube/barong/tree/1.8.31) (2018-09-19)
@@ -1165,15 +1484,12 @@
 ## [1.8.3](https://github.com/rubykube/barong/tree/1.8.3) (2018-05-31)
 [Full Changelog](https://github.com/rubykube/barong/compare/1.8.2...1.8.3)
 
-**Merged pull requests:**
-
-- Add new document type [\#502](https://github.com/rubykube/barong/pull/502) ([rxx](https://github.com/rxx))
-
 ## [1.8.2](https://github.com/rubykube/barong/tree/1.8.2) (2018-05-30)
 [Full Changelog](https://github.com/rubykube/barong/compare/1.8.1...1.8.2)
 
 **Merged pull requests:**
 
+- Add new document type [\#502](https://github.com/rubykube/barong/pull/502) ([rxx](https://github.com/rxx))
 - API tuning: Add security definitions and status code, fixed wrong messages [\#488](https://github.com/rubykube/barong/pull/488) ([rxx](https://github.com/rxx))
 - Check required environments on barong starting [\#484](https://github.com/rubykube/barong/pull/484) ([rxx](https://github.com/rxx))
 - Set correct document flash message [\#474](https://github.com/rubykube/barong/pull/474) ([rxx](https://github.com/rxx))
