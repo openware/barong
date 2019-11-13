@@ -147,7 +147,7 @@ module Barong
         user_id: user_id,
         result: result,
         user_agent: @request.env['HTTP_USER_AGENT'],
-        user_ip: @request.env['HTTP_X_FORWARDED_FOR'] || @request.ip,
+        user_ip: @request.remote_ip,
         path: @path,
         topic: topic,
         verb: @request.env['REQUEST_METHOD'],

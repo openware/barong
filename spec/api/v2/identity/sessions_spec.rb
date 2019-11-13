@@ -194,7 +194,7 @@ describe API::V2::Identity::Sessions do
       end
 
       it 'receive system.session.create notify' do
-        allow_any_instance_of(Grape::Request).to receive(:ip).and_return('192.168.0.1')
+        allow_any_instance_of(API::V2::Utils).to receive(:remote_ip).and_return('192.168.0.1')
         post uri, params: { email: email, password: password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' }
 
         expect(EventAPI).to have_received(:notify).with('system.session.create',

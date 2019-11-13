@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module API::V2
   module Identity
     module Utils
@@ -14,7 +13,7 @@ module API::V2
       def open_session(user)
         session.merge!(
           "uid": user.uid,
-          "user_ip": request.ip,
+          "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
           "expire_time": Time.now.to_i + Barong::App.config.session_expire_time
         )
@@ -79,7 +78,7 @@ module API::V2
         params = {
           category:   'user',
           user_id:    options[:user],
-          user_ip:    request.ip,
+          user_ip:    remote_ip,
           user_agent: request.env['HTTP_USER_AGENT'],
           topic:      options[:topic],
           action:     options[:action],
@@ -111,7 +110,7 @@ module API::V2
         EventAPI.notify('system.session.create',
                         record: {
                           user: user.as_json_for_event_api,
-                          user_ip: request.ip,
+                          user_ip: remote_ip,
                           user_agent: request.env['HTTP_USER_AGENT']
                         })
       end

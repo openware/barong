@@ -27,7 +27,7 @@ module API::V2
         params = {
           category:   'user',
           user_id:    options[:user],
-          user_ip:    request.ip,
+          user_ip:    remote_ip,
           user_agent: request.env['HTTP_USER_AGENT'],
           topic:      options[:topic],
           action:     options[:action],

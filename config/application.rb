@@ -1,5 +1,6 @@
-require_relative 'boot'
+# frozen_string_literal: true
 
+require_relative 'boot'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -15,6 +16,14 @@ module Barong
     # Eager loading all app/ folder
     config.eager_load_paths += Dir[Rails.root.join('app')]
     config.eager_load_paths += Dir[Rails.root.join('lib/barong')]
+
+    # custom middleware to ensure the Rails stack obtains the correct IP when using request.remote_ip
+    # middleware should be placed right before ActionDispatch::RemoteIp middleware
+    # this way use ActionDispatch::ShowExceptions and ActionDispatch::DebugExceptions 
+    # can catch the app route exceptions before before the request is handled by middleware.
+    # more about ActionDispatch::RemoteIp http://api.rubyonrails.org/classes/ActionDispatch/RemoteIp.html
+    require "#{Rails.root}/lib/barong/cloudflare_middleware"
+    config.middleware.insert_before(ActionDispatch::RemoteIp, CloudFlareMiddleware)
 
     # Setup the logger
     config.logger = Logger.new(STDOUT)
