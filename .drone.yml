@@ -61,8 +61,9 @@ steps:
 - name: Telegram notifications
   image: quay.io/openware/sdk-tools:test1
   environment:
-    BOT_TOKEN: 984411003:AAFjynqr9OoF8_0OD1JknZJQ8wli3jHH3MI
-    GROUP_ID: -1001242766315
+    TELEGRAM_BOT_TOKEN: 984411003:AAFjynqr9OoF8_0OD1JknZJQ8wli3jHH3MI
+    TELEGRAM_CHAT_ID: -1001242766315
+    REPO_NAME: barong
   commands:
     - BUNDLE_GEMFILE=/sdk/Gemfileundle exec rake --rakefile=/sdk/Rakefile sdk:telegram["New changes in Barong!"]
   when:
