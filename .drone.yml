@@ -42,7 +42,7 @@ steps:
     BOT_EMAIL: kite-bot@heliostech.fr
     BRANCH_NAME: ${DRONE_BRANCH}
     REPO_NAME: ${DRONE_REPO}
-    GITHUB_API_KEY:
+    GITHUB_API_KEY: 
       from_secret: kite_bot_key
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
@@ -61,10 +61,16 @@ steps:
 - name: Telegram notifications
   image: quay.io/openware/sdk-tools:test1-2
   environment:
-    BRANCH_NAME: test_sdk_drone
-    TELEGRAM_BOT_TOKEN: 984411003:AAFjynqr9OoF8_0OD1JknZJQ8wli3jHH3MI
-    TELEGRAM_CHAT_ID: -1001242766315
-    REPO_NAME: barong
+    REPO_NAME: ${DRONE_REPO}
+    BRANCH_NAME: barong
+    TELEGRAM_BOT_TOKEN:
+      from_secret: telegram_bot_key
+    TELEGRAM_CHAT_ID:
+      from_secret: telegram_chat_id
+    GITHUB_API_KEY: 
+      from_secret: kite_bot_key
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
   commands:
       - BUNDLE_GEMFILE=/sdk/Gemfileundle exec rake --rakefile=/sdk/Rakefile sdk:notify:telegram
   when:
