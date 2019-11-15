@@ -59,7 +59,7 @@ steps:
       - 2-3-stable
 
 - name: Telegram notifications
-  image: quay.io/openware/sdk-tools:test1
+  image: quay.io/openware/sdk-tools:test1-2
   environment:
     TELEGRAM_BOT_TOKEN: 984411003:AAFjynqr9OoF8_0OD1JknZJQ8wli3jHH3MI
     TELEGRAM_CHAT_ID: -1001242766315
