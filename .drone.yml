@@ -59,7 +59,7 @@ steps:
       - 2-3-stable
 
 - name: Telegram notifications
-  image: quay.io/openware/sdk-tools:test1-6
+  image: quay.io/openware/sdk-tools:test1-7
   environment:
     REPO_NAME: ${DRONE_REPO}
     BRANCH_NAME: master
