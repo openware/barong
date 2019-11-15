@@ -65,7 +65,7 @@ steps:
     TELEGRAM_CHAT_ID: -1001242766315
     REPO_NAME: barong
   commands:
-    - BUNDLE_GEMFILE=/sdk/Gemfileundle exec rake --rakefile=/sdk/Rakefile sdk:telegram["New changes in Barong!"]
+      - BUNDLE_GEMFILE=/sdk/Gemfileundle exec rake --rakefile=/sdk/Rakefile sdk:notify:telegram
   when:
     event:
       - push
