@@ -59,7 +59,7 @@ steps:
       - 2-3-stable
 
 - name: Telegram notifications
-  image: quay.io/openware/sdk-tools:test1-2
+  image: quay.io/openware/sdk-tools:test1-3
   environment:
     REPO_NAME: ${DRONE_REPO}
     BRANCH_NAME: barong
@@ -72,7 +72,7 @@ steps:
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
   commands:
-      - BUNDLE_GEMFILE=/sdk/Gemfileundle exec rake --rakefile=/sdk/Rakefile sdk:notify:telegram
+      - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile sdk:notify:telegram
   when:
     event:
       - push
