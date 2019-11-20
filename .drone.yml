@@ -80,8 +80,8 @@ steps:
       - 2-2-stable
       - 2-3-stable
 
-- name: Telegram and Slack notifications
-  image: quay.io/openware/sdk-tools:1.0.0-7cd0e1a
+- name: Telegram and Slack notifying
+  image: quay.io/openware/sdk-tools:1.0.0-7001fe8
   environment:
     REPO_NAME: ${DRONE_REPO}
     BRANCH_NAME: ${DRONE_BRANCH}
@@ -97,10 +97,8 @@ steps:
       from_secret: slack_token
     SLACK_CHANNEL:
       from_secret: slack_channel
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
   commands:
-      - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile sdk:notify:telegram sdk:notify:slack
+      - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:notify:all
   when:
     event:
       - push
