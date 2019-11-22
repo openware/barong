@@ -35,7 +35,7 @@ steps:
       - pull_request
 
 - name: Bump and tag
-  image: quay.io/openware/sdk-tools:0.0.3
+  image: quay.io/openware/sdk-tools:1.0.0-1288533
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -47,14 +47,12 @@ steps:
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
   commands:
-    - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile release:push
+    - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
   when:
     event:
       - push
     branch:
       - master
-      - 1-8-stable
-      - 1-9-stable
       - 2-2-stable
       - 2-3-stable
 
@@ -72,27 +70,37 @@ steps:
       - push
     branch:
       - master
-      - 1-8-stable
-      - 1-9-stable
       - 2-2-stable
       - 2-3-stable
 
-- name: Redeploy
-  image: rubykube/microkube:0.3.0
+- name: Push and Notify
+  image: quay.io/openware/sdk-tools:1.0.0-1288533
   environment:
-      WEBHOOK_JWT_SECRET:
-        from_secret: webhook_secret
-      WEBHOOK_URL:
-        from_secret: webhook_url
+    BOT_USERNAME: kite-bot
+    BOT_NAME: Kite Bot
+    BOT_EMAIL: kite-bot@heliostech.fr
+    BRANCH_NAME: ${DRONE_BRANCH}
+    SDK_BRANCH: ${DRONE_BRANCH}
+    REPO_NAME: ${DRONE_REPO}
+    TELEGRAM_BOT_TOKEN:
+      from_secret: telegram_bot_token
+    TELEGRAM_CHAT_ID:
+      from_secret: telegram_chat_id
+    SLACK_TOKEN:
+      from_secret: slack_token
+    SLACK_CHANNEL:
+      from_secret: slack_channel
+    GITHUB_API_KEY:
+      from_secret: kite_bot_key
   commands:
-    - export latest_image=rubykube/barong:$(cat .tags)
-    - cd /home/app
-    - bundle exec rake payload:send[barong,$latest_image,$WEBHOOK_URL]
+    - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:postbuild[/drone/src]
   when:
-    branch:
-      - master
     event:
       - push
+    branch:
+      - master
+      - 2-2-stable
+      - 2-3-stable
 
 services:
 - name: database
