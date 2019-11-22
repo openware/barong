@@ -59,6 +59,9 @@ Rails.application.configure do
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
+  # Using cache for sessions and permissions forces to use redis cache_store as mandatory store
+  config.cache_store = :redis_cache_store, { driver: :hiredis, url: Barong::App.config.redis_url }
+
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "barong_#{Rails.env}"
