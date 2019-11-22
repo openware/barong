@@ -1,4 +1,4 @@
-# frozen_string_literal:true
+# frozen_string_literal: true
 
-# Store sessions in cache
-Rails.application.config.session_store :cache_store, key: '_barong_session', expire_after: 24.hours.seconds
+# Use cache_store as session_store for Rails sessions. Key default is '_barong_session'
+Rails.application.config.session_store :cache_store, key: Barong::App.config.barong_session_name, expire_after: 24.hours.seconds

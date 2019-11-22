@@ -19,7 +19,6 @@ module Barong
     # init base request info, fetch black and white lists
     def initialize(request, path)
       @request = request
-      session[:init] = true
       @path = path
       @rules = lists['rules']
     end
