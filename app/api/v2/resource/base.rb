@@ -19,6 +19,7 @@ module API::V2
       mount Resource::Phones
       mount Resource::Otp
       mount Resource::APIKeys
+      mount Resource::DataStorage
     end
   end
 end

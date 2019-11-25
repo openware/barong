@@ -469,6 +469,33 @@ module API
 
             present target_user, with: API::V2::Entities::UserWithKYC
           end
+
+          desc "Deletes user's data storage record",
+          security: [{ "BearerToken": [] }],
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ]
+          params do
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uniq id'
+            requires :title,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'data storage uniq title'
+          end
+          delete '/data_storage' do
+            target_user = User.find_by_uid(params[:uid])
+            error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+
+            storage = target_user.data_storages.find_by_title(params[:title])
+            error!({ errors: ['admin.storage.doesnt_exist'] }, 404) if storage.nil?
+
+            target_user.labels.find_by(key: storage.title, scope: 'private')
+            storage.destroy
+            present target_user, with: API::V2::Entities::UserWithKYC
+          end
         end
       end
     end
