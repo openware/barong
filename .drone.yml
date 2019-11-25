@@ -29,7 +29,7 @@ steps:
     - rspec
 
 - name: Bump and tag
-  image: quay.io/openware/sdk-tools:1.0.0-1288533
+  image: quay.io/openware/sdk-citools:2.3.0
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -64,7 +64,7 @@ steps:
       - 2-3-stable
 
 - name: Push and Notify
-  image: quay.io/openware/sdk-tools:1.0.0-1288533
+  image: quay.io/openware/sdk-citools:2.3.0
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot

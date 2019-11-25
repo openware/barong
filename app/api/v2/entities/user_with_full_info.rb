@@ -23,6 +23,7 @@ module API
         expose :labels, using: Entities::Label
         expose :phones, using: Entities::Phone
         expose :profile, using: Entities::Profile
+        expose :data_storages, using: Entities::DataStorage
         # activities, as sensitive and potentialy too big data should be queried separately
       end
     end

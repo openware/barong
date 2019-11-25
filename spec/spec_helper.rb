@@ -32,14 +32,12 @@ require_dependency 'barong/jwt'
 # require only the support files necessary.
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
 RSpec.configure do |config|
-
-
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.before(:each) do
+    allow(UserStorageTitles).to receive(:list).and_return(['personal', 'company'])
     %w[email phone identity document].each_with_index do |key, index|
       FactoryBot.create(:level, id: index + 1, key: key, value: 'verified')
     end
