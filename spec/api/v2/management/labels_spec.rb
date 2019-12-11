@@ -159,14 +159,15 @@ describe API::V2::Management::Labels, type: :request do
 
     describe 'update label' do
       let!(:label) do
-        create(:label, key: 'email', value: 'verified', scope: 'private', user: user)
+        create(:label, key: 'email', value: 'verified', scope: 'private', description: 'initial label', user: user)
       end
 
       let(:data) do
         {
           user_uid: user.uid,
           key: 'email',
-          value: 'rejected'
+          value: 'rejected',
+          description: 'management api label update test'
         }
       end
       let(:signers) { %i[alex jeff] }
@@ -176,8 +177,14 @@ describe API::V2::Management::Labels, type: :request do
                  multisig_jwt_management_api_v2({ data: data }, *signers)
       end
 
-      it 'updates a label' do
+      it 'updates a label value' do
         expect { do_request }.to change { label.reload.value }.from('verified').to('rejected')
+        expect(response.status).to eq 200
+      end
+
+
+      it 'updates a label value' do
+        expect { do_request }.to change { label.reload.description }.from('initial label').to('management api label update test')
         expect(response.status).to eq 200
       end
 

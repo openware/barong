@@ -286,6 +286,10 @@ module API
                        type: String,
                        allow_blank: false,
                        desc: 'label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters.'
+              optional :description,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label description. [A-Za-z0-9_-] should be used. max - 255 characters.'
               optional :scope, type: String, desc: "Label scope: 'public' or 'private'. Default is public", allow_blank: false
             end
             post do
@@ -332,6 +336,10 @@ module API
                        type: String,
                        allow_blank: false,
                        desc: 'Label value.'
+              optional :description,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label description. [A-Za-z0-9_-] should be used. max - 255 characters.'
               optional :replace,
                        type: { value: Boolean, message: 'admin.user.non_boolean_replace' },
                        default: true,
@@ -355,13 +363,14 @@ module API
                     user_id: target_user.id,
                     key: declared_params[:key],
                     value: declared_params[:value],
-                    scope: declared_params[:scope]
+                    scope: declared_params[:scope],
+                    description: declared_params[:description]
                   )
                 else
                   error!({ errors: ['admin.label.doesnt_exist'] }, 404)
                 end
               else
-                label.update(value: params[:value])
+                label.update({ value: params[:value], description: params[:description] })
               end
               code_error!(label.errors.details, 422) if label.errors.any?
 
@@ -389,6 +398,10 @@ module API
                        type: String,
                        allow_blank: false,
                        desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
+              optional :description,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'label description. [A-Za-z0-9_-] should be used. max - 255 characters.'
               requires :value,
                        type: String,
                        allow_blank: false,
@@ -408,7 +421,7 @@ module API
 
               error!({ errors: ['admin.label.doesnt_exist'] }, 404) if label.nil?
 
-              unless label.update(value: params[:value])
+              unless label.update({ value: params[:value], description: params[:description] }.compact)
                 code_error!(label.errors.details, 422)
               end
               status 200

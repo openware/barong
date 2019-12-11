@@ -389,6 +389,17 @@ describe API::V2::Admin::Users do
         expect(response.body).to eq "{\"errors\":[\"admin.user.missing_key\",\"admin.user.empty_key\"]}"
       end
 
+      it 'renders error when description is empty' do
+        post '/api/v2/admin/users/labels', headers: auth_header, params: {
+          uid: experimental_user.uid,
+          key: 'email',
+          value: 'vedified',
+          description: ''
+        }
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"admin.user.empty_description\"]}"
+      end
+
       it 'renders error when value is missing' do
         post '/api/v2/admin/users/labels', headers: auth_header, params: {
           uid: experimental_user.uid,
@@ -408,11 +419,12 @@ describe API::V2::Admin::Users do
         expect(response.body).to eq "{\"errors\":[\"admin.user.doesnt_exist\"]}"
       end
 
-      it 'adds label with default public scope' do
+      it 'adds label with default public scope and description' do
         post '/api/v2/admin/users/labels', headers: auth_header, params: {
           uid: experimental_user.uid,
           key: 'email',
-          value: 'verified'
+          value: 'verified',
+          description: 'public label test'
         }
         updated_user = experimental_user.reload
         added_label = updated_user.labels.last
@@ -420,6 +432,7 @@ describe API::V2::Admin::Users do
         expect(added_label.key).to eq 'email'
         expect(added_label.value).to eq 'verified'
         expect(added_label.scope).to eq 'public'
+        expect(added_label.description).to eq 'public label test'
       end
 
       it 'adds label with private scope' do
@@ -448,7 +461,8 @@ describe API::V2::Admin::Users do
         post '/api/v2/admin/users/labels', headers: auth_header, params: {
           uid: experimental_user.uid,
           key: 'email',
-          value: 'verified'
+          value: 'verified',
+          description: 'experimental QA signup'
         }
       }
 
@@ -520,7 +534,8 @@ describe API::V2::Admin::Users do
         uid: user.uid,
         key: 'phone',
         value: 'verified',
-        scope: 'private'
+        scope: 'private',
+        description: 'experimental phone verification'
       }
     end
     let(:do_request) do
@@ -536,12 +551,13 @@ describe API::V2::Admin::Users do
         expect(user.labels.find_by(key: 'phone')).not_to eq(nil)
       end
 
-      context 'when data is incomplete' do
+      context 'when data is incomplete and description is empty' do
         let(:data) do
           {
             uid: user.uid,
             key: 'phone',
-            scope: 'private'
+            scope: 'private',
+            description: ''
           }
         end
 
@@ -550,7 +566,7 @@ describe API::V2::Admin::Users do
 
           do_request
           expect(response.status).to eq 422
-          expect(response.body).to eq "{\"errors\":[\"admin.user.missing_value\",\"admin.user.empty_value\"]}"
+          expect(response.body).to eq "{\"errors\":[\"admin.user.missing_value\",\"admin.user.empty_value\",\"admin.user.empty_description\"]}"
           expect(user.labels.find_by(key: 'phone')).to eq(nil)
         end
       end
