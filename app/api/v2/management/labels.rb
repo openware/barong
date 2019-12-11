@@ -56,21 +56,23 @@ module API::V2
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
         end
         post '/list' do
-          present user.labels, with: API::V2::Entities::Label
+          present user.labels, with: API::V2::Entities::AdminLabelView
         end
 
         desc "Create a label with 'private' scope and assigns to users" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::Label
+          success API::V2::Entities::AdminLabelView
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
+          optional :description, type: String, allow_blank: false, desc: 'Label desc.'
         end
         post do
           label = user.labels.create(key: params[:key],
                                      value: params[:value],
+                                     description: params[:description],
                                      scope: 'private')
           if label.errors.any?
             error!(label.errors.as_json(full_messages: true), 422)
@@ -81,12 +83,13 @@ module API::V2
 
         desc "Update a label with 'private' scope" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::Label
+          success API::V2::Entities::AdminLabelView
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
           requires :value, type: String, allow_blank: false, desc: 'Label value.'
+          optional :description, type: String, allow_blank: false, desc: 'Label desc.'
           optional :replace, type: Boolean, default: true, desc: 'When true label will be created if not exist'
         end
         put do
@@ -98,13 +101,14 @@ module API::V2
                 user_id: user.id,
                 key: params[:key],
                 value: params[:value],
+                description: params[:description],
                 scope: params[:scope] || 'private'
               )
             else
               error!({ error: 'label doesnt exist' }, 404)
             end
           else
-            label.update(value: params[:value])
+            label.update({ value: params[:value], description: params[:description] }.compact)
           end
 
           error!(label.errors.as_json(full_messages: true), 422) if label.errors.any?
@@ -114,7 +118,7 @@ module API::V2
 
         desc "Delete a label with 'private' scope" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::Label
+          success API::V2::Entities::AdminLabelView
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'

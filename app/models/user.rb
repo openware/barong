@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_many  :api_keys,      dependent: :destroy, class_name: 'APIKey'
   has_many  :activities,    dependent: :destroy
 
-  validates_length_of :data, :maximum => 1024
+  validates_length_of :data, maximum: 1024
   validate :role_exists
   validate :referral_exists
   validates :data, data_is_json: true
@@ -161,16 +161,17 @@ end
 # Table name: users
 #
 #  id              :bigint           not null, primary key
-#  uid             :string(255)      not null
+#  data            :text(65535)
 #  email           :string(255)      not null
-#  password_digest :string(255)      not null
-#  role            :string(255)      default("member"), not null
 #  level           :integer          default(0), not null
 #  otp             :boolean          default(FALSE)
+#  password_digest :string(255)      not null
+#  role            :string(255)      default("member"), not null
 #  state           :string(255)      default("pending"), not null
-#  referral_id     :bigint
+#  uid             :string(255)      not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  referral_id     :bigint
 #
 # Indexes
 #

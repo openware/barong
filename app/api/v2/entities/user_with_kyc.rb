@@ -13,7 +13,7 @@ module API
         expose :state, documentation: { type: 'String' }
         expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
         expose :profile, using: Entities::Profile
-        expose :labels, using: Entities::Label
+        expose :labels, using: Entities::AdminLabelView
         expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document
         expose :data_storages, using: Entities::DataStorage
