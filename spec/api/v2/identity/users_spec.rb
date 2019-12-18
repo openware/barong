@@ -410,10 +410,10 @@ describe API::V2::Identity::Users do
     context 'when email is unknown' do
       let(:email) { 'unknown@gmail.com' }
 
-      it 'renders not found error' do
+      it 'renders 201' do
         do_request
-        expect_status_to_eq 404
-        expect_body.to eq(errors: ["identity.password.user_doesnt_exist"])
+        expect_status_to_eq 201
+        expect_body.not_to eq(errors: ["identity.password.user_doesnt_exist"])
       end
     end
 

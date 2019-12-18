@@ -162,7 +162,7 @@ module API::V2
           post '/generate_code' do
             current_user = User.find_by_email(params[:email])
 
-            error!({ errors: ['identity.password.user_doesnt_exist'] }, 404) if current_user.nil?
+            return status 201 if current_user.nil?
 
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid)
 
