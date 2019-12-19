@@ -23,6 +23,17 @@ module API::V2
         error!({ errors: ['resource.' + options[:topic] + '.' + options[:error_text]] }, options[:error_code])
       end
 
+      def twilio_dictionary_error(code)
+        user_error = 'resource.phone.' + {
+          21_612 => 'num_not_reachable',
+          21_614 => 'num_not_valid',
+          21_618 => 'sms_content_invalid',
+          21_610 => 'unsubscribed_recipient'
+        }[code]
+
+        user_error || 'resource.phone.twilio_unexpected'
+      end
+
       def activity_record(options = {})
         params = {
           category:   'user',
