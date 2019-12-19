@@ -20,7 +20,7 @@ class Document < ApplicationRecord
                            message: 'only allows letters and digits'
                          }, if: proc { |a| a.doc_number.present? }
 
-  validate :doc_expire_not_in_the_past
+  validate :doc_expire_not_in_the_past, if: -> { Barong::App.config.required_docs_expire }
   after_commit :create_or_update_document_label,
                on: :create,
                if: -> { update_labels }
