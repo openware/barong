@@ -102,10 +102,14 @@ module API::V2
         params do
           requires :email, type: String, desc: 'User Email', allow_blank: false
           requires :password, type: String, desc: 'User Password', allow_blank: false
+          optional :referral_uid, type: String, desc: 'Referral uid', allow_blank: false
         end
 
         post do
-          user = User.create(declared(params))
+          referral = User.find_by_uid(params[:referral_uid]).id if params[:referral_uid]
+
+          user = User.create({ email: params[:email], password: params[:password], referral_id: referral }.compact )
+
           error!(user.errors.full_messages, 422) unless user.persisted?
           present user, with: API::V2::Entities::UserWithProfile
         end
@@ -122,6 +126,7 @@ module API::V2
           requires :password_digest, type: String,
                                      desc: 'User Password Hash',
                                      allow_blank: false
+          optional :referral_uid, type: String, desc: 'Referral uid', allow_blank: false
           optional :phone, type: String, allow_blank: false
           optional :first_name, type: String, allow_blank: false
           optional :last_name, type: String, allow_blank: false
@@ -137,8 +142,12 @@ module API::V2
             error! 'User already exists by this email', 422
           end
 
-          user = create_user(email: params[:email],
-                             password_digest: params[:password_digest])
+          referral = User.find_by_uid(params[:referral_uid]).id if params[:referral_uid]
+          user = create_user({
+            email: params[:email],
+            password_digest: params[:password_digest],
+            referral_id: referral
+          }.compact)
           create_phone(user: user, number: params[:phone])
 
           profile_params = params.slice(*profile_param_keys)

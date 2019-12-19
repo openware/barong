@@ -268,6 +268,17 @@ describe API::V2::Management::Users, type: :request do
           end
         end
 
+        context 'creates an account with referral uid' do
+          let(:params) { { email: 'test@test.com', password: 'Fai5aesoLEcx', referral_uid: User.last.uid } }
+
+          it 'renders an error' do
+            expect { do_request }.to change { User.count }.by(1)
+            expect_status_to_eq 201
+            expect(json_body).to include(:email, :uid, :role, :level,
+                                         :state, :otp, :profile)
+          end
+        end
+
         context 'when password is bad' do
           let(:params) { { email: 'valid_email@example.com', password: 'password' } }
 
