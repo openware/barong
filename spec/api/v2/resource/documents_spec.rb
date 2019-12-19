@@ -174,6 +174,12 @@ describe 'Documents API test' do
       expect_body.to eq({ errors: ["resource.documents.already_expired"] })
     end
 
+    it 'Doesnt return error when docs expire is optional and date in past' do
+      allow(Barong::App.config).to receive(:required_docs_expire).and_return(false)
+      post '/api/v2/resource/documents', params: params.merge({doc_expire: DateTime.now.to_date - 1}), headers: auth_header
+      expect(response.status).to eq(201)
+    end
+
     it 'Returns user all his documents' do
       post '/api/v2/resource/documents', params: params, headers: auth_header
       expect(response.status).to eq(201)
