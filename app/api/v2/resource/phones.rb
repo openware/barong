@@ -5,7 +5,7 @@ module API::V2
     class Phones < Grape::API
       rescue_from(Twilio::REST::RestError) do |error|
         Rails.logger.error "Twilio Client Error: #{error.message}"
-        error!({ errors: ['resource.phone.twillio'] }, 500)
+        error!({ errors: [twilio_dictionary_error(error.code)] }, 422)
       end
 
       helpers do
