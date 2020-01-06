@@ -11,7 +11,7 @@ describe API::V2::Identity::Sessions do
   end
   before do
     Rails.cache.delete('permissions')
-    allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: true, geetest: false)
+    allow(Barong::App.config).to receive_messages(barong_captcha: 'recaptcha')
   end
 
   describe 'POST /api/v2/identity/sessions' do
