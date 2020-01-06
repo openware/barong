@@ -42,12 +42,6 @@ yarn install
 bundle exec rails server
 ```
 
-# Test client application
-
-You can find example of Barong usage here: [Barong Test Client App](https://github.com/rubykube/barong-client-app)
-
-[How to get client app credentials](./docs/oauthclient.md)
-
 # Barong Levels
 
 In the process of verification Barong assign different levels to accounts
