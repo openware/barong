@@ -64,7 +64,7 @@ describe API::V2::Identity::Users do
     end
   end
 
-  describe 'POST /api/v2/identity/users with default Barong::CaptchaPolicy' do
+  describe 'POST /api/v2/identity/users with default Barong::App.config.barong_captcha' do
     let(:do_request) { post '/api/v2/identity/users', params: params }
 
     context 'when email is invalid' do
@@ -165,8 +165,8 @@ describe API::V2::Identity::Users do
     end
   end
 
-  describe 'POST /api/v2/identity/users with reCAPTCHA Barong::CaptchaPolicy' do
-    before { allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: true, geetest: false) }
+  describe 'POST /api/v2/identity/users with reCAPTCHA Barong::App.config.barong_captcha' do
+    before { allow(Barong::App.config).to receive_messages(barong_captcha: 'recaptcha') }
 
     let(:do_request) { post '/api/v2/identity/users', params: params }
     let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', captcha_response: 'response' } }
@@ -190,7 +190,7 @@ describe API::V2::Identity::Users do
       end
     end
 
-    context 'when captcha_response is blank but Barong::CaptchaPolicy requires reCAPTCHA response' do
+    context 'when captcha_response is blank but Barong::App.config.barong_captcha requires reCAPTCHA response' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
       it 'renders an error' do
@@ -201,8 +201,8 @@ describe API::V2::Identity::Users do
     end
   end
 
-  describe 'POST /api/v2/identity/users with GeeTest Barong::CaptchaPolicy' do
-    before { allow(Barong::CaptchaPolicy.config).to receive_messages(disabled: false, re_captcha: false, geetest_captcha: true) }
+  describe 'POST /api/v2/identity/users with GeeTest Barong::App.config.barong_captcha' do
+    before { allow(Barong::App.config).to receive_messages(barong_captcha: 'geetest') }
 
     let(:do_request) { post '/api/v2/identity/users', params: params }
     let(:params) do
@@ -231,7 +231,7 @@ describe API::V2::Identity::Users do
       end
     end
 
-    context 'when captcha_response is blank but Barong::CaptchaPolicy requires Geetest response' do
+    context 'when captcha_response is blank but Barong::App.config.barong_captcha requires Geetest response' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
       it 'renders an error' do
