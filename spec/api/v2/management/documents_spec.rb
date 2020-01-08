@@ -31,7 +31,7 @@ describe API::V2::Management::Documents, type: :request do
     let(:params) do
       {
         doc_type: 'Passport',
-        doc_expire: '2020-01-22',
+        doc_expire: '3020-01-22',
         doc_number: 'AA1234BB',
         upload: [
           image
@@ -55,7 +55,7 @@ describe API::V2::Management::Documents, type: :request do
         doc_type: 'Passport',
         filename: 'documents_test',
         file_ext: '.jpg',
-        doc_expire: '2020-01-22',
+        doc_expire: '3020-01-22',
         doc_number: 'AA1234BB',
         upload: Base64.strict_encode64(File.open('spec/fixtures/files/documents_test.jpg').read)
       }

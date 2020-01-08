@@ -91,11 +91,11 @@ RSpec.describe User, type: :model do
       document1 = user.documents.create!(upload: uploaded_file,
                                             doc_type: 'Passport',
                                             doc_number: 'MyString',
-                                            doc_expire: '01-01-2020')
+                                            doc_expire: '01-01-3020')
       document2 = user.documents.create!(upload: uploaded_file,
                                             doc_type: 'Passport',
                                             doc_number: 'MyString',
-                                            doc_expire: '01-02-2020')
+                                            doc_expire: '01-02-3020')
       expect(user.reload.documents).to eq([document1, document2])
     end
 

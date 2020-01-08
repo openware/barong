@@ -58,6 +58,9 @@ steps:
 
 - name: Docker build and push
   image: plugins/docker
+  environment:
+    MAXMIND_LICENSE_KEY:
+      from_secret: maxmind_license_key
   settings:
     username:
       from_secret: quay_username
@@ -65,6 +68,8 @@ steps:
       from_secret: quay_password
     repo: quay.io/openware/barong
     registry: quay.io
+    build_args_from_env:
+      - MAXMIND_LICENSE_KEY
   when:
     event:
       - push
