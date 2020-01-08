@@ -12,7 +12,12 @@ ARG UID=1000
 ARG GID=1000
 
 ARG MAXMINDDB_LINK
-ENV MAXMINDDB_LINK=${MAXMINDDB_LINK:-https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz}
+# Open Source license key provided by Openware has some download rate and amount limits
+# We strongly suggest you to create your oun key and pass via --build-arg MAXMINDDB_LICENSE_KEY
+# All the guidance on how to create license key you can find here - https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+ARG MAXMINDDB_LICENSE_KEY=T6ElPBlyOOuCyjzw
+ENV MAXMINDDB_LINK=${MAXMINDDB_LINK:-https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&suffix=tar.gz&license_key=${MAXMINDDB_LICENSE_KEY}}
+
 # Devise requires secret key to be set during image build or it raises an error
 # preventing from running any scripts.
 # Users should override this variable by passing environment variable on container start.
