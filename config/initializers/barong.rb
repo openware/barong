@@ -43,6 +43,7 @@ Barong::App.define do |config|
   config.set(:barong_geoip_lang, 'en', values: %w[en de es fr ja ru])
   config.set(:barong_session_name, '_barong_session')
   config.set(:redis_url, 'redis://localhost:6379/1')
+  config.set(:barong_captcha, 'none', values: %w[none recaptcha geetest])
 end
 
 Barong::GeoIP.lang = Barong::App.config.barong_geoip_lang
