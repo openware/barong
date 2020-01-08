@@ -48,11 +48,11 @@ module API::V2
             error!({ errors: ['resource.documents.already_expired'] }, 422) if params[:doc_expire] < DateTime.now.to_date
           end
 
-          unless current_user.documents.count <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+          unless current_user.documents.count <= Barong::App.config.doc_num_limit
             error!({ errors: ['resource.documents.limit_reached'] }, 400)
           end
 
-          unless current_user.documents.count + params[:upload].length <= ENV.fetch('DOCUMENTS_LIMIT', 10)
+          unless current_user.documents.count + params[:upload].length <= Barong::App.config.doc_num_limit
             error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
 

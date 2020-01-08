@@ -9,7 +9,7 @@ describe 'Api::V2::Resources::Phones' do
 
   context 'Twilio Verify Service' do
     before do
-      allow(Barong::App.config).to receive(:barong_twilio_provider).and_return(TwilioVerifyService)
+      allow(Barong::App.config).to receive(:twilio_provider).and_return(TwilioVerifyService)
     end
 
     describe 'GET /api/v2/resource/phones' do
@@ -102,7 +102,7 @@ describe 'Api::V2::Resources::Phones' do
 
       context 'valid story' do
         before do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(false)
+          allow(Barong::App.config.twilio_provider).to receive(:send_code).and_return(false)
         end
 
         context 'when phone is not verified' do
@@ -139,7 +139,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:international_phone) { '447418084106' }
 
         it 'creates a phone and send sms' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:send_code).and_return(false)
+          allow(Barong::App.config.twilio_provider).to receive(:send_code).and_return(false)
 
           do_request
           expect_body.to eq(message: 'Code was sent successfully via sms')
@@ -228,7 +228,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'rendens an error' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(false)
+          allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
           expect_body.to eq(errors: ["resource.phone.doesnt_exist"])
@@ -241,7 +241,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'rendens an error' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(false)
+          allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
           expect_body.to eq(errors: ["resource.phone.verification_invalid"])
@@ -254,7 +254,7 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { phone.number }
 
         it 'responses with success' do
-          allow(Barong::App.config.barong_twilio_provider).to receive(:verify_code?).and_return(true)
+          allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(true)
 
           set_level(test_user, 1)
           do_request
@@ -279,7 +279,7 @@ describe 'Api::V2::Resources::Phones' do
       let(:mock_sms) { Barong::MockSMS }
 
       before do
-        allow(Barong::App.config).to receive(:barong_twilio_provider).and_return(MockPhoneVerifyService)
+        allow(Barong::App.config).to receive(:twilio_provider).and_return(MockPhoneVerifyService)
       end
 
       context 'when phone is not verified' do
@@ -300,7 +300,7 @@ describe 'Api::V2::Resources::Phones' do
         end
 
         it 'sends a custom message with content before code' do
-          allow(Barong::App.config).to receive(:barong_sms_content_template).and_return('Please confirm your phone with the following code: {{code}}')
+          allow(Barong::App.config).to receive(:sms_content_template).and_return('Please confirm your phone with the following code: {{code}}')
           do_request
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
@@ -308,7 +308,7 @@ describe 'Api::V2::Resources::Phones' do
         end
 
         it 'sends a custom message with content after code' do
-          allow(Barong::App.config).to receive(:barong_sms_content_template).and_return('{{code}} - this is your confirmation code')
+          allow(Barong::App.config).to receive(:sms_content_template).and_return('{{code}} - this is your confirmation code')
           do_request
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
@@ -316,7 +316,7 @@ describe 'Api::V2::Resources::Phones' do
         end
 
         it 'sends a custom message with code in the midle of the content' do
-          allow(Barong::App.config).to receive(:barong_sms_content_template).and_return('Following code: {{code}} should be used for phone confirmation')
+          allow(Barong::App.config).to receive(:sms_content_template).and_return('Following code: {{code}} should be used for phone confirmation')
           do_request
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201

@@ -42,7 +42,7 @@ module Barong
       end
 
       def env(key)
-        ENV[key.to_s.upcase]
+        ENV['BARONG_' + key.to_s.upcase]
       end
 
       def validate!(key, value, options)

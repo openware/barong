@@ -34,19 +34,49 @@ end
 kstore = Barong::KeyStore.new(pkey)
 
 Barong::App.define do |config|
+  # General configuration ---------------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#general-configuration
+
   config.set(:app_name, 'Barong')
-  config.set(:barong_domain, 'barong.io')
-  config.set(:barong_uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
-  config.set(:barong_config, 'config/barong.yml', type: :path)
-  config.set(:barong_maxminddb_path, '', type: :path)
+  config.set(:domain, 'openware.com')
+  config.set(:uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
+  config.set(:session_name, '_barong_session')
   config.set(:session_expire_time, '1800', type: :integer)
-  config.set(:barong_geoip_lang, 'en', values: %w[en de es fr ja ru])
-  config.set(:barong_session_name, '_barong_session')
-  config.set(:redis_url, 'redis://localhost:6379/1')
-  config.set(:barong_captcha, 'none', values: %w[none recaptcha geetest])
+  config.set(:required_docs_expire, 'true', type: :bool)
+  config.set(:doc_num_limit, '10', type: :integer)
+  config.set(:geoip_lang, 'en', values: %w[en de es fr ja ru])
+
+  # CAPTCHA configuration ---------------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#captcha-configuration
+  config.set(:captcha, 'none', values: %w[none recaptcha geetest])
+  config.set(:geetest_id, '')
+  config.set(:geetest_key, '')
+  config.set(:recaptcha_site_key, '')
+  config.set(:recaptcha_secret_key, '')
+
+  # Dependencies configuration (vault, redis, rabbitmq) ---------------
+  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#dependencies-configuration-vault-redis-rabbitmq
+  config.set(:event_api_rabbitmq_host, 'localhost')
+  config.set(:event_api_rabbitmq_port, '5672')
+  config.set(:event_api_rabbitmq_username, 'guest')
+  config.set(:event_api_rabbitmq_password, 'guest')
+  config.set(:vault_address, 'http://localhost:8200')
+  config.set(:vault_token, 'changeme')
+
+  # CORS configuration  -----------------------------------------------
+  config.set(:api_cors_origins, '*')
+  config.set(:api_cors_max_age, '3600')
+  config.set(:api_cors_allow_credentials, 'false', type: :bool)
+
+  # Config files configuration ----------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#config-files-configuration
+  config.set(:config, 'config/barong.yml', type: :path)
+  config.set(:maxminddb_path, '', type: :path)
+  config.set(:seeds_file, Rails.root.join('config', 'seeds.yml'), type: :path)
+  config.set(:authz_rules_file, Rails.root.join('config', 'authz_rules.yml'), type: :path)
 end
 
-Barong::GeoIP.lang = Barong::App.config.barong_geoip_lang
+Barong::GeoIP.lang = Barong::App.config.geoip_lang
 
 Rails.application.config.x.keystore = kstore
 Barong::App.config.keystore = kstore

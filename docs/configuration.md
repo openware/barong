@@ -1,5 +1,82 @@
+# Barong environments overview
+##### This document provides description, defaults and possible values for all environment variables that take a part in app configuration
 
-# Barong Configuration
+### General configuration
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_app_name` | Barong | any string value | Define app name for `2FA issuer` and `friendly_name` for twilio v2 verification |
+| `barong_domain` | openware.com | any string value | Value of the env will be sent as `domain` param in `EVENT API` in identity module, which helps postmaster or 3rd party email send services to avoid additional configurations |
+| `barong_uid_prefix` | ID | any string value that matches regex: `/^[A-z]{2,6}$/` | This env configurate first 2-6 chars of UID |
+| `barong_session_name` | _barong_session |  any string value  | session cookie name |
+| `barong_session_expire_time` | 1800 | any number ( value is in seconds) | session lifetime (auto-renews on every private call |
+| `barong_required_docs_expire` | true | `false` `true` | force Barong to validate or not validate `expires_in` parameter at document creation. with `false` still can be sent and recorded but with no time validation |
+| `barong_doc_num_limit` | 10 | any amount number | number of maximum documents that can be attached to uniq user |
+| `barong_geoip_lang` | en | `en`, `de`, `es`, `fr`, `ja`, `ru`  | internal GeoIP lang `Barong::GeoIP.lang`, which configures the language of detected country/continent name |
+
+### Storage configuration
+More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
+
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_storage_provider` | local | `local` `google` `aws` `alicloud` | provider for documents store. this env may have an affected on other from this module |
+| `barong_storage_bucket_name` | local | any string value | bucket name, required for all providers |
+| `barong_storage_access_key` | - | any string value | access key for bucket, required for all providers |
+| `barong_storage_secret_key` | - | any string value | secret key for bucket, required for all providers |
+| `barong_storage_endpoint` | - | any string valid url value | custom storage endpoint, can be used for AWS, AliCloud providers |
+| `barong_storage_signature_version` | 4 |  `2` `3` `4` | custom signature version, can be used for AWS provider |
+| `barong_storage_region` | - | any string value | bucket storage region |
+| `barong_storage_pathstyle` | false | `false` `true` | storage pathstyle, myght be used for AWS or AliCloud providers |
+
+### API CORS configuration
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_api_cors_origins` | * | any string valid url value or wildcard `*` | CORS configuration - url or wildcard |
+| `barong_api_cors_max_age` | 3600 | any number ( value is in seconds) | indicates how long the results of a preflight request can be cached, in seconds |
+| `barong_api_cors_allow_credentials` | false | `false` `true` | allows cookies to be sent in cross-domain responses |
+
+### CAPTCHA configuration
+More details in [captcha policy doc](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_captcha` | none | `none` `recaptcha` `geetest` | configures captcha policy |
+| `barong_geetest_id` | - | any string value | geetest id for captcha from geetest.com |
+| `barong_geetest_key` | - | any string value | geetest id for captcha from geetest.com |
+| `barong_recaptcha_site_key` | - | any string value | site key for RECAPTCHA |
+| `barong_recaptcha_secret_key` | - | any string value | secret key for RECAPTCHA |
+
+### Twilio configuration
+More details in [twilio configuration](https://github.com/openware/barong/blob/master/docs/configuration.md#twilio-configuration)
+
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_phone_verification` | mock | `twilio_verify` , `twilio_sms` , `mock` | sms send policy, switcher between twilio services and stub (mock) |
+| `barong_twilio_phone_number`  | +15005550000 | any twilio valid number or twilio string name | Twilio sms sender number/name |
+| `barong_twilio_account_sid` | - | any string value | twilio account sid, required by configuration |
+| `barong_twilio_auth_token` | - | any string value | twilio auth token, required by configuration |
+| `barong_twilio_service_sid` | - | any string value | twilio service sid, required by configuration of `twilio_verify` policy |
+| `barong_sms_content_template` | Your verification code for Barong: `{{code}}` | any string value containing `{{code}}` | template, used in both configurations as content for SMS |
+
+### Dependencies configuration (vault, redis, rabbitmq)
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_event_api_rabbitmq_host` | localhost | any string value | rabbitmq server host |
+| `barong_event_api_rabbitmq_port` | 5672 | any valid port string | rabbitmq server port |
+| `barong_event_api_rabbitmq_username` | guest | any string value | rabbitmq server access username |
+| `barong_event_api_rabbitmq_password` | guest | any string value | rabbitmq server access password |
+| `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
+| `barong_vault_address` | `http://localhost:8200` | any valid url  | vault server url with port |
+| `barong_vault_token` | changeme | any string value | vault access token |
+
+### Config files configuration
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_config`  | config/barong.yml | any valid path to existing file | path to barong config with `activation_requirements`, `state_triggers`, `document_types` and `user_storage_titles` |
+| `barong_maxminddb_path` | geolite/GeoLite2-Country.mmdb | any valid path to existing file | path to geolite country DB file |
+| `barong_seeds_file` | config/seeds.yml | any valid path to existing file | path to configuration file with pre-defined API rules, users and levels | 
+| `barong_authz_rules_file` | config/authz_rules.yml | any valid path to existing file | path to configuration file with blacklisted and whitelisted API pathes |
+
+# Barong configurations overview
 ## Twilio configuration
 For twilio configuration we need to set such required envs
 - `BARONG_TWILIO_ACCOUNT_SID`, which acts as a twilio username
@@ -16,52 +93,6 @@ We have ability to set twilio with 3 different ways
      One verification service can be used to send multiple verification tokens, it is not necessary to create a new service each time, so you can set ```BARONG_TWILIO_SERVICE_SID``` at once
 3. ```BARONG_PHONE_VERIFICATION == "mock"```
      With this type of verification all the numbers will be accepted and validated as a right code for any given number
-
----
-## Storage configuration
-1. Google
-For Google storage configuration you need fill  ENV variables below
-- `PROVIDER: "Google"`
-- `GOOGLE_STORAGE_ACCESS_KEY_ID`
-- `GOOGLE_STORAGE_SECRET_ACESS_KEY`
-  [Learn more about creating Access/Secret keys](https://bitmovin.zendesk.com/hc/en-us/articles/360001017393-How-can-I-create-Access-Secret-keys-for-Google-Cloud-Storage-)
-2. AWS
-For AWS storage configuration you need fill ENV variables below
-- `PROVIDER: "AWS"`
-
-- `AWS_SIGNATURE_VERSION`
-
-- `AWS_ACCESS_KEY_ID`
-
-- `AWS_SECRET_ACCESS_KEY`
-
-- `REGION`
-
-- `ENDPOINT`
-
-- `PATH_STYLE`
-
-  [Learn more about how to find Access/Secret keys](https://help.bittitan.com/hc/en-us/articles/115008255268-How-do-I-find-my-AWS-Access-Key-and-Secret-Access-Key-)
-3. AliCloud
-For AliCloud storage configuration you need fill ENV variables below
-- `PROVIDER`
-- `ALIYUN_ACCESSKEY_ID`
-- `ALIYUN_ACCESSKEY_SECRET`
-- `ALIYUN_OSS_BUCKET`
-- `ALIYUN_REGION_ID`
-- `ALIYUN_OSS_ENDPOINT`
-
-  [Learn more about how to create Access key](https://www.alibabacloud.com/help/doc-detail/53045.htm)
-
----
-
-
-
-## Recaptcha configuration
-
-reCAPTCHA is a CAPTCHA-like system designed to establish that a computer user is human (normally in order to protect websites from bots) and, at the same time, assist in the digitization of books or improve machine learning. 
-
-You can learn more about how to create ``RECAPTCHA_SECRET_KEY``, ``RECAPTCHA_SITE_KEY`` in this [article](https://writeup.xyz/how-to/google-recaptcha-v2-tutorial-3125/)
 
 ---
 
@@ -113,4 +144,3 @@ document_types:
   - Residental
   - Institutional
 ```
-

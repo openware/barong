@@ -7,7 +7,7 @@ module API::V2
     class Users < Grape::API
       helpers do
         def parse_refid!
-          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.barong_uid_prefix.upcase)
+          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.uid_prefix.upcase)
           user = User.find_by_uid(params[:refid])
           error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
 
@@ -59,7 +59,7 @@ module API::V2
 
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
-          publish_confirmation(user, language, Barong::App.config.barong_domain)
+          publish_confirmation(user, language, Barong::App.config.domain)
           open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo
@@ -93,7 +93,7 @@ module API::V2
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            publish_confirmation(current_user, language, Barong::App.config.barong_domain)
+            publish_confirmation(current_user, language, Barong::App.config.domain)
             status 201
           end
 
@@ -132,7 +132,7 @@ module API::V2
                             record: {
                               user: current_user.as_json_for_event_api,
                               language: language,
-                              domain: Barong::App.config.barong_domain
+                              domain: Barong::App.config.domain
                             })
 
             present current_user, with: API::V2::Entities::UserWithFullInfo
@@ -172,7 +172,7 @@ module API::V2
                             record: {
                               user: current_user.as_json_for_event_api,
                               language: language,
-                              domain: Barong::App.config.barong_domain,
+                              domain: Barong::App.config.domain,
                               token: token
                             })
             status 201
@@ -232,7 +232,7 @@ module API::V2
                             record: {
                               user: current_user.as_json_for_event_api,
                               language: language,
-                              domain: Barong::App.config.barong_domain
+                              domain: Barong::App.config.domain
                             })
             status 201
           end
