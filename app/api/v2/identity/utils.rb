@@ -24,19 +24,17 @@ module API::V2
       end
 
       def verify_captcha!(user:, response:, error_statuses: [400, 422])
-        return if Barong::CaptchaPolicy.config.disabled
-
-        if response.blank?
-          error!({ errors: ['identity.captcha.required'] }, error_statuses.first)
-        end
-
-        if Barong::CaptchaPolicy.config.re_captcha
+        case Barong::App.config.barong_captcha
+        when 'recaptcha'
           recaptcha(user: user, response: response)
+        when 'geetest'
+          geetest(response: response)
         end
-        geetest(response: response) if Barong::CaptchaPolicy.config.geetest_captcha
       end
 
       def recaptcha(user:, response:, error_statuses: [400, 422])
+        error!({ errors: ['identity.captcha.required'] }, error_statuses.first) if response.blank?
+
         captcha_error_message = 'identity.captcha.verification_failed'
 
         return if CaptchaService::RecaptchaVerifier.new(request: request).verify_recaptcha(model: user,
@@ -49,6 +47,8 @@ module API::V2
       end
 
       def geetest(response:, error_statuses: [400, 422])
+        error!({ errors: ['identity.captcha.required'] }, error_statuses.first) if response.blank?
+
         geetest_error_message = 'identity.captcha.verification_failed'
         validate_geetest_response(response: response)
 

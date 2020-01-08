@@ -79,7 +79,7 @@ module Barong
 
       def values!(key, value, values)
         unless values.include?(value)
-          raise Error.new("#{key.to_s.upcase} invalid, enbled values: #{values.to_s}")
+          raise Error.new("#{key.to_s.upcase} invalid, enabled values: #{values.to_s}")
         end
       end
     end
