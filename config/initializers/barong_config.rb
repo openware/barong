@@ -9,7 +9,7 @@ class BarongConfig
     private
 
     def read_from_yaml
-      conf = YAML.load_file(Barong::App.config.barong_config)
+      conf = YAML.load_file(Barong::App.config.config)
       conf['activation_requirements'] = {'email' => 'verified'} unless conf['activation_requirements']
       conf
     end

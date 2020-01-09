@@ -4,7 +4,7 @@
 class UserStorageTitles
   class << self
     def list
-      @list ||= YAML.load_file(Barong::App.config.barong_config)['user_storage_titles'] || []
+      @list ||= YAML.load_file(Barong::App.config.config)['user_storage_titles'] || []
     end
   end
 end

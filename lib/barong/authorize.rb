@@ -176,7 +176,7 @@ module Barong
       YAML.safe_load(
         ERB.new(
           File.read(
-            ENV.fetch('AUTHZ_RULES_FILE', Rails.root.join('config', 'authz_rules.yml'))
+            Barong::App.config.authz_rules_file
           )
         ).result
       )

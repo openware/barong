@@ -22,7 +22,7 @@ module Barong
     private
 
       def reader
-        @reader ||= MaxMind::DB.new(Barong::App.config.barong_maxminddb_path, mode: MaxMind::DB::MODE_MEMORY)
+        @reader ||= MaxMind::DB.new(Barong::App.config.maxminddb_path, mode: MaxMind::DB::MODE_MEMORY)
       end
     end
   end

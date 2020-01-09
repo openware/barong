@@ -17,8 +17,8 @@ steps:
   image: ruby:2.6.5
   environment:
     DATABASE_HOST: database
-    EVENT_API_RABBITMQ_HOST: rabbitmq
-    BARONG_VAULT_ADDR: http://vault:8200
+    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDRESS: http://vault:8200
     RAILS_ENV: test
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
@@ -114,9 +114,9 @@ services:
     - 8200
   environment:
     SKIP_SETCAP: 1
-    VAULT_TOKEN: changeme
+    BARONG_VAULT_TOKEN: changeme
     VAULT_DEV_ROOT_TOKEN_ID: changeme
-    VAULT_ADDR: http://vault:8200
+    BARONG_VAULT_ADDRESS: http://vault:8200
 
 trigger:
   event:

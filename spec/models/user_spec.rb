@@ -27,18 +27,18 @@ RSpec.describe User, type: :model do
     ## Test of UID creation
     it 'creates default uid with prefix ID' do
       default_user = create(:user)
-      expect(default_user.uid).to start_with(ENV.fetch('BARONG_UID_PREFIX', 'ID'))
+      expect(default_user.uid).to start_with(Barong::App.config.uid_prefix)
     end
 
     it 'uid prefix can be changed by ENV' do
-      allow(Barong::App.config).to receive(:barong_uid_prefix).and_return('GG')
+      allow(Barong::App.config).to receive(:uid_prefix).and_return('GG')
 
       default_user = create(:user)
       expect(default_user.uid).to start_with('GG')
     end
 
     it 'uid_prefix doesnt case sensitive and always converts to big letters' do
-      allow(Barong::App.config).to receive(:barong_uid_prefix).and_return('aa')
+      allow(Barong::App.config).to receive(:uid_prefix).and_return('aa')
 
       default_user = create(:user)
       expect(default_user.uid).to start_with('AA')

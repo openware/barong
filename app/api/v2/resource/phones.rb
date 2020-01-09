@@ -60,7 +60,7 @@ module API::V2
           phone = current_user.phones.create(number: phone_number)
           code_error!(phone.errors.details, 422) if phone.errors.any?
 
-          Barong::App.config.barong_twilio_provider.send_confirmation(phone, declared_params[:channel])
+          Barong::App.config.twilio_provider.send_confirmation(phone, declared_params[:channel])
           { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end
 
@@ -91,7 +91,7 @@ module API::V2
           phone = current_user.phones.find_by(number: phone_number)
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
-          Barong::App.config.barong_twilio_provider.send_confirmation(phone, declared_params[:channel])
+          Barong::App.config.twilio_provider.send_confirmation(phone, declared_params[:channel])
           { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end
 
@@ -120,7 +120,7 @@ module API::V2
           phone = current_user.phones.find_by(number: phone_number)
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
-          verification = Barong::App.config.barong_twilio_provider.verify_code?(number: phone_number, code: declared_params[:verification_code], user: current_user)
+          verification = Barong::App.config.twilio_provider.verify_code?(number: phone_number, code: declared_params[:verification_code], user: current_user)
           error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless verification
 
           phone.update(validated_at: Time.current)

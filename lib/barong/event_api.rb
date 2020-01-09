@@ -198,10 +198,10 @@ module EventAPI
         return ENV['EVENT_API_RABBITMQ_URL'] if ENV['EVENT_API_RABBITMQ_URL'].present?
 
         {
-          host: ENV.fetch('EVENT_API_RABBITMQ_HOST', 'localhost'),
-          port: ENV.fetch('EVENT_API_RABBITMQ_PORT', '5672'),
-          username: ENV.fetch('EVENT_API_RABBITMQ_USERNAME', 'guest'),
-          password: ENV.fetch('EVENT_API_RABBITMQ_PASSWORD', 'guest')
+          host: Barong::App.config.event_api_rabbitmq_host,
+          port: Barong::App.config.event_api_rabbitmq_port,
+          username: Barong::App.config.event_api_rabbitmq_username,
+          password: Barong::App.config.event_api_rabbitmq_password
         }
       end
 

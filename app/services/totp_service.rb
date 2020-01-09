@@ -24,7 +24,7 @@ class TOTPService
     def create(uid, email)
       write_data(totp_key(uid),
                  generate: true,
-                 issuer: ENV.fetch('APP_NAME', 'Barong'),
+                 issuer: Barong::App.config.app_name,
                  account_name: email,
                  qr_size: 300)
     end

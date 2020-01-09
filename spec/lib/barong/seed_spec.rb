@@ -5,7 +5,6 @@ require_dependency 'barong/seed'
 describe "Default seeds.yml template" do
   let(:seeds) { Barong::Seed.new.seeds }
   it "Generate seed using environement variables" do
-    expect(ENV).to receive(:fetch).with(any_args).and_call_original
     expect(ENV).to receive(:fetch).with("ADMIN_EMAIL", "admin@barong.io").and_call_original
     expect(ENV).to receive(:fetch).with("ADMIN_PASSWORD", nil).and_return("123AZErty@")
     expect(seeds["users"]).to eq([

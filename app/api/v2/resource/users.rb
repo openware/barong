@@ -124,7 +124,7 @@ module API::V2
                           record: {
                             user: current_user.as_json_for_event_api,
                             language: language,
-                            domain: Barong::App.config.barong_domain
+                            domain: Barong::App.config.domain
                           })
           status 201
         end

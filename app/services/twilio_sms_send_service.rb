@@ -7,12 +7,12 @@ class TwilioSmsSendService
       Rails.logger.info("Sending SMS to #{phone.number}")
 
       send_sms(number: phone.number,
-               content: Barong::App.config.barong_sms_content_template.gsub(/{{code}}/, phone.code))
+               content: Barong::App.config.sms_content_template.gsub(/{{code}}/, phone.code))
     end
 
     def send_sms(number:, content:)
-      from_phone = Barong::App.config.barong_twilio_phone_number
-      client = Barong::App.config.barong_twilio_client
+      from_phone = Barong::App.config.twilio_phone_number
+      client = Barong::App.config.twilio_client
       client.messages.create(
         from: from_phone,
         to:   '+' + number,

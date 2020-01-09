@@ -24,7 +24,7 @@ module API::V2
       end
 
       def verify_captcha!(user:, response:, error_statuses: [400, 422])
-        case Barong::App.config.barong_captcha
+        case Barong::App.config.captcha
         when 'recaptcha'
           recaptcha(user: user, response: response)
         when 'geetest'

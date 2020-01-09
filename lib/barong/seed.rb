@@ -10,7 +10,7 @@ module Barong
       YAML.safe_load(
         ERB.new(
           File.read(
-            ENV.fetch("SEEDS_FILE", Rails.root.join("config", "seeds.yml"))
+            Barong::App.config.seeds_file
           )
         ).result
       )

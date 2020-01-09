@@ -51,5 +51,23 @@ In the process of verification Barong assign different levels to accounts
 - Level 2 will apply after phone verification
 - Level 3 will apply after identity & document verification
 
+# Useful links to documentation
+[Barong environments overview](https://github.com/openware/barong/blob/master/docs/configuration.md#barong-environments-overview)
+
+[Barong configurations overview](https://github.com/openware/barong/blob/master/docs/configuration.md#barong-configurations-overview)
+
+[Troubleshooting](https://github.com/openware/barong/blob/master/docs/troubleshooting.md)
+
+[REST API documentation](https://github.com/openware/barong/blob/master/docs/api/rest_api.md)
+
+[API Keys creation and usage](https://github.com/openware/barong/blob/master/docs/general/api-keys.md)
+
+[Captcha policy overview and configuration](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+
+[Setting up 2FA](https://github.com/openware/barong/blob/master/docs/general/2fa.md)
+
+[Barong password hashing](https://github.com/openware/barong/blob/master/docs/general/password_hashing.md#barong-password-hashing)
+
+
 # License
 Barong is released under the terms of the [Apache License 2.0](./LICENSE.md).

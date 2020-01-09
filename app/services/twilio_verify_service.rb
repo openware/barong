@@ -26,8 +26,8 @@ class TwilioVerifyService
     end
 
     def verify_client
-      client = Barong::App.config.barong_twilio_client
-      @service_sid = Barong::App.config.barong_twilio_service_sid
+      client = Barong::App.config.twilio_client
+      @service_sid = Barong::App.config.twilio_service_sid
 
       client.verify
     end
