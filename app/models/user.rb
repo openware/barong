@@ -22,8 +22,8 @@ class User < ApplicationRecord
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?,
                           required_symbols: true,
-                          password_strength: { use_dictionary: true,
-                                               min_entropy: 14 }
+                          password_strength: { use_dictionary: Barong::App.config.password_use_dictionary,
+                                               min_entropy: Barong::App.config.password_min_entropy }
 
   scope :active, -> { where(state: 'active') }
 

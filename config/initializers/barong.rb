@@ -45,6 +45,8 @@ Barong::App.define do |config|
   config.set(:required_docs_expire, 'true', type: :bool)
   config.set(:doc_num_limit, '10', type: :integer)
   config.set(:geoip_lang, 'en', values: %w[en de es fr ja ru])
+  config.set(:password_min_entropy, '14', type: :integer)
+  config.set(:password_use_dictionary, 'true', type: :bool)
 
   # CAPTCHA configuration ---------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#captcha-configuration

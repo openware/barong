@@ -12,6 +12,8 @@
 | `barong_required_docs_expire` | true | `false` `true` | force Barong to validate or not validate `expires_in` parameter at document creation. with `false` still can be sent and recorded but with no time validation |
 | `barong_doc_num_limit` | 10 | any amount number | number of maximum documents that can be attached to uniq user |
 | `barong_geoip_lang` | en | `en`, `de`, `es`, `fr`, `ja`, `ru`  | internal GeoIP lang `Barong::GeoIP.lang`, which configures the language of detected country/continent name |
+| `barong_password_use_dictionary` | true | `false` `true` | force Barong to use dictionary checking |
+| `barong_password_min_entropy` | 14 | any number value | Define minimum entropy for password strength |
 
 ### Storage configuration
 More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
