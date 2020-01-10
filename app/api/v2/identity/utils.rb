@@ -37,9 +37,7 @@ module API::V2
 
         captcha_error_message = 'identity.captcha.verification_failed'
 
-        return if CaptchaService::RecaptchaVerifier.new(request: request).verify_recaptcha(model: user,
-                                                                           skip_remote_ip: true,
-                                                                           response: response)
+        return if CaptchaService::RecaptchaVerifier.new(request: request).response_valid?(model: user, skip_remote_ip: true, response: response)
 
         error!({ errors: [captcha_error_message] }, error_statuses.last)
       rescue StandardError
