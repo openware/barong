@@ -18,4 +18,14 @@ describe API::V2::Identity::General do
       expect(json_body[:time].to_i).to be <= Time.now.to_i
     end
   end
+
+  describe 'GET /api/v2/identity/configs' do
+    it 'returns some of the configurations' do
+      get '/api/v2/identity/configs'
+      expect_status_to_eq(200)
+      expect(json_body[:session_expire_time]).to eq(Barong::App.config.session_expire_time)
+      expect(json_body[:captcha_type]).to eq(Barong::App.config.captcha)
+      expect(json_body[:phone_verification_type]).to eq(Barong::App.config.phone_verification)
+    end
+  end
 end

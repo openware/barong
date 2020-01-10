@@ -23,6 +23,16 @@ module API::V2
           version: Barong::Application::VERSION
         }
       end
+
+      desc 'Get barong configurations'
+      get '/configs' do
+        {
+          session_expire_time: Barong::App.config.session_expire_time,
+          captcha_type: Barong::App.config.captcha,
+          captcha_id: (Barong::App.config.recaptcha_site_key if Barong::App.config.captcha == 'recaptcha'),
+          phone_verification_type: Barong::App.config.phone_verification
+        }.compact
+      end
     end
   end
 end
