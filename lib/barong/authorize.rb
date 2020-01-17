@@ -5,6 +5,7 @@ require 'barong/activity_logger'
 module Barong
   # AuthZ functionality
   class Authorize
+    STATE_CHANGING_VERBS = %w[POST PUT PATCH DELETE TRACE].freeze
     # Custom Error class to support error status and message
     class AuthError < StandardError
       attr_reader :code
@@ -35,6 +36,8 @@ module Barong
 
     # cookies validations
     def cookie_owner
+      validate_csrf!
+
       error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
       user = User.find_by!(uid: session[:uid])
@@ -100,6 +103,14 @@ module Barong
       restrict! if restrictions['ip_subnet'].any? { |r| IPAddr.new(r).include?(request_ip) }
       restrict! if restrictions['continent'].any? { |r| r.casecmp?(continent) }
       restrict! if restrictions['country'].any? { |r| r.casecmp?(country) }
+    end
+
+    def validate_csrf!
+      return unless Barong::App.config.csrf_protection && @request.env['REQUEST_METHOD'].in?(STATE_CHANGING_VERBS)
+
+      error!({ errors: ['authz.missing_csrf_token'] }, 401) unless headers['X-CSRF-Token']
+
+      error!({ errors: ['authz.csrf_token_mismatch'] }, 401) unless headers['X-CSRF-Token'] == session[:csrf_token]
     end
 
     def fetch_restrictions

@@ -37,6 +37,7 @@ RSpec.configure do |config|
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.before(:each) do
+    allow_any_instance_of(Barong::Authorize).to receive(:validate_csrf!).and_return(true)
     allow(UserStorageTitles).to receive(:list).and_return(['personal', 'company'])
     %w[email phone identity document].each_with_index do |key, index|
       FactoryBot.create(:level, id: index + 1, key: key, value: 'verified')
