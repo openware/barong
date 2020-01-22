@@ -58,6 +58,10 @@ module Barong
              Time.now.to_i < session[:expire_time] &&
              find_ip.include?(@request.remote_ip)
         session.destroy
+        Rails.logger.error("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
+                           " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
+                           " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{@request.remote_ip} }")
+
         error!({ errors: ['authz.client_session_mismatch'] }, 401)
       end
 
@@ -83,6 +87,8 @@ module Barong
       error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
       user = User.find_by_id(current_api_key.user_id)
+      Rails.logger.info("Api key authorization by user: #{user.email} via key: #{current_api_key.kid}")
+
       validate_user!(user)
 
       validate_permissions!(user)
@@ -108,9 +114,15 @@ module Barong
     def validate_csrf!
       return unless Barong::App.config.csrf_protection && @request.env['REQUEST_METHOD'].in?(STATE_CHANGING_VERBS)
 
-      error!({ errors: ['authz.missing_csrf_token'] }, 401) unless headers['X-CSRF-Token']
+      unless headers['X-CSRF-Token']
+        Rails.logger.info("CSRF attack warning! Missing token for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        error!({ errors: ['authz.missing_csrf_token'] }, 401)
+      end
 
-      error!({ errors: ['authz.csrf_token_mismatch'] }, 401) unless headers['X-CSRF-Token'] == session[:csrf_token]
+      unless headers['X-CSRF-Token'] == session[:csrf_token]
+        Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        error!({ errors: ['authz.csrf_token_mismatch'] }, 401)
+      end
     end
 
     def fetch_restrictions
@@ -123,6 +135,7 @@ module Barong
     end
 
     def restrict!
+      Rails.logger.info("Access denied for #{session[:uid]} because ip #{@request.remote_ip} is resticted")
       error!({ errors: ['authz.access_restricted'] }, 401)
     end
 
