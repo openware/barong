@@ -25,7 +25,8 @@ Rails.application.configure do
   # end
 
   # Using cache for sessions and permissions forces to use redis cache_store as mandatory store
-  config.cache_store = :redis_cache_store, { driver: :hiredis, url: Barong::App.config.redis_url }
+  # Here we use ENV.fetch instead of Barong::App.config, because environment/* files loads before lib and initializers
+  config.cache_store = :redis_cache_store, { driver: :hiredis, url: ENV.fetch('BARONG_REDIS_URL', 'redis://localhost:6379/1') }
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local

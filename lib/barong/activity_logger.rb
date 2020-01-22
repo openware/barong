@@ -13,9 +13,13 @@ module Barong
         begin
           loop do
             msg = @activities.pop
-            Activity.create(format_params(msg))
-          rescue => exception
-            Rails.logger.error { "Failed to create activity: #{exception.inspect}" }
+            params = format_params(msg)
+            Rails.logger.info("Recording activity for user id: #{params[:user_id]}, topic: #{params[:topic]}," \
+                              " action: #{params[:action]}, result: #{params[:result]}, data: #{params[:data]}")
+            Activity.create(params)
+          rescue StandardError => e
+            Rails.logger.error { "Failed to create activity with params: #{params}" \
+                                 "Inspect error: #{e.inspect}" }
           end
         end
       end
