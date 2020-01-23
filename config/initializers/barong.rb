@@ -35,7 +35,7 @@ kstore = Barong::KeyStore.new(pkey)
 
 Barong::App.define do |config|
   # General configuration ---------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#general-configuration
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#general-configuration
 
   config.set(:app_name, 'Barong')
   config.set(:domain, 'openware.com')
@@ -47,8 +47,14 @@ Barong::App.define do |config|
   config.set(:geoip_lang, 'en', values: %w[en de es fr ja ru])
   config.set(:csrf_protection, 'true', type: :bool)
 
+  # Password configuration  -----------------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration
+  config.set(:password_regexp, '^(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:digit:]])(?=.*[[:graph:]]).{8,80}$', type: :regexp)
+  config.set(:password_min_entropy, '14', type: :integer)
+  config.set(:password_use_dictionary, 'true', type: :bool)
+
   # CAPTCHA configuration ---------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#captcha-configuration
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#captcha-configuration
   config.set(:captcha, 'none', values: %w[none recaptcha geetest])
   config.set(:geetest_id, '')
   config.set(:geetest_key, '')
@@ -56,7 +62,7 @@ Barong::App.define do |config|
   config.set(:recaptcha_secret_key, '')
 
   # Dependencies configuration (vault, redis, rabbitmq) ---------------
-  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#dependencies-configuration-vault-redis-rabbitmq
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#dependencies-configuration-vault-redis-rabbitmq
   config.set(:event_api_rabbitmq_host, 'localhost')
   config.set(:event_api_rabbitmq_port, '5672')
   config.set(:event_api_rabbitmq_username, 'guest')
@@ -66,12 +72,13 @@ Barong::App.define do |config|
   config.set(:redis_url, 'redis://localhost:6379/1')
 
   # CORS configuration  -----------------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#api-cors-configuration
   config.set(:api_cors_origins, '*')
   config.set(:api_cors_max_age, '3600')
   config.set(:api_cors_allow_credentials, 'false', type: :bool)
 
   # Config files configuration ----------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#config-files-configuration
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#config-files-configuration
   config.set(:config, 'config/barong.yml', type: :path)
   config.set(:maxminddb_path, '', type: :path)
   config.set(:seeds_file, Rails.root.join('config', 'seeds.yml'), type: :path)

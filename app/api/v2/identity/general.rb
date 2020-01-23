@@ -3,6 +3,14 @@
 module API::V2
   module Identity
     class General < Grape::API
+      desc 'Password strength testing'
+      params do
+        requires :password, type: String, desc: 'User password'
+      end
+      post '/password/validate' do
+        { entropy: PasswordStrengthChecker.calculate_entropy(params[:password]) }
+      end
+
       desc 'Test connectivity'
       get '/ping' do
         { ping: 'pong' }
@@ -30,7 +38,9 @@ module API::V2
           session_expire_time: Barong::App.config.session_expire_time,
           captcha_type: Barong::App.config.captcha,
           captcha_id: (Barong::App.config.recaptcha_site_key if Barong::App.config.captcha == 'recaptcha'),
-          phone_verification_type: Barong::App.config.phone_verification
+          phone_verification_type: Barong::App.config.phone_verification,
+          min_password_entropy: Barong::App.config.min_password_entropy,
+          password_regexp: Barong::App.config.password_regexp
         }.compact
       end
     end

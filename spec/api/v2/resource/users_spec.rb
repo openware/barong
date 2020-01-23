@@ -194,7 +194,7 @@ describe 'Api::V1::Profiles' do
       it 'returns weak password error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
+        expect_body.to eq(errors: ["password.requirements"])
       end
     end
     context 'when params are valid' do
