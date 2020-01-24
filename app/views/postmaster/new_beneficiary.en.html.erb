@@ -1,0 +1,11 @@
+<div class="main-block">
+  <div class="logo">
+    <%= image_tag attachments['logo.png'].url, alt: 'Campany Logo', class: 'logo-img' %>
+  </div>
+  <div class="content">
+    <p class="text">New <%= @record.currency %> beneficiary <b><%= @record.name %></b> created!</p>
+    <p class="text">
+      Your <b>pin-code</b> for this beneficiary is <%= @record.pin %>.
+    </p>
+  </div>
+</div>

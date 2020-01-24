@@ -36,7 +36,6 @@ kstore = Barong::KeyStore.new(pkey)
 Barong::App.define do |config|
   # General configuration ---------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#general-configuration
-
   config.set(:app_name, 'Barong')
   config.set(:domain, 'openware.com')
   config.set(:uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
@@ -83,7 +82,24 @@ Barong::App.define do |config|
   config.set(:maxminddb_path, '', type: :path)
   config.set(:seeds_file, Rails.root.join('config', 'seeds.yml'), type: :path)
   config.set(:authz_rules_file, Rails.root.join('config', 'authz_rules.yml'), type: :path)
+
+  # SMTP configuration ------------------------------------------------
+  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#smtp-configuration
+  config.set(:sender_email, 'noreply@barong.io')
+  config.set(:sender_name, 'Barong')
+  config.set(:smtp_password, '')
+  config.set(:smtp_port, 1025)
+  config.set(:smtp_host, 'localhost')
+  config.set(:smtp_user, '')
+  config.set(:default_language, 'en')
 end
+
+ActionMailer::Base.smtp_settings = {
+  address: Barong::App.config.smtp_host,
+  port: Barong::App.config.smtp_port,
+  user_name: Barong::App.config.smtp_user,
+  password: Barong::App.config.smtp_password
+}
 
 Barong::GeoIP.lang = Barong::App.config.geoip_lang
 

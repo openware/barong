@@ -1,0 +1,89 @@
+keychain:
+  barong:
+    algorithm: RS256
+    value: "changeme"
+  peatio:
+    algorithm: RS256
+    value: "changeme"
+
+exchanges:
+  barong_system:
+    name: barong.events.system
+    signer: barong
+  barong_model:
+    name: barong.events.model
+    signer: barong
+  peatio:
+    name: peatio.events.model
+    signer: peatio
+
+events:
+  - name: Email Confirmation
+    key: user.email.confirmation.token
+    exchange: barong_system
+    templates:
+      en:
+        subject: Registration Confirmation
+        template_path: email_confirmation.en.html.erb
+      ru:
+        subject: Подтверждение Регистрации
+        template_path: email_confirmation.ru.html.erb
+
+  - name: Password Reset
+    key: user.password.reset.token
+    exchange: barong_system
+    templates:
+      en:
+        subject: Password Reset
+        template_path: password_reset.en.html.erb
+      ru:
+        subject: Сброс Пароля
+        template_path: password_reset.ru.html.erb
+
+  - name: Label Created
+    key: label.created
+    exchange: barong_model
+    templates:
+      en:
+        subject: Phone verified
+        template_path: label.en.html.erb
+
+  - name: Label Updated
+    key: label.updated
+    exchange: barong_model
+    templates:
+      en:
+        subject: Label Updated
+        template_path: label.en.html.erb
+
+  - name: Session Create
+    key: session.create
+    exchange: barong_system
+    templates:
+      en:
+        subject: New Login
+        template_path: session_create.en.html.erb
+
+  - name: Deposit Accepted
+    key: deposit.updated
+    exchange: peatio
+    templates:
+      en:
+        subject: Deposit Accepted
+        template_path: deposit_accepted.en.html.erb
+
+  - name: Withdrawal Succeed
+    key: withdraw.updated
+    exchange: peatio
+    templates:
+      en:
+        subject: Withdrawal Succeed
+        template_path: withdraw_succeed.en.html.erb
+
+  - name: New Beneficiary
+    key: beneficiary.created
+    exchange: peatio
+    templates:
+      en:
+        subject: New Beneficiary
+        template_path: new_beneficiary.en.html.erb

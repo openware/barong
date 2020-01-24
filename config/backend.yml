@@ -63,6 +63,12 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
 volumes:
   db_data:
   redis_data:

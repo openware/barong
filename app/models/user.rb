@@ -145,6 +145,14 @@ class User < ApplicationRecord
     as_json(only: %i[uid email referral_id role level state])
   end
 
+  def language
+    if data.blank?
+      Barong::App.config.default_language
+    else
+      JSON.parse(data)['language'] || Barong::App.config.default_language
+    end
+  end
+
   private
 
   def assign_uid

@@ -1,0 +1,32 @@
+<div class="main-block">
+  <div class="logo">
+    <%= image_tag attachments['logo.png'].url, alt: 'Campany Logo', class: 'logo-img' %>
+  </div>
+  <div class="content">
+    <p class="title">Hello!</p>
+    <p class="text">
+      <% if @record.value == "verified" %>
+        Congratulations, your account details was successfully upgraded.
+      <% end %>
+      <% if @record.value == "rejected" %>
+        Unfortunately, your account details was rejected.
+      <% end %>
+        Your current account level is <b><%= @record.user.level %></b>
+        Your account state is <b><%= @record.user.state %></b>
+    </p>
+    <p class="text">
+      <% if @record.key == "profile" %>
+        Recently your user profile was <%= @record.value %>.
+      <% end %>
+      <% if @record.key == "id_document" %>
+        Recently your main document was <%= @record.value %>.
+      <% end %>
+      <% if @record.key == "second_document" %>
+        Recently your second document was <% @record.value %>.
+      <% end %>
+      <% if @record.key == "institutional" %>
+        Recently your institutional document was <%= @record.value %>.
+      <% end %>
+    </p>
+  </div>
+</div>

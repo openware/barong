@@ -5,7 +5,7 @@
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_app_name` | Barong | any string value | Define app name for `2FA issuer` and `friendly_name` for twilio v2 verification |
-| `barong_domain` | openware.com | any string value | Value of the env will be sent as `domain` param in `EVENT API` in identity module, which helps postmaster or 3rd party email send services to avoid additional configurations |
+| `barong_domain` | openware.com | any string value | Value of the env will be sent as `domain` param in `EVENT API` in identity module, which helps mailer or 3rd party email send services to avoid additional configurations |
 | `barong_uid_prefix` | ID | any string value that matches regex: `/^[A-z]{2,6}$/` | This env configurate first 2-6 chars of UID |
 | `barong_session_name` | _barong_session |  any string value  | session cookie name |
 | `barong_session_expire_time` | 1800 | any number ( value is in seconds) | session lifetime (auto-renews on every private call |
@@ -80,6 +80,17 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
 | `barong_vault_address` | `http://localhost:8200` | any valid url  | vault server url with port |
 | `barong_vault_token` | changeme | any string value | vault access token |
+
+### SMTP configuration
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `sender_email`  | noreply@barong.io | any valid email | this will be displayed as sender email for client in all outbox |
+| `sender_name` | Barong | any string value | this will be displayed as sender name for client in all outbox |
+| `smtp_password` | - | any string value | password for auth 3d party send emails service smtp |
+| `smtp_port`  | 1025 | any integer value | port for auth 3d party send emails service smtp |
+| `smtp_host`  | localhost | valid host url | host for auth 3d party send emails service smtp |
+| `smtp_user`  | - | any string value | username for auth 3d party send emails service smtp |
+| `default_language`  | en | alpha-2 country | default language for email letters |
 
 ### Config files configuration
 | Env name | Default value | Possible values | Description |
