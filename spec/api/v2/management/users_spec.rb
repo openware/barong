@@ -264,7 +264,7 @@ describe API::V2::Management::Users, type: :request do
           it 'renders an error' do
             expect { do_request }.to_not change { User.count }
             expect_status_to_eq 422
-            expect_body.to eq(error: ['Email is invalid','Password is too weak'])
+            expect_body.to eq(error: ['Email is invalid','Password weak'])
           end
         end
 
@@ -274,7 +274,7 @@ describe API::V2::Management::Users, type: :request do
           it 'renders an error' do
             expect { do_request }.to_not change { User.count }
             expect_status_to_eq 422
-            expect(json_body[:error].first).to include 'Password does not meet the minimum requirements'
+            expect(json_body[:error].first).to include 'Password requirements'
           end
         end
       end

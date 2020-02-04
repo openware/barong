@@ -65,7 +65,7 @@ gem 'bump'
 # Use gem to verify recatpcha on server side
 gem 'recaptcha'
 # Password validators
-gem 'strong_password', '~> 0.0.6'
+gem 'strong_password', '~> 0.0.8'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

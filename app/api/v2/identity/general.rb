@@ -3,6 +3,14 @@
 module API::V2
   module Identity
     class General < Grape::API
+      desc 'Password strength testing'
+      params do
+        requires :password, type: String, desc: 'User password'
+      end
+      post '/password/validate' do
+        { entropy: PasswordStrengthChecker.calculate_entropy(params[:password]) }
+      end
+
       desc 'Test connectivity'
       get '/ping' do
         { ping: 'pong' }
