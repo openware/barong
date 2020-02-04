@@ -13,6 +13,8 @@ Barong::App.define do |config|
   config.set(:barong_sms_content_template, 'Your verification code for Barong: {{code}}')
 end
 
+
+
 sid = Barong::App.config.barong_twilio_account_sid
 token = Barong::App.config.barong_twilio_auth_token
 service_sid = Barong::App.config.barong_twilio_service_sid

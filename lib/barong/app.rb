@@ -64,6 +64,8 @@ module Barong
           return value.to_i
         when :path
           return Rails.root.join(value).tap { |p| path!(key, p) }
+        when :regexp
+          return Regexp.new value
         end
       end
 
