@@ -20,15 +20,20 @@ class User < ApplicationRecord
   validates :data, data_is_json: true
   validates :email,       email: true, presence: true, uniqueness: true
   validates :uid,         presence: true, uniqueness: true
-  validates :password,    presence: true, if: :should_validate?,
-                          required_symbols: true,
-                          password_strength: { use_dictionary: true,
-                                               min_entropy: 14 }
+  validates :password,    presence: true, if: :should_validate?
+  validate  :validate_pass!
 
   scope :active, -> { where(state: 'active') }
 
   before_validation :assign_uid
   after_update :disable_api_keys
+
+  def validate_pass!
+    return unless (new_record? && password.present?) || password.present?
+
+    validation_result = PasswordStrengthChecker.validate!(password)
+    errors.add(:password, validation_result) unless validation_result == 'strong'
+  end
 
   def disable_api_keys
     if otp_previously_changed? && otp == false || state_previously_changed? && state != 'active'

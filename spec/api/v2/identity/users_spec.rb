@@ -73,7 +73,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["email.invalid", "password.password.password_strength"])
+        expect_body.to eq(errors: ["email.invalid", "password.weak"])
       end
     end
 
@@ -103,7 +103,7 @@ describe API::V2::Identity::Users do
       it 'renders an error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
+        expect_body.to eq(errors: ["password.requirements"])
       end
     end
 
@@ -487,7 +487,7 @@ describe API::V2::Identity::Users do
       it 'returns weak password error' do
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["password.requirements", "password.password.password_strength"])
+        expect_body.to eq(errors: ["password.requirements"])
       end
     end
 

@@ -112,15 +112,18 @@ describe Rack::Cors, type: :request do
 
   context 'send invalid request' do
     let(:allow_crendentails) { 'true' }
+    let(:max_age) { '3600' }
 
     before do
       ENV['API_CORS_ORIGINS'] = "#{frontend_url},#{local_url}"
       ENV['API_CORS_ALLOW_CREDENTIALS'] = allow_crendentails
+      ENV['API_CORS_MAX_AGE'] = max_age
     end
 
     after do
       ENV['API_CORS_ORIGINS'] = nil
       ENV['API_CORS_ALLOW_CREDENTIALS'] = nil
+      ENV['API_CORS_MAX_AGE'] = nil
     end
 
     it 'sends CORS headers ever when user is not authenticated' do

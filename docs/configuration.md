@@ -15,6 +15,13 @@
 | `barong_csrf_protection` | true | `true`, `false` | while turned on (`true`) exposes csrf_token on session create and requires X-CSRF-Token on every private POST PUT PATCH DELETE TRACE on AuthZ level |
 
 
+### Password configuration
+| Env name | Default value | Possible values | Description |
+| ---------- | ------ |-------------------------|---------------------------------- |
+| `barong_password_regexp` | ^(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:digit:]])(?=.*[[:graph:]]).{8,80}$ | any valid regex without / / | regex will validate password while user sign up / reset pass / password change |
+| `barong_password_min_entropy` | 14 | any positive int | minimal entropy required by password |
+| `barong_password_use_dictionary` | true | bool | activates or deactivates most common password dictionary check |
+
 ### Storage configuration
 More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
 
