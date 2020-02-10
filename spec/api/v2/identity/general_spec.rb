@@ -27,5 +27,15 @@ describe API::V2::Identity::General do
       expect(json_body[:captcha_type]).to eq(Barong::App.config.captcha)
       expect(json_body[:phone_verification_type]).to eq(Barong::App.config.phone_verification)
     end
+
+    it 'returns all of the configurations with defaults' do
+      get '/api/v2/identity/configs'
+      expect_status_to_eq(200)
+      expect(json_body[:session_expire_time]).to eq(Barong::App.config.session_expire_time)
+      expect(json_body[:captcha_type]).to eq(Barong::App.config.captcha)
+      expect(json_body[:phone_verification_type]).to eq(Barong::App.config.phone_verification)
+      expect(json_body[:password_min_entropy]).to eq(Barong::App.config.password_min_entropy)
+      expect(json_body[:password_regexp]).to eq(Barong::App.config.password_regexp.to_s)
+    end
   end
 end
