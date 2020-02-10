@@ -39,7 +39,7 @@ module API::V2
           captcha_type: Barong::App.config.captcha,
           captcha_id: (Barong::App.config.recaptcha_site_key if Barong::App.config.captcha == 'recaptcha'),
           phone_verification_type: Barong::App.config.phone_verification,
-          min_password_entropy: Barong::App.config.min_password_entropy,
+          password_min_entropy: Barong::App.config.password_min_entropy,
           password_regexp: Barong::App.config.password_regexp
         }.compact
       end
