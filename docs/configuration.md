@@ -35,7 +35,17 @@ More details in [storage configuration doc](https://github.com/openware/barong/b
 | `barong_storage_signature_version` | 4 |  `2` `3` `4` | custom signature version, can be used for AWS provider |
 | `barong_storage_region` | - | any string value | bucket storage region |
 | `barong_storage_pathstyle` | false | `false` `true` | storage pathstyle, myght be used for AWS or AliCloud providers |
+| `barong_upload_size_min_range` | 1 | any integer value | minimum size of possible upload (in megabytes) |
+| `barong_upload_size_max_range` | 10 | any integer value | maximum size of possible upload (in megabytes) |
+| `barong_upload_auth_url_expiration` | 1 | any integer value | configures in minutes the lifetime of auth signature to see upload |
+| `barong_upload_extension_whitelist` | jpg, jpeg, png, pdf | string with comma-separated extensions formats | whitelist of upload extensions |
 
+
+
+  config.set(:upload_size_min_range, '1', type: :integer) # in megabytes
+  config.set(:upload_size_max_range, '10', type: :integer) # in megabytes
+  config.set(:upload_auth_url_expiration, '1', type: :integer) # in minutes
+  config.set(:upload_extension_whitelist, 'jpg, jpeg, png, pdf', type: :array)
 ### API CORS configuration
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
