@@ -107,7 +107,7 @@ describe API::V2::Admin::Users do
         do_extended_info_request
         expect(User.count).to eq json_body.count
 
-        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:profiles)
 
         expect(response.headers.fetch('Total')).to eq User.all.count.to_s
         expect(response.headers.fetch('Page')).to eq '1'
@@ -745,7 +745,7 @@ describe API::V2::Admin::Users do
       it 'returns users with profile and documents if params extended' do
         get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: true }
 
-        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:profiles)
         expect(json_body.first.keys).to include(:documents)
         expect(json_body.count).to eq private_document_pending_count
       end
@@ -777,7 +777,7 @@ describe API::V2::Admin::Users do
       it 'returns users users with extended info' do
         get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {extended: true}
 
-        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:profiles)
         expect(json_body.count).to eq private_document_pending_count
       end
 

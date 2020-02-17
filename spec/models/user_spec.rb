@@ -22,7 +22,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:documents).dependent(:destroy) }
 
     ## Test of relationships
-    it { should have_one(:profile).dependent(:destroy) }
+    it { should have_many(:profiles).dependent(:destroy) }
 
     ## Test of UID creation
     it 'creates default uid with prefix ID' do

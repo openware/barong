@@ -113,8 +113,8 @@ describe 'API::V2::Resource::Profiles' do
 
         result = json_body
 
-        expect(response.status).to eq(409)
-        expect(*result[:errors]).to eq('resource.profile.exist')
+        expect(response.status).to eq(422)
+        expect(*result[:errors]).to eq('state.exists')
       end
     end
 
@@ -131,7 +131,7 @@ describe 'API::V2::Resource::Profiles' do
 
         it { Profile::OPTIONAL_PARAMS.each { |p| expect(json_body[p].blank?).to be_truthy } }
 
-        it { expect(json_body[:state]).to eq('partial') }
+        it { expect(json_body[:state]).to eq('drafted') }
 
         it { expect(subject).to be }
 
@@ -139,9 +139,9 @@ describe 'API::V2::Resource::Profiles' do
 
         it { expect(subject.metadata.blank?).to be_truthy }
 
-        it { expect(subject.state).to eq('partial') }
+        it { expect(subject.state).to eq('drafted') }
 
-        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('partial') }
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
 
       context 'several params' do
@@ -162,15 +162,15 @@ describe 'API::V2::Resource::Profiles' do
 
         it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(JSON.parse(response.body)[p].blank?).to be_truthy } }
 
-        it { expect(json_body[:state]).to eq('partial') }
+        it { expect(json_body[:state]).to eq('drafted') }
 
         it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(subject.attributes[p.to_sym].blank?).to be_truthy } }
 
         it { expect(subject.metadata.blank?).to be_truthy }
 
-        it { expect(subject.state).to eq('partial') }
+        it { expect(subject.state).to eq('drafted') }
 
-        it { expect(subject.user.labels.find_by(key: :profile).value).to eq('partial') }
+        it { expect(subject.user.labels.find_by(key: :profile).value).to eq('drafted') }
       end
 
       context 'full profile params' do
@@ -185,15 +185,15 @@ describe 'API::V2::Resource::Profiles' do
 
         it { request_params.keys.each { |p| expect(json_body[p].present?).to be_truthy } }
 
-        it { expect(json_body[:state]).to eq('completed') }
+        it { expect(json_body[:state]).to eq('drafted') }
 
         it { request_params.stringify_keys.keys.each { |p| expect(subject.attributes[p].present?).to be_truthy } }
 
         it { expect(subject.metadata.blank?).to be_truthy }
 
-        it { expect(subject.state).to eq('completed') }
+        it { expect(subject.state).to eq('drafted') }
 
-        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
     end
   end
@@ -204,7 +204,7 @@ describe 'API::V2::Resource::Profiles' do
       {
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
-        dob: Faker::Date.birthday,
+        dob: nil,
         address: Faker::Address.state,
         postcode: Faker::Address.zip_code,
         city: Faker::Address.city,
@@ -219,8 +219,8 @@ describe 'API::V2::Resource::Profiles' do
 
       get url, headers: auth_header
       expect(response.status).to eq(200)
-      expected_json = request_params.merge(state: 'completed').merge(optional_params).to_json
-      expect(response.body).to eq(expected_json)
+      expected_json = request_params.merge(state: 'drafted').merge(optional_params)
+      expect(json_body.first).to eq(expected_json)
     end
   end
 
@@ -292,27 +292,27 @@ describe 'API::V2::Resource::Profiles' do
         put url, params: request_params, headers: auth_header
 
         expect_status.to eq(404)
-        expect_body.to eq(errors: ['resource.profile.doesnt_exist'])
+        expect_body.to eq(errors: ['resource.profile.doesnt_exist_or_not_editable'])
       end
     end
 
     context 'user with profile' do
-      let!(:profile) { create(:profile, user: test_user)}
+      let!(:profile) { create(:profile, user: test_user, state: 'drafted')}
 
-      it 'returns completed profile' do
+      it 'returns drafted profile' do
         put url, params: request_params, headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
         expect(profile).to be
-        expect(json_body[:state]).to eq('completed')
-        expect(profile.state).to eq('completed')
+        expect(json_body[:state]).to eq('drafted')
+        expect(profile.state).to eq('drafted')
         expect(profile.metadata).to be_blank
       end
     end
 
     context 'user with partial profile' do
-      let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil) }
+      let!(:profile) { create(:profile, state: 'drafted', user: test_user, last_name: nil, first_name: nil) }
 
       it 'returns partial profile' do
         put url, params: request_params.except(:first_name), headers: auth_header
@@ -320,8 +320,8 @@ describe 'API::V2::Resource::Profiles' do
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params.except(:first_name))
         expect(profile).to be
-        expect(json_body[:state]).to eq('partial')
-        expect(profile.state).to eq('partial')
+        expect(json_body[:state]).to eq('drafted')
+        expect(profile.state).to eq('drafted')
         expect(profile.metadata).to be_blank
       end
 
@@ -331,8 +331,8 @@ describe 'API::V2::Resource::Profiles' do
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
         expect(profile).to be
-        expect(json_body[:state]).to eq('completed')
-        expect(profile.state).to eq('completed')
+        expect(json_body[:state]).to eq('drafted')
+        expect(profile.state).to eq('drafted')
         expect(profile.metadata).to be_blank
       end
     end

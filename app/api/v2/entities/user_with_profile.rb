@@ -10,7 +10,7 @@ module API::V2
       expose :otp, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
       expose :state, documentation: { type: 'String' }
       expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
-      expose :profile, using: Entities::Profile
+      expose :profiles, using: Entities::Profile
       expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
         user.referral_uid
       end

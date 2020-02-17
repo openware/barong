@@ -36,14 +36,16 @@ module API
             optional :address, type: String
             optional :postcode, type: String
             optional :city, type: String
+            optional :state, type: String
             optional :country, type: String
             optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
           end
 
           put do
-            target_profile = User.find_by(uid: params[:uid])&.profile
-            return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
+            target_profile = User.find_by(uid: params[:uid])&.profiles&.find_by(state: 'drafted')
+            return error!({ errors: ['admin.profiles.doesnt_exist_or_not_editable'] }, 404) if target_profile.nil?
 
+            
             if target_profile.user.superadmin? && !current_user.superadmin?
               error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
             end
@@ -64,17 +66,21 @@ module API
           ]
           params do
             requires :uid, type: String
+            requires :id,  type: Integer
           end
 
           delete do
-            target_profile = User.find_by(uid: params[:uid])&.profile
+            target_profile = User.find_by(uid: params[:uid])&.profiles&.find(params[:id])
+
             return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
 
             if target_profile.user.superadmin? && !current_user.superadmin?
               error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
             end
 
-            present target_profile.destroy, with: API::V2::Entities::Profile
+            # delete here is not safe to use, as it skips readonly validation
+            # will be deprecated in next version
+            present target_profile.delete, with: API::V2::Entities::Profile
           end
         end
       end

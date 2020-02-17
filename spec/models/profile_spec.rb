@@ -55,7 +55,7 @@ RSpec.describe Profile, type: :model do
     end
     let!(:user) { create(:user) }
 
-    subject { Profile.create(params.merge(user: user)) }
+    subject { Profile.create(params.merge(user_id: user.id)) }
 
     context 'empty params' do
       let!(:params) { {} }
@@ -78,9 +78,9 @@ RSpec.describe Profile, type: :model do
 
       it { expect(subject.metadata.nil?).to be_truthy }
 
-      it { expect(subject.state).to eq('partial') }
+      it { expect(subject.state).to eq('drafted') }
 
-      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('partial') }
+      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
 
       context 'add empty params' do
 
@@ -118,9 +118,9 @@ RSpec.describe Profile, type: :model do
 
         it { expect(subject.metadata.nil?).to be_truthy }
 
-        it { expect(subject.state).to eq('completed') }
+        it { expect(subject.state).to eq('drafted') }
 
-        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
+        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
     end
 
@@ -156,16 +156,16 @@ RSpec.describe Profile, type: :model do
 
       it { expect(subject.metadata.present?).to be_falsey }
 
-      it { expect(subject.state).to eq('completed') }
+      it { expect(subject.state).to eq('drafted') }
 
-      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('verified') }
+      it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
     end
   end
 
   context 'event api behaviour' do
     let!(:permission) { create(:permission, role: 'member') }
     let!(:user) { create(:user, state: 'pending', role: 'member') }
-    let!(:profile) { create(:profile, user_id: user.id, first_name: old_name) }
+    let!(:profile) { create(:profile, user_id: user.id, first_name: old_name, state: 'drafted') }
     let!(:old_name) { Faker::Name.first_name }
     let!(:new_name) { Faker::Name.first_name }
 

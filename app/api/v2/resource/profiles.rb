@@ -13,9 +13,7 @@ module API::V2
                { code: 404, message: 'User has no profile' }
              ]
         get '/me' do
-          error!({ errors: ['resource.profile.not_exist'] }, 404) unless current_user.profile
-
-          current_user.profile.as_json(only: %i[first_name last_name dob address country city postcode state metadata])
+          present current_user.profiles, with: API::V2::Entities::Profile
         end
 
         desc 'Create a profile for current_user',
@@ -38,11 +36,10 @@ module API::V2
         end
 
         post do
-          return error!({ errors: ['resource.profile.exist'] }, 409) unless current_user.profile.nil?
-
-          profile = current_user.create_profile(declared(params, include_missing: false))
+          profile = current_user.profiles.create(declared(params, include_missing: false))
           code_error!(profile.errors.details, 422) if profile.errors.any?
-          current_user.labels.create(key: 'profile', value: 'verified', scope: 'private')
+          # labels
+          # current_user.labels.create(key: 'profile', value: 'drafted', scope: 'private')
 
           present profile, with: API::V2::Entities::Profile
 
@@ -68,13 +65,12 @@ module API::V2
         end
 
         put do
-          target_profile = current_user.profile
-          return error!({ errors: ['resource.profile.doesnt_exist'] }, 404) if target_profile.nil?
+          target_profile = current_user.profiles.find_by(state: 'drafted')  
+          return error!({ errors: ['resource.profile.doesnt_exist_or_not_editable'] }, 404) if target_profile.nil?
 
           unless target_profile.update(declared(params, include_missing: false))
             code_error!(target_profile.errors.details, 422)
           end
-
           present target_profile, with: API::V2::Entities::Profile
         end
       end

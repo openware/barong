@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_090006) do
+ActiveRecord::Schema.define(version: 2020_02_17_110022) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_090006) do
     t.string "postcode"
     t.string "city"
     t.string "country"
-    t.integer "state", limit: 1, unsigned: true
+    t.string "state", default: "drafted", null: false
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

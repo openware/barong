@@ -9,6 +9,7 @@ module API::V2
       expose :address, documentation: { type: 'String' }
       expose :postcode, documentation: { type: 'String' }
       expose :city, documentation: { type: 'String' }
+      expose :state, documentation: { type: 'String' }
       expose :country, documentation: { type: 'String' }
       expose :state, documentation: { type: 'String' }
       expose :metadata, documentation: { type: 'Hash', desc: 'Profile additional fields' }

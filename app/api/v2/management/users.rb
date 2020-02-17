@@ -134,6 +134,7 @@ module API::V2
           optional :address, type: String, allow_blank: false
           optional :postcode, type: String, allow_blank: false
           optional :city, type: String, allow_blank: false
+          optional :state, type: String, allow_blank: false
           optional :country, type: String, allow_blank: false
         end
 
@@ -151,7 +152,9 @@ module API::V2
           create_phone(user: user, number: params[:phone])
 
           profile_params = params.slice(*profile_param_keys)
-          create_profile(user: user, params: profile_params)
+
+          profile = Profile.new(profile_params.merge(user_id: user.id))
+          error!(profile.errors.full_messages, 422) unless profile.save
 
           present user, with: API::V2::Entities::UserWithProfile
         end

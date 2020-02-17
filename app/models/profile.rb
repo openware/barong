@@ -28,7 +28,6 @@ class Profile < ApplicationRecord
 
   belongs_to :user
   validates :state, presence: true
-  enum state: %w[drafted submitted approved rejected]
 
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
 
@@ -65,14 +64,13 @@ class Profile < ApplicationRecord
                       },
                       if: proc { |a| a.address.present? }
   validates :metadata, data_is_json: true
-
-  scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
+  validate  :profile_state!, on: :create
 
   before_validation do
+    assign_state
     squish_spaces
-    profile_state
   end
-                    
+
   after_commit :create_profile_label, on: :create
 
   def full_name
@@ -97,15 +95,20 @@ class Profile < ApplicationRecord
 
   private
 
-  def profile_state
+  def profile_state!
     # No limits for storing approved and rejected profiles
-    return if state.in?(%w[approved rejected])
+    return if state.in?(%w[approved rejected]) || self.user.nil?
 
     # This check is actual for profile states [drafted submitted]
     # User cant have more than one DRAFTED or SUMBITTED profile at one time
-    unless (%w[drafted submitted] - self.user.profiles.pluck(:state)).empty?
+    user_profiles_states = self.user.profiles.pluck(:state)
+    if user_profiles_states.include?('drafted') ||  user_profiles_states.include?('submitted')
       errors.add(:state, :exists, message: 'already exists')
     end
+  end
+
+  def assign_state
+    state = self.state ||= 'drafted'
   end
 
   def readonly?

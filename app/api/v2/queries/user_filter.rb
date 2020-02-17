@@ -5,7 +5,7 @@ module API::V2::Queries
 
     # initialize query to get User.all
     def initialize(initial_scope)
-      @initial_scope = initial_scope.left_outer_joins(:profile)
+      @initial_scope = initial_scope.left_outer_joins(:profiles)
     end
 
     # returns query with with all applied filters
@@ -26,8 +26,10 @@ module API::V2::Queries
 
     # adds where(users.[created, updated]_at > from and users.[created, updated]_at < to) to query
     def filter_by_date(scoped, range = 'created', from = nil, to = nil)
-      updated_scope = from ? scoped.where("users.#{range}_at >= ?", Time.at(from.to_i)) : scoped
-      to ? updated_scope.where("users.#{range}_at <= ?", Time.at(to.to_i)) : updated_scope
+      newer_than_sql = "users.#{range}_at >= ?"
+      older_than_sql = "users.#{range}_at <= ?"
+      updated_scope = from ? scoped.where(newer_than_sql, Time.at(from.to_i)) : scoped
+      to ? updated_scope.where(older_than_sql, Time.at(to.to_i)) : updated_scope
     end
 
     # adds where(users.uid = uid) to query

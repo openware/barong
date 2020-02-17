@@ -29,10 +29,10 @@ describe API::V2::Management::Users, type: :request do
         }
       end
       let(:expected_attributes) do
-        %i[email uid role level otp state data profile referral_uid created_at updated_at]
+        %i[email uid role level otp state data profiles referral_uid created_at updated_at]
       end
       let(:extended_attributes) do
-        %i[email uid role level otp state data profile labels phones documents data_storages referral_uid created_at updated_at]
+        %i[email uid role level otp state data profiles labels phones documents data_storages referral_uid created_at updated_at]
       end
       let(:signers) { %i[alex jeff] }
 
@@ -275,7 +275,7 @@ describe API::V2::Management::Users, type: :request do
             expect { do_request }.to change { User.count }.by(1)
             expect_status_to_eq 201
             expect(json_body).to include(:email, :uid, :role, :level,
-                                         :state, :otp, :profile)
+                                         :state, :otp, :profiles)
           end
         end
 
@@ -314,7 +314,7 @@ describe API::V2::Management::Users, type: :request do
           expect { do_request }.to change { User.count }.by(1)
           expect_status_to_eq 201
           expect(json_body).to include(:email, :uid, :role, :level,
-                                       :state, :otp, :profile)
+                                       :state, :otp, :profiles)
 
           # TODO: Check if imported user is able to login
         end
@@ -398,8 +398,8 @@ describe API::V2::Management::Users, type: :request do
             }
           end
 
-          it 'does not create a profile' do
-            expect { do_request }.to_not change { Profile.count }
+          it 'creates a profile' do
+            expect { do_request }.to change { Profile.count }
             expect_status_to_eq 201
           end
         end

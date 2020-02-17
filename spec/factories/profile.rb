@@ -8,6 +8,7 @@ FactoryBot.define do
     dob { Faker::Date.birthday }
     address { Faker::Address.state }
     city { Faker::Address.city }
+    state { 'approved' }
     country { Faker::Address.country_code_long }
     postcode { Faker::Address.postcode }
   end
