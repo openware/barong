@@ -27,8 +27,8 @@ class Profile < ApplicationRecord
   acts_as_eventable prefix: 'profile', on: %i[create update]
 
   belongs_to :user
-
-  enum state: %w[partial completed]
+  validates :state, presence: true
+  enum state: %w[drafted submitted approved rejected]
 
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
 
@@ -70,10 +70,9 @@ class Profile < ApplicationRecord
 
   before_validation do
     squish_spaces
-    self.state = profile_full? ? 'completed' : 'partial'
+    profile_state
   end
-
-  after_commit :update_profile_label, on: :update
+                    
   after_commit :create_profile_label, on: :create
 
   def full_name
@@ -98,6 +97,25 @@ class Profile < ApplicationRecord
 
   private
 
+  def profile_state
+    # No limits for storing approved and rejected profiles
+    return if state.in?(%w[approved rejected])
+
+    # This check is actual for profile states [drafted submitted]
+    # User cant have more than one DRAFTED or SUMBITTED profile at one time
+    unless (%w[drafted submitted] - self.user.profiles.pluck(:state)).empty?
+      errors.add(:state, :exists, message: 'already exists')
+    end
+  end
+
+  def readonly?
+    # allow update if profile.state is drafted or record is new(stadard behaviour)
+    return false if new_record? || self.state == 'drafted' # false
+
+    # readonly for submitted approved rejected
+    true
+  end
+
   def validate_country_format
     return if ISO3166::Country.find_country_by_alpha2(country) ||
               ISO3166::Country.find_country_by_alpha3(country)
@@ -108,26 +126,11 @@ class Profile < ApplicationRecord
   def squish_spaces
     first_name&.squish!
     last_name&.squish!
-    city&.squish!
     postcode&.squish!
-  end
-
-  def profile_full?
-    attributes.select { |k, _v| OPTIONAL_PARAMS.include?(k) }.all? { |_k, v| v.present? }
-  end
-
-  def update_profile_label
-    profile_label = user.labels.find_by(key: :profile)
-    return unless profile_full? && profile_label.present?
-
-    profile_label.update(value: :verified)
+    city&.squish!
   end
 
   def create_profile_label
-    if profile_full?
-      user.labels.create(key: 'profile', value: 'verified', scope: 'private')
-    else
-      user.labels.create(key: 'profile', value: 'partial', scope: 'private')
-    end
+    user.labels.create(key: 'profile', value: 'drafted', scope: 'private')
   end
 end
