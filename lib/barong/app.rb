@@ -54,6 +54,8 @@ module Barong
         return value unless options[:type]
 
         case options[:type]
+        when :array
+          return value.split(',').map { |v| v.squish }
         when :bool
           values!(key, value, %w(true false))
           return value == 'true'
