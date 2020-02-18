@@ -16,7 +16,6 @@ Barong::App.define do |config|
   config.set(:storage_signature_version, '4') # optional (AWS)
   config.set(:storage_region, '') # optional (AWS, AliCloud)
   config.set(:storage_pathstyle, 'false', type: :bool) # optional (AWS, AliCloud)
-  config.write(:uploader, UploadUploader)
 end
 
 CarrierWave.configure do |config|
