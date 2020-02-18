@@ -17,20 +17,21 @@ class UploadUploader < CarrierWave::Uploader::Base
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def extension_whitelist
-    %w[jpg jpeg png pdf]
+    Barong::App.config.barong_upload_extension_whitelist
   end
 
   def size_range
-    1..10.megabytes
+    # default is 1..10.megabytes
+    Barong::App.config.barong_upload_size_min_range..Barong::App.config.barong_upload_size_max_range.megabytes
   end
 
   # Override default 'publicly visible' policy of fog
   def fog_public
-    false # (default is true)
+    false # (default is true, which is not recommended for KYC documents or any user info
   end
 
   # Set the expire time of authentification signature
   def fog_authenticated_url_expiration
-    1.minutes # in seconds from now,  (default is 10.minutes)
+    Barong::App.config.barong_upload_auth_url_expiration.minutes # (default is 1.minute)
   end
 end
