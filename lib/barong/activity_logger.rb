@@ -29,7 +29,7 @@ module Barong
       topic = params[:topic].nil? && params[:path].split('admin/')[1].nil? ? 'general' : params[:topic] || params[:path].split('admin/')[1].split('/')[0]
       {
         user_id:       params[:user_id],
-        target_uid:   target_user(params[:payload]) || '',
+        target_uid:    target_user(params[:payload]) || '',
         user_ip:       params[:user_ip],
         user_agent:    params[:user_agent],
         topic:         topic,
@@ -49,11 +49,13 @@ module Barong
     end
 
     def self.target_user(payload)
-      return unless payload
+      # in case payload is missing || empty POST body: payload=> {"null" => nil }
+      return if payload.nil? || payload.keys.first == "null"
 
       if valid_json?(payload.keys.first)
         payload = JSON.parse(payload.keys.first)
       end
+
       payload[:uid] || payload[:user_uid] || payload['uid'] || payload['user_uid']
     end
 
