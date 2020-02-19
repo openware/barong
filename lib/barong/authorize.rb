@@ -41,6 +41,7 @@ module Barong
       error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
       user = User.find_by!(uid: session[:uid])
+      Rails.logger.debug "User #{user} authorization via cookies"
 
       validate_session!
 
@@ -58,7 +59,7 @@ module Barong
              Time.now.to_i < session[:expire_time] &&
              find_ip.include?(@request.remote_ip)
         session.destroy
-        Rails.logger.error("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
+        Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
                            " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
                            " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{@request.remote_ip} }")
 
@@ -87,7 +88,7 @@ module Barong
       error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
       user = User.find_by_id(current_api_key.user_id)
-      Rails.logger.info("Api key authorization by user: #{user.email} via key: #{current_api_key.kid}")
+      Rails.logger.debug("Api key authorization by user: #{user.email} via key: #{current_api_key.kid}")
 
       validate_user!(user)
 
@@ -241,6 +242,7 @@ module Barong
 
     # custom error, calls AuthError class
     def error!(text, code)
+      Rails.logger.debug "Error raised with code #{code} and error message #{text.to_json}"
       raise AuthError.new(code),  text.to_json
     end
 
