@@ -3,7 +3,10 @@
 module API::V2
   module Utils
     def remote_ip
-      env['action_dispatch.remote_ip'].to_s
+      ip_string = env['action_dispatch.remote_ip'].to_s
+      Rails.logger.debug "User login IP address: #{ip_string}"
+
+      ip_string
     end
 
     def code_error!(errors, code)

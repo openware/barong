@@ -64,7 +64,7 @@ module API::V2
           status 201
 
         rescue Excon::Error => e
-          logger.fatal(e)
+          Rails.logger.info(e)
           error!('Connection error', 500)
         end
       end

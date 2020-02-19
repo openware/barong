@@ -5,7 +5,9 @@
 # class that avoids CloudFlare ip hiding
 class CloudFlareMiddleware
   # latest cloudflare IP Ranges https://www.cloudflare.com/ips/
-  PROXY_MATCHERS = File.read('config/cloudflare_ips.yml').split(/\R+/)
+  CLOUDFLARE_IPS = File.read('config/cloudflare_ips.yml').split(/\R+/)
+  COMMON_PRIVATE_IPS = ["10.0.0.0/8","172.16.0.0/12","192.168.0.0/16"]
+  PROXY_MATCHERS = CLOUDFLARE_IPS + COMMON_PRIVATE_IPS
 
   attr_reader :proxies
 
@@ -27,8 +29,12 @@ class CloudFlareMiddleware
 
   def call(env)
     @env = env
-    ips = ips_from('HTTP_X_FORWARDED_FOR')
+    ips = ips_from(@env['HTTP_X_FORWARDED_FOR'])
+    Rails.logger.debug "Original http_x_forwarded_for: #{ips}"
+
     @env['HTTP_X_FORWARDED_FOR'] = filter_proxies(ips).join(', ')
+
+    Rails.logger.debug "Filtered from private and cloudflare IPs address: #{@env['HTTP_X_FORWARDED_FOR']}"
 
     @app.call(env)
   end
