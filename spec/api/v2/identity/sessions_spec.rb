@@ -15,6 +15,8 @@ describe API::V2::Identity::Sessions do
   end
 
   describe 'POST /api/v2/identity/sessions' do
+    before { allow(Barong::App.config).to receive_messages(captcha: 'none') }
+
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
     let(:uri) { '/api/v2/identity/sessions' }
@@ -39,6 +41,25 @@ describe API::V2::Identity::Sessions do
           email: email,
           password: password
         }
+      end
+
+      context 'captcha behaviour when captcha policy is recaptcha' do
+        before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
+  
+        it 'doesnt require captcha if endpoint is not in the protection list' do
+          allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create"]})
+  
+          do_request
+          expect_status_to_eq 200
+        end
+  
+        it 'require captcha if endpoint is in the protection list' do
+          allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]})
+  
+          do_request
+          expect_status_to_eq 400
+          expect_body.to eq(errors: ["identity.captcha.required"])
+        end
       end
 
       it 'Check current credentials and returns session' do
@@ -98,6 +119,7 @@ describe API::V2::Identity::Sessions do
         end
 
         it 'renders an error' do
+          allow(Barong::App.config).to receive_messages(captcha: 'recaptcha')
           do_request
           expect(json_body[:errors]).to eq(["identity.captcha.verification_failed"])
           expect_status_to_eq 422
@@ -205,6 +227,8 @@ describe API::V2::Identity::Sessions do
   end
 
   describe 'DELETE /api/v2/identity/sessions' do
+    before { allow(Barong::App.config).to receive_messages(captcha: 'none') }
+
     let!(:email) { 'user@gmail.com' }
     let!(:password) { 'testPassword111' }
     let(:uri) { '/api/v2/identity/sessions' }

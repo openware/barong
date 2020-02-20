@@ -27,21 +27,24 @@ module API::V2
         params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
       end
 
-      def verify_captcha!(user:, response:, error_statuses: [400, 422])
+      def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])
+        # by default we protect user_create session_create password_reset email_confirmation endpoints
+        return unless BarongConfig.list['сaptcha_protected_endpoints'].include?(endpoint)
+
         case Barong::App.config.captcha
         when 'recaptcha'
-          recaptcha(user: user, response: response)
+          recaptcha(response: response)
         when 'geetest'
           geetest(response: response)
         end
       end
 
-      def recaptcha(user:, response:, error_statuses: [400, 422])
+      def recaptcha(response:, error_statuses: [400, 422])
         error!({ errors: ['identity.captcha.required'] }, error_statuses.first) if response.blank?
 
         captcha_error_message = 'identity.captcha.verification_failed'
 
-        return if CaptchaService::RecaptchaVerifier.new(request: request).response_valid?(model: user, skip_remote_ip: true, response: response)
+        return if CaptchaService::RecaptchaVerifier.new(request: request).response_valid?(skip_remote_ip: true, response: response)
 
         error!({ errors: [captcha_error_message] }, error_statuses.last)
       rescue StandardError
