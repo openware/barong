@@ -23,14 +23,11 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         post do
+          verify_captcha!(response: params['captcha_response'], endpoint: 'session_create')
+
           declared_params = declared(params, include_missing: false)
           user = User.find_by(email: declared_params[:email])
-
-          if declared_params[:captcha_response]
-            verify_captcha!(user: user, response: params['captcha_response'])
-          end
-
-          error!({ errors: ['identity.session.invalid_login_params'] }, 401) unless user
+          error!({ errors: ['identity.session.invalid_params'] }, 401) unless user
 
           if user.state == 'banned'
             login_error!(reason: 'Your account is banned', error_code: 401,

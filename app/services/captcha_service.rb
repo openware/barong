@@ -14,12 +14,12 @@ module CaptchaService
       @request = request
     end
 
-    def response_valid?(model:, skip_remote_ip:, response:)
+    def response_valid?(skip_remote_ip:, response:)
       # according to changes in v2 support https://github.com/ambethia/recaptcha#recaptcha-v2-api-and-usage
       # method comes from Recaptcha::Adapters::ControllerMethods
       # https://github.com/ambethia/recaptcha/blob/master/lib/recaptcha/adapters/controller_methods.rb#L10
       verify_recaptcha(secret_key: Barong::App.config.recaptcha_secret_key,
-                       model: model,
+                       model: User,
                        skip_remote_ip: skip_remote_ip,
                        response: response)
     end

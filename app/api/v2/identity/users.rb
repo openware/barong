@@ -46,14 +46,14 @@ module API::V2
                    desc: 'Any additional key: value pairs in json string format'
         end
         post do
+          verify_captcha!(response: params['captcha_response'], endpoint: 'user_create')
+
           declared_params = declared(params, include_missing: false)
           user_params = declared_params.slice('email', 'password', 'data')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 
           user = User.new(user_params)
-
-          verify_captcha!(user: user, response: params['captcha_response'])
 
           code_error!(user.errors.details, 422) unless user.save
 
@@ -86,11 +86,17 @@ module API::V2
             optional :lang,
                      type: String,
                      desc: 'Client env language'
+            optional :captcha_response,
+                     types: [String, Hash],
+                     desc: 'Response from captcha widget'
           end
           post '/generate_code' do
+            verify_captcha!(response: params['captcha_response'], endpoint: 'email_confirmation')
+
             current_user = User.find_by_email(params[:email])
+
             if current_user.nil? || current_user.active?
-              error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
+              return status 201
             end
 
             publish_confirmation(current_user, language, Barong::App.config.barong_domain)
@@ -157,9 +163,14 @@ module API::V2
             optional :lang,
                      type: String,
                      desc: 'Language in iso-2 format'
+            optional :captcha_response,
+                     types: [String, Hash],
+                     desc: 'Response from captcha widget'
           end
 
           post '/generate_code' do
+            verify_captcha!(response: params['captcha_response'], endpoint: 'password_reset')
+
             current_user = User.find_by_email(params[:email])
 
             error!({ errors: ['identity.password.user_doesnt_exist'] }, 404) if current_user.nil?

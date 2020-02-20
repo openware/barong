@@ -16,3 +16,8 @@ document_types:
   - Utility Bill
   - Residental
   - Institutional
+сaptcha_protected_endpoints:
+  - user_create
+  - session_create
+  - password_reset
+  - email_confirmation
