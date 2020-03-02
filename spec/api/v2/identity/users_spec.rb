@@ -168,15 +168,34 @@ describe API::V2::Identity::Users do
   describe 'POST /api/v2/identity/users with reCAPTCHA Barong::App.config.captcha' do
     before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
 
+
+    let(:do_request_with_captcha) { post '/api/v2/identity/users', params: params_with_captcha }
+    let(:params_with_captcha) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', captcha_response: 'response' } }
     let(:do_request) { post '/api/v2/identity/users', params: params }
-    let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', captcha_response: 'response' } }
+    let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
     context 'when reCAPTCHA is valid' do
-      before { allow_any_instance_of(CaptchaService::RecaptchaVerifier).to receive(:verify_recaptcha) { true } }
 
       it 'creates an account' do
+        allow_any_instance_of(CaptchaService::RecaptchaVerifier).to receive(:verify_recaptcha) { true }
+
+        do_request_with_captcha
+        expect_status_to_eq 201
+      end
+
+      it 'doesnt require captcha if endpoint is not in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["session_create"]})
+
         do_request
         expect_status_to_eq 201
+      end
+
+      it 'require captcha if endpoint is in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]})
+
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(errors: ["identity.captcha.required"])
       end
     end
 
@@ -184,7 +203,7 @@ describe API::V2::Identity::Users do
       before { allow_any_instance_of(CaptchaService::RecaptchaVerifier).to receive(:verify_recaptcha) { false } }
 
       it 'renders an error' do
-        do_request
+        do_request_with_captcha
         expect_status_to_eq 422
         expect_body.to eq(errors: ["identity.captcha.verification_failed"])
       end
@@ -311,24 +330,23 @@ describe API::V2::Identity::Users do
   end
 
   describe 'POST /api/v2/identity/users/email/generate_code' do
+    before { allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]}) }
     let(:params) { { email: 'invalid@email.com' } }
     let(:do_request) { post '/api/v2/identity/users/email/generate_code', params: params }
 
     context 'when user is invalid' do
-      it 'renders an error' do
+      it 'doesnt render an error to prevent user enumeration' do
         do_request
-        expect_status_to_eq 422
-        expect_body.to eq(errors: ["identity.user.active_or_doesnt_exist"])
+        expect_status_to_eq 201
       end
     end
 
     let(:params) { { email: 'valid-confirmed@email.com' } }
     context 'when user is valid, email confirmed' do
-      it 'renders an error' do
+      it 'doesnt render an error to prevent user enumeration' do
         create(:user, email: 'valid-confirmed@email.com', state: 'active')
         do_request
-        expect_status_to_eq 422
-        expect_body.to eq(errors: ["identity.user.active_or_doesnt_exist"])
+        expect_status_to_eq 201
       end
     end
 
@@ -338,6 +356,27 @@ describe API::V2::Identity::Users do
       it 'returns a success' do
         do_request
         expect_status_to_eq 201
+      end
+    end
+
+    context 'captcha behaviour when captcha policy is recaptcha' do
+      let(:user) { create(:user, state: 'pending') }
+      let(:params) { { email: user.email } }
+      before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
+
+      it 'doesnt require captcha if endpoint is not in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]})
+
+        do_request
+        expect_status_to_eq 201
+      end
+
+      it 'require captcha if endpoint is in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create", "email_confirmation"]})
+
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(errors: ["identity.captcha.required"])
       end
     end
   end
@@ -424,6 +463,27 @@ describe API::V2::Identity::Users do
       it 'sends reset password instructions' do
         do_request
         expect_status_to_eq 201
+      end
+    end
+
+    context 'captcha behaviour when captcha policy is recaptcha' do
+      let!(:user) { create(:user, email: email) }
+      let(:email) { 'email@gmail.com' }
+      before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
+
+      it 'doesnt require captcha if endpoint is not in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]})
+
+        do_request
+        expect_status_to_eq 201
+      end
+
+      it 'require captcha if endpoint is in the protection list' do
+        allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create", "password_reset"]})
+
+        do_request
+        expect_status_to_eq 400
+        expect_body.to eq(errors: ["identity.captcha.required"])
       end
     end
   end
