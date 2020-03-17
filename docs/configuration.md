@@ -13,6 +13,7 @@
 | `barong_doc_num_limit` | 10 | any amount number | number of maximum documents that can be attached to uniq user |
 | `barong_geoip_lang` | en | `en`, `de`, `es`, `fr`, `ja`, `ru`  | internal GeoIP lang `Barong::GeoIP.lang`, which configures the language of detected country/continent name |
 | `barong_csrf_protection` | true | `true`, `false` | while turned on (`true`) exposes csrf_token on session create and requires X-CSRF-Token on every private POST PUT PATCH DELETE TRACE on AuthZ level |
+| `barong_apikey_nonce_lifetime` | 5000 | integer representation of milliseconds | nonce in api key headers should not be older than this env value  |
 
 
 ### Password configuration

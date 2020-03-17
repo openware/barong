@@ -73,7 +73,7 @@ describe '/api/v2/auth functionality test' do
 
     context 'with api_keys' do
       let!(:admin_api_key) { create :api_key, user: @admin }
-      let(:nonce) { Time.now.to_i }
+      let(:nonce) { (Time.now.to_f * 1000).to_i }
       let(:secret) { SecureRandom.hex(16) }
       let(:signature) { OpenSSL::HMAC.hexdigest('SHA256', secret, nonce.to_s + admin_api_key.kid ) }
       let!(:turn_on_2fa) { @admin.update(otp: true) }
@@ -125,7 +125,7 @@ describe '/api/v2/auth functionality test' do
                 'X-Auth-Nonce' => nonce,
                 'X-Auth-Signature' => signature
               }
-
+              Rails.cache.delete(admin_api_key.kid)
               expect(response.status).to eq(401)
               expect(response.body).to eq("{\"errors\":[\"authz.invalid_permission\"]}")
 

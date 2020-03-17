@@ -104,7 +104,7 @@ describe '/api/v2/auth CSRF functionality test' do
     let(:otp_enabled) { true }
     let!(:api_key) { create :api_key, user: test_user }
     let(:otp_code) { '1357' }
-    let(:nonce) { Time.now.to_i }
+    let(:nonce) { (Time.now.to_f * 1000).to_i }
     let(:kid) { api_key.kid }
     let(:secret) { SecureRandom.hex(16) }
     let(:data) { nonce.to_s + kid }
