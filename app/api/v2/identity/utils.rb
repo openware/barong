@@ -29,7 +29,7 @@ module API::V2
 
       def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])
         # by default we protect user_create session_create password_reset email_confirmation endpoints
-        return unless BarongConfig.list['сaptcha_protected_endpoints'].include?(endpoint)
+        return unless BarongConfig.list['captcha_protected_endpoints'].include?(endpoint)
 
         case Barong::App.config.captcha
         when 'recaptcha'
