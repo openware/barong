@@ -74,7 +74,7 @@ describe API::V2::Management::Labels, type: :request do
         data[:extended] = true
         do_request
 
-        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:profiles)
       end
     end
 

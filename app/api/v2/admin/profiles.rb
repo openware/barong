@@ -37,12 +37,13 @@ module API
             optional :postcode, type: String
             optional :city, type: String
             optional :country, type: String
+            optional :state, type: String
             optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
           end
 
           put do
-            target_profile = User.find_by(uid: params[:uid])&.profile
-            return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
+            target_profile = User.find_by(uid: params[:uid])&.submitted_profile
+            return error!({ errors: ['admin.profiles.doesnt_exist_or_not_editable'] }, 404) if target_profile.nil?
 
             if target_profile.user.superadmin? && !current_user.superadmin?
               error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
@@ -53,28 +54,6 @@ module API
             end
 
             present target_profile, with: API::V2::Entities::Profile
-          end
-
-          desc 'Delete a profile for user',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 401, message: 'Invalid bearer token' },
-            { code: 422, message: 'Validation errors' }
-          ]
-          params do
-            requires :uid, type: String
-          end
-
-          delete do
-            target_profile = User.find_by(uid: params[:uid])&.profile
-            return error!({ errors: ['admin.profiles.doesnt_exist'] }, 404) if target_profile.nil?
-
-            if target_profile.user.superadmin? && !current_user.superadmin?
-              error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
-            end
-
-            present target_profile.destroy, with: API::V2::Entities::Profile
           end
         end
       end

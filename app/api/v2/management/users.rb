@@ -7,7 +7,7 @@ module API::V2
       helpers do
         def profile_param_keys
           %w[first_name last_name dob address
-             postcode city country].freeze
+             postcode city country state].freeze
         end
 
         def create_user(user_params)
@@ -20,13 +20,6 @@ module API::V2
 
         def all_profile_fields?(params)
           profile_param_keys.all? { |key| params[key].present? }
-        end
-
-        def create_profile(user:, params:)
-          return unless all_profile_fields?(params)
-
-          profile = user.create_profile(params)
-          error!(profile.errors.full_messages, 422) unless profile.persisted?
         end
 
         def create_phone(user:, number:)
@@ -135,6 +128,7 @@ module API::V2
           optional :postcode, type: String, allow_blank: false
           optional :city, type: String, allow_blank: false
           optional :country, type: String, allow_blank: false
+          optional :state, type: String, allow_blank: false
         end
 
         post '/import' do
@@ -151,7 +145,8 @@ module API::V2
           create_phone(user: user, number: params[:phone])
 
           profile_params = params.slice(*profile_param_keys)
-          create_profile(user: user, params: profile_params)
+          profile = Profile.new(profile_params.merge(user_id: user.id))
+          error!(profile.errors.full_messages, 422) unless profile.save
 
           present user, with: API::V2::Entities::UserWithProfile
         end
