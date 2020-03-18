@@ -284,6 +284,26 @@ RSpec.describe User, type: :model do
       end
     end
 
+    describe 'testing workability if config is missing' do
+      let!(:user) { create(:user, state: 'pending') }
+      let(:reqs_list) {
+        {
+          "activation_requirements" => {
+            "email" => "verified"
+          },
+        }
+      }
+
+      context 'not changing state on adding label' do
+        it 'doesnt changes state if state_triggers config is missing' do
+          expect(user.state).to eq('pending')
+
+          user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
+          expect(user.state).to eq('pending')
+        end
+      end
+    end
+
     describe 'testing workability with ANY mapping type' do
       let!(:user) { create(:user, state: 'pending') }
       let(:reqs_list) {

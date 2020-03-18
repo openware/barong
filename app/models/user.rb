@@ -102,7 +102,7 @@ class User < ApplicationRecord
     end
 
     # FIXME BarongConfig should be a feature of Barong::App
-    BarongConfig.list['state_triggers'].each do |state, triggers|
+    BarongConfig.list['state_triggers']&.each do |state, triggers|
       triggers.each { |trigger|
         labels.pluck(:key).each { |label|
           @resulting_state = state if label.start_with?(trigger)
