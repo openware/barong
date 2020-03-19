@@ -67,26 +67,28 @@ Expected response:
 To authenticate using API key you need to pass next 3 headers:
 
 `X-Auth-Apikey` - Access Key for API key (see 'How to create API key section ?')
-`X-Auth-Nonce` - generated unique string using for signature
+`X-Auth-Nonce` - Timestamp in milliseconds (can be passed as a string)
 `X-Auth-Signature` - HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key
 
 1. Generate X-Auth-Nonce - unique string (e.g current unix timestamp)
 
 ```bash
-date +%s 
-1577104280
+date +%s%3N
+1584524005143
 ```
+
+Nonce will be validated on server side to be not older than 5 seconds from the generation moment
 
 2. Calculate X-Auth-Signature header.
 
 X-Auth-Signature is HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key.
   
 ```ruby
-nonce = '1577104280'
+nonce = '1584524005143' # timestamp in milliseconds
 access_key = '61d025b8573501c2' # Access Key from 'How to create API key section ?'
 secret_key = '2d0b4979c7fe6986daa8e21d1dc0644f' # Secret Key from 'How to create API key section ?'
 OpenSSL::HMAC.hexdigest("SHA256", secret_key, nonce + access_key)
-# => "6cc108cb3427b655ccf0870fc7fa807ef3756506d4db3f3c93f8d4cd8ef0e611" 
+# => "bd42b945e095880e28d046846dbecf655fdf09d95a396a24fe6fe1df42f15d13" 
 ```
 
 3. Pass your headers in httpie (note `--session` is not needed anymore)
@@ -94,6 +96,6 @@ OpenSSL::HMAC.hexdigest("SHA256", secret_key, nonce + access_key)
 ```
 http https://your.domain.com/api/v2/peatio/account/balances \
   "X-Auth-Apikey: 61d025b8573501c2" \
-  "X-Auth-Nonce: 1577104280" \
-  "X-Auth-Signature: 6cc108cb3427b655ccf0870fc7fa807ef3756506d4db3f3c93f8d4cd8ef0e611"
+  "X-Auth-Nonce: 1584524005143" \
+  "X-Auth-Signature: bd42b945e095880e28d046846dbecf655fdf09d95a396a24fe6fe1df42f15d13"
 ```
