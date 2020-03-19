@@ -16,7 +16,7 @@ module API::V2
     end
     use GrapeLogging::Middleware::RequestLogger,
         logger:    logger,
-        log_level: (Rails.env.production?)? :warn : :debug,
+        log_level: :debug,
         include:   [GrapeLogging::Loggers::Response.new,
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,
