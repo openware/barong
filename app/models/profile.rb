@@ -28,8 +28,9 @@ class Profile < ApplicationRecord
 
   belongs_to :user
 
-  enum state: %w[partial completed]
+  enum state: { drafted: 0, submitted: 1, verified: 3, rejected: 4 }
 
+  EDITABLE_PARAMS = { drafted: %w[first_name last_name dob address postcode city country metadata]}
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
 
   validates :first_name, length: 1..255,
@@ -65,16 +66,16 @@ class Profile < ApplicationRecord
                       },
                       if: proc { |a| a.address.present? }
   validates :metadata, data_is_json: true
+  validate  :profile_state!, on: :create
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
 
   before_validation do
     squish_spaces
-    self.state = profile_full? ? 'completed' : 'partial'
   end
 
-  after_commit :update_profile_label, on: :update
-  after_commit :create_profile_label, on: :create
+  after_commit :create_or_update_profile_label
+  after_commit :update_document_label
 
   def full_name
     "#{first_name} #{last_name}"
@@ -112,22 +113,29 @@ class Profile < ApplicationRecord
     postcode&.squish!
   end
 
-  def profile_full?
-    attributes.select { |k, _v| OPTIONAL_PARAMS.include?(k) }.all? { |_k, v| v.present? }
-  end
+  def profile_state!
+    # No limits for storing verified and rejected profiles
+    return if state.in?(%w[verified rejected])
 
-  def update_profile_label
-    profile_label = user.labels.find_by(key: :profile)
-    return unless profile_full? && profile_label.present?
-
-    profile_label.update(value: :verified)
-  end
-
-  def create_profile_label
-    if profile_full?
-      user.labels.create(key: 'profile', value: 'verified', scope: 'private')
-    else
-      user.labels.create(key: 'profile', value: 'partial', scope: 'private')
+    # This check is actual for profile states [drafted submitted]
+    # User cant have more than one DRAFTED or SUMBITTED profile at one time
+    user_profiles_states = self.user.profiles.pluck(:state)
+    if user_profiles_states.include?('drafted') ||  user_profiles_states.include?('submitted')
+      errors.add(:state, :exists, message: 'already exists')
     end
+  end
+
+  def create_or_update_profile_label
+    profile_label = user.labels.find_by(key: :profile)
+    if profile_label.nil?
+      user.labels.create(key: :profile, value: state, scope: :private)
+    else
+      profile_label.update(value: state)
+    end
+  end
+
+  def update_document_label
+    user_document_label = user.labels.find_by(key: :document)
+    user_document_label.update(value: :replaced) if user_document_label.present? && user_document_label.value == 'verified'
   end
 end

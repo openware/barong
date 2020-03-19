@@ -102,7 +102,7 @@ describe '/api/v2/auth functionality test' do
     let(:otp_enabled) { true }
     let!(:api_key) { create :api_key, user: test_user }
     let(:otp_code) { '1357' }
-    let(:nonce) { Time.now.to_i }
+    let(:nonce) { (Time.now.to_f * 1000).to_i }
     let(:kid) { api_key.kid }
     let(:secret) { SecureRandom.hex(16) }
     let(:data) { nonce.to_s + kid }
@@ -126,6 +126,71 @@ describe '/api/v2/auth functionality test' do
         }
         expect(response.status).to eq(422)
         expect(response.body).to eq("{\"errors\":[\"authz.invalid_api_key_headers\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
+
+      it 'catches api key headers and renders error if nonce is string' do
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => 'nonce',
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.nonce_not_valid_timestamp\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
+
+      it 'catches api key headers and renders error if nonce is zero' do
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => 0,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.nonce_not_valid_timestamp\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
+
+      it 'catches api key headers and renders error if nonce is older than default 5 seconds' do
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => ((Time.now - 10.seconds).to_f * 1000).to_i,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.nonce_expired\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
+
+      it 'catches api key headers and renders error if nonce is from future' do
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => ((Time.now + 10.seconds).to_f * 1000).to_i,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.nonce_from_future\"]}")
+        expect(response.headers['Authorization']).to be_nil
+      end
+
+      it 'catches api key headers and renders error if nonce is using twice' do
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(200)
+        expect(response.body).to be_empty
+        expect(response.headers['Authorization']).to include "Bearer"
+        expect(response.headers['Authorization']).not_to be_nil
+
+        get auth_request, headers: {
+          'X-Auth-Apikey' => kid,
+          'X-Auth-Nonce' => nonce,
+          'X-Auth-Signature' => signature
+        }
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("{\"errors\":[\"authz.signature_blacklisted\"]}")
         expect(response.headers['Authorization']).to be_nil
       end
 

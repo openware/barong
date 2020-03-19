@@ -41,7 +41,7 @@ describe API::V2::Admin::Users do
         expect(validate_fields(User.third)).to eq json_body.third.except(:referral_uid)
         expect(validate_fields(User.fourth)).to eq json_body.fourth.except(:referral_uid)
 
-        expect(json_body.first.keys).to_not include(:profile)
+        expect(json_body.first.keys).to_not include(:profiles)
 
         expect(response.headers.fetch('Total')).to eq User.all.count.to_s
         expect(response.headers.fetch('Page')).to eq '1'
@@ -107,7 +107,7 @@ describe API::V2::Admin::Users do
         do_extended_info_request
         expect(User.count).to eq json_body.count
 
-        expect(json_body.first.keys).to include(:profile)
+        expect(json_body.first.keys).to include(:profiles)
 
         expect(response.headers.fetch('Total')).to eq User.all.count.to_s
         expect(response.headers.fetch('Page')).to eq '1'
@@ -731,57 +731,92 @@ describe API::V2::Admin::Users do
       let(:test_user) { create(:user, role: 'admin') }
 
       let(:private_document_pending_count)  { 3 }
+      let(:private_document_replaced_count)  { 3 }
       let(:public_document_pending_count)  { 2 }
 
-      before(:example) do
-        private_document_pending_count.times do |i|
-          create(:label, key: 'document', value: 'pending', scope: 'private')
+      context 'private pending documents' do
+        before(:example) do
+          private_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'private')
+          end
+          public_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'public')
+          end
         end
-        public_document_pending_count.times do |i|
-          create(:label, key: 'document', value: 'pending', scope: 'public')
+
+        it 'returns users with profile and documents if params extended' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: true }
+
+          expect(json_body.first.keys).to include(:profiles)
+          expect(json_body.first.keys).to include(:documents)
+          expect(json_body.count).to eq private_document_pending_count
+        end
+
+        it 'doesnt returns users with profile and documents if extended false' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: false }
+
+          expect(json_body.first.keys).not_to include(:profile)
+          expect(json_body.first.keys).not_to include(:documents)
+          expect(json_body.count).to eq private_document_pending_count
+        end
+
+        it 'doesnt returns users with profile and documents if extended not provided' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header
+
+          expect(json_body.first.keys).not_to include(:profile)
+          expect(json_body.first.keys).not_to include(:documents)
+          expect(json_body.count).to eq private_document_pending_count
+        end
+
+        it 'returns users' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header
+
+          expect(json_body.first.keys).to_not include(:profile)
+          expect(json_body.count).to eq private_document_pending_count
+        end
+
+        it 'returns users users with extended info' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {extended: true}
+
+          expect(json_body.first.keys).to include(:profiles)
+          expect(json_body.count).to eq private_document_pending_count
         end
       end
 
-      it 'returns users with profile and documents if params extended' do
-        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: true }
+      context 'private pending and replaced documents' do
+        before(:example) do
+          private_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'private')
+          end
 
-        expect(json_body.first.keys).to include(:profile)
-        expect(json_body.first.keys).to include(:documents)
-        expect(json_body.count).to eq private_document_pending_count
-      end
+          private_document_replaced_count.times do |i|
+            create(:label, key: 'document', value: 'replaced', scope: 'private')
+          end
 
-      it 'doesnt returns users with profile and documents if extended false' do
-        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: false }
+          public_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'public')
+          end
+        end
 
-        expect(json_body.first.keys).not_to include(:profile)
-        expect(json_body.first.keys).not_to include(:documents)
-        expect(json_body.count).to eq private_document_pending_count
-      end
+        it 'returns users with profile and documents with value pending and replaces' do
+          get '/api/v2/admin/users/documents/pending', headers: auth_header, params: { extended: true }
 
-      it 'doesnt returns users with profile and documents if extended not provided' do
-        get '/api/v2/admin/users/documents/pending', headers: auth_header
-
-        expect(json_body.first.keys).not_to include(:profile)
-        expect(json_body.first.keys).not_to include(:documents)
-        expect(json_body.count).to eq private_document_pending_count
-      end
-
-
-      it 'returns users' do
-        get '/api/v2/admin/users/documents/pending', headers: auth_header
-
-        expect(json_body.first.keys).to_not include(:profile)
-        expect(json_body.count).to eq private_document_pending_count
-      end
-
-      it 'returns users users with extended info' do
-        get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {extended: true}
-
-        expect(json_body.first.keys).to include(:profile)
-        expect(json_body.count).to eq private_document_pending_count
+          expect(json_body.first.keys).to include(:profiles)
+          expect(json_body.first.keys).to include(:documents)
+          expect(json_body.count).to eq private_document_pending_count + private_document_replaced_count
+        end
       end
 
       context 'filtering' do
+        before(:example) do
+          private_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'private')
+          end
+          public_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'public')
+          end
+        end
+
         let(:params) { {} }
         let(:do_search_request) { get '/api/v2/admin/users/documents/pending', headers: auth_header, params: params }
 
@@ -872,6 +907,15 @@ describe API::V2::Admin::Users do
       end
 
       context 'pagination test' do
+        before(:example) do
+          private_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'private')
+          end
+          public_document_pending_count.times do |i|
+            create(:label, key: 'document', value: 'pending', scope: 'public')
+          end
+        end
+
         it 'returns 1st page as default, limit 2 users per page' do
           get '/api/v2/admin/users/documents/pending', headers: auth_header, params: {
               limit: 2

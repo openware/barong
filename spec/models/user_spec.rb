@@ -22,7 +22,7 @@ RSpec.describe User, type: :model do
     it { should have_many(:documents).dependent(:destroy) }
 
     ## Test of relationships
-    it { should have_one(:profile).dependent(:destroy) }
+    it { should have_many(:profiles).dependent(:destroy) }
 
     ## Test of UID creation
     it 'creates default uid with prefix ID' do
@@ -66,6 +66,27 @@ RSpec.describe User, type: :model do
         expect(user2.referral_uid).to eq user1.uid
       end
     end
+  end
+
+  describe '#submitted_profile' do
+    let!(:user_with_drafted_profile) { create(:user) }
+    let!(:user_with_submitted_profiles) { create(:user) }
+    let!(:user_without_profile) { create(:user) }
+    let!(:drafted_profile) { create(:profile, user: user_with_drafted_profile) }
+    let!(:submitted_profile) { create(:profile, user: user_with_submitted_profiles, state: 'submitted') }
+
+    it { expect(user_with_drafted_profile.submitted_profile).to eq nil }
+    it { expect(user_without_profile.submitted_profile).to eq nil }
+    it { expect(user_with_submitted_profiles.submitted_profile).to eq submitted_profile }
+  end
+
+  describe '#drafted_profile' do
+    let!(:user_with_drafted_profile) { create(:user) }
+    let!(:user_without_profile) { create(:user) }
+    let!(:drafted_profile) { create(:profile, user: user_with_drafted_profile) }
+
+    it { expect(user_with_drafted_profile.drafted_profile).to eq drafted_profile }
+    it { expect(user_without_profile.drafted_profile).to eq nil }
   end
 
   describe '#password' do
@@ -280,6 +301,26 @@ RSpec.describe User, type: :model do
 
             expect(user.state).to eq('pending')
           end
+        end
+      end
+    end
+
+    describe 'testing workability if config is missing' do
+      let!(:user) { create(:user, state: 'pending') }
+      let(:reqs_list) {
+        {
+          "activation_requirements" => {
+            "email" => "verified"
+          },
+        }
+      }
+
+      context 'not changing state on adding label' do
+        it 'doesnt changes state if state_triggers config is missing' do
+          expect(user.state).to eq('pending')
+
+          user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
+          expect(user.state).to eq('pending')
         end
       end
     end

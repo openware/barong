@@ -6,7 +6,7 @@ class Document < ApplicationRecord
 
   mount_uploader :upload, Barong::App.config.uploader
 
-  STATES = %w[verified pending rejected].freeze
+  STATES = %w[verified pending replaced rejected].freeze
 
   belongs_to :user
   validates :doc_type, :doc_number, :upload, presence: true

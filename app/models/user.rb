@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_one   :profile,       dependent: :destroy
+  has_many  :profiles,       dependent: :destroy
   has_many  :phones,        dependent: :destroy
   has_many  :data_storages, dependent: :destroy
   has_many  :documents,     dependent: :destroy
@@ -24,6 +24,8 @@ class User < ApplicationRecord
   validate  :validate_pass!
 
   scope :active, -> { where(state: 'active') }
+  scope :with_pending_or_replaced_docs, -> { self.joins(:labels).where(labels:
+                                           { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
   before_validation :assign_uid
   after_update :disable_api_keys
@@ -102,7 +104,7 @@ class User < ApplicationRecord
     end
 
     # FIXME BarongConfig should be a feature of Barong::App
-    BarongConfig.list['state_triggers'].each do |state, triggers|
+    BarongConfig.list['state_triggers']&.each do |state, triggers|
       triggers.each { |trigger|
         labels.pluck(:key).each { |label|
           @resulting_state = state if label.start_with?(trigger)
@@ -151,6 +153,14 @@ class User < ApplicationRecord
     else
       JSON.parse(data)['language'] || Barong::App.config.default_language
     end
+  end
+
+  def submitted_profile
+    self.profiles&.find_by(state: 'submitted')
+  end
+
+  def drafted_profile
+    self.profiles&.find_by(state: 'drafted')
   end
 
   private

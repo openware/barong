@@ -47,14 +47,14 @@ describe API::V2::Identity::Sessions do
         before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
   
         it 'doesnt require captcha if endpoint is not in the protection list' do
-          allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create"]})
+          allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create"]})
   
           do_request
           expect_status_to_eq 200
         end
   
         it 'require captcha if endpoint is in the protection list' do
-          allow(BarongConfig).to receive(:list).and_return({"сaptcha_protected_endpoints"=>["user_create", "session_create"]})
+          allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create", "session_create"]})
   
           do_request
           expect_status_to_eq 400

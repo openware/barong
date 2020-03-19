@@ -52,43 +52,6 @@ describe API::V2::Admin::Profiles do
     end
   end
 
-  describe 'DELETE /api/v2/admin/profiles' do
-    context 'successful response' do
-      let(:do_request) { delete '/api/v2/admin/profiles', params: { uid: profile1.user.uid }, headers: auth_header }
-
-      it 'delete profile' do
-        expect { do_request }.to change { Profile.count }.by(-1)
-
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result['first_name']).to eq profile1.first_name
-      end
-    end
-
-    context 'unsuccessful response' do
-      it 'return error while profiles doesnt exist' do
-        delete '/api/v2/admin/profiles', params: { uid: '0' }, headers: auth_header
-
-        result = JSON.parse(response.body)
-        expect(response.code).to eq '404'
-        expect(result['errors']).to eq(['admin.profiles.doesnt_exist'])
-      end
-
-      let!(:superadmin_with_profile) do
-        @user = create :user, role: 'superadmin'
-        create :profile, user_id: @user.id
-      end
-
-      it 'return error when non-superadmin user updates superadmin' do
-        delete '/api/v2/admin/profiles', params: { uid: @user.uid }, headers: auth_header
-
-        result = JSON.parse(response.body)
-        expect(response.code).to eq '422'
-        expect(result['errors']).to eq(['admin.profiles.superadmin_change'])
-      end
-    end
-  end
-
   describe 'PUT /api/v2/admin/profiles' do
     let!(:request_params) do
       {
@@ -103,31 +66,36 @@ describe API::V2::Admin::Profiles do
     end
 
     context 'successful response' do
-      it 'returns completed profile' do
-        put '/api/v2/admin/profiles', params: request_params.merge(uid: profile2.user.uid), headers: auth_header
+      let!(:member_with_profile) do
+        @member = create :user, role: 'member'
+        create(:profile, user_id: @member.id, state: 'submitted')
+      end
+
+      it 'returns profile' do
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: @member.uid), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
         expect(profile).to be
-        expect(json_body[:state]).to eq('completed')
-        expect(profile.state).to eq('completed')
+        expect(json_body[:state]).to eq('submitted')
+        expect(profile.state).to eq('submitted')
         expect(profile.metadata).to be_blank
       end
 
       let!(:superadmin_with_profile) do
         @user = create :user, role: 'superadmin'
-        create :profile, user_id: @user.id
+        create(:profile, user_id: @user.id, state: 'submitted')
       end
 
-      it 'return error when non-superadmin user updates superadmin' do
+      it 'return profiles when superadmin updates superadmin' do
         test_user.update!(role: 'superadmin')
-        put '/api/v2/admin/profiles', params: request_params.merge(uid: @user.uid), headers: auth_header
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: @user.uid, state: 'verified'), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
         expect(profile).to be
-        expect(json_body[:state]).to eq('completed')
-        expect(profile.state).to eq('completed')
+        expect(json_body[:state]).to eq('verified')
+        expect(profile.state).to eq('verified')
         expect(profile.metadata).to be_blank
       end
     end
@@ -135,7 +103,7 @@ describe API::V2::Admin::Profiles do
     context 'unsuccessful response' do
       let!(:superadmin_with_profile) do
         @user = create :user, role: 'superadmin'
-        create :profile, user_id: @user.id
+        create(:profile, user_id: @user.id, state: 'submitted')
       end
 
       it 'return error when non-superadmin user updates superadmin' do
@@ -145,39 +113,43 @@ describe API::V2::Admin::Profiles do
         expect(response.code).to eq '422'
         expect(result['errors']).to eq(['admin.profiles.superadmin_change'])
       end
+
+      it 'renders an error when profile doesnt exist' do
+        put '/api/v2/admin/profiles', params: { uid: '0' }, headers: auth_header
+        expect_status.to eq(404)
+        expect_body.to eq(errors: ['admin.profiles.doesnt_exist_or_not_editable'])
+      end
+
+      it 'renders an error when profile is not editable' do
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: profile3.user.uid), headers: auth_header
+        expect_status.to eq(404)
+        expect_body.to eq(errors: ['admin.profiles.doesnt_exist_or_not_editable'])
+      end
     end
 
-    context 'user with partial profile' do
-      let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil) }
+    context 'user with different amount of profile fields' do
+      let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil, state: 'submitted') }
 
-      it 'returns partial profile' do
+      it 'returns partial updated profile' do
         put '/api/v2/admin/profiles', params: request_params.except(:first_name).merge(uid: test_user.uid), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params.except(:first_name))
         expect(profile).to be
-        expect(json_body[:state]).to eq('partial')
-        expect(profile.state).to eq('partial')
+        expect(json_body[:state]).to eq('submitted')
+        expect(profile.state).to eq('submitted')
         expect(profile.metadata).to be_blank
       end
 
-      it 'returns completed profile' do
-        put '/api/v2/admin/profiles', params: request_params.merge(uid: test_user.uid), headers: auth_header
+      it 'returns full updated profile' do
+        put '/api/v2/admin/profiles', params: request_params.merge(uid: test_user.uid, state: 'rejected'), headers: auth_header
 
         expect(response.status).to eq(200)
         profile = Profile.find_by(request_params)
         expect(profile).to be
-        expect(json_body[:state]).to eq('completed')
-        expect(profile.state).to eq('completed')
+        expect(json_body[:state]).to eq('rejected')
+        expect(profile.state).to eq('rejected')
         expect(profile.metadata).to be_blank
-      end
-    end
-
-    context 'unccessful response' do
-      it 'renders an error when profile doesnt exist' do
-        put '/api/v2/admin/profiles', params: { uid: '0' }, headers: auth_header
-        expect_status.to eq(404)
-        expect_body.to eq(errors: ['admin.profiles.doesnt_exist'])
       end
     end
   end

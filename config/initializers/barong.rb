@@ -45,6 +45,7 @@ Barong::App.define do |config|
   config.set(:doc_num_limit, '10', type: :integer)
   config.set(:geoip_lang, 'en', values: %w[en de es fr ja ru])
   config.set(:csrf_protection, 'true', type: :bool)
+  config.set(:apikey_nonce_lifetime, '5000', type: :integer)
 
   # Password configuration  -----------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration
