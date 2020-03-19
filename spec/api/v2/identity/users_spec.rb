@@ -190,6 +190,13 @@ describe API::V2::Identity::Users do
         expect_status_to_eq 201
       end
 
+      it 'doesnt require captcha if protection list is empty' do
+        allow(BarongConfig).to receive(:list).and_return({})
+
+        do_request
+        expect_status_to_eq 201
+      end
+
       it 'require captcha if endpoint is in the protection list' do
         allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create", "session_create"]})
 
