@@ -68,6 +68,19 @@ steps:
       - 2-2-stable
       - 2-3-stable
 
+- name: Redeploy on devkube
+  image: rubykube/microkube:0.2.0
+  environment:
+    WEBHOOK_JWT_SECRET:
+      from_secret: devkube_webhook_secret
+  commands:
+    - export latest_image=quay.io/openware/barong:$(cat .tags) 
+    - cd /home/app
+    - bundle exec rake payload:send[barong,$latest_image,http://www.devkube.com:1337]
+  when:
+    branch:
+      - master
+
 - name: Push and Notify
   image: quay.io/openware/sdk-citools:2.3.1
   environment:
