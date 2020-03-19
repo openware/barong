@@ -15,7 +15,7 @@ describe API::V2::Entities::UserWithKYC do
   it { expect(subject.level).to eq record.level }
   it { expect(subject.otp).to eq record.otp }
   it { expect(subject.state).to eq record.state }
-  it { expect(subject.profile).to eq record.profile }
+  it { expect(subject.profiles).to eq record.profiles }
   it { expect(subject.labels).to eq record.labels }
   it { expect(subject.phones).to eq record.phones }
   it { expect(subject.documents).to eq record.documents }

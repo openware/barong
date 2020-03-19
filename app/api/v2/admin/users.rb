@@ -194,7 +194,7 @@ module API
             status 200
           end
 
-          desc 'Returns array of users with pending documents as paginated collection',
+          desc 'Returns array of users with pending or replaced documents as paginated collection',
                security: [{ "BearerToken": [] }],
                failure: [
                    { code: 401, message: 'Invalid bearer token' }
@@ -228,9 +228,9 @@ module API
             use :pagination_filters
           end
           get '/documents/pending' do
-            users_with_pending_docs = User.joins(:labels).where(labels: { key: 'document', value: 'pending', scope: 'private' }).order('labels.updated_at ASC')
+            users_with_pending_or_replaced_docs = User.with_pending_or_replaced_docs.order('labels.updated_at ASC')
 
-            users = API::V2::Queries::UserFilter.new(users_with_pending_docs).call(params)
+            users = API::V2::Queries::UserFilter.new(users_with_pending_or_replaced_docs).call(params)
 
             entity = params[:extended] ? API::V2::Entities::UserWithKYC : API::V2::Entities::User
             users.all.tap { |q| present paginate(q), with: entity }

@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_one   :profile,       dependent: :destroy
+  has_many  :profiles,       dependent: :destroy
   has_many  :phones,        dependent: :destroy
   has_many  :data_storages, dependent: :destroy
   has_many  :documents,     dependent: :destroy
@@ -24,6 +24,8 @@ class User < ApplicationRecord
   validate  :validate_pass!
 
   scope :active, -> { where(state: 'active') }
+  scope :with_pending_or_replaced_docs, -> { self.joins(:labels).where(labels:
+                                           { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
   before_validation :assign_uid
   after_update :disable_api_keys
@@ -143,6 +145,14 @@ class User < ApplicationRecord
 
   def as_payload
     as_json(only: %i[uid email referral_id role level state])
+  end
+
+  def submitted_profile
+    self.profiles&.find_by(state: 'submitted')
+  end
+
+  def drafted_profile
+    self.profiles&.find_by(state: 'drafted')
   end
 
   private

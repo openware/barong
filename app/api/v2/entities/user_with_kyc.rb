@@ -12,7 +12,7 @@ module API
         expose :otp, documentation: { type: 'Boolean' }
         expose :state, documentation: { type: 'String' }
         expose :data, documentation: { type: 'String', desc: 'additional phone and profile info' }
-        expose :profile, using: Entities::Profile
+        expose :profiles, using: Entities::Profile
         expose :labels, using: Entities::AdminLabelView
         expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document

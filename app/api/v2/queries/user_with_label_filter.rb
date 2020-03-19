@@ -22,8 +22,11 @@ module API::V2::Queries
 
     # adds where(labels.[created, updated]_at > from and labels.[created, updated]_at < to) to query
     def filter_by_date(scoped, range = 'created', from = nil, to = nil)
-      updated_scope = from ? scoped.where("labels.#{range}_at >= ?", Time.at(from.to_i)) : scoped
-      to ? updated_scope.where("labels.#{range}_at <= ?", Time.at(to.to_i)) : updated_scope
+      newer_than_sql = "labels.#{range}_at >= ?"
+      older_than_sql = "labels.#{range}_at <= ?"
+
+      updated_scope = from ? scoped.where(newer_than_sql, Time.at(from.to_i)) : scoped
+      to ? updated_scope.where(older_than_sql, Time.at(to.to_i)) : updated_scope
     end
 
     # adds where(labels.key = key) to query
