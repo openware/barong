@@ -1,0 +1,12 @@
+
+<div class="main-block">
+  <div class="logo">
+    <%= image_tag attachments['logo.png'].url, alt: 'Campany Logo', class: 'logo-img' %>
+  </div>
+  <div class="content">
+    <p class="text">Withdrawal <b><%= @record.state %></b></p>
+    <p class="text">
+        Your withdrawal #<%= @record.tid %> of <%= @record.amount %> <%= @record.currency %> has been <%= @record.state %>.
+    </p>
+  </div>
+</div>

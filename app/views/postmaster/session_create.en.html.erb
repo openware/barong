@@ -1,0 +1,18 @@
+<div class="main-block">
+  <div class="logo">
+    <%= image_tag attachments['logo.png'].url, alt: 'Campany Logo', class: 'logo-img' %>
+  </div>
+  <div class="content">
+    <p class="title">Hello!</p>
+    <p class="text">
+      We detected a login to your account.
+    </p>
+
+    <p class="text">IP Address: <%= @record.user_ip %></p>
+    <p class="text">User-agent: <%= @record.user_agent %></p>
+
+    <p class="text">If this was you, please disregard this email.</p>
+
+    <p class="text">If this wasn't you, please change your passwords immediately, as someone else may be accessing your account.</p>
+  </div>
+</div>

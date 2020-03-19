@@ -1,9 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
-      /* Email styles need to be inline */
+      img {
+        border: none;
+        -ms-interpolation-mode: bicubic;
+        max-width: 200px;
+      }
+      body {
+        background-color: #F8F8F8;
+        font-family: "Roboto";
+        -webkit-font-smoothing: antialiased;
+        font-size: 14px;
+        line-height: 1.4;
+        margin: 0;
+        padding: 0;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      table {
+        border-collapse: separate;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        width: 100%; }
+        table td {
+          font-family: "Roboto";
+          font-size: 14px;
+          vertical-align: top; 
+          text-align: left;
+      }
+      p {
+        color: #383838;
+        font-size: 14px;
+        font-weight: 300;
+        padding: 10px 20px;
+      }
+      p b {
+        font-size: 18px;
+      }
+      .body {
+        margin-top: 100px;
+        background-color: #F8F8F8;
+        width: 100%;
+      }
+      .container {
+        display: block;
+        margin: 0 auto !important;
+        /* makes it centered */
+        max-width: 580px;
+        padding: 0 10px;
+        width: 580px;
+      }
+      .content {
+        box-sizing: border-box;
+        display: block;
+        margin: 0 auto;
+        max-width: 580px;
+        padding: 0 10px;
+      }
+      .main {
+        background: #ffffff !important;
+        box-shadow: 0px 1px 5px rgba(196, 196, 196, 0.9);
+        border-radius: 4px;
+        width: 560px;
+      }
+      .logo-img {
+	padding: 0;
+	margin: 0;
+        height: 70px;
+        width: 175px;
+      }
+      .footer {
+        clear: both;
+        text-align: center;
+        width: 100%;
+	margin-top: 7px;
+	margin-bottom: 40px;
+      }
+        .footer td,
+        .footer p,
+        .footer span,
+        .footer a {
+          color: #999999;
+          font-size: 12px;
+          text-align: center;
+      }
+      .btn {
+        box-sizing: border-box;
+        width: 100%;
+      }
+      .btn > tbody > tr > td {
+        padding-bottom: 15px; }
+      .btn table {
+        width: auto;
+        margin: 0 auto;
+      }
+      .btn table td {
+        background-color: #ffffff;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .btn a {
+        border: solid 1px #3C78E0;
+        border-radius: 5px;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-block;
+        margin: 0;
+        text-decoration: none;
+        background: #3C78E0;
+        font-family: "Roboto";
+        font-size: 16px;
+        padding: 7px 50px;
+        color: #FFFFFF;
+        height: 40px;
+        transition: 0.2s;
+      }
     </style>
   </head>
 
@@ -11,3 +124,4 @@
     <%= yield %>
   </body>
 </html>
+

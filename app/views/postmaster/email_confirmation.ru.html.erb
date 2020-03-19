@@ -1,0 +1,15 @@
+
+<div class="main-block">
+  <div class="logo">
+    <%= image_tag attachments['logo.png'].url, alt: 'Campany Logo', class: 'logo-img' %>
+  </div>
+  <div class="content">
+    <p class="title">Здравствуйте!</p>
+    <p class="text">
+      Используйте эту уникальную ссылку для подтверждения вашей почты
+    </p>
+    <div class="confirmation-button">
+      <a href="<%= @record.domain %>/accounts/confirmation?confirmation_token=<%= @record.token %>&lang=ru">Подтвердить</a>
+    </div>
+  </div>
+</div>

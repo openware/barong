@@ -18,7 +18,9 @@ gem 'fog-aliyun', '~> 0.3.5'
 gem 'fog-aws', '~> 3.5.2'
 # gcp support (google)
 gem 'fog-google', '~> 1.9.1'
-##
+
+# GLI
+gem 'gli', '~> 2.19.0'
 
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
