@@ -891,9 +891,9 @@ describe API::V2::Admin::Users do
       end
 
       context 'sorting test' do
-        let(:test_user) { create(:user, role: 'admin') }
-        let(:first_user) { create(:user) }
-        let(:second_user) { create(:user) }
+        let!(:first_user) { create(:user) }
+        let!(:second_user) { create(:user) }
+        let!(:test_user) { create(:user, role: 'admin') }
 
         before(:example) do
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago)

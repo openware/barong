@@ -85,7 +85,7 @@ class EventMailer
     event = result[:payload].fetch(:event)
     obj   = JSON.parse(event.to_json, object_class: OpenStruct)
 
-    user  = User.includes(:profile).find_by(uid: obj.record.user.uid)
+    user  = User.includes(:profiles).find_by(uid: obj.record.user.uid)
     language = user.language.to_sym
 
     unless config[:templates].key?(language)
