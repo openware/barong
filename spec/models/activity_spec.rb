@@ -59,7 +59,6 @@ RSpec.describe Activity, type: :model do
       it { expect(activity.browser.name).to eq 'Safari' }
       it { expect(activity.browser.platform.android?).to eq true }
       it { expect(activity.browser.webkit?).to eq true }
-      it { expect(activity.browser.modern?).to eq true }
       it { expect(activity.browser.full_version).to eq '3.1.2' }
       it { expect(activity.browser.version).to eq '3' }
     end
