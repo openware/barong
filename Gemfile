@@ -65,7 +65,7 @@ gem 'browser', require: "browser/browser"
 gem 'bump'
 
 # Use gem to verify recatpcha on server side
-gem 'recaptcha'
+gem 'recaptcha', '>= 5.2.1'
 # Password validators
 gem 'strong_password', '~> 0.0.8'
 # Use ActiveStorage variant
