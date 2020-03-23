@@ -1,7 +1,7 @@
 # Barong
 RESTful API for barong OAuth server
 
-## Version: 2.3.38
+## Version: 2.4.0
 
 ### Security
 **BearerToken**  
@@ -34,32 +34,6 @@ Returns array of permissions as paginated collection
 
 ### /admin/profiles
 
-#### DELETE
-##### Description:
-
-Delete a profile for user
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | query |  | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Delete a profile for user |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
 #### PUT
 ##### Description:
 
@@ -77,6 +51,7 @@ Update a profile for user
 | postcode | formData |  | No | string |
 | city | formData |  | No | string |
 | country | formData |  | No | string |
+| state | formData |  | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
@@ -104,7 +79,7 @@ Return all profiles
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of profiles per page (defaults to 100, maximum is 100). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -209,10 +184,8 @@ Returns array of restrictions as a paginated collection
 | ---- | ---------- | ----------- | -------- | ---- |
 | scope | query |  | No | string |
 | range | query |  | No | string |
-| from | query |  | No | string |
-| to | query |  | No | string |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of restrictions per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -269,12 +242,12 @@ Returns array of activities as paginated collection
 | action | query |  | No | string |
 | uid | query |  | No | string |
 | email | query |  | No | string |
-| target_uid | query |  | No | string |
-| range | query |  | No | string |
-| from | query |  | No | string |
-| to | query |  | No | string |
+| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
+| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+| target_uid | query |  | No | string |
+| range | query |  | No | string |
 
 ##### Responses
 
@@ -304,8 +277,8 @@ Returns array of activities as paginated collection
 | action | query |  | No | string |
 | uid | query |  | No | string |
 | email | query |  | No | string |
-| from | query |  | No | string |
-| to | query |  | No | string |
+| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
+| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
@@ -430,6 +403,33 @@ Returns array of permissions as paginated collection
 | --- | --- |
 | BearerToken | |
 
+### /admin/users/data_storage
+
+#### DELETE
+##### Description:
+
+Deletes user's data storage record
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | query | user uniq id | Yes | string |
+| title | query | data storage uniq title | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Deletes user's data storage record |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /admin/users/{uid}
 
 #### GET
@@ -496,6 +496,7 @@ Update user label scope
 | uid | formData | user uniq id | Yes | string |
 | key | formData | Label key. | Yes | string |
 | scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
+| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
 | value | formData | Label value. | Yes | string |
 
 ##### Responses
@@ -526,6 +527,7 @@ Adds label for user
 | uid | formData | user uniq id | Yes | string |
 | key | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 | value | formData | label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | Yes | string |
+| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
 | scope | formData | Label scope: 'public' or 'private'. Default is public | No | string |
 
 ##### Responses
@@ -553,7 +555,7 @@ Returns array of users as paginated collection
 | key | query | Label key | Yes | string |
 | value | query | Label value | Yes | string |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -583,7 +585,8 @@ Update user label value
 | key | formData | Label key. | Yes | string |
 | scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
 | value | formData | Label value. | Yes | string |
-| replace | formData | When true label will be created if not exist | No | boolean |
+| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
+| replace | formData | When true label will be created if not exist | No | Boolean |
 
 ##### Responses
 
@@ -626,13 +629,13 @@ Returns existing labels keys and values
 #### GET
 ##### Description:
 
-Returns array of users with pending documents as paginated collection
+Returns array of users with pending or replaced documents as paginated collection
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| extended | query | When true endpoint returns full information about users | No | boolean |
+| extended | query | When true endpoint returns full information about users | No | Boolean |
 | uid | query |  | No | string |
 | email | query |  | No | string |
 | role | query |  | No | string |
@@ -642,16 +645,16 @@ Returns array of users with pending documents as paginated collection
 | level | query |  | No | integer |
 | state | query |  | No | string |
 | range | query |  | No | string |
-| from | query |  | No | string |
-| to | query |  | No | string |
+| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
+| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Returns array of users with pending documents as paginated collection |
+| 200 | Returns array of users with pending or replaced documents as paginated collection |
 | 401 | Invalid bearer token |
 
 ##### Security
@@ -673,7 +676,7 @@ Update user attributes
 | ---- | ---------- | ----------- | -------- | ---- |
 | uid | formData | user uniq id | Yes | string |
 | state | formData | user state | No | string |
-| otp | formData | user 2fa status | No | boolean |
+| otp | formData | user 2fa status | No | Boolean |
 
 ##### Responses
 
@@ -697,7 +700,7 @@ Returns array of users as paginated collection
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| extended | query | When true endpoint returns full information about users | No | boolean |
+| extended | query | When true endpoint returns full information about users | No | Boolean |
 | uid | query |  | No | string |
 | email | query |  | No | string |
 | role | query |  | No | string |
@@ -707,8 +710,8 @@ Returns array of users as paginated collection
 | level | query |  | No | integer |
 | state | query |  | No | string |
 | range | query |  | No | string |
-| from | query |  | No | string |
-| to | query |  | No | string |
+| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
+| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
@@ -765,7 +768,7 @@ Update user attributes
 | ---- | ---------- | ----------- | -------- | ---- |
 | uid | formData | user uniq id | Yes | string |
 | state | formData | user state | No | string |
-| otp | formData | user 2fa status | No | boolean |
+| otp | formData | user 2fa status | No | Boolean |
 
 ##### Responses
 
@@ -818,6 +821,7 @@ Send password reset instructions
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
 | lang | formData | Language in iso-2 format | No | string |
+| captcha_response | formData | Response from captcha widget | No | string |
 
 ##### Responses
 
@@ -863,6 +867,7 @@ Send confirmations instructions
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
 | lang | formData | Client env language | No | string |
+| captcha_response | formData | Response from captcha widget | No | string |
 
 ##### Responses
 
@@ -948,6 +953,19 @@ Start a new session
 | 400 | Required params are empty |
 | 404 | Record is not found |
 
+### /identity/configs
+
+#### GET
+##### Description:
+
+Get barong configurations
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Get barong configurations |
+
 ### /identity/version
 
 #### GET
@@ -987,6 +1005,53 @@ Test connectivity
 | ---- | ----------- |
 | 200 | Test connectivity |
 
+### /identity/password/validate
+
+#### POST
+##### Description:
+
+Password strength testing
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| password | formData | User password | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Password strength testing |
+
+### /resource/data_storage
+
+#### POST
+##### Description:
+
+Create data storage
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| title | formData |  | Yes | string |
+| data | formData |  | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create data storage |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
 ### /resource/api_keys
 
 #### GET
@@ -999,7 +1064,7 @@ List all api keys for current account.
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of api keys per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -1384,6 +1449,7 @@ Update a profile for current_user
 | city | formData |  | No | string |
 | country | formData |  | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
+| confirm | formData | Profile confirmation | No | Boolean |
 
 ##### Responses
 
@@ -1416,6 +1482,7 @@ Create a profile for current_user
 | city | formData |  | No | string |
 | country | formData |  | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
+| confirm | formData | Profile confirmation | No | Boolean |
 
 ##### Responses
 
@@ -1438,13 +1505,13 @@ Create a profile for current_user
 #### GET
 ##### Description:
 
-Return profile of current resource owner
+Return profiles of current resource owner
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Return profile of current resource owner |
+| 200 | Return profiles of current resource owner |
 | 401 | Invalid bearer token |
 | 404 | User has no profile |
 
@@ -1619,9 +1686,9 @@ Returns user activity
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of activity per page (defaults to 100, maximum is 1000). | No | integer |
 | topic | path | Topic of user activity. Allowed: [all, password, session, otp] | Yes | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -1731,7 +1798,7 @@ Returns current user
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profile | [Profile](#profile) |  | No |
+| profiles | [Profile](#profile) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
@@ -1747,11 +1814,23 @@ Returns current user
 | otp | boolean |  | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profile | [Profile](#profile) |  | No |
-| labels | [Label](#label) |  | No |
+| profiles | [Profile](#profile) |  | No |
+| labels | [AdminLabelView](#adminlabelview) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| data_storages | [DataStorage](#datastorage) |  | No |
 | referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### AdminLabelView
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| key | string | Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | No |
+| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
+| scope | string | Label scope: 'public' or 'private' | No |
+| description | string | Label desc: json string with any additional information | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -1775,6 +1854,15 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
+#### DataStorage
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| title | string | any additional data title | No |
+| data | string | any additional data json key:value pairs | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
 #### UserWithFullInfo
 
 | Name | Type | Description | Required |
@@ -1786,12 +1874,14 @@ Returns current user
 | otp | boolean |  | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| csrf_token | string | csrf protection token | No |
 | data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
-| profile | [Profile](#profile) |  | No |
+| profiles | [Profile](#profile) |  | No |
+| data_storages | [DataStorage](#datastorage) |  | No |
 
 #### Activity
 
