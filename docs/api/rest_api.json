@@ -2,7 +2,7 @@
   "info": {
     "title": "Barong",
     "description": "RESTful API for barong OAuth server",
-    "version": "2.3.38"
+    "version": "2.4.0"
   },
   "swagger": "2.0",
   "produces": [
@@ -59,43 +59,6 @@
       }
     },
     "/admin/profiles": {
-      "delete": {
-        "description": "Delete a profile for user",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "uid",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Delete a profile for user"
-          },
-          "400": {
-            "description": "Required params are empty"
-          },
-          "401": {
-            "description": "Invalid bearer token"
-          },
-          "422": {
-            "description": "Validation errors"
-          }
-        },
-        "tags": [
-          "admin"
-        ],
-        "operationId": "deleteAdminProfiles"
-      },
       "put": {
         "description": "Update a profile for user",
         "produces": [
@@ -156,6 +119,12 @@
           },
           {
             "in": "formData",
+            "name": "state",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
             "name": "metadata",
             "description": "Any additional key: value pairs in json string format",
             "type": "string",
@@ -204,7 +173,7 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of profiles per page (defaults to 100, maximum is 100).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
@@ -414,18 +383,6 @@
           },
           {
             "in": "query",
-            "name": "from",
-            "type": "string",
-            "required": false
-          },
-          {
-            "in": "query",
-            "name": "to",
-            "type": "string",
-            "required": false
-          },
-          {
-            "in": "query",
             "name": "page",
             "description": "Page number (defaults to 1).",
             "type": "integer",
@@ -436,12 +393,12 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of restrictions per page (defaults to 100, maximum is 1000).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "required": false
           }
         ],
@@ -536,27 +493,18 @@
           },
           {
             "in": "query",
-            "name": "target_uid",
-            "type": "string",
-            "required": false
-          },
-          {
-            "in": "query",
-            "name": "range",
-            "type": "string",
-            "default": "created",
-            "required": false
-          },
-          {
-            "in": "query",
             "name": "from",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
             "in": "query",
             "name": "to",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
@@ -577,6 +525,19 @@
             "default": 100,
             "minimum": 1,
             "maximum": 100,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "target_uid",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "range",
+            "type": "string",
+            "default": "created",
             "required": false
           }
         ],
@@ -633,13 +594,17 @@
           {
             "in": "query",
             "name": "from",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
             "in": "query",
             "name": "to",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
@@ -889,6 +854,47 @@
         "operationId": "getAdminPermissions"
       }
     },
+    "/admin/users/data_storage": {
+      "delete": {
+        "description": "Deletes user's data storage record",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "uid",
+            "description": "user uniq id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "description": "data storage uniq title",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletes user's data storage record"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          }
+        },
+        "tags": [
+          "admin"
+        ],
+        "operationId": "deleteAdminUsersDataStorage"
+      }
+    },
     "/admin/users/{uid}": {
       "get": {
         "description": "Returns user info",
@@ -1002,6 +1008,13 @@
           },
           {
             "in": "formData",
+            "name": "description",
+            "description": "label description. [A-Za-z0-9_-] should be used. max - 255 characters.",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
             "name": "value",
             "description": "Label value.",
             "type": "string",
@@ -1067,6 +1080,13 @@
           },
           {
             "in": "formData",
+            "name": "description",
+            "description": "label description. [A-Za-z0-9_-] should be used. max - 255 characters.",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
             "name": "scope",
             "description": "Label scope: 'public' or 'private'. Default is public",
             "type": "string",
@@ -1123,10 +1143,12 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of users per page (defaults to 100, maximum is 1000).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
+            "minimum": 1,
+            "maximum": 100,
             "required": false
           }
         ],
@@ -1189,9 +1211,16 @@
           },
           {
             "in": "formData",
+            "name": "description",
+            "description": "label description. [A-Za-z0-9_-] should be used. max - 255 characters.",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
             "name": "replace",
             "description": "When true label will be created if not exist",
-            "type": "boolean",
+            "type": "Boolean",
             "default": true,
             "required": false
           }
@@ -1251,7 +1280,7 @@
     },
     "/admin/users/documents/pending": {
       "get": {
-        "description": "Returns array of users with pending documents as paginated collection",
+        "description": "Returns array of users with pending or replaced documents as paginated collection",
         "produces": [
           "application/json"
         ],
@@ -1260,7 +1289,7 @@
             "in": "query",
             "name": "extended",
             "description": "When true endpoint returns full information about users",
-            "type": "boolean",
+            "type": "Boolean",
             "required": false
           },
           {
@@ -1322,13 +1351,17 @@
           {
             "in": "query",
             "name": "from",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
             "in": "query",
             "name": "to",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
@@ -1343,10 +1376,12 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of users per page (defaults to 100, maximum is 1000).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
+            "minimum": 1,
+            "maximum": 100,
             "required": false
           }
         ],
@@ -1357,7 +1392,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns array of users with pending documents as paginated collection"
+            "description": "Returns array of users with pending or replaced documents as paginated collection"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1397,7 +1432,7 @@
             "in": "formData",
             "name": "otp",
             "description": "user 2fa status",
-            "type": "boolean",
+            "type": "Boolean",
             "required": false
           }
         ],
@@ -1429,7 +1464,7 @@
             "in": "query",
             "name": "extended",
             "description": "When true endpoint returns full information about users",
-            "type": "boolean",
+            "type": "Boolean",
             "required": false
           },
           {
@@ -1491,13 +1526,17 @@
           {
             "in": "query",
             "name": "from",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
             "in": "query",
             "name": "to",
-            "type": "string",
+            "description": "An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved.",
+            "type": "integer",
+            "format": "int32",
             "required": false
           },
           {
@@ -1612,7 +1651,7 @@
             "in": "formData",
             "name": "otp",
             "description": "user 2fa status",
-            "type": "boolean",
+            "type": "Boolean",
             "required": false
           }
         ],
@@ -1717,6 +1756,13 @@
             "description": "Language in iso-2 format",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "captcha_response",
+            "description": "Response from captcha widget",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -1802,6 +1848,13 @@
             "in": "formData",
             "name": "lang",
             "description": "Client env language",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "formData",
+            "name": "captcha_response",
+            "description": "Response from captcha widget",
             "type": "string",
             "required": false
           }
@@ -1985,6 +2038,23 @@
         "operationId": "postIdentitySessions"
       }
     },
+    "/identity/configs": {
+      "get": {
+        "description": "Get barong configurations",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get barong configurations"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "operationId": "getIdentityConfigs"
+      }
+    },
     "/identity/version": {
       "get": {
         "description": "Get barong version",
@@ -2036,6 +2106,80 @@
         "operationId": "getIdentityPing"
       }
     },
+    "/identity/password/validate": {
+      "post": {
+        "description": "Password strength testing",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "password",
+            "description": "User password",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Password strength testing"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "operationId": "postIdentityPasswordValidate"
+      }
+    },
+    "/resource/data_storage": {
+      "post": {
+        "description": "Create data storage",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "title",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "data",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "BearerToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create data storage"
+          },
+          "401": {
+            "description": "Invalid bearer token"
+          },
+          "422": {
+            "description": "Validation errors"
+          }
+        },
+        "tags": [
+          "resource"
+        ],
+        "operationId": "postResourceDataStorage"
+      }
+    },
     "/resource/api_keys": {
       "get": {
         "description": "List all api keys for current account.",
@@ -2055,10 +2199,12 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of api keys per page (defaults to 100, maximum is 1000).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
+            "minimum": 1,
+            "maximum": 100,
             "required": false
           }
         ],
@@ -2757,6 +2903,13 @@
             "description": "Any additional key: value pairs in json string format",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "confirm",
+            "description": "Profile confirmation",
+            "type": "Boolean",
+            "required": false
           }
         ],
         "security": [
@@ -2838,6 +2991,13 @@
             "description": "Any additional key: value pairs in json string format",
             "type": "string",
             "required": false
+          },
+          {
+            "in": "formData",
+            "name": "confirm",
+            "description": "Profile confirmation",
+            "type": "Boolean",
+            "required": false
           }
         ],
         "security": [
@@ -2870,7 +3030,7 @@
     },
     "/resource/profiles/me": {
       "get": {
-        "description": "Return profile of current resource owner",
+        "description": "Return profiles of current resource owner",
         "produces": [
           "application/json"
         ],
@@ -2881,7 +3041,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Return profile of current resource owner"
+            "description": "Return profiles of current resource owner"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -3165,6 +3325,13 @@
         ],
         "parameters": [
           {
+            "in": "path",
+            "name": "topic",
+            "description": "Topic of user activity. Allowed: [all, password, session, otp]",
+            "type": "string",
+            "required": true
+          },
+          {
             "in": "query",
             "name": "page",
             "description": "Page number (defaults to 1).",
@@ -3176,18 +3343,13 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Number of activity per page (defaults to 100, maximum is 1000).",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
             "type": "integer",
             "format": "int32",
             "default": 100,
+            "minimum": 1,
+            "maximum": 100,
             "required": false
-          },
-          {
-            "in": "path",
-            "name": "topic",
-            "description": "Topic of user activity. Allowed: [all, password, session, otp]",
-            "type": "string",
-            "required": true
           }
         ],
         "responses": {
@@ -3417,7 +3579,7 @@
           "type": "string",
           "description": "additional phone and profile info"
         },
-        "profile": {
+        "profiles": {
           "$ref": "#/definitions/Profile"
         },
         "referral_uid": {
@@ -3458,11 +3620,11 @@
           "type": "string",
           "description": "additional phone and profile info"
         },
-        "profile": {
+        "profiles": {
           "$ref": "#/definitions/Profile"
         },
         "labels": {
-          "$ref": "#/definitions/Label"
+          "$ref": "#/definitions/AdminLabelView"
         },
         "phones": {
           "$ref": "#/definitions/Phone"
@@ -3470,9 +3632,39 @@
         "documents": {
           "$ref": "#/definitions/Document"
         },
+        "data_storages": {
+          "$ref": "#/definitions/DataStorage"
+        },
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "AdminLabelView": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters."
+        },
+        "value": {
+          "type": "string",
+          "description": "Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Label scope: 'public' or 'private'"
+        },
+        "description": {
+          "type": "string",
+          "description": "Label desc: json string with any additional information"
         },
         "created_at": {
           "type": "string"
@@ -3528,6 +3720,25 @@
         }
       }
     },
+    "DataStorage": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "any additional data title"
+        },
+        "data": {
+          "type": "string",
+          "description": "any additional data json key:value pairs"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
     "UserWithFullInfo": {
       "type": "object",
       "properties": {
@@ -3554,6 +3765,10 @@
           "type": "string",
           "description": "UID of referrer"
         },
+        "csrf_token": {
+          "type": "string",
+          "description": "csrf protection token"
+        },
         "data": {
           "type": "string",
           "description": "additional phone and profile info"
@@ -3570,8 +3785,11 @@
         "phones": {
           "$ref": "#/definitions/Phone"
         },
-        "profile": {
+        "profiles": {
           "$ref": "#/definitions/Profile"
+        },
+        "data_storages": {
+          "$ref": "#/definitions/DataStorage"
         }
       }
     },

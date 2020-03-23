@@ -1,7 +1,7 @@
 # Barong
 Management API for barong OAuth server
 
-## Version: 2.3.38
+## Version: 2.4.0
 
 ### Security
 **BearerToken**  
@@ -30,7 +30,7 @@ Delete a label with 'private' scope
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Delete a label with 'private' scope | [Label](#label) |
+| 201 | Delete a label with 'private' scope | [AdminLabelView](#adminlabelview) |
 
 ### /labels
 
@@ -46,13 +46,14 @@ Update a label with 'private' scope
 | user_uid | formData | User uid | Yes | string |
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
-| replace | formData | When true label will be created if not exist | No | boolean |
+| description | formData | Label desc. | No | string |
+| replace | formData | When true label will be created if not exist | No | Boolean |
 
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Update a label with 'private' scope | [Label](#label) |
+| 200 | Update a label with 'private' scope | [AdminLabelView](#adminlabelview) |
 
 #### POST
 ##### Description:
@@ -66,12 +67,13 @@ Create a label with 'private' scope and assigns to users
 | user_uid | formData | User uid | Yes | string |
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
+| description | formData | Label desc. | No | string |
 
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Create a label with 'private' scope and assigns to users | [Label](#label) |
+| 201 | Create a label with 'private' scope and assigns to users | [AdminLabelView](#adminlabelview) |
 
 ### /labels/list
 
@@ -106,12 +108,10 @@ Get all labels assigned to users
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | No | string |
 | scope | formData | Label scope. | No | string |
-| extended | formData | When true endpoint returns full information about users | No | boolean |
+| extended | formData | When true endpoint returns full information about users | No | Boolean |
 | range | formData |  | No | string |
-| from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only labels FROM the time will be retrieved. | No | integer |
-| to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only labels BEFORE the time will be retrieved. | No | integer |
 | page | formData | Page number (defaults to 1). | No | integer |
-| limit | formData | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | formData | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -132,6 +132,7 @@ Imports an existing user
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password_digest | formData | User Password Hash | Yes | string |
+| referral_uid | formData | Referral uid | No | string |
 | phone | formData |  | No | string |
 | first_name | formData |  | No | string |
 | last_name | formData |  | No | string |
@@ -140,6 +141,7 @@ Imports an existing user
 | postcode | formData |  | No | string |
 | city | formData |  | No | string |
 | country | formData |  | No | string |
+| state | formData |  | No | string |
 
 ##### Responses
 
@@ -160,6 +162,7 @@ Creates new user
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
+| referral_uid | formData | Referral uid | No | string |
 
 ##### Responses
 
@@ -178,12 +181,12 @@ Returns array of users as collection
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| extended | formData | When true endpoint returns full information about users | No | boolean |
+| extended | formData | When true endpoint returns full information about users | No | Boolean |
 | range | formData |  | No | string |
-| from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only users FROM the time will be retrieved. | No | integer |
-| to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only users BEFORE the time will be retrieved. | No | integer |
+| from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
+| to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
 | page | formData | Page number (defaults to 1). | No | integer |
-| limit | formData | Number of users per page (defaults to 100, maximum is 1000). | No | integer |
+| limit | formData | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
 ##### Responses
 
@@ -250,7 +253,7 @@ Push documents to barong DB
 | file_ext | formData | Document file extension | Yes | string |
 | upload | formData | Base64 encoded document | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
-| update_labels | formData | If set to false, user label will not be created/updated | No | boolean |
+| update_labels | formData | If set to false, user label will not be created/updated | No | Boolean |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
@@ -274,6 +277,19 @@ Returns server time in seconds since Unix epoch.
 
 ### Models
 
+
+#### AdminLabelView
+
+Create a label with 'private' scope and assigns to users
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| key | string | Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | No |
+| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
+| scope | string | Label scope: 'public' or 'private' | No |
+| description | string | Label desc: json string with any additional information | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
 
 #### Label
 
@@ -300,7 +316,7 @@ Push documents to barong DB
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profile | [Profile](#profile) |  | No |
+| profiles | [Profile](#profile) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
@@ -357,12 +373,14 @@ Returns array of users as collection
 | otp | boolean |  | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
+| csrf_token | string | csrf protection token | No |
 | data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 | labels | [Label](#label) |  | No |
 | phones | [Phone](#phone) |  | No |
-| profile | [Profile](#profile) |  | No |
+| profiles | [Profile](#profile) |  | No |
+| data_storages | [DataStorage](#datastorage) |  | No |
 
 #### Phone
 
@@ -371,6 +389,15 @@ Returns array of users as collection
 | country | string |  | No |
 | number | string |  | No |
 | validated_at | s (g) |  | No |
+
+#### DataStorage
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| title | string | any additional data title | No |
+| data | string | any additional data json key:value pairs | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
 
 #### UserWithKYC
 
@@ -383,10 +410,11 @@ Returns array of users as collection
 | otp | boolean |  | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profile | [Profile](#profile) |  | No |
-| labels | [Label](#label) |  | No |
+| profiles | [Profile](#profile) |  | No |
+| labels | [AdminLabelView](#adminlabelview) |  | No |
 | phones | [Phone](#phone) |  | No |
 | documents | [Document](#document) |  | No |
+| data_storages | [DataStorage](#datastorage) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |

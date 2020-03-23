@@ -47,6 +47,7 @@ steps:
       - master
       - 2-2-stable
       - 2-3-stable
+      - 2-4-stable
 
 - name: Docker build and push
   image: plugins/docker
@@ -67,6 +68,7 @@ steps:
       - master
       - 2-2-stable
       - 2-3-stable
+      - 2-4-stable
 
 - name: Redeploy on master.devkube.com
   image: rubykube/microkube:0.2.0
@@ -107,6 +109,7 @@ steps:
       - master
       - 2-2-stable
       - 2-3-stable
+      - 2-4-stable
 
 services:
 - name: database
