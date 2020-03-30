@@ -273,7 +273,7 @@ describe 'API::V2::Resource::Profiles' do
       get url, headers: auth_header
       expect(response.status).to eq(200)
       expected_json = request_params.merge(state: 'drafted').merge(optional_params).to_json
-      expect(JSON.parse(response.body)[0]).to eq(JSON.parse(expected_json))
+      expect(JSON.parse(response.body)[0].except('created_at', 'updated_at')).to eq(JSON.parse(expected_json))
     end
   end
 
