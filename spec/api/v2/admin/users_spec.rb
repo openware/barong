@@ -16,6 +16,103 @@ describe API::V2::Admin::Users do
 
   let(:experimental_user) { create(:user, state: "pending") }
 
+  describe 'POST /api/v2/admin/users/new' do
+    context 'admin user' do
+      context 'validations' do
+        it 'renders error if email is misssing' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            password: 'HereWeGoAgain!20'
+          }
+          expect(response.status).to eq 422
+          expect(response.body).to eq "{\"errors\":[\"admin.user.missing_email\",\"admin.user.empty_email\"]}"
+        end
+
+        it 'renders error if password is misssing' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io'
+          }
+          expect(response.status).to eq 422
+          expect(response.body).to eq "{\"errors\":[\"admin.user.missing_password\",\"admin.user.empty_password\"]}"
+        end
+
+        it 'renders error if state is not in the available list' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+            state: 'banned'
+          }
+          expect(response.status).to eq 422
+          expect(response.body).to eq "{\"errors\":[\"unrecognized_state\"]}"
+        end
+      end
+
+      context 'successfully' do
+        let(:test_user) { create(:user, role: "superadmin") }
+
+        it 'creates user with default role, state, level' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+          }
+          
+          expect(response.status).to eq 201
+          expect(json_body[:state]).to eq 'pending'
+          expect(json_body[:level]).to eq 0
+          expect(json_body[:role]).to eq 'member'
+        end
+
+        it 'creates user with custom state' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+            state: 'active'
+          }
+          
+          expect(response.status).to eq 201
+          expect(json_body[:state]).to eq 'active'
+        end
+
+        it 'creates user with custom role' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+            role: 'admin'
+          }
+          
+          expect(response.status).to eq 201
+          expect(json_body[:role]).to eq 'admin'
+        end
+
+        it 'creates user with custom level' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+            level: 3
+          }
+          
+          expect(response.status).to eq 201
+          expect(json_body[:level]).to eq 3
+        end
+
+
+        it 'creates all custom user' do
+          post '/api/v2/admin/users/new', headers: auth_header, params: {
+            email: 'testuser@barong.io',
+            password: 'HereWeGoAgain!20',
+            role: 'admin',
+            state: 'active',
+            level: 3
+          }
+          
+          expect(response.status).to eq 201
+          expect(json_body[:role]).to eq 'admin'
+          expect(json_body[:state]).to eq 'active'
+          expect(json_body[:level]).to eq 3
+        end
+      end
+    end
+  end
+
   describe 'GET /api/v2/admin/users' do
     let(:do_request) { get '/api/v2/admin/users', headers: auth_header }
 

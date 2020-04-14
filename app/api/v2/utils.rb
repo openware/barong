@@ -20,5 +20,34 @@ module API::V2
       end
       error!({ errors: final }, code)
     end
+
+    def codec
+      @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
+    end
+
+    def language
+      params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
+    end
+
+    def parse_refid!
+      error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.uid_prefix.upcase)
+      user = User.find_by_uid(params[:refid])
+      error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
+
+      user.id
+    end
+
+    def publish_confirmation(user, language, domain)
+      token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
+      EventAPI.notify(
+        'system.user.email.confirmation.token',
+        record: {
+          user: user.as_json_for_event_api,
+          language: language,
+          domain: domain,
+          token: token
+        }
+      )
+    end
   end
 end

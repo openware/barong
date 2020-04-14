@@ -6,10 +6,6 @@ module API::V2
         request.session
       end
 
-      def codec
-        @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
-      end
-
       def open_session(user)
         csrf_token = SecureRandom.hex(10)
         session.merge!(
@@ -21,10 +17,6 @@ module API::V2
         )
 
         csrf_token
-      end
-
-      def language
-        params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
       end
 
       def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])
@@ -96,19 +88,6 @@ module API::V2
       def token_uniq?(jti)
         error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(jti) == 'utilized'
         Rails.cache.write(jti, 'utilized')
-      end
-
-      def publish_confirmation(user, language, domain)
-        token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
-        EventAPI.notify(
-          'system.user.email.confirmation.token',
-          record: {
-            user: user.as_json_for_event_api,
-            language: language,
-            domain: domain,
-            token: token
-          }
-        )
       end
 
       def publish_session_create(user)

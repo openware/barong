@@ -5,16 +5,6 @@ require_dependency 'barong/jwt'
 module API::V2
   module Identity
     class Users < Grape::API
-      helpers do
-        def parse_refid!
-          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless params[:refid].start_with?(Barong::App.config.uid_prefix.upcase)
-          user = User.find_by_uid(params[:refid])
-          error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
-
-          user.id
-        end
-      end
-
       desc 'User related routes'
       resource :users do
         desc 'Creates new user',

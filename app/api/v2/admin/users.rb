@@ -17,6 +17,79 @@ module API
 
               User.where("#{field}": value).order('email ASC')
             end
+
+            def update_level!
+              Level.pluck(:key, :value).first(params[:level]).each do |key, value|
+                @user.labels.create(key: key, value: value, scope: 'private')
+              end
+              @user.update_level
+            end
+
+            def update_state!
+              BarongConfig.list['activation_requirements'].each do |key, value|
+                @user.labels.create(key: key, value: value, scope: 'private')
+              end
+              @user.update_state
+            end
+          end
+
+          desc 'Creates new user',
+          success: { code: 201, message: 'Creates new user' },
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ]
+          params do
+            requires :email,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'User Email'
+            requires :password,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'User Password'
+            optional :role,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'User role'
+            optional :level,
+                     type: Integer,
+                     values: { value: -> (p){ p.try(:positive?) }, message: 'non_positive_level'},
+                     desc: 'USer level'
+            optional :state,
+                     type: String,
+                     values: { value: -> (p){ %w[pending active].include?(p) }, message: 'unrecognized_state' },
+                     desc: 'User state'
+            optional :refid,
+                     type: String,
+                     desc: 'Referral uid'
+            optional :data,
+                     type: String,
+                     desc: 'Any additional key: value pairs in json string format'
+            optional :confirmation_letter,
+                     type: Boolean,
+                     default: true,
+                     desc: 'Setting to configure sending or not the confirmation letter for user'
+          end
+          post '/new' do
+            unless current_user.superadmin?
+              error!({ errors: ['admin.user.superadmin_only'] }, 422)
+            end
+
+            declared_params = declared(params, include_missing: false)
+            user_params = declared_params.slice('email', 'password', 'data', 'role')
+
+            user_params[:referral_id] = parse_refid! unless params[:refid].nil?
+            @user = User.new(user_params)
+            code_error!(@user.errors.details, 422) unless @user.save
+
+            update_level! unless params[:level].nil?
+            update_state! unless params[:state].nil?
+
+            publish_confirmation(@user, language, Barong::App.config.domain) if params[:confirmation_letter]
+
+            present @user, with: API::V2::Entities::UserWithFullInfo
+            status 201
           end
 
           desc 'Returns array of users as paginated collection',
