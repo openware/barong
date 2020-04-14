@@ -19,6 +19,7 @@ module API::V2
       do_not_route_options!
 
       mount Admin::Users
+      mount Admin::APIKeys
       mount Admin::Permissions
       mount Admin::Activities
       mount Admin::Metrics
