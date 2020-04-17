@@ -220,7 +220,7 @@ describe API::V2::Identity::Sessions do
         post uri, params: { email: email, password: password }, headers: { 'HTTP_USER_AGENT' => 'random-browser' }
 
         expect(EventAPI).to have_received(:notify).with('system.session.create',
-          hash_including({ record: hash_including(user: anything, user_ip: '192.168.0.1', user_agent: 'random-browser') })
+          hash_including({ record: hash_including(user: anything, user_ip: '192.168.0.1', user_agent: 'Generic Browser') })
         )
       end
     end

@@ -231,7 +231,7 @@ module API::V2
             current_user = User.find_by_email(payload[:email])
 
             unless current_user.update(password: params[:password])
-              error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
+              error_note = { reason: current_user.errors.full_messages.to_sentence, browser_info: request.env['HTTP_USER_AGENT'] }.to_json
               activity_record(user: current_user.id, action: 'password reset',
                               result: 'failed', topic: 'password', data: error_note)
               code_error!(current_user.errors.details, 422)

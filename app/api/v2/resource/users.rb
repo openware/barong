@@ -110,7 +110,7 @@ module API::V2
           end
 
           unless current_user.update(password: params[:new_password])
-            error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
+            error_note = { reason: current_user.errors.full_messages.to_sentence, browser_info: request.env['HTTP_USER_AGENT'] }.to_json
             activity_record(user: current_user.id, action: 'password change',
                             result: 'failed', topic: 'password', data: error_note)
             code_error!(current_user.errors.details, 422)

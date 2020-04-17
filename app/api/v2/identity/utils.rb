@@ -84,7 +84,7 @@ module API::V2
           category:   'user',
           user_id:    options[:user],
           user_ip:    remote_ip,
-          user_agent: request.env['HTTP_USER_AGENT'],
+          user_agent: Browser.new(request.env['HTTP_USER_AGENT']).name,
           topic:      options[:topic],
           action:     options[:action],
           result:     options[:result],
@@ -116,7 +116,7 @@ module API::V2
                         record: {
                           user: user.as_json_for_event_api,
                           user_ip: remote_ip,
-                          user_agent: request.env['HTTP_USER_AGENT']
+                          user_agent: Browser.new(request.env['HTTP_USER_AGENT']).name
                         })
       end
     end
