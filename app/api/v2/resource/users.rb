@@ -32,7 +32,18 @@ module API::V2
           status(200)
         end
 
-        desc 'Returns current user'
+        desc 'Updates current user data field'
+        params do
+          requires :data, type: String, allow_blank: false, desc: 'Any additional key: value pairs in json string format'
+        end
+        put '/me' do
+          code_error!(current_user.errors.details, 422) unless current_user.update(data: params[:data])
+
+          present current_user, with: API::V2::Entities::UserWithFullInfo
+          status(201)
+        end
+
+        desc 'Blocks current user'
         params do
           requires :password, type: String, allow_blank: false, desc: 'Account password'
           optional :otp_code, type: String, allow_blank: false, desc: 'Code from Google Authenticator'
