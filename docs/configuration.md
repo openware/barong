@@ -71,7 +71,7 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_twilio_service_sid` | - | any string value | twilio service sid, required by configuration of `twilio_verify` policy |
 | `barong_sms_content_template` | Your verification code for Barong: `{{code}}` | any string value containing `{{code}}` | template, used in both configurations as content for SMS |
 
-### Dependencies configuration (vault, redis, rabbitmq)
+### Dependencies configuration (vault, redis, rabbitmq, sentry)
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_event_api_rabbitmq_host` | localhost | any string value | rabbitmq server host |
@@ -81,17 +81,18 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
 | `barong_vault_address` | `http://localhost:8200` | any valid url  | vault server url with port |
 | `barong_vault_token` | changeme | any string value | vault access token |
+| `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
 
 ### SMTP configuration
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
-| `sender_email`  | noreply@barong.io | any valid email | this will be displayed as sender email for client in all outbox |
-| `sender_name` | Barong | any string value | this will be displayed as sender name for client in all outbox |
-| `smtp_password` | - | any string value | password for auth 3d party send emails service smtp |
-| `smtp_port`  | 1025 | any integer value | port for auth 3d party send emails service smtp |
-| `smtp_host`  | localhost | valid host url | host for auth 3d party send emails service smtp |
-| `smtp_user`  | - | any string value | username for auth 3d party send emails service smtp |
-| `default_language`  | en | alpha-2 country | default language for email letters |
+| `barong_sender_email`  | noreply@barong.io | any valid email | this will be displayed as sender email for client in all outbox |
+| `barong_sender_name` | Barong | any string value | this will be displayed as sender name for client in all outbox |
+| `barong_smtp_password` | - | any string value | password for auth 3d party send emails service smtp |
+| `barong_smtp_port`  | 1025 | any integer value | port for auth 3d party send emails service smtp |
+| `barong_smtp_host`  | localhost | valid host url | host for auth 3d party send emails service smtp |
+| `barong_smtp_user`  | - | any string value | username for auth 3d party send emails service smtp |
+| `barong_default_language`  | en | alpha-2 country | default language for email letters |
 
 ### Config files configuration
 | Env name | Default value | Possible values | Description |
