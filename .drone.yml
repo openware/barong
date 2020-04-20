@@ -29,7 +29,7 @@ steps:
     - rspec
 
 - name: Bump and tag
-  image: quay.io/openware/sdk-citools:2.4.2
+  image: quay.io/openware/sdk-citools:2.4.5
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -42,6 +42,23 @@ steps:
       from_secret: rails_master_key
   commands:
     - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
+  when:
+    branch:
+      - master
+      - 2-2-stable
+      - 2-3-stable
+      - 2-4-stable
+
+- name: Generate docs
+  image: quay.io/openware/ruby-node:2.6.5
+  environment:
+    DATABASE_HOST: database
+    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDRESS: http://vault:8200
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
+  commands:
+    - bin/gendocs
   when:
     branch:
       - master
@@ -76,7 +93,7 @@ steps:
     WEBHOOK_JWT_SECRET:
       from_secret: devkube_webhook_secret
   commands:
-    - export latest_image=quay.io/openware/barong:$(cat .tags) 
+    - export latest_image=quay.io/openware/barong:$(cat .tags)
     - cd /home/app
     - bundle exec rake payload:send[barong,$latest_image,http://master.devkube.com:1337]
   when:
@@ -84,7 +101,7 @@ steps:
       - master
 
 - name: Push and Notify
-  image: quay.io/openware/sdk-citools:2.4.2
+  image: quay.io/openware/sdk-citools:2.4.5
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
