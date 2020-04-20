@@ -30,6 +30,29 @@ describe 'Api::V1::Profiles' do
       .with(test_user.uid, invalid_otp_code) { false }
   end
 
+  describe 'PUT /api/v2/resource/users/me' do
+    let(:correct_data) { { bar: 'baz' }.to_json }
+    let(:incorrect_data) { 'random string' }
+
+    it 'changes user data field' do
+      put '/api/v2/resource/users/me', headers: auth_header, params: {
+        data: correct_data
+      }
+
+      expect(test_user.reload.data).to eq(correct_data)
+      expect(response.status).to eq 201
+    end
+
+    it 'receives invalid data error' do
+      put '/api/v2/resource/users/me', headers: auth_header, params: {
+        data: incorrect_data
+      }
+
+      expect(response.status).to eq 422
+      expect_body.to eq errors: ['data.invalid_format']
+    end
+  end
+
   describe 'DELETE /api/v2/resource/users/me' do
     it 'receives invalid password error' do
       delete '/api/v2/resource/users/me', headers: auth_header, params: {
