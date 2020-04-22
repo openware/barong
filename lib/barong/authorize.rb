@@ -57,11 +57,11 @@ module Barong
     def validate_session!
       unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
              Time.now.to_i < session[:expire_time] &&
-             find_ip.include?(@request.remote_ip)
+             find_ip.include?(remote_ip)
         session.destroy
         Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
                            " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
-                           " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{@request.remote_ip} }")
+                           " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
 
         error!({ errors: ['authz.client_session_mismatch'] }, 401)
       end
@@ -119,7 +119,7 @@ module Barong
     def validate_restrictions!
       restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) { fetch_restrictions }
 
-      request_ip = @request.remote_ip
+      request_ip = remote_ip
       country = Barong::GeoIP.info(ip: request_ip, key: :country)
       continent = Barong::GeoIP.info(ip: request_ip, key: :continent)
 
@@ -152,8 +152,22 @@ module Barong
       end
     end
 
+    def remote_ip
+      # default behaviour, IP from HTTP_X_FORWARDED_FOR
+      ip = @request.remote_ip
+
+      if Barong::App.config.gateway == 'akamai'
+        # custom header that contains only client IP
+        true_client_ip = @request.env['HTTP_TRUE_CLIENT_IP']
+        # take IP from TRUE_CLIENT_IP only if its not nil or empty
+        ip = true_client_ip unless true_client_ip.nil? || true_client_ip.empty?
+      end
+
+      return ip
+    end
+
     def restrict!
-      Rails.logger.info("Access denied for #{session[:uid]} because ip #{@request.remote_ip} is resticted")
+      Rails.logger.info("Access denied for #{session[:uid]} because ip #{remote_ip} is resticted")
       error!({ errors: ['authz.access_restricted'] }, 401)
     end
 
@@ -188,7 +202,7 @@ module Barong
         user_id: user_id,
         result: result,
         user_agent: @request.env['HTTP_USER_AGENT'],
-        user_ip: @request.remote_ip,
+        user_ip: remote_ip,
         path: @path,
         topic: topic,
         verb: @request.env['REQUEST_METHOD'],
