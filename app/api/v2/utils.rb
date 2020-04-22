@@ -3,10 +3,18 @@
 module API::V2
   module Utils
     def remote_ip
-      ip_string = env['action_dispatch.remote_ip'].to_s
-      Rails.logger.debug "User login IP address: #{ip_string}"
+      # default behaviour, IP from HTTP_X_FORWARDED_FOR
+      ip = env['action_dispatch.remote_ip'].to_s
 
-      ip_string
+      if Barong::App.config.gateway == 'akamai'
+        # custom header that contains only client IP
+        true_client_ip = request.env['HTTP_TRUE_CLIENT_IP'].to_s
+        # take IP from TRUE_CLIENT_IP only if its not nil or empty
+        ip = true_client_ip unless true_client_ip.nil? || true_client_ip.empty?
+      end
+
+      Rails.logger.debug "User login IP address: #{ip}"
+      return ip
     end
 
     def code_error!(errors, code)
