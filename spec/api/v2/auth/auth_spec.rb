@@ -25,9 +25,12 @@ describe '/api/v2/auth functionality test' do
   let(:protected_request) { '/api/v2/resource/users/me' }
 
   describe 'testing workability with session' do
+    before do
+      Rails.cache.delete('permissions')
+    end
+
     context 'with valid session' do
       before do
-        Rails.cache.delete('permissions')
         do_create_session_request
       end
 
@@ -48,6 +51,81 @@ describe '/api/v2/auth functionality test' do
 
           get protected_request, headers: { 'Authorization' => response.headers['Authorization'] }
           expect(response.status).to eq(200)
+        end
+      end
+    end
+
+    context 'ip related' do
+      let(:create_session_uri) { uri }
+      let(:auth_uri) { '/api/v2/auth/not_in_the_rules_path' }
+      let(:ip_to_be_equal) { '168.238.57.64' }
+      let(:ip_that_differs) { '168.27.3.225' }
+
+      context 'default ip behaviour from HTTP_X_FORWARDED_FOR via action_dispatch.remote_ip' do
+        it 'works if ip from session matches request ip' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal }
+
+          expect(response.status).to eq(200)
+          expect(response.headers['Authorization']).not_to be_nil
+          expect(response.headers['Authorization']).to include "Bearer"
+        end
+
+        it 'denies access if ip from session doesnt match request ip' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_that_differs }
+
+          expect(response.status).to eq(401)
+          expect(response.headers['Authorization']).to be_nil
+        end
+      end
+
+      context 'ip behaviour from TRUE_CLIENT_IP header' do
+        before do
+          allow(Barong::App.config).to receive_messages(gateway: 'akamai')
+        end
+
+        it 'works if ip from session matches request ip' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal, 'HTTP_TRUE_CLIENT_IP' => ip_to_be_equal }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_that_differs, 'HTTP_TRUE_CLIENT_IP' => ip_to_be_equal }
+
+          expect(response.status).to eq(200)
+          expect(response.headers['Authorization']).not_to be_nil
+          expect(response.headers['Authorization']).to include "Bearer"
+        end
+
+        it 'uses HTTP_X_FORWARDED_FOR if TRUE_CLIENT_IP missing and works' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal }
+
+          expect(response.status).to eq(200)
+          expect(response.headers['Authorization']).not_to be_nil
+          expect(response.headers['Authorization']).to include "Bearer"
+        end
+
+        it 'uses HTTP_X_FORWARDED_FOR if TRUE_CLIENT_IP empty and works' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal, 'HTTP_TRUE_CLIENT_IP' => '' }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal, 'HTTP_TRUE_CLIENT_IP' => '' }
+
+          expect(response.status).to eq(200)
+          expect(response.headers['Authorization']).not_to be_nil
+          expect(response.headers['Authorization']).to include "Bearer"
+        end
+
+        it 'denies access if ip from session doesnt match request ip in HTTP_TRUE_CLIENT_IP' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal, 'HTTP_TRUE_CLIENT_IP' => ip_to_be_equal }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_that_differs, 'HTTP_TRUE_CLIENT_IP' => ip_that_differs }
+
+          expect(response.status).to eq(401)
+          expect(response.headers['Authorization']).to be_nil
+        end
+
+        it 'uses HTTP_X_FORWARDED_FOR if TRUE_CLIENT_IP empty or missing and denies access' do
+          post create_session_uri, params: params, headers: { 'HTTP_X_FORWARDED_FOR' => ip_to_be_equal, 'HTTP_TRUE_CLIENT_IP' => '' }
+          get auth_uri, headers: { 'HTTP_X_FORWARDED_FOR' => ip_that_differs }
+
+          expect(response.status).to eq(401)
+          expect(response.headers['Authorization']).to be_nil
         end
       end
     end

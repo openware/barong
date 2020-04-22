@@ -922,9 +922,6 @@ describe API::V2::Admin::Users do
           }
 
           expect(json_body.count).to eq 2
-          expect(User.first.email).to eq json_body.first[:email]
-          expect(User.second.email).to eq json_body.second[:email]
-
           expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
           expect(response.headers.fetch('Per-Page')).to eq '2'
