@@ -15,55 +15,6 @@ describe API::V2::Identity::Users do
            path: 'tasty_endpoint'
   end
 
-  describe 'language behaviour on POST /api/v2/identity/users' do
-    let(:do_request) { post '/api/v2/identity/users', params: params }
-    let(:params) { { email: 'valid@email.com', password: 'Tecohvi0' } }
-
-    before do
-      Rails.cache.delete('permissions')
-      allow(EventAPI).to receive(:notify)
-    end
-
-    context 'with language parameter' do
-      it 'accept UPCASE letters' do
-        params[:lang] = 'FR'
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
-          hash_including({record: hash_including(language: 'FR')})
-        )
-      end
-
-      it 'accept LOWERCASE letters and transforms to UPCASE letters' do
-        params[:lang] = 'fr'
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
-          hash_including({ record: hash_including(language: 'FR') })
-        )
-      end
-    end
-
-    context 'without language parameter' do
-      it 'use default EN if no language provided' do
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
-          hash_including({ record: hash_including(language: 'EN') })
-        )
-      end
-
-      it 'use default EN if empty string provided as language' do
-        params[:lang] = ''
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
-          hash_including({ record: hash_including(language: 'EN') })
-        )
-      end
-    end
-  end
-
   describe 'POST /api/v2/identity/users with default Barong::App.config.captcha' do
     let(:do_request) { post '/api/v2/identity/users', params: params }
 
@@ -133,34 +84,6 @@ describe API::V2::Identity::Users do
       it 'creates an account' do
         do_request
         expect_status_to_eq 201
-      end
-    end
-
-    context 'language specified' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ', lang: 'ua' } }
-
-      it 'notifies with right language' do
-        allow(EventAPI).to receive(:notify)
-
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('model.user.created', record: hash_including(email: 'vadid.email@gmail.com'))
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token',
-          hash_including({ record: hash_including(language: 'UA') })
-        )
-      end
-    end
-
-    context 'language not specified' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
-
-      it 'notifies with default language' do
-        allow(EventAPI).to receive(:notify)
-
-        do_request
-
-        expect(EventAPI).to have_received(:notify).with('model.user.created', hash_including({ record: hash_including(email: 'vadid.email@gmail.com') }))
-        expect(EventAPI).to have_received(:notify).with('system.user.email.confirmation.token', hash_including({ record: hash_including(language: 'EN') }))
       end
     end
   end
