@@ -35,12 +35,5 @@ RSpec.describe Postmaster, type: :mailer do
     it 'renders the body' do
       expect(mail.body.encoded).to match('Use this unique link to confirm your email test1@gmail.com')
     end
-
-    it 'has an attachment' do
-      expect(mail.attachments.size).to eq(1)
-
-      attachment = mail.attachments.first
-      expect(attachment).to be_a(Mail::Part)
-    end
   end
 end
