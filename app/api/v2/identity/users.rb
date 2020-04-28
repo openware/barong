@@ -35,9 +35,6 @@ module API::V2
           optional :refid,
                    type: String,
                    desc: 'Referral uid'
-          optional :lang,
-                   type: String,
-                   desc: 'Client env language'
           optional :captcha_response,
                    types: [String, Hash],
                    desc: 'Response from captcha widget'
@@ -59,7 +56,7 @@ module API::V2
 
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
-          publish_confirmation(user, language, Barong::App.config.domain)
+          publish_confirmation(user, Barong::App.config.domain)
           csrf_token = open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
@@ -83,9 +80,6 @@ module API::V2
                      type: String,
                      allow_blank: false,
                      desc: 'Account email'
-            optional :lang,
-                     type: String,
-                     desc: 'Client env language'
             optional :captcha_response,
                      types: [String, Hash],
                      desc: 'Response from captcha widget'
@@ -99,7 +93,7 @@ module API::V2
               return status 201
             end
 
-            publish_confirmation(current_user, language, Barong::App.config.domain)
+            publish_confirmation(current_user, Barong::App.config.domain)
             status 201
           end
 
@@ -114,10 +108,6 @@ module API::V2
                      type: String,
                      allow_blank: false,
                      desc: 'Token from email'
-            optional :lang,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'Language in iso-2 format'
           end
           post '/confirm_code' do
             payload = codec.decode_and_verify(
@@ -138,7 +128,6 @@ module API::V2
             EventAPI.notify('system.user.email.confirmed',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              language: language,
                               domain: Barong::App.config.domain
                             })
 
@@ -161,9 +150,6 @@ module API::V2
                      message: 'identity.user.missing_email',
                      allow_blank: false,
                      desc: 'Account email'
-            optional :lang,
-                     type: String,
-                     desc: 'Language in iso-2 format'
             optional :captcha_response,
                      types: [String, Hash],
                      desc: 'Response from captcha widget'
@@ -186,7 +172,6 @@ module API::V2
             EventAPI.notify('system.user.password.reset.token',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              language: language,
                               domain: Barong::App.config.domain,
                               token: token
                             })
@@ -216,9 +201,6 @@ module API::V2
                      message: 'identity.user.missing_confirm_password',
                      allow_blank: false,
                      desc: 'User password'
-            optional :lang,
-                     type: String,
-                     desc: 'Language in iso-2 format'
           end
           post '/confirm_code' do
             unless params[:password] == params[:confirm_password]
@@ -254,7 +236,6 @@ module API::V2
             EventAPI.notify('system.user.password.reset',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              language: language,
                               domain: Barong::App.config.domain
                             })
             status 201

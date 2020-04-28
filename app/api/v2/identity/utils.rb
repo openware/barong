@@ -23,10 +23,6 @@ module API::V2
         csrf_token
       end
 
-      def language
-        params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
-      end
-
       def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])
         # by default we protect user_create session_create password_reset email_confirmation endpoints
         return unless BarongConfig.list['captcha_protected_endpoints']&.include?(endpoint)
@@ -98,13 +94,12 @@ module API::V2
         Rails.cache.write(jti, 'utilized')
       end
 
-      def publish_confirmation(user, language, domain)
+      def publish_confirmation(user, domain)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
           'system.user.email.confirmation.token',
           record: {
             user: user.as_json_for_event_api,
-            language: language,
             domain: domain,
             token: token
           }

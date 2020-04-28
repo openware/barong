@@ -100,9 +100,6 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'User password'
-          optional :lang,
-                   type: String,
-                   desc: 'Language in iso-2 format'
         end
         put '/password' do
           unless params[:new_password] == params[:confirm_password]
@@ -129,12 +126,9 @@ module API::V2
 
           activity_record(user: current_user.id, action: 'password change', result: 'succeed', topic: 'password')
 
-          language = params[:lang].to_s.empty? ? 'EN' : params[:lang].upcase
-
           EventAPI.notify('system.user.password.change',
                           record: {
                             user: current_user.as_json_for_event_api,
-                            language: language,
                             domain: Barong::App.config.domain
                           })
           status 201
