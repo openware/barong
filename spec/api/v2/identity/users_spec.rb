@@ -473,6 +473,52 @@ describe API::V2::Identity::Users do
       end
     end
 
+    context 'multiple password reset requests' do
+      let!(:user) { create(:user, email: email) }
+      let(:email) { 'email@gmail.com' }
+      let(:password) { 'ZahSh8ei' }
+      let(:confirm_password) { 'ZahSh8ei' }
+
+      let(:log_in) { post '/api/v2/identity/sessions', params: { email: user.email, password: password } }
+
+      it 'works with last email' do
+        post '/api/v2/identity/users/password/generate_code', params: params
+        expect_status_to_eq 201
+
+        post '/api/v2/identity/users/password/generate_code', params: params
+        expect_status_to_eq 201
+
+        reset_token = Rails.cache.read("reset_password_#{user.email}")
+        reset_password_token = codec.encode(sub: 'reset', email: user.email, uid: user.uid, reset_token: reset_token)
+        post '/api/v2/identity/users/password/confirm_code', params: {
+                                                                       reset_password_token: reset_password_token,
+                                                                       password: password,
+                                                                       confirm_password: confirm_password
+                                                                     }
+        expect_status_to_eq 201
+        log_in
+        expect_status_to_eq 200
+      end
+
+      it 'returns error if prev link (non-utilized) is used' do
+        post '/api/v2/identity/users/password/generate_code', params: params
+        reset_token = Rails.cache.read("reset_password_#{user.email}")
+        expect_status_to_eq 201
+
+        post '/api/v2/identity/users/password/generate_code', params: params
+        expect_status_to_eq 201
+
+        reset_password_token = codec.encode(sub: 'reset', email: user.email, uid: user.uid, reset_token: reset_token)
+        post '/api/v2/identity/users/password/confirm_code', params: {
+                                                                       reset_password_token: reset_password_token,
+                                                                       password: password,
+                                                                       confirm_password: confirm_password
+                                                                     }
+        expect_status_to_eq 422
+        expect(response.body).to eq("{\"errors\":[\"identity.user.utilized_token\"]}")
+      end
+    end
+
     context 'captcha behaviour when captcha policy is recaptcha' do
       let!(:user) { create(:user, email: email) }
       let(:email) { 'email@gmail.com' }
