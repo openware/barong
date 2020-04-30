@@ -176,7 +176,10 @@ module API::V2
 
             return status 201 if current_user.nil?
 
-            token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid)
+            reset_token = SecureRandom.hex(10)
+            token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid, reset_token: reset_token)
+            # save reset_password_id in cache to validate as latest requested
+            Rails.cache.write("reset_password_#{params[:email]}", reset_token, expires_in: 3600.seconds)
 
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
@@ -226,7 +229,11 @@ module API::V2
               params[:reset_password_token],
               pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
             )
-            error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(payload[:jti]) == 'utilized'
+
+            # check if reset_password token is latest requested and was not used before
+            if Rails.cache.read("reset_password_#{payload[:email]}") != payload[:reset_token] || Rails.cache.read(payload[:jti]) == 'utilized'
+              error!({ errors: ['identity.user.utilized_token'] }, 422)
+            end
 
             current_user = User.find_by_email(payload[:email])
 
@@ -236,6 +243,10 @@ module API::V2
                               result: 'failed', topic: 'password', data: error_note)
               code_error!(current_user.errors.details, 422)
             end
+
+            # remove latest token id cache record
+            Rails.cache.delete("reset_password_#{params[:email]}")
+            # invalidate token used
             Rails.cache.write(payload[:jti], 'utilized')
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
