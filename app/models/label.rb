@@ -105,16 +105,11 @@ end
 # Table name: labels
 #
 #  id          :bigint           not null, primary key
-#  description :text(65535)
+#  user_id     :bigint           unsigned, not null
 #  key         :string(255)      not null
-#  scope       :string(255)      default("public"), not null
 #  value       :string(255)      not null
+#  scope       :string(255)      default("public"), not null
+#  description :string(255)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  user_id     :bigint           unsigned, not null
-#
-# Indexes
-#
-#  index_labels_on_user_id                    (user_id)
-#  index_labels_on_user_id_and_key_and_scope  (user_id,key,scope)
 #

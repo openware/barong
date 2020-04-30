@@ -12,14 +12,10 @@
 #  postcode   :string(255)
 #  city       :string(255)
 #  country    :string(255)
-#  state      :integer          unsigned
+#  state      :integer          default("drafted"), unsigned
 #  metadata   :text(65535)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#
-# Indexes
-#
-#  index_profiles_on_user_id  (user_id)
 #
 
 # Profile model

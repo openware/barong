@@ -26,8 +26,6 @@ module Barong
 
     # main: switch between cookie and api key logic, return bearer token
     def auth
-      validate_restrictions!
-
       auth_type = 'cookie'
       auth_type = 'api_key' if api_key_headers?
       auth_owner = method("#{auth_type}_owner").call
@@ -108,19 +106,6 @@ module Barong
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
     end
 
-    def validate_restrictions!
-      restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) { fetch_restrictions }
-
-      request_ip = remote_ip
-      country = Barong::GeoIP.info(ip: request_ip, key: :country)
-      continent = Barong::GeoIP.info(ip: request_ip, key: :continent)
-
-      restrict! if restrictions['ip'].include?(request_ip)
-      restrict! if restrictions['ip_subnet'].any? { |r| IPAddr.new(r).include?(request_ip) }
-      restrict! if restrictions['continent'].any? { |r| r.casecmp?(continent) }
-      restrict! if restrictions['country'].any? { |r| r.casecmp?(country) }
-    end
-
     def validate_csrf!
       return unless Barong::App.config.csrf_protection && @request.env['REQUEST_METHOD'].in?(STATE_CHANGING_VERBS)
 
@@ -133,34 +118,6 @@ module Barong
         Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
         error!({ errors: ['authz.csrf_token_mismatch'] }, 401)
       end
-    end
-
-    def fetch_restrictions
-      enabled = Restriction.where(state: 'enabled').to_a
-
-      Restriction::SCOPES.inject(Hash.new) do |table, scope|
-        scope_restrictions = enabled.select { |r| r.scope == scope }.map!(&:value)
-        table.tap { |t| t[scope] = scope_restrictions }
-      end
-    end
-
-    def remote_ip
-      # default behaviour, IP from HTTP_X_FORWARDED_FOR
-      ip = @request.remote_ip
-
-      if Barong::App.config.gateway == 'akamai'
-        # custom header that contains only client IP
-        true_client_ip = @request.env['HTTP_TRUE_CLIENT_IP']
-        # take IP from TRUE_CLIENT_IP only if its not nil or empty
-        ip = true_client_ip unless true_client_ip.nil? || true_client_ip.empty?
-      end
-
-      return ip
-    end
-
-    def restrict!
-      Rails.logger.info("Access denied for #{session[:uid]} because ip #{remote_ip} is resticted")
-      error!({ errors: ['authz.access_restricted'] }, 401)
     end
 
     def validate_permissions!(user)
@@ -203,13 +160,27 @@ module Barong
     end
 
     # black/white list validation. takes ['block', 'pass'] as a parameter
-    def restricted?(type)
+    def under_path_rules?(type)
       return false if @rules[type].nil? # if no authz rules provided
 
       @rules[type].each do |t|
         return true if @path.starts_with?(t) # if request path is inside the rules list
       end
       false # default
+    end
+
+    def remote_ip
+      # default behaviour, IP from HTTP_X_FORWARDED_FOR
+      ip = @request.remote_ip
+
+      if Barong::App.config.gateway == 'akamai'
+        # custom header that contains only client IP
+        true_client_ip = @request.env['HTTP_TRUE_CLIENT_IP']
+        # take IP from TRUE_CLIENT_IP only if its not nil or empty
+        ip = true_client_ip unless true_client_ip.nil? || true_client_ip.empty?
+      end
+
+      return ip
     end
 
     private

@@ -5,15 +5,11 @@
 # Table name: data_storages
 #
 #  id         :bigint           not null, primary key
-#  data       :text(65535)      not null
+#  user_id    :bigint           unsigned, not null
 #  title      :string(64)       not null
+#  data       :text(65535)      not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  user_id    :bigint           unsigned, not null
-#
-# Indexes
-#
-#  index_data_storages_on_user_id_and_title  (user_id,title) UNIQUE
 #
 
 
