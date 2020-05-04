@@ -81,6 +81,7 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
 | `barong_vault_address` | `http://localhost:8200` | any valid url  | vault server url with port |
 | `barong_vault_token` | changeme | any string value | vault access token |
+| `barong_vault_app_name` | barong | any string value | the name of the application, all encrypted keys in Vault will be prefixed with this application name |
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
 
 ### SMTP configuration
