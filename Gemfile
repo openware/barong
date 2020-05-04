@@ -55,6 +55,7 @@ gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.25.4'
 gem 'vault',        '~> 0.1'
+gem 'vault-rails', git: 'http://github.com/rubykube/vault-rails'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.0', :require => ['redis', 'redis/connection/hiredis']
 
