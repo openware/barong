@@ -73,6 +73,7 @@ Barong::App.define do |config|
   config.set(:vault_address, 'http://localhost:8200')
   config.set(:vault_token, 'changeme')
   config.set(:redis_cluster, 'false', type: :bool)
+  config.set(:vault_app_name, 'barong')
   config.set(:redis_url, 'redis://localhost:6379/1')
   config.set(:redis_password, '')
 
