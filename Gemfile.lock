@@ -1,3 +1,11 @@
+GIT
+  remote: http://github.com/rubykube/vault-rails
+  revision: 6389cf63bc68254f9b86ca634204eee3fd838be0
+  specs:
+    vault-rails (0.5.0)
+      rails (>= 4.1)
+      vault (~> 0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -475,6 +483,7 @@ DEPENDENCIES
   twilio-ruby (~> 5.25.4)
   uglifier (>= 1.3.0)
   vault (~> 0.1)
+  vault-rails!
   web-console (>= 3.7.0)
 
 RUBY VERSION

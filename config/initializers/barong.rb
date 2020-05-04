@@ -70,6 +70,7 @@ Barong::App.define do |config|
   config.set(:event_api_rabbitmq_password, 'guest')
   config.set(:vault_address, 'http://localhost:8200')
   config.set(:vault_token, 'changeme')
+  config.set(:vault_app_name, 'barong')
   config.set(:redis_url, 'redis://localhost:6379/1')
 
   # CORS configuration  -----------------------------------------------
