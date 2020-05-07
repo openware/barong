@@ -83,7 +83,7 @@ describe TOTPService do
 
     it 'creates secret' do
       expect(described_class).to receive(:write_data)
-        .with('totp/keys/uid', create_params)
+        .with('totp/keys/barong_uid', create_params)
       described_class.create(uid, email)
     end
   end
@@ -91,7 +91,7 @@ describe TOTPService do
   describe '.exist?' do
     it 'creates secret' do
       expect(described_class).to receive(:read_data)
-        .with('totp/keys/uid') { ['data'] }
+        .with('totp/keys/barong_uid') { ['data'] }
       described_class.exist?(uid)
     end
   end

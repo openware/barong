@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_115721) do
     t.string "kid", null: false
     t.string "algorithm", null: false
     t.string "scope"
+    t.string "secret_encrypted", limit: 1024
     t.string "state", default: "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

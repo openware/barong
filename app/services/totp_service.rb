@@ -61,11 +61,11 @@ class TOTPService
   private
   
     def totp_key(uid)
-      "totp/keys/#{uid}"
+      "totp/keys/#{Vault.application}_#{uid}"
     end
   
     def totp_code_key(uid)
-      "totp/code/#{uid}"
+      "totp/code/#{Vault.application}_#{uid}"
     end
   
     def read_data(key)
