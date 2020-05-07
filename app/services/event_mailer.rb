@@ -98,7 +98,8 @@ class EventMailer
       template_name: config[:templates][language][:template_path],
       record: obj.record,
       changes: obj.changes,
-      user: user
+      user: user,
+      time: Time.now
     }
 
     Postmaster.process_payload(params).deliver_now
