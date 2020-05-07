@@ -15,6 +15,7 @@ module API::V2
       use API::V2::Management::JWTAuthenticationMiddleware
       mount API::V2::Management::Labels
       mount API::V2::Management::Users
+      mount API::V2::Management::Profiles
       mount API::V2::Management::Tools
       mount API::V2::Management::Otp
       mount API::V2::Management::Documents

@@ -107,6 +107,24 @@ module API::V2
           present user, with: API::V2::Entities::UserWithProfile
         end
 
+        desc 'Updates data field of existing user' do
+          @settings[:scope] = :write_users
+          success API::V2::Entities::UserWithProfile
+        end
+
+        params do
+          requires :uid, type: String, desc: 'User Uid', allow_blank: false
+          requires :data, type: String, desc: 'Any additional key:value pairs in json format', allow_blank: false
+        end
+
+        post '/update' do
+          user = User.find_by_uid(params[:uid])
+          error! 'user.doesnt_exist', 422 unless user
+          error!(user.errors.full_messages, 422) unless user.update(data: params[:data])
+
+          present user, with: API::V2::Entities::UserWithProfile
+        end
+
         desc 'Imports an existing user' do
           @settings[:scope] = :write_users
           success API::V2::Entities::UserWithProfile
