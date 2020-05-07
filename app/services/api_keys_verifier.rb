@@ -10,9 +10,8 @@ class APIKeysVerifier
 
   def verify_hmac_payload?
     data = @nonce.to_s + @kid
-    secret = SecretStorage.get_secret(@kid).data[:value]
     algorithm = 'SHA' + @api_key.algorithm[2..4]
-    true_signature = OpenSSL::HMAC.hexdigest(algorithm, secret, data)
+    true_signature = OpenSSL::HMAC.hexdigest(algorithm, @api_key.secret, data)
     true_signature == @signature
   end
 end

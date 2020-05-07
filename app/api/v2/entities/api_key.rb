@@ -13,12 +13,6 @@ module API::V2
         expose :created_at
         expose :updated_at
       end
-
-      private
-
-      def secret
-        SecretStorage.get_secret(object.kid)
-      end
     end
   end
 end
