@@ -182,7 +182,7 @@ describe '/api/v2/auth functionality test' do
     let(:otp_code) { '1357' }
     let(:nonce) { (Time.now.to_f * 1000).to_i }
     let(:kid) { api_key.kid }
-    let(:secret) { SecureRandom.hex(16) }
+    let(:secret) { api_key.secret }
     let(:data) { nonce.to_s + kid }
     let(:algorithm) { 'SHA' + api_key.algorithm[2..4]}
     let(:signature) { OpenSSL::HMAC.hexdigest(algorithm, secret, data) }
@@ -192,8 +192,6 @@ describe '/api/v2/auth functionality test' do
       SecretStorage.store_secret(secret, api_key.kid)
       allow(TOTPService).to receive(:validate?)
         .with(test_user.uid, otp_code) { true }
-      allow(SecretStorage).to receive(:get_secret)
-        .with(kid) { Vault::Secret.new(data: { value: secret }) }
     end
 
     context 'testing api key related errors' do

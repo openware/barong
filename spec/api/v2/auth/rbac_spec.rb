@@ -74,7 +74,7 @@ describe '/api/v2/auth functionality test' do
     context 'with api_keys' do
       let!(:admin_api_key) { create :api_key, user: @admin }
       let(:nonce) { (Time.now.to_f * 1000).to_i }
-      let(:secret) { SecureRandom.hex(16) }
+      let(:secret) { admin_api_key.secret }
       let(:signature) { OpenSSL::HMAC.hexdigest('SHA256', secret, nonce.to_s + admin_api_key.kid ) }
       let!(:turn_on_2fa) { @admin.update(otp: true) }
 
@@ -83,8 +83,6 @@ describe '/api/v2/auth functionality test' do
           it 'allowes access with for api key owner for valid verb, owner role and path' do
             allow(TOTPService).to receive(:validate?)
               .with(@admin.uid, '1357') { true }
-            allow(SecretStorage).to receive(:get_secret)
-              .with(admin_api_key.kid) { Vault::Secret.new(data: { value: secret }) }
 
             get '/api/v2/auth/api/v2/admin/users/list', headers: {
               'X-Auth-Apikey' => admin_api_key.kid,

@@ -48,14 +48,13 @@ module API::V2
           declared_params = declared(unified_params, include_missing: false)
                             .except(:totp_code)
                             .merge(scope: params[:scope]&.split(','))
+                            .merge(secret: SecureRandom.hex(16))
 
           api_key = current_user.api_keys.new(declared_params)
 
           APIKey.transaction do
             raise ActiveRecord::Rollback unless api_key.save
-
-            SecretStorage.store_secret(SecureRandom.hex(16), api_key.kid)
-          rescue SecretStorage::Error
+          rescue Vault::VaultError
             api_key.errors.add(:api_key, 'could_not_save_secret')
             raise ActiveRecord::Rollback
           end
