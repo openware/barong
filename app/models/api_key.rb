@@ -3,6 +3,12 @@
 class APIKey < ApplicationRecord
   self.table_name = :apikeys
 
+  include Vault::EncryptedModel
+
+  vault_lazy_decrypt!
+
+  vault_attribute :secret
+
   ALGORITHMS = ['HS256'].freeze
 
   serialize :scope, Array
@@ -18,7 +24,7 @@ class APIKey < ApplicationRecord
     algorithm: 'RS256'
   }.freeze
 
-  validates :user_id, :kid, presence: true
+  validates :user_id, :kid, :secret, presence: true
   validates :algorithm, inclusion: { in: ALGORITHMS }
 
   belongs_to :user

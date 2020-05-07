@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_29_082843) do
+ActiveRecord::Schema.define(version: 2020_05_07_104423) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2020_04_29_082843) do
     t.string "kid", null: false
     t.string "algorithm", null: false
     t.string "scope"
+    t.string "secret_encrypted", limit: 1024
     t.string "state", default: "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

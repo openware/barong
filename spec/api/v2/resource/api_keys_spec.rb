@@ -105,7 +105,7 @@ describe 'Api::V2::APIKeys' do
       end
 
       it 'does not create api key if vault is down' do
-        allow(SecretStorage).to receive(:store_secret).and_raise(SecretStorage::Error)
+        allow(Vault::Rails).to receive(:encrypt).and_raise(Vault::VaultError)
         expect { do_request }.not_to change { APIKey.count }
         expect(response.status).to eq(422)
         expect_body.to eq(errors: ["api_key.could_not_save_secret"])
