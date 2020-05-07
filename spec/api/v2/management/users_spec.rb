@@ -225,6 +225,32 @@ describe API::V2::Management::Users, type: :request do
       end
     end
 
+    describe 'Update data of existing user' do
+      let(:signers) { %i[alex jeff] }
+      let(:data) { params.merge(scope: :write_users) }
+
+      let(:do_request) do
+        post_json '/api/v2/management/users/update',
+                  multisig_jwt_management_api_v2({ data: data }, *signers)
+      end
+
+      context 'when data is present' do
+        let(:user) { create :user }
+        let(:params) do
+          {
+            uid: user.uid,
+            data: { nationality: 'us' }.to_json
+          }
+        end
+        it 'updates data field' do
+          do_request
+
+          expect_status_to_eq 201
+          expect(user.reload.data).to eq({ nationality: 'us' }.to_json)
+        end
+      end
+    end
+
     describe 'Create an user' do
       let(:signers) { %i[alex jeff] }
       let(:data) { params.merge(scope: :write_users) }
