@@ -59,11 +59,7 @@ module API::V2
             return status 200
           end
 
-          if declared_params[:otp_code].blank?
-            login_error!(reason: 'The account has enabled 2FA but OTP code is missing', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'missing_otp')
-          end
-
+          error!({ errors: ['identity.session.missing_otp'] }, 401) if declared_params[:otp_code].blank?
           unless TOTPService.validate?(user.uid, declared_params[:otp_code])
             login_error!(reason: 'OTP code is invalid', error_code: 403,
                          user: user.id, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
