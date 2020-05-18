@@ -15,6 +15,51 @@ describe API::V2::Identity::Users do
            path: 'tasty_endpoint'
   end
 
+  describe 'POST /api/v2/identity/users/access' do
+    context 'success' do
+      before do
+        allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.2')
+        allow(Rails.cache).to receive(:read).and_return('active')
+      end
+
+      it 'creates a restriction in database with my ip' do
+        expect {
+          post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+        }.to change { Restriction.count }.by(1)
+
+        expect(response.status).to eq(201)
+      end
+
+      it 'works only first time' do
+        expect {
+          post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+        }.to change { Restriction.count }.by(1)
+        expect(response.status).to eq(201)
+
+        post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "value.taken"
+      end
+    end
+
+    context 'returns error' do
+      it 'if token is missing' do
+        post '/api/v2/identity/users/access'
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include  "identity.user.missing_whitelink_token"
+      end
+
+      it 'if incorrect whitelink_token' do
+        post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "identity.user.access.invalid_token"
+      end
+    end
+  end
+
   describe 'POST /api/v2/identity/users with default Barong::App.config.captcha' do
     let(:do_request) { post '/api/v2/identity/users', params: params }
 

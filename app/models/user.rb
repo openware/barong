@@ -184,20 +184,15 @@ end
 # Table name: users
 #
 #  id              :bigint           not null, primary key
-#  data            :text(65535)
+#  uid             :string(255)      not null
 #  email           :string(255)      not null
-#  level           :integer          default(0), not null
-#  otp             :boolean          default(FALSE)
 #  password_digest :string(255)      not null
 #  role            :string(255)      default("member"), not null
+#  data            :text(65535)
+#  level           :integer          default(0), not null
+#  otp             :boolean          default(FALSE)
 #  state           :string(255)      default("pending"), not null
-#  uid             :string(255)      not null
+#  referral_id     :bigint
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  referral_id     :bigint
-#
-# Indexes
-#
-#  index_users_on_email  (email) UNIQUE
-#  index_users_on_uid    (uid) UNIQUE
 #
