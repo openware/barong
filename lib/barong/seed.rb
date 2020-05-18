@@ -92,5 +92,30 @@ module Barong
         end
       end
     end
+
+    def seed_restrictions
+      logger.info "Seeding restrictions"
+      return logger.info "Restrictions seed is empty!" if seeds["restrictions"].empty?
+      
+      seeds["restrictions"].each do |seed|
+        logger.info "---"
+        raise ConfigError.new("category missing in restrictions seed") if seed["category"].nil?
+        raise ConfigError.new("scope is missing in restrictions seed") if seed["scope"].nil?
+        raise ConfigError.new("value is missing in restrictions seed") if seed["value"].nil?
+        raise ConfigError.new("state is missing in restrictions seed") if seed["state"].nil?
+
+        restriction = Restriction.new(
+          category: seed["category"],
+          scope: seed["scope"],
+          value: seed["value"],
+          state: seed["state"],
+          code: seed["code"]
+        )
+
+        unless restriction.save
+          raise ConfigError.new("Can't create permission: #{permission.errors.full_messages.join('; ')}")
+        end
+      end
+    end
   end
 end

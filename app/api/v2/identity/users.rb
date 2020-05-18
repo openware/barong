@@ -17,6 +17,33 @@ module API::V2
 
       desc 'User related routes'
       resource :users do
+        desc 'Creates new whitelist restriction',
+        success: { code: 201, message: 'Creates new user' },
+        failure: [
+          { code: 400, message: 'Required params are missing' },
+          { code: 422, message: 'Validation errors' }
+        ]
+        params do
+          requires :whitelink_token,
+                   type: String,
+                   allow_blank: false
+        end
+        post '/access' do
+          if Rails.cache.read(params[:whitelink_token]) == 'active'
+            restriction = Restriction.new(
+              category: 'whitelist',
+              scope: 'ip',
+              value: remote_ip,
+              state: 'enabled'
+            )
+
+            code_error!(restriction.errors.details, 422) unless restriction.save
+            Rails.cache.delete('restrictions')
+          else
+            error!({ errors: ['identity.user.access.invalid_token'] }, 422)
+          end
+        end
+
         desc 'Creates new user',
         success: { code: 201, message: 'Creates new user' },
         failure: [

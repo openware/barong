@@ -45,8 +45,3 @@ end
 #  data       :text(65535)
 #  created_at :datetime
 #
-# Indexes
-#
-#  index_activities_on_target_uid  (target_uid)
-#  index_activities_on_user_id     (user_id)
-#

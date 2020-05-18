@@ -42,12 +42,14 @@ describe Barong::Seed do
     ]
   }
   let(:permissions) {[]}
+  let(:restrictions) {[]}
   let(:users) {[]}
   let(:seeds) {
     {
       "users" => users,
       "levels" => levels,
-      "permissions" => permissions
+      "permissions" => permissions,
+      "restrictions" => restrictions
     }
   }
 
@@ -60,6 +62,7 @@ describe Barong::Seed do
     Level.delete_all
     User.delete_all
     Permission.delete_all
+    Restriction.delete_all
   end
 
   context "Seed simple and valid levels" do
@@ -346,6 +349,62 @@ describe Barong::Seed do
       expect(accountant_permission.role).to eq("accountant")
       expect(accountant_permission.verb).to eq("POST")
       expect(accountant_permission.path).to eq("api/v2/admin/users")
+    end
+  end
+
+  context "Seed simple and valid restrictions" do
+    let(:restrictions) {
+      [
+        {
+          "category" => "maintenance",
+          "scope" => "all",
+          "value" => "all",
+          "state" => "enabled"
+        },
+        {
+          "category" => "blacklist",
+          "scope" => "all",
+          "value" => "all",
+          "state" => "enabled"
+        }
+      ]
+    }
+
+    it "seeds restrictions in database" do
+      seeder.seed_restrictions
+      expect(Restriction.count).to be 2
+      Restriction.all.each_with_index do |restriction, index|
+        expect(restriction.category).to eq restrictions[index]["category"]
+        expect(restriction.scope).to eq restrictions[index]["value"]
+        expect(restriction.value).to eq restrictions[index]["value"]
+        expect(restriction.state).to eq restrictions[index]["state"]
+      end
+    end
+  end
+
+  context "Empty seed" do
+    it "returns without error and with kind log info" do
+      expect {
+        seeder.seed_restrictions
+      }.not_to raise_error
+    end
+  end
+
+  context "Missing params in restriction seed" do
+    let(:restrictions) {
+      [
+        {
+          "category" => "maintenance",
+          "scope" => "all",
+          "value" => "all",
+        }
+      ]
+    }
+
+    it "raises error on invalid seed" do
+      expect {
+        seeder.seed_restrictions
+      }.to raise_error(Barong::Seed::ConfigError, "state is missing in restrictions seed")
     end
   end
 end
