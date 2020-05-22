@@ -104,6 +104,8 @@ module API
             unless target_user.update(update_param_key => update_param_value)
               code_error!(target_user.errors.details, 422)
             end
+
+            target_user.labels.find_by(key: :otp, scope: :private).delete if target_user.labels.find_by(key: :otp, scope: :private) && update_param_key == 'otp'
             status 200
           end
 
@@ -191,6 +193,7 @@ module API
               code_error!(target_user.errors.details, 422)
             end
 
+            target_user.labels.find_by(key: :otp, scope: :private).delete if target_user.labels.find_by(key: :otp, scope: :private) && update_param_key == 'otp'
             status 200
           end
 
