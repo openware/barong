@@ -9,7 +9,7 @@ gem 'api-pagination', '~> 4.8.2'
 gem 'env-tweaks', '~> 1.0.0'
 
 # storage related gems
-gem 'carrierwave', '~> 2.0'
+gem 'carrierwave', '~> 2.1', '>= 2.1.0'
 # fog's core, shared behaviors without API and provider specifics
 gem 'fog-core', '~> 2.1.0'
 # alicloud support
@@ -20,17 +20,17 @@ gem 'fog-aws', '~> 3.5.2'
 gem 'fog-google', '~> 1.9.1'
 
 gem 'kycaid'
-gem 'sidekiq'
+gem 'sidekiq', '>= 6.0.7'
 # GLI
 gem 'gli', '~> 2.19.0'
 
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.3'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.12', '>= 3.12.4'
+gem 'puma', '~> 3.12', '>= 3.12.6'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -43,14 +43,14 @@ gem 'peatio', '~> 0.4.4'
 gem 'rack-cors', '~> 1.0.2'
 
 # REST-like API framework for Ruby
-gem 'grape',        '~> 1.0'
+gem 'grape', '~> 1.3', '>= 1.3.1'
 gem 'grape-entity', '~> 0.7.1'
-gem 'grape-swagger', '~> 0.28'
-gem 'grape-swagger-entity', '~> 0.2'
-gem 'grape_logging', '~> 1.8.0'
+gem 'grape-swagger', '~> 0.33', '>= 0.33.0'
+gem 'grape-swagger-entity', '~> 0.3', '>= 0.3.4'
+gem 'grape_logging', '~> 1.8.3'
 gem 'memoist', '~> 0.16'
 gem 'jwt', '~> 2.2'
-gem 'jwt-multisig', '~> 1.0.2'
+gem 'jwt-multisig', '~> 1.0', '>= 1.0.2'
 gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.25.4'
@@ -83,15 +83,15 @@ gem 'sentry-raven', '~> 2.9.0'
 group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'factory_bot_rails',  '~> 4.11', '>= 4.11.1'
+  gem 'factory_bot_rails', '~> 4.11', '>= 4.11.1'
   gem 'faker',              '~> 2.1'
 end
 
 group :development do
   gem 'grape_on_rails_routes', '~> 0.3.2'
-  gem 'web-console',  '>= 3.7.0'
+  gem 'web-console', '>= 3.7.0'
   gem 'listen',       '>= 3.0.5', '< 3.2'
-  gem 'annotate',     '~> 2.7'
+  gem 'annotate', '~> 2.7', '>= 2.7.5'
   gem 'spring'
   gem 'pry-rails'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -101,7 +101,7 @@ group :test do
   gem 'capybara', '>= 3.29.0'
   # gem 'selenium-webdriver'
   # gem 'chromedriver-helper'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.0'
-  gem 'shoulda-matchers',    '~> 4.0.1'
+  gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
+  gem 'shoulda-matchers', '~> 4.0.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
 end

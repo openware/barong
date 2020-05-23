@@ -1,4 +1,4 @@
-FROM ruby:2.6.5
+FROM ruby:2.6.6
 
 # By default image is built using RAILS_ENV=production.
 # You may want to customize it:
@@ -38,7 +38,7 @@ COPY --chown=app:app Gemfile Gemfile.lock $APP_HOME/
 
 # Install dependencies
 RUN gem install bundler
-RUN bundle install --jobs=$(nproc) --deployment --binstubs
+RUN bundle install --jobs=$(nproc) --deployment --binstubs --without development test
 
 # Copy the main application.
 COPY --chown=app:app . $APP_HOME
