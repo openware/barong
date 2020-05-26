@@ -21,6 +21,9 @@ class EventMailer
   def listen
     unlisten
 
+    # Avoid log buffering in Docker
+    $stdout.sync = true
+
     @bunny_session = Bunny::Session.new(rabbitmq_credentials).tap(&:start)
     @bunny_channel = @bunny_session.channel
 
