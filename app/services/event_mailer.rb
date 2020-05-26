@@ -93,6 +93,11 @@ class EventMailer
       return
     end
 
+    if config[:expression].present? && skip_event(event, config[:expression])
+      Rails.logger.info { "Event #{obj.name} skipped" }
+      return
+    end
+
     params = {
       subject: config[:templates][language][:subject],
       template_name: config[:templates][language][:template_path],
@@ -111,6 +116,38 @@ class EventMailer
     options = algorithm_verification_options(signer)
     JWT::Multisig.verify_jwt JSON.parse(payload), { signer => jwt_public_key(signer) },
                              options.compact
+  end
+
+  def skip_event(event, expression)
+    # valid operators: and / or / not
+    operator = expression.keys.first.downcase
+    # { field_name: field_value }
+    values = expression[operator]
+
+    # return array of boolean [false, true]
+    res = values.keys.map do |field_name|
+      safe_dig(event, field_name.to_s.split('.')) == values[field_name]
+    end
+
+    # all? works as AND operator, any? works as OR operator
+    return false if (operator == :and && res.all?) || (operator == :or && res.any?) ||
+                    (operator == :not && !res.all?)
+
+    return true if operator == :not && res.all?
+
+    true
+  end
+
+  def safe_dig(hash, keypath, default = nil)
+    stringified_hash = JSON.parse(hash.to_json)
+    stringified_keypath = keypath.map(&:to_s)
+
+    stringified_keypath.reduce(stringified_hash) do |accessible, key|
+      return default unless accessible.is_a? Hash
+      return default unless accessible.key? key
+
+      accessible[key]
+    end
   end
 
   class << self
