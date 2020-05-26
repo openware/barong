@@ -80,10 +80,19 @@ describe API::V2::Admin::Users do
         expect(json_body.count).to eq User.where(level: 2, state: 'active').count
       end
 
-      let!(:profile) do
-        create :profile, first_name: 'peatio',
-                         last_name: 'barong',
-                         country: 'us'
+      let!(:user_with_profiles) do
+        user = create :user, email: 'peatio@barong.com'
+        create :profile, user_id: user.id, first_name: 'peatio', last_name: 'barong', country: 'us', state: 'rejected'
+        create :profile, user_id: user.id, first_name: 'peatio', last_name: 'barong', country: 'us', state: 'rejected'
+      end
+
+
+      it 'returns only uniq set of users' do
+        user_with_profiles
+
+        do_search_request
+        expect(response.status).to eq 200
+        expect(json_body.count).to eq User.count
       end
 
       it 'returns filtered list of users when only one filter param given (profile attribute) first_name' do
