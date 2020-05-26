@@ -87,3 +87,16 @@ events:
       en:
         subject: New Beneficiary
         template_path: new_beneficiary.en.html.erb
+
+  # expression example
+  # - name: Session Create
+  #   key: session.create
+  #   expression:
+  #     and:                          # need to use and/or/not operator here
+  #       record.user_ip: '::1'       # full patch to key
+  #       record.user.role: 'member'
+  #   exchange: barong_system
+  #   templates:
+  #     en:
+  #       subject: New Login
+  #       template_path: session_create.en.html.erb
