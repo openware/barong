@@ -58,6 +58,7 @@ module API::V2
               user: current_user.id, action: 'enable 2FA')
           end
 
+          current_user.labels.create(key: :otp, value: :enabled, scope: :private) unless current_user.labels.find_by(key: :otp, scope: :private)
           activity_record(user: current_user.id, action: 'enable 2FA', result: 'succeed', topic: 'otp')
           200
         end
@@ -91,6 +92,7 @@ module API::V2
               user: current_user.id, action: 'disable 2FA')
           end
 
+          current_user.labels.find_by(key: :otp, scope: :private).delete if current_user.labels.find_by(key: :otp, scope: :private)
           activity_record(user: current_user.id, action: 'disable 2FA', result: 'succeed', topic: 'otp')
 
           status 200
