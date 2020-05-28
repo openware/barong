@@ -244,12 +244,14 @@ describe API::V2::Admin::Users do
 
       it 'sets otp to false' do
         experimental_user.update(otp: 'true')
+        experimental_user.labels.create(key: :otp, value: :enabled, scope: :private)
         put '/api/v2/admin/users', headers: auth_header, params: {
           uid: experimental_user.uid,
           otp: 'false'
         }
         expect(response.status).to eq 200
         expect(experimental_user.reload.otp).to eq false
+        expect(experimental_user.reload.labels.find_by(key: :otp, scope: :private)).to eq nil
       end
 
       it 'sets role to admin' do
