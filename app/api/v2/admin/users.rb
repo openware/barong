@@ -54,7 +54,7 @@ module API
           end
           get do
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
-            users = API::V2::Queries::UserFilter.new(User.all).call(params)
+            users = API::V2::Queries::UserFilter.new(User.all).call(params).uniq
             users.tap { |q| present paginate(q), with: entity }
           end
 
