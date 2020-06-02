@@ -58,8 +58,8 @@ describe 'API::V2::Resource::Profiles' do
       expect(profile).to be
     end
 
-    it 'accept # \ : " & ( ) in address' do
-      request_params[:address] = '28/2 \"Kevin & Brook": (Miami, USA)'
+    it 'accept # ~ \ : " & ( ) in address' do
+      request_params[:address] = '28~1/2 \"Kevin & Brook": (Miami, USA)'
       post url, params: request_params, headers: auth_header
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
@@ -72,6 +72,64 @@ describe 'API::V2::Resource::Profiles' do
       expect(response.status).to eq(201)
       profile = Profile.find_by(request_params)
       expect(profile).to be
+    end
+
+    it "accept – in address" do
+      request_params[:address] = "'Larkin–Fork' South New York"
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it "doesn't accept @ in address" do
+      request_params[:address] = "'Larkin–Fork' @South New York"
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(422)
+    end
+
+    it 'accept . in city' do
+      request_params[:city] = 'St. Petersburg'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it 'accept dash in city' do
+      request_params[:city] = 'Hubli–Dharwad'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it 'accept hyphen in city' do
+      request_params[:city] = 'Hubli-Dharwad'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it 'accept \' in city' do
+      request_params[:city] = 'Cava de\' Tirreni'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(201)
+      profile = Profile.find_by(request_params)
+      expect(profile).to be
+    end
+
+    it "doesn't accept # in city" do
+      request_params[:city] = 'Cava de\' #Tirreni'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(422)
+    end
+
+    it "doesn't accept @ in city" do
+      request_params[:city] = 'Cava de\' @Tirreni'
+      post url, params: request_params, headers: auth_header
+      expect(response.status).to eq(422)
     end
 
     it 'creates new profile with only required fields' do
