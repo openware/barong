@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_144734) do
   create_table "profiles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.string "applicant_id"
+    t.string "author"
     t.string "first_name"
     t.string "last_name"
     t.date "dob"

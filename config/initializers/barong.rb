@@ -49,7 +49,8 @@ Barong::App.define do |config|
   config.set(:apikey_nonce_lifetime, '5000', type: :integer)
   config.set(:gateway, 'cloudflare', values: %w[akamai cloudflare])
   config.set(:jwt_expire_time, '3600', type: :integer)
-
+  config.set(:profile_double_verification, 'false', type: :bool)
+  
   # Password configuration  -----------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration
   config.set(:password_regexp, '^(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:digit:]])(?=.*[[:graph:]]).{8,80}$', type: :regexp)
