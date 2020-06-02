@@ -43,8 +43,8 @@ class Profile < ApplicationRecord
                         if: proc { |a| a.last_name.present? }
   validates :city, length: 1..255,
                    format: {
-                     with: /\A[[:word:]\s\-']+\z/,
-                     message: 'only allows letters, digits "-", "\'", and space'
+                     with: /\A[[:word:]\s\-\–\.~']+\z/,
+                     message: 'only allows letters, digits "-", "–", "\'", ".", "~" and space'
                    },
                    if: proc { |a| a.city.present? }
   validate :validate_country_format, if: ->(p) { p.country.present? }
@@ -57,8 +57,8 @@ class Profile < ApplicationRecord
 
   validates :address, length: 1..255,
                       format: {
-                        with: /\A[[:word:]\s\-,\.;\/:\#"\\&\')\(]+\z/,
-                        message: 'only allows letters, digits "-", "\'", and space'
+                        with: /\A[[:word:]\s\-\–\,\.~;\/:\#"\\&\')\(]+\z/,
+                        message: 'only allows letters, digits "-", "–", "\'", ".", ",", "#", ":", ";", "&" and space'
                       },
                       if: proc { |a| a.address.present? }
   validates :metadata, data_is_json: true
