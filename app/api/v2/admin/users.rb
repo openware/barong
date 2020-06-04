@@ -49,12 +49,20 @@ module API
                      type: String,
                      values: { value: -> (p){ %w[created updated].include?(p) }, message: 'admin.user.invalid_range' },
                      default: 'created'
+            optional :ordering,
+                     values: { value: -> (p){ %w[asc desc].include?(p) }, message: 'user.ordering.invalid_ordering' },
+                     default: 'asc',
+                     desc: 'If set, returned values will be sorted in specific order, defaults to \'asc\'.'
+            optional :order_by,
+                     values: { value: -> (p){ User.new.attributes.keys.include?(p) }, message: 'user.ordering.invalid_attribute' },
+                     default: 'id',
+                     desc: 'Name of the field, which result will be ordered by.'
             use :timeperiod_filters
             use :pagination_filters
           end
           get do
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
-            users = API::V2::Queries::UserFilter.new(User.all).call(params).uniq
+            users = API::V2::Queries::UserFilter.new(User.all.order(params[:order_by] => params[:ordering])).call(params).uniq
             users.tap { |q| present paginate(q), with: entity }
           end
 
