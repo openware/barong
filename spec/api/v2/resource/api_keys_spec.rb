@@ -12,7 +12,8 @@ describe 'Api::V2::APIKeys' do
   end
   let!(:test_user) { create(:user, otp: otp_enabled) }
   let(:otp_enabled) { true }
-  let!(:api_key) { create :api_key, user: test_user }
+  let!(:first_api_key) { create :api_key, user: test_user }
+  let!(:second_api_key) { create :api_key, user: test_user }
   let(:valid_otp_code) { '1357' }
   let(:invalid_otp_code) { '1234' }
   let(:otp_code) { valid_otp_code }
@@ -27,7 +28,13 @@ describe 'Api::V2::APIKeys' do
   end
 
   describe 'GET /api/v2/resource/api_keys/' do
-    let(:params) do
+    let(:get_params) do
+      {
+          ordering: 'asc',
+          oreder_by: 'id'
+      }
+    end
+    let(:post_params) do
       {
         scope: 'trade',
         algorithm: 'HS256'
@@ -35,23 +42,54 @@ describe 'Api::V2::APIKeys' do
     end
     let(:do_request) do
       post '/api/v2/resource/api_keys',
-           params: params.merge(totp_code: otp_code),
+           params: post_params.merge(totp_code: otp_code),
            headers: auth_header
     end
-    let(:do_get_request) { get "/api/v2/resource/api_keys", headers: auth_header }
+    let(:do_get_request) { get "/api/v2/resource/api_keys", params: get_params, headers: auth_header }
     let(:expected_fields) do
       {
-        kid: api_key.kid,
-        state: api_key.state,
+        kid: first_api_key.kid,
+        state: first_api_key.state,
         scope: %w[trade]
       }
     end
     let(:totp_code) { valid_otp_code }
 
-    it 'Return api key for current account' do
+    it 'Return api key for current account in ASC order' do
       do_get_request
+
+      expect(json_body.count).to eq 2
       expect(response.status).to eq(200)
       expect(json_body.first).to include(expected_fields)
+    end
+
+    it 'Return api key for current account in DESC order' do
+      get_params.merge!(ordering: 'desc')
+      do_get_request
+
+      expect(json_body.count).to eq 2
+      expect(response.status).to eq(200)
+      expect(json_body.second).to include(expected_fields)
+    end
+
+    context 'when invalid ordering' do
+      it 'renders an error' do
+        get_params.merge!(ordering: 'resc')
+        do_get_request
+
+        expect(response.status).to eq(422)
+        expect_body.to eq(errors: ["resource.api_key.invalid_ordering"])
+      end
+    end
+
+    context 'when invalid order_by' do
+      it 'renders an error' do
+        get_params.merge!(order_by: 'invalid')
+        do_get_request
+
+        expect(response.status).to eq(422)
+        expect_body.to eq(errors: ["resource.api_key.invalid_attribute"])
+      end
     end
 
     context 'when otp is not enabled' do
@@ -143,7 +181,7 @@ describe 'Api::V2::APIKeys' do
 
   describe 'PATCH /api/v2/resource/api_keys/:kid' do
     let(:do_request) do
-      patch "/api/v2/resource/api_keys/#{api_key.kid}", params: params.merge(totp_code: otp_code),
+      patch "/api/v2/resource/api_keys/#{first_api_key.kid}", params: params.merge(totp_code: otp_code),
                                                headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
@@ -157,13 +195,13 @@ describe 'Api::V2::APIKeys' do
       end
 
       it 'Updates a state' do
-        expect { do_request }.to change { api_key.reload.state }
+        expect { do_request }.to change { first_api_key.reload.state }
           .from('active').to('inactive')
         expect(response.status).to eq(200)
       end
 
       it 'Updates a scope' do
-        expect { do_request }.to change { api_key.reload.scope }
+        expect { do_request }.to change { first_api_key.reload.scope }
           .from(['trade']).to(['sell'])
         expect(response.status).to eq(200)
       end
@@ -192,7 +230,7 @@ describe 'Api::V2::APIKeys' do
 
   describe 'DELETE /api/v2/resource/api_keys/:uid' do
     let(:do_request) do
-      delete "/api/v2/resource/api_keys/#{api_key.kid}?totp_code=#{otp_code}",
+      delete "/api/v2/resource/api_keys/#{first_api_key.kid}?totp_code=#{otp_code}",
              headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
