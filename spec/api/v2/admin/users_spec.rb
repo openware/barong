@@ -48,6 +48,48 @@ describe API::V2::Admin::Users do
         expect(response.headers.fetch('Per-Page')).to eq '100'
       end
 
+      it 'returns list of users in ASC order' do
+        params[:ordering] = 'asc'
+        params[:order_by] = 'id'
+        do_search_request
+
+        expect(User.count).to eq json_body.count
+        expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
+        expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
+        expect(validate_fields(User.third)).to eq json_body.third.except(:referral_uid)
+        expect(validate_fields(User.fourth)).to eq json_body.fourth.except(:referral_uid)
+      end
+
+      it 'returns list of users in DESC order' do
+        params[:ordering] = 'desc'
+        params[:order_by] = 'id'
+        do_search_request
+
+        expect(User.count).to eq json_body.count
+        expect(validate_fields(User.first)).to eq json_body.fifth.except(:referral_uid)
+        expect(validate_fields(User.second)).to eq json_body.fourth.except(:referral_uid)
+        expect(validate_fields(User.third)).to eq json_body.third.except(:referral_uid)
+        expect(validate_fields(User.fourth)).to eq json_body.second.except(:referral_uid)
+      end
+
+      it 'returns error if invalid ordering' do
+        params[:ordering] = 'resc'
+        params[:order_by] = 'id'
+        do_search_request
+
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"user.ordering.invalid_ordering\"]}"
+      end
+
+      it 'returns error when user attribute doesnt exist' do
+        params[:ordering] = 'asc'
+        params[:order_by] = 'algorithm'
+        do_search_request
+
+        expect(response.status).to eq 422
+        expect(response.body).to eq "{\"errors\":[\"user.ordering.invalid_attribute\"]}"
+      end
+
       it 'returns filtered list of users when only one filter param given created_at and from' do
         params[:range] = 'created'
         test_user.update(created_at: 1.day.ago)
