@@ -16,13 +16,21 @@ module API
           ]
           params do
             requires :uid, type: String, allow_blank: false, desc: 'user uniq id'
+            optional :ordering,
+                     values: { value: -> (p){ %w[asc desc].include?(p) }, message: 'api_keys.ordering.invalid_ordering' },
+                     default: 'asc',
+                     desc: 'If set, returned values will be sorted in specific order, defaults to \'asc\'.'
+            optional :order_by,
+                     values: { value: -> (p){ APIKey.new.attributes.keys.include?(p) }, message: 'api_keys.ordering.invalid_attribute' },
+                     default: 'id',
+                     desc: 'Name of the field, which result will be ordered by.'
             use :pagination_filters
           end
           get do
             target_user = User.find_by(uid: params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-            target_user.api_keys.tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }
+            target_user.api_keys.order(params[:order_by] => params[:ordering]).tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }
           end
         end
       end

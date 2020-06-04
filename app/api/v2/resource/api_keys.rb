@@ -137,10 +137,18 @@ module API::V2
           { code: 401, message: 'Invalid bearer token' }
         ]
         params do
+          optional :ordering,
+                   values: { value: -> (p){ %w[asc desc].include?(p) }, message: 'resource.api_key.invalid_ordering' },
+                   default: 'asc',
+                   desc: 'If set, returned values will be sorted in specific order, defaults to \'asc\'.'
+          optional :order_by,
+                   values: { value: -> (p){ APIKey.new.attributes.keys.include?(p) }, message: 'resource.api_key.invalid_attribute' },
+                   default: 'id',
+                   desc: 'Name of the field, which result will be ordered by.'
           use :pagination_filters
         end
         get do
-          current_user.api_keys.tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }
+          current_user.api_keys.order(params[:order_by] => params[:ordering]).tap { |q| present paginate(q), with: Entities::APIKey, except: [:secret] }
         end
       end
     end
