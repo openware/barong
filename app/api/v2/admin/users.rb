@@ -520,6 +520,93 @@ module API
             storage.destroy
             present target_user, with: API::V2::Entities::UserWithKYC
           end
+
+          namespace :comments do
+            desc "Adds new user's comment",
+            security: [{ "BearerToken": [] }],
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ]
+            params do
+              requires :uid,
+                       type: String,
+                       allow_blank: false,
+                       desc: 'user uniq id'
+              requires :title,
+                       type: String,
+                       values: { value: -> (v){ v.length <= 64 }, message: 'admin.comments.title_too_long'},
+                       allow_blank: false,
+                       desc: 'comment uniq title'
+              requires :data,
+                       type: String,
+                       values: { value: -> (v){ v.length <= 65535 }, message: 'admin.comments.data_too_long'},
+                       allow_blank: false,
+                       desc: 'comment data'
+            end
+            post do
+              target_user = User.find_by_uid(params[:uid])
+              error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
+  
+              comment = Comment.new(
+                                      user_id: target_user.id,
+                                      data: params[:data],
+                                      title: params[:title],
+                                      author_uid: current_user[:uid],
+                                    )
+  
+              code_error!(data_storage.errors.details, 422) unless comment.save
+  
+              present target_user, with: API::V2::Entities::UserWithKYC
+            end
+  
+            desc "Edit user's comment",
+            security: [{ "BearerToken": [] }],
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ]
+            params do
+              requires :id,
+                       type: Integer,
+                       desc: 'comment uniq id'
+              optional :title,
+                       type: String,
+                       values: { value: -> (v){ v.length <= 64 }, message: 'admin.comments.title_too_long'},
+                       allow_blank: false,
+                       desc: 'comment title'
+              optional :data,
+                       type: String,
+                       values: { value: -> (v){ v.length <= 65535 }, message: 'admin.comments.data_too_long'},
+                       allow_blank: false,
+                       desc: 'comment data'
+            end
+            put do
+              comment = Comment.find(params[:id])
+              error!({ errors: ['admin.comment.doesnt_exist'] }, 404) if comment.nil?
+  
+              code_error!(comment.errors.details, 422) unless comment.update(params.slice(:data, :title))
+  
+              present comment.user, with: API::V2::Entities::UserWithKYC
+            end
+
+            desc "Delete user's comment",
+            security: [{ "BearerToken": [] }],
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ]
+            params do
+              requires :id,
+                       type: Integer,
+                       desc: 'comment uniq id'
+            end
+            delete do
+              comment = Comment.find(params[:id])
+              error!({ errors: ['admin.comment.doesnt_exist'] }, 404) if comment.nil?
+  
+              code_error!(comment.errors.details, 422) unless comment.destroy
+  
+              present comment.user, with: API::V2::Entities::UserWithKYC
+            end
+          end
         end
       end
     end
