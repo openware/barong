@@ -17,6 +17,7 @@ module API
         expose :phones, using: Entities::Phone
         expose :documents, using: Entities::Document
         expose :data_storages, using: Entities::DataStorage
+        expose :comments, using: Entities::Comment
         expose :referral_uid, documentation: { type: 'String', desc: 'UID of referrer' } do |user|
           user.referral_uid
         end

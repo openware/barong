@@ -32,7 +32,7 @@ describe API::V2::Management::Users, type: :request do
         %i[email uid role level otp state data profiles referral_uid created_at updated_at]
       end
       let(:extended_attributes) do
-        %i[email uid role level otp state data profiles labels phones documents data_storages referral_uid created_at updated_at]
+        %i[email uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
       end
       let(:signers) { %i[alex jeff] }
 
