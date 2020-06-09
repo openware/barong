@@ -6,9 +6,10 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_many  :profiles,       dependent: :destroy
+  has_many  :profiles,      dependent: :destroy
   has_many  :phones,        dependent: :destroy
   has_many  :data_storages, dependent: :destroy
+  has_many  :comments,      dependent: :destroy
   has_many  :documents,     dependent: :destroy
   has_many  :labels,        dependent: :destroy
   has_many  :api_keys,      dependent: :destroy, class_name: 'APIKey'
