@@ -38,10 +38,10 @@ gem 'maxmind-db', '~> 1.0'
 
 gem 'kaminari', '>= 1.2.1'
 gem 'peatio', '~> 0.4.4'
-gem 'rack-cors', '~> 1.0.2'
+gem 'rack-cors', '~> 1.0.6'
 
 # REST-like API framework for Ruby
-gem 'grape', '~> 1.3', '>= 1.3.1'
+gem 'grape', '~> 1.3', '>= 1.3.2'
 gem 'grape-entity', '~> 0.7.1'
 gem 'grape-swagger', '~> 0.33', '>= 0.33.0'
 gem 'grape-swagger-entity', '~> 0.3', '>= 0.3.4'
@@ -96,7 +96,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '>= 3.29.0'
+  gem 'capybara', '>= 3.31.0'
   # gem 'selenium-webdriver'
   # gem 'chromedriver-helper'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
