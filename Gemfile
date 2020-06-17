@@ -19,6 +19,8 @@ gem 'fog-aws', '~> 3.5.2'
 # gcp support (google)
 gem 'fog-google', '~> 1.9.1'
 
+gem 'kycaid'
+gem 'sidekiq'
 # GLI
 gem 'gli', '~> 2.19.0'
 
@@ -36,7 +38,7 @@ gem 'mini_racer', platforms: :ruby
 
 gem 'maxmind-db', '~> 1.0'
 
-gem 'kaminari', '>= 1.1.1'
+gem 'kaminari', '>= 1.2.1'
 gem 'peatio', '~> 0.4.4'
 gem 'rack-cors', '~> 1.0.2'
 
@@ -48,7 +50,7 @@ gem 'grape-swagger-entity', '~> 0.2'
 gem 'grape_logging', '~> 1.8.0'
 gem 'memoist', '~> 0.16'
 gem 'jwt', '~> 2.2'
-gem 'jwt-multisig', '~> 1.0'
+gem 'jwt-multisig', '~> 1.0.2'
 gem 'bunny'
 gem 'phonelib',     '~> 0.6.0'
 gem 'twilio-ruby',  '~> 5.25.4'
@@ -99,6 +101,6 @@ group :test do
   # gem 'selenium-webdriver'
   # gem 'chromedriver-helper'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.0'
-  gem 'shoulda-matchers',    '~> 4.0.0.rc1'
+  gem 'shoulda-matchers',    '~> 4.0.1'
   gem 'rails-controller-testing', '>= 1.0.4'
 end

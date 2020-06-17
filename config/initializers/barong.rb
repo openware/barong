@@ -41,6 +41,7 @@ Barong::App.define do |config|
   config.set(:uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
   config.set(:session_name, '_barong_session')
   config.set(:session_expire_time, '1800', type: :integer)
+  config.set(:kyc_provider, 'kycaid', values: %w[kycaid local])
   config.set(:required_docs_expire, 'true', type: :bool)
   config.set(:doc_num_limit, '10', type: :integer)
   config.set(:geoip_lang, 'en', values: %w[en de es fr ja ru])
@@ -97,6 +98,18 @@ Barong::App.define do |config|
   config.set(:smtp_host, 'localhost')
   config.set(:smtp_user, '')
   config.set(:default_language, 'en')
+
+  # KYCAID ------------------------------------------------------------
+  config.set(:kycaid_authorization_token, '')
+  config.set(:kycaid_sandbox_mode, 'true', type: :bool)
+  config.set(:kycaid_api_endpoint, 'https://api.kycaid.com/')
+end
+
+# KYCAID configuring
+KYCAID.configure do |config|
+  config.authorization_token = Barong::App.config.kycaid_authorization_token
+  config.sandbox_mode = Barong::App.config.kycaid_sandbox_mode
+  config.api_endpoint = Barong::App.config.kycaid_api_endpoint
 end
 
 ActionMailer::Base.smtp_settings = {

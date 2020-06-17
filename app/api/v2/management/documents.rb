@@ -48,7 +48,7 @@ module API::V2
                    allow_blank: true,
                    desc: 'Document expiration date'
           optional :update_labels,
-                   type: { value: Boolean, message: 'management.documents.update_labels_inalid' },
+                   type: { value: Boolean, message: 'management.documents.update_labels_invalid' },
                    default: true,
                    desc: 'If set to false, user label will not be created/updated'
           optional :metadata,

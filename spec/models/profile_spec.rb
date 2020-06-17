@@ -250,7 +250,7 @@ RSpec.describe Profile, type: :model do
 
       Profile.create(profile_params.merge(user_id: user.id))
       expect(user.labels.count).to eq 2
-      expect(user.labels.find_by(key: :document).value).to eq 'replaced'
+      expect(user.labels.find_by(key: :document).value).to eq 'verified'
     end
 
     it 'do not change document state when document doesnt exist' do

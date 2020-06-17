@@ -9,7 +9,7 @@ class Document < ApplicationRecord
   STATES = %w[verified pending replaced rejected].freeze
 
   belongs_to :user
-  validates :doc_type, :doc_number, :upload, presence: true
+  validates :doc_type, :upload, presence: true
   validates :doc_type, inclusion: { in: DocumentTypes.list }
   validates :doc_expire, presence: true, if: -> { Barong::App.config.required_docs_expire }
   validates :metadata, data_is_json: true
@@ -21,9 +21,7 @@ class Document < ApplicationRecord
                          }, if: proc { |a| a.doc_number.present? }
 
   validate :doc_expire_not_in_the_past, if: -> { Barong::App.config.required_docs_expire }
-  after_commit :create_or_update_document_label,
-               on: :create,
-               if: -> { update_labels }
+  after_commit :start_document_kyc_verification, on: :create
 
   attr_writer :update_labels
 
@@ -42,6 +40,10 @@ class Document < ApplicationRecord
 
   private
 
+  def start_document_kyc_verification
+    KycService.document_step(self)
+  end
+
   def update_labels
     @update_labels.nil? ? true : @update_labels
   end
@@ -50,15 +52,6 @@ class Document < ApplicationRecord
     return if doc_expire.blank?
 
     errors.add(:doc_expire, :invalid) if doc_expire < Date.current
-  end
-
-  def create_or_update_document_label
-    user_document_label = user.labels.find_by(key: :document)
-    if user_document_label.nil?
-      user.labels.create(key: :document, value: :pending, scope: :private)
-    elsif user_document_label.value != 'verified'
-      user_document_label.update(value: :pending)
-    end
   end
 end
 
