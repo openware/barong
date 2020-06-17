@@ -12,6 +12,7 @@ module API::V2
 
       do_not_route_options!
 
+      mount Resource::Addresses
       mount Resource::Users
       mount Resource::Labels
       mount Resource::Profiles

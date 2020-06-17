@@ -32,6 +32,7 @@ module API::V2
 
     mount Admin::Base      => '/admin'
     mount Identity::Base   => '/identity'
+    mount Public::Base     => '/public'
     mount Resource::Base   => '/resource'
 
     add_swagger_documentation base_path: '/api/v2/*/',

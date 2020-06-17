@@ -79,14 +79,6 @@ describe API::V2::Management::Documents, type: :request do
       expect(user.documents.length).to eq(1)
     end
 
-    it 'does not update user lables with flag' do
-      expect {
-        post_json '/api/v2/management/documents', multisig_jwt_management_api_v2({
-                                                    data: params.merge(update_labels: false) },
-                                                    *signers)
-      }.not_to change { user.reload.labels.count }
-    end
-
     context 'with empty doc_expire' do
       it 'required doc expire' do
         allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
