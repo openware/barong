@@ -7,7 +7,7 @@ module KYC
 
       def perform(params = {})
         @params = params.symbolize_keys
-
+        
         @user = User.find(@params[:user_id])
         @applicant_id = @user.profiles.last.applicant_id
         @document = Document.find_by(identificator: @params[:identificator])
