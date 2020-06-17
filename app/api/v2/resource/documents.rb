@@ -38,6 +38,11 @@ module API::V2
                    type: { value: Date, message: "resource.documents.expire_not_a_date" },
                    allow_blank: true,
                    desc: 'Document expiration date'
+          optional :doc_category,
+                   type: String,
+                   values: { value: -> (p){ %w[front_side back_side selfie].include?(p) }, message: 'resource.documents.doc_category' },
+                   desc: 'Category of the submitted document - front/back/selfie etc.'
+          optional :identificator, type: String, desc: 'Identificator for documents to be supplied together'
           optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
         end
 
@@ -55,12 +60,13 @@ module API::V2
           unless current_user.documents.count + params[:upload].length <= Barong::App.config.doc_num_limit
             error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
+          params[:identificator] = SecureRandom.hex(16) unless params[:identificator]
 
           params[:upload].each do |file|
-            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
-
+            doc = current_user.documents.new(params.except(:upload).merge(upload: file))
             code_error!(doc.errors.details, 422) unless doc.save
           end
+
           status 201
 
         rescue Excon::Error => e

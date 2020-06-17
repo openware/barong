@@ -20,6 +20,8 @@ steps:
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
     BARONG_VAULT_ADDRESS: http://vault:8200
     RAILS_ENV: test
+    REDIS_URL: redis://redis:6379
+    BARONG_REDIS_URL: redis://redis:6379
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
   commands:
@@ -142,6 +144,11 @@ services:
     BARONG_VAULT_TOKEN: changeme
     VAULT_DEV_ROOT_TOKEN_ID: changeme
     BARONG_VAULT_ADDRESS: http://vault:8200
+
+- name: redis
+  image: redis:4.0
+  ports:
+    - 6379
 
 trigger:
   event:

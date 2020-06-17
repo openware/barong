@@ -22,6 +22,8 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  before { allow(Barong::App.config).to receive_messages(kyc_provider: 'local') }
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
