@@ -118,6 +118,31 @@ describe 'Documents API test' do
       expect(response.status).to eq(201)
     end
 
+    it 'Creates a pending documents label' do
+      expect(test_user.labels.find_by(key: :document)).to eq(nil)
+      post '/api/v2/resource/documents', headers: auth_header, params: params
+      expect(response.status).to eq(201)
+      expect(test_user.labels.find_by(key: :document)).not_to eq(nil)
+      expect(test_user.labels.find_by(key: :document).value).to eq('pending')
+    end
+
+    it 'Update rejected or verified label to pending documents label on new doc' do
+      expect(test_user.labels.find_by(key: :document)).to eq(nil)
+      test_user.labels.create(key: :document, value: 'verified')
+      test_user.reload
+
+      post '/api/v2/resource/documents', headers: auth_header, params: params
+      expect(response.status).to eq(201)
+      expect(test_user.labels.find_by(key: :document)).not_to eq(nil)
+      expect(test_user.labels.find_by(key: :document).value).to eq('pending')
+    end
+
+    it 'triggers KYCService' do
+      expect(KycService).to receive(:document_step)
+      post '/api/v2/resource/documents', headers: auth_header, params: params
+      expect(response.status).to eq(201)
+    end
+
     it 'Creates document with optional params and returns success' do
       post '/api/v2/resource/documents', headers: auth_header, params: params.merge(optional_params)
       expect(response.status).to eq(201)

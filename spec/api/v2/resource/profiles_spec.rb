@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe 'API::V2::Resource::Profiles' do
+  before { allow(Barong::App.config).to receive_messages(kyc_provider: 'local') }
+
   include_context 'bearer authentication'
   let!(:create_member_permission) do
     create :permission,
@@ -16,6 +18,114 @@ describe 'API::V2::Resource::Profiles' do
   end
 
   describe 'POST /api/v2/resource/profiles' do
+    describe 'KYC verification' do
+      let!(:request_params) do
+        {
+          last_name: Faker::Name.last_name,
+          first_name: Faker::Name.first_name,
+          dob: Faker::Date.birthday,
+          country: Faker::Address.country_code,
+          city: Faker::Address.city,
+          address: Faker::Address.state,
+          postcode: Faker::Address.zip_code
+        }
+      end
+      let!(:url) { '/api/v2/resource/profiles' }
+
+      it 'triggers KycService' do
+        expect(KycService).to receive(:profile_step)
+
+        post url, params: request_params, headers: auth_header
+        expect(response.status).to eq(201)
+      end
+
+      context 'Local verification' do
+        before { allow(Barong::App.config).to receive_messages(kyc_provider: 'local') }
+
+        it 'adds a label for first verification' do
+          expect(test_user.labels).to eq([])
+          post url, params: request_params, headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('drafted')
+        end
+
+        it 'doesnt trigger KYCAID worker' do
+          expect(KycService).to receive(:profile_step)
+          expect(KYC::Kycaid::ApplicantWorker).not_to receive(:perform_async)
+
+          post url, params: request_params, headers: auth_header
+          expect(response.status).to eq(201)
+        end
+
+        it 'updates label on re-submit' do
+          expect(test_user.labels).to eq([])
+          post url, params: request_params, headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('drafted')
+
+          put url, params: request_params.merge(confirm: true), headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('submitted')
+        end
+      end
+
+      context 'KYCAID verification' do
+        before { allow(Barong::App.config).to receive_messages(kyc_provider: 'kycaid') }
+
+        it 'adds a label for first verification' do
+          expect(test_user.labels).to eq([])
+          post url, params: request_params, headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('drafted')
+        end
+
+        it 'updates label on re-submit' do
+          expect(test_user.labels).to eq([])
+          post url, params: request_params, headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('drafted')
+
+          put url, params: request_params.merge(confirm: true), headers: auth_header
+          expect(test_user.reload.labels.count).to eq(1)
+          expect(test_user.reload.labels.first.key).to eq('profile')
+          expect(test_user.reload.labels.first.value).to eq('submitted')
+        end
+
+        it 'triggers KYCAID worker on submitted state' do
+          expect(KYC::Kycaid::ApplicantWorker).to receive(:perform_async)
+          post url, params: request_params.merge(confirm: true), headers: auth_header
+          expect(response.status).to eq(201)
+        end
+
+        it 'doesnt trigger KYCAID worker on drafted state' do
+          expect(KYC::Kycaid::ApplicantWorker).not_to receive(:perform_async)
+          post url, params: request_params, headers: auth_header
+          expect(response.status).to eq(201)
+        end
+
+        it 'doesnt trigger KYCAID worker on rejected state' do
+          post url, params: request_params.merge(confirm: true), headers: auth_header
+          expect(response.status).to eq(201)
+
+          expect(KYC::Kycaid::ApplicantWorker).not_to receive(:perform_async)
+          test_user.reload.profiles.last.update(state: 'rejected')
+        end
+
+        it 'doesnt trigger KYCAID worker on verified state' do
+          post url, params: request_params.merge(confirm: true), headers: auth_header
+          expect(response.status).to eq(201)
+
+          expect(KYC::Kycaid::ApplicantWorker).not_to receive(:perform_async)
+          test_user.reload.profiles.last.update(state: 'verified')
+        end
+      end
+    end
+
     let!(:url) { '/api/v2/resource/profiles' }
     let!(:user_info) { '/api/v2/resource/users/me' }
     let!(:request_params) do

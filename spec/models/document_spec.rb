@@ -62,12 +62,6 @@ RSpec.describe Document, type: :model do
         expect(document_label.key).to eq 'document'
         expect(document_label.value).to eq 'pending'
       end
-
-      it 'does not add label if flag given' do
-        create_without_label
-        expect(document_label).to be_nil
-        expect(document_label).to be_nil
-      end
     end
 
     context 'when user has label document: rejected' do
@@ -86,11 +80,6 @@ RSpec.describe Document, type: :model do
       it 'changes label value to pending' do
         create_document
         expect(current_user.labels.first.value).to eq 'pending'
-      end
-
-      it 'does not change label value if flag given' do
-        create_without_label
-        expect(current_user.labels.first.value).to eq 'rejected'
       end
     end
 

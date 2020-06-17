@@ -70,8 +70,7 @@ class Profile < ApplicationRecord
     squish_spaces
   end
 
-  after_commit :create_or_update_profile_label
-  after_commit :update_document_label
+  after_commit :start_profile_kyc_verification
 
   def full_name
     "#{first_name} #{last_name}"
@@ -121,17 +120,7 @@ class Profile < ApplicationRecord
     end
   end
 
-  def create_or_update_profile_label
-    profile_label = user.labels.find_by(key: :profile)
-    if profile_label.nil?
-      user.labels.create(key: :profile, value: state, scope: :private)
-    else
-      profile_label.update(value: state)
-    end
-  end
-
-  def update_document_label
-    user_document_label = user.labels.find_by(key: :document)
-    user_document_label.update(value: :replaced) if user_document_label.present? && user_document_label.value == 'verified'
+  def start_profile_kyc_verification
+    KycService.profile_step(self)
   end
 end
