@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+include ActiveSupport::Testing::TimeHelpers
 
 describe API::V2::Identity::Users do
   include_context 'geoip mock'
@@ -400,8 +401,8 @@ describe API::V2::Identity::Users do
 
       it 'returns an error' do
         do_request
-        expect_status_to_eq 403
-        expect_body.to eq(errors: ["jwt.decode_and_verify"])
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["jwt.decode_and_verify.segments"])
       end
     end
 
@@ -411,6 +412,30 @@ describe API::V2::Identity::Users do
       it 'updates state to active' do
         do_request
         expect_status_to_eq 201
+      end
+
+      it 'returns utilized on the second attempt' do
+        token_params = params
+        post '/api/v2/identity/users/email/confirm_code', params: token_params
+        expect_status_to_eq 201
+
+        user.reload.update(state: 'pending')
+        post '/api/v2/identity/users/email/confirm_code', params: token_params
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["identity.user.utilized_token"])
+      end
+
+      it 'returns expired error on second attempt after lifetime' do
+        token_params = params
+        post '/api/v2/identity/users/email/confirm_code', params: token_params
+        expect_status_to_eq 201
+
+        user.reload.update(state: 'pending')
+        travel Barong::App.config.jwt_expire_time + 10.seconds
+
+        post '/api/v2/identity/users/email/confirm_code', params: token_params
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["jwt.decode_and_verify.expired"])
       end
     end
   end
@@ -485,6 +510,26 @@ describe API::V2::Identity::Users do
         expect_status_to_eq 422
         expect(response.body).to eq("{\"errors\":[\"identity.user.utilized_token\"]}")
       end
+
+      it 'expires utilized token after lifetime but still returns error' do
+        post '/api/v2/identity/users/password/generate_code', params: params
+        reset_token = Rails.cache.read("reset_password_#{user.email}")
+        expect_status_to_eq 201
+
+        post '/api/v2/identity/users/password/generate_code', params: params
+        expect_status_to_eq 201
+
+        reset_password_token = codec.encode(sub: 'reset', email: user.email, uid: user.uid, reset_token: reset_token)
+        travel Barong::App.config.jwt_expire_time + 10.seconds
+        post '/api/v2/identity/users/password/confirm_code', params: {
+                                                                       reset_password_token: reset_password_token,
+                                                                       password: password,
+                                                                       confirm_password: confirm_password
+                                                                     }
+
+        expect_status_to_eq 422
+        expect(response.body).to eq("{\"errors\":[\"jwt.decode_and_verify.expired\"]}")
+      end
     end
 
     context 'captcha behaviour when captcha policy is recaptcha' do
@@ -537,10 +582,10 @@ describe API::V2::Identity::Users do
       let(:password) { 'Gol4aid2' }
       let(:confirm_password) { 'Gol4aid2' }
 
-      it 'renders 403 error' do
+      it 'renders 422 error' do
         do_request
-        expect_status_to_eq 403
-        expect_body.to eq(errors: ["jwt.decode_and_verify"])
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["jwt.decode_and_verify.segments"])
       end
     end
 
