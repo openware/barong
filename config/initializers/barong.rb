@@ -47,6 +47,7 @@ Barong::App.define do |config|
   config.set(:csrf_protection, 'true', type: :bool)
   config.set(:apikey_nonce_lifetime, '5000', type: :integer)
   config.set(:gateway, 'cloudflare', values: %w[akamai cloudflare])
+  config.set(:jwt_expire_time, '3600', type: :integer)
 
   # Password configuration  -----------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration

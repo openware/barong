@@ -192,7 +192,7 @@ module API::V2
             reset_token = SecureRandom.hex(10)
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid, reset_token: reset_token)
             # save reset_password_id in cache to validate as latest requested
-            Rails.cache.write("reset_password_#{params[:email]}", reset_token, expires_in: 3600.seconds)
+            Rails.cache.write("reset_password_#{params[:email]}", reset_token, expires_in: Barong::App.config.jwt_expire_time.seconds)
 
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
@@ -256,7 +256,7 @@ module API::V2
             # remove latest token id cache record
             Rails.cache.delete("reset_password_#{params[:email]}")
             # invalidate token used
-            Rails.cache.write(payload[:jti], 'utilized')
+            Rails.cache.write(payload[:jti], 'utilized', expires_in: Barong::App.config.jwt_expire_time.seconds)
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 

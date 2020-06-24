@@ -91,7 +91,7 @@ module API::V2
 
       def token_uniq?(jti)
         error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(jti) == 'utilized'
-        Rails.cache.write(jti, 'utilized')
+        Rails.cache.write(jti, 'utilized', expires_in: Barong::App.config.jwt_expire_time.seconds)
       end
 
       def publish_confirmation(user, domain)
