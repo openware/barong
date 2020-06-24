@@ -110,6 +110,8 @@ class EventMailer
     @bunny_channel.acknowledge(delivery_info.delivery_tag, false)
   rescue StandardError => e
     Rails.logger.error { e.inspect }
+
+    raise e if is_db_connection_error?(e)
   end
 
   def verify_jwt(payload, signer)
@@ -136,6 +138,10 @@ class EventMailer
     return true if operator == :not && res.all?
 
     true
+  end
+
+  def is_db_connection_error?(exception)
+    exception.is_a?(Mysql2::Error::ConnectionError) || exception.cause.is_a?(Mysql2::Error)
   end
 
   def safe_dig(hash, keypath, default = nil)
