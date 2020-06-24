@@ -24,7 +24,9 @@ module API
           end
 
           rescue_from(JWT::DecodeError) do |error|
-            error!({ errors: ['jwt.decode_and_verify'] }, 403)
+            # expired for "Signature has expired"   - expired token
+            # segments for "Not enough or too many segments"   - wrong token
+            error!({ errors: ["jwt.decode_and_verify.#{error.message.split.last}"] }, 422)
           end
 
           # Known Vault Error from TOTPService.with_human_error

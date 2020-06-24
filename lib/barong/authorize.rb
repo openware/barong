@@ -122,7 +122,7 @@ module Barong
 
     def validate_permissions!(user)
       # Caches Permission.all result to optimize
-      permissions = Rails.cache.fetch('permissions') { Permission.all.to_ary }
+      permissions = Rails.cache.fetch('permissions', expires_in: 5.minutes) { Permission.all.to_ary }
 
       permissions.select! { |a| a.role == user.role && ( a.verb == @request.env['REQUEST_METHOD'] || a.verb == 'ALL' ) && @path.starts_with?(a.path) }
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
