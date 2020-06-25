@@ -362,7 +362,7 @@ describe Barong::Seed do
           "state" => "enabled"
         },
         {
-          "category" => "blacklist",
+          "category" => "denylist",
           "scope" => "all",
           "value" => "all",
           "state" => "enabled"

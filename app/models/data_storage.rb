@@ -15,7 +15,7 @@
 
 # Data Storage model
 class DataStorage < ApplicationRecord
-  BLACKLISTED_TITLES = %w[document label profile phone user].freeze
+  DENYLISTED_TITLES = %w[document label profile phone user].freeze
   acts_as_eventable prefix: 'data_storage', on: %i[create update]
 
   belongs_to :user
@@ -24,7 +24,7 @@ class DataStorage < ApplicationRecord
   validates_length_of :data, maximum: 5120 # maximum 5kb of data
   validates :data, data_is_json: true
   validates :title, uniqueness: { scope: :user_id, case_sensitive: false },
-                    inclusion: { in: UserStorageTitles.list }, exclusion: { in: BLACKLISTED_TITLES }
+                    inclusion: { in: UserStorageTitles.list }, exclusion: { in: DENYLISTED_TITLES }
 
   def as_json_for_event_api
     {

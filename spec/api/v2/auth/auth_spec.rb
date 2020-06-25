@@ -157,16 +157,16 @@ describe '/api/v2/auth functionality test' do
 
       let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping' }
 
-      it 'receives access error if path is blacklisted' do
+      it 'receives access error if path is denylisted' do
         do_restricted_request
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"errors\":[\"authz.permission_denied\"]}")
       end
 
-      let(:do_whitelisted_request) { put '/api/v2/auth/api/v2/peatio/public/ping' }
+      let(:do_allowlisted_request) { put '/api/v2/auth/api/v2/peatio/public/ping' }
 
-      it 'receives access error if path is blacklisted' do
-        do_whitelisted_request
+      it 'receives access error if path is denylisted' do
+        do_allowlisted_request
         expect(response.status).to eq(200)
         expect(response.body).to be_empty
         expect(response.headers['Authorization']).to be_nil
@@ -341,13 +341,13 @@ describe '/api/v2/auth functionality test' do
         }
       }
 
-      it 'receives access error if path is blacklisted' do
+      it 'receives access error if path is denylisted' do
         do_restricted_request
         expect(response.status).to eq(401)
         expect(response.body).to eq("{\"errors\":[\"authz.permission_denied\"]}")
       end
 
-      let(:do_whitelisted_request) {
+      let(:do_allowlisted_request) {
         put '/api/v2/auth/api/v2/peatio/public/ping', headers: {
           'X-Auth-Apikey' => kid,
           'X-Auth-Nonce' => nonce,
@@ -355,8 +355,8 @@ describe '/api/v2/auth functionality test' do
         }
       }
 
-      it 'receives access error if path is whitelisted' do
-        do_whitelisted_request
+      it 'receives access error if path is allowlisted' do
+        do_allowlisted_request
         expect(response.status).to eq(200)
         expect(response.body).to be_empty
         expect(response.headers['Authorization']).to be_nil

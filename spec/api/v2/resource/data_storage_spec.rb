@@ -32,8 +32,8 @@ describe 'Api::V2::Resource::DataStorage' do
 
     context 'errors' do
       let(:non_json_data_params) { { title: 'personal', data: 'My name is John Doe. Hello, World!' } }
-      let(:non_whitelisted_params) { { title: 'family_info', data: { wife_first_name: Faker::Name.first_name }.to_json } }
-      let(:blacklisted_params) { { title: 'document', data: { approved: true }.to_json } }
+      let(:non_allowlisted_params) { { title: 'family_info', data: { wife_first_name: Faker::Name.first_name }.to_json } }
+      let(:denylisted_params) { { title: 'document', data: { approved: true }.to_json } }
 
       it 'doesnt accept non-json data' do
         expect { post url, params: non_json_data_params, headers: auth_header }.not_to change { DataStorage.count }
@@ -42,14 +42,14 @@ describe 'Api::V2::Resource::DataStorage' do
         expect(json_body).to eq({errors: ['data.invalid_format']})
       end
 
-      it 'doesnt accept non-whitelisted title' do
-        expect { post url, params: non_whitelisted_params, headers: auth_header }.not_to change { DataStorage.count }
+      it 'doesnt accept non-allowlisted title' do
+        expect { post url, params: non_allowlisted_params, headers: auth_header }.not_to change { DataStorage.count }
         expect(response.status).to eq(422)
         expect(json_body).to eq({errors: ['title.inclusion']})
       end
 
-      it 'doesnt accept blacklisted title' do
-        expect { post url, params: blacklisted_params, headers: auth_header }.not_to change { DataStorage.count }
+      it 'doesnt accept denylisted title' do
+        expect { post url, params: denylisted_params, headers: auth_header }.not_to change { DataStorage.count }
         expect(response.status).to eq(422)
         expect(json_body).to eq({errors: ['title.inclusion', 'title.exclusion']})
       end

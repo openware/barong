@@ -2,7 +2,7 @@
 
 class Restriction < ApplicationRecord
   # please, note that order in CATEGORIES contstant defines the ierarchy
-  CATEGORIES = %w[whitelist maintenance blacklist].freeze
+  CATEGORIES = %w[allowlist maintenance denylist].freeze
   SCOPES = %w[continent country ip ip_subnet all]
   # 423 Locked 403 Forbidden 401 Forbidden
   DEFAULT_CODES = { continent: 423, country: 423, ip_subnet: 403, ip: 401, all: 401 }.stringify_keys.freeze
@@ -27,7 +27,7 @@ class Restriction < ApplicationRecord
   private
 
   def assign_code
-    return unless code.blank? || category == 'whitelist'
+    return unless code.blank? || category == 'allowlist'
 
     self.code = category == 'maintenance' ? 471 : DEFAULT_CODES[scope]
   end

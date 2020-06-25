@@ -17,7 +17,7 @@ module API::V2
 
       desc 'User related routes'
       resource :users do
-        desc 'Creates new whitelist restriction',
+        desc 'Creates new allowlist restriction',
         success: { code: 201, message: 'Creates new user' },
         failure: [
           { code: 400, message: 'Required params are missing' },
@@ -31,7 +31,7 @@ module API::V2
         post '/access' do
           if Rails.cache.read(params[:whitelink_token]) == 'active'
             restriction = Restriction.new(
-              category: 'whitelist',
+              category: 'allowlist',
               scope: 'ip',
               value: remote_ip,
               state: 'enabled'

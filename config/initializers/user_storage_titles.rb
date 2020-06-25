@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# whitelisted data storage titles definitions
+# allowlisted data storage titles definitions
 class UserStorageTitles
   class << self
     def list

@@ -21,7 +21,7 @@ Barong::App.define do |config|
   config.set(:upload_size_min_range, '1', type: :integer) # in megabytes
   config.set(:upload_size_max_range, '10', type: :integer) # in megabytes
   config.set(:upload_auth_url_expiration, '1', type: :integer) # in minutes
-  config.set(:upload_extension_whitelist, 'jpg, jpeg, png, pdf', type: :array)
+  config.set(:upload_extension_allowlist, 'jpg, jpeg, png, pdf', type: :array)
 end
 
 CarrierWave.configure do |config|

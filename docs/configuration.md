@@ -40,7 +40,7 @@ More details in [storage configuration doc](https://github.com/openware/barong/b
 | `barong_upload_size_min_range` | 1 | any integer value | minimum size of possible upload (in megabytes) |
 | `barong_upload_size_max_range` | 10 | any integer value | maximum size of possible upload (in megabytes) |
 | `barong_upload_auth_url_expiration` | 1 | any integer value | configures in minutes the lifetime of auth signature to see upload |
-| `barong_upload_extension_whitelist` | jpg, jpeg, png, pdf | string with comma-separated extensions formats | whitelist of upload extensions |
+| `barong_upload_extension_allowlist` | jpg, jpeg, png, pdf | string with comma-separated extensions formats | allowlist of upload extensions |
 
 ### API CORS configuration
 | Env name | Default value | Possible values | Description |
@@ -102,7 +102,7 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_config`  | config/barong.yml | any valid path to existing file | path to barong config with `activation_requirements`, `state_triggers`, `document_types` and `user_storage_titles` |
 | `barong_maxminddb_path` | geolite/GeoLite2-Country.mmdb | any valid path to existing file | path to geolite country DB file |
 | `barong_seeds_file` | config/seeds.yml | any valid path to existing file | path to configuration file with pre-defined API rules, users and levels | 
-| `barong_authz_rules_file` | config/authz_rules.yml | any valid path to existing file | path to configuration file with blacklisted and whitelisted API pathes |
+| `barong_authz_rules_file` | config/authz_rules.yml | any valid path to existing file | path to configuration file with denylisted and allowlisted API pathes |
 
 # Barong configurations overview
 ## Twilio configuration
@@ -124,11 +124,11 @@ We have ability to set twilio with 3 different ways
 
 ---
 
-## Blacklist/Whitelist configuration
+## Denylist/Allowlist configuration
 
 `Pass` routes will never be checked by AuthZ endpoint and will be available without session requirement. On `Block` routes user always will get 401, it doesn't depend on a session / role / ip / etc
 
-You need to put whitelisted (public) routes for pass object and blacklisted routes for block in authz_rules.yml
+You need to put allowlisted (public) routes for pass object and denylisted routes for block in authz_rules.yml
 
 ```yml
 rules:

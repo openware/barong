@@ -8,9 +8,9 @@ describe API::V2::Admin::Restrictions do
 
   describe 'GET /api/v2/admin/restrictions' do
     before do
-      create(:restriction, scope: 'ip', value: '0.0.0.1', category: 'blacklist', updated_at: 1.days.ago)
-      create(:restriction, scope: 'ip', value: '0.0.0.0', category: 'blacklist', updated_at: 3.days.ago)
-      create(:restriction, scope: 'ip_subnet', value: '1.2.3.4/24', category: 'blacklist', updated_at: 3.days.ago)
+      create(:restriction, scope: 'ip', value: '0.0.0.1', category: 'denylist', updated_at: 1.days.ago)
+      create(:restriction, scope: 'ip', value: '0.0.0.0', category: 'denylist', updated_at: 3.days.ago)
+      create(:restriction, scope: 'ip_subnet', value: '1.2.3.4/24', category: 'denylist', updated_at: 3.days.ago)
     end
 
     context 'successful response' do
@@ -29,10 +29,10 @@ describe API::V2::Admin::Restrictions do
       end
 
       it 'filters by category' do
-        get '/api/v2/admin/restrictions', headers: auth_header, params: { category: 'blacklist' }
+        get '/api/v2/admin/restrictions', headers: auth_header, params: { category: 'denylist' }
 
-        expect(json_body.length).to eq Restriction.where(category: 'blacklist').count
-        expect(json_body.map { |r| r[:category] }).to all eq 'blacklist'
+        expect(json_body.length).to eq Restriction.where(category: 'denylist').count
+        expect(json_body.map { |r| r[:category] }).to all eq 'denylist'
       end
 
       it 'filters with date range' do
@@ -84,7 +84,7 @@ describe API::V2::Admin::Restrictions do
   describe 'POST /api/v2/admin/restrictions' do
     it 'creates new restriction' do
       expect {
-        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'blacklist' }
+        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'denylist' }
       }.to change { Restriction.count }.by(1)
 
       expect(response).to be_successful
@@ -92,15 +92,15 @@ describe API::V2::Admin::Restrictions do
 
     it 'creates new restriction with code' do
       expect {
-        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'blacklist', code: 522 }
+        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'denylist', code: 522 }
       }.to change { Restriction.count }.by(1)
 
       expect(response).to be_successful
     end
 
-    it 'creates new whitelist restriction' do
+    it 'creates new allowlist restriction' do
       expect {
-        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'whitelist' }
+        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.0.0.0', category: 'allowlist' }
       }.to change { Restriction.count }.by(1)
 
       expect(response).to be_successful
@@ -123,7 +123,7 @@ describe API::V2::Admin::Restrictions do
       end
 
       it 'value' do
-        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.a.b.c', category: 'blacklist' }
+        post '/api/v2/admin/restrictions', headers: auth_header, params: { scope: 'ip', value: '127.a.b.c', category: 'denylist' }
 
         expect(json_body[:errors]).to include "value.invalid"
       end
@@ -137,7 +137,7 @@ describe API::V2::Admin::Restrictions do
   end
 
   describe 'PUT /api/v2/admin/restrictions' do
-    let!(:restriction) { create(:restriction, scope: 'ip', value: '127.0.0.1', category: 'blacklist') }
+    let!(:restriction) { create(:restriction, scope: 'ip', value: '127.0.0.1', category: 'denylist') }
 
     it 'updates state' do
       expect {
@@ -171,13 +171,13 @@ describe API::V2::Admin::Restrictions do
 
     it 'updates category' do
       expect {
-        put '/api/v2/admin/restrictions', headers: auth_header, params: { id: restriction.id, category: 'whitelist' }
-      }.to change { restriction.reload.category }.to('whitelist')
+        put '/api/v2/admin/restrictions', headers: auth_header, params: { id: restriction.id, category: 'allowlist' }
+      }.to change { restriction.reload.category }.to('allowlist')
     end
   end
 
   describe 'DELETE /api/v2/admin/restrictions' do
-    let!(:restriction) { create(:restriction, scope: 'ip', value: '127.0.0.1', category: 'blacklist') }
+    let!(:restriction) { create(:restriction, scope: 'ip', value: '127.0.0.1', category: 'denylist') }
 
     context 'successful response' do
       let(:do_request) { delete '/api/v2/admin/restrictions', params: { id: restriction.id }, headers: auth_header }

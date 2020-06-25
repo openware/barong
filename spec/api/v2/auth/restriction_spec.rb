@@ -20,7 +20,7 @@ describe '/api/v2/auth functionality test' do
   let(:do_create_session_request) { post uri, params: params }
   let(:auth_request) { '/api/v2/auth/tasty_endpoint' }
 
-  describe 'test blacklist restrictions' do
+  describe 'test denylist restrictions' do
     before do
       allow_any_instance_of(Barong::Authorize).to receive(:validate_session!).and_return(true)
       Rails.cache.delete('restrictions')
@@ -28,8 +28,8 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'restrict by ip' do
-      let!(:restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'blacklist') }
-      let!(:disabled) { create(:restriction, value: '192.168.0.3', scope: 'ip', state: 'disabled', category: 'blacklist') }
+      let!(:restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'denylist') }
+      let!(:disabled) { create(:restriction, value: '192.168.0.3', scope: 'ip', state: 'disabled', category: 'denylist') }
 
       it 'request with restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.1')
@@ -53,7 +53,7 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'restricts with ip subnet' do
-      let!(:restriction) { create(:restriction, value: '192.168.32.0/24', scope: 'ip_subnet', category: 'blacklist') }
+      let!(:restriction) { create(:restriction, value: '192.168.32.0/24', scope: 'ip_subnet', category: 'denylist') }
 
       it 'request with restricted ip' do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.32.42')
@@ -61,7 +61,7 @@ describe '/api/v2/auth functionality test' do
 
         expect(response.status).to eq(403)
         expect(response.headers['Authorization']).to be_nil
-        expect(response.body).to eq("{\"errors\":[\"authz.restrict.blacklist\"]}")
+        expect(response.body).to eq("{\"errors\":[\"authz.restrict.denylist\"]}")
       end
 
       it 'request with non-restricted ip' do
@@ -74,14 +74,14 @@ describe '/api/v2/auth functionality test' do
 
     context 'geoip' do
       context 'restricts with country' do
-        let!(:restriction) { create(:restriction, value: 'japan', scope: 'country', category: 'blacklist') }
+        let!(:restriction) { create(:restriction, value: 'japan', scope: 'country', category: 'denylist') }
 
         it 'with restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(tokyo_ip)
           get auth_request
           expect(response.status).to eq(423)
           expect(response.headers['Authorization']).to be_nil
-          expect(response.body).to eq("{\"errors\":[\"authz.restrict.blacklist\"]}")
+          expect(response.body).to eq("{\"errors\":[\"authz.restrict.denylist\"]}")
         end
 
         it 'with non-restricted ip' do
@@ -92,14 +92,14 @@ describe '/api/v2/auth functionality test' do
       end
 
       context 'restricts with continent' do
-        let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent', category: 'blacklist') }
+        let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent', category: 'denylist') }
 
         it 'with restricted ip' do
           allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
           get auth_request
           expect(response.status).to eq(423)
           expect(response.headers['Authorization']).to be_nil
-          expect(response.body).to eq("{\"errors\":[\"authz.restrict.blacklist\"]}")
+          expect(response.body).to eq("{\"errors\":[\"authz.restrict.denylist\"]}")
         end
 
         it 'with non-restricted ip' do
@@ -119,9 +119,9 @@ describe '/api/v2/auth functionality test' do
       allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.1')
     end
 
-    context 'whitelist -> maintenance' do
+    context 'allowlist -> maintenance' do
       let!(:maintenance_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'maintenance') }
-      let!(:whitelist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'whitelist') }
+      let!(:allowlist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'allowlist') }
 
       it '200' do
         get auth_request
@@ -131,8 +131,8 @@ describe '/api/v2/auth functionality test' do
     end
 
 
-    context 'maintenance -> blacklist' do
-      let!(:blacklist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'blacklist') }
+    context 'maintenance -> denylist' do
+      let!(:denylist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'denylist') }
       let!(:maintenance_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'maintenance') }
 
       context 'standard code error' do
@@ -144,9 +144,9 @@ describe '/api/v2/auth functionality test' do
       end
     end
 
-    context 'blacklist' do
+    context 'denylist' do
       context 'standard code error' do
-        let!(:blacklist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'blacklist') }
+        let!(:denylist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'denylist') }
 
         it '401' do
           get auth_request
@@ -156,7 +156,7 @@ describe '/api/v2/auth functionality test' do
       end
 
       context 'custom code error' do
-        let!(:blacklist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'blacklist', code: 403) }
+        let!(:denylist_restriction) { create(:restriction, value: '192.168.0.1', scope: 'ip', category: 'denylist', code: 403) }
 
         it '403' do
           get auth_request

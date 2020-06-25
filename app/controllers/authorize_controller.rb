@@ -14,21 +14,21 @@ class AuthorizeController < ActionController::Metal
     unless params[:path] == 'api/v2/barong/identity/users/access'
       Restriction::CATEGORIES.each do |category|
         restriction = first_matched_restriction(category)
-        if restriction && category != 'whitelist'
+        if restriction && category != 'allowlist'
           Rails.logger.info("Access denied for ip #{request.remote_ip} because of #{restriction[0]} restriction")
           return access_error!("authz.restrict.#{category}", restriction[1])
-        elsif restriction && category == 'whitelist'
+        elsif restriction && category == 'allowlist'
           break
         end
       end
     end
 
     req = Barong::Authorize.new(request, params[:path]) # initialize params of request
-    # checks if request is blacklisted
+    # checks if request is denylisted
     return access_error!('authz.permission_denied', 401) if req.under_path_rules?('block')
 
     response.status = 200
-    return if req.under_path_rules?('pass') # check if request is whitelisted
+    return if req.under_path_rules?('pass') # check if request is allowlisted
 
     response.headers['Authorization'] = req.auth # sets bearer token
   rescue Barong::Authorize::AuthError => e # returns error from validations
@@ -51,8 +51,8 @@ class AuthorizeController < ActionController::Metal
   end
 
   # as a result gives complex Hash, { category: { scope: values, scope: values }, category: { scope: values, scope: values } }
-  #   { "blacklist"=>{"continent"=>[], "country"=>[], "ip"=>[], "ip_subnet"=>[]},
-  #     "whitelist"=>{"continent"=>[], "country"=>[], "ip"=>[], "ip_subnet"=>[]},
+  #   { "denylist"=>{"continent"=>[], "country"=>[], "ip"=>[], "ip_subnet"=>[]},
+  #     "allowlist"=>{"continent"=>[], "country"=>[], "ip"=>[], "ip_subnet"=>[]},
   #     "maintenance"=>{"continent"=>[], "country"=>[], "ip"=>[], "ip_subnet"=>[]} }
   def fetch_restrictions
     enabled = Restriction.where(state: 'enabled').to_a
@@ -72,7 +72,7 @@ class AuthorizeController < ActionController::Metal
     request.session
   end
 
-  # error for blacklisted routes
+  # error for denylisted routes
   def access_error!(text, code)
     response.status = code
     response.body = { 'errors': [text] }.to_json
