@@ -33,6 +33,25 @@ module API
 
             sign_request(declared_params[:jwt])
           end
+
+          desc 'Check otp code with barong' do
+            @settings[:scope] = :otp_sign
+          end
+          params do
+            requires :user_uid, type: String, allow_blank: false, desc: 'Account UID'
+            requires :otp_code, type: String, allow_blank: false, desc: 'Code from Google Authenticator'
+          end
+          post '/check' do
+            declared_params = declared(params)
+            user = User.active.find_by!(uid: declared_params[:user_uid])
+            error!('Account has not enabled 2FA', 422) unless user.otp
+
+            unless TOTPService.validate?(user.uid, declared_params[:otp_code])
+              error!('OTP code is invalid', 422)
+            end
+
+            { message: "Success! OTP Code is valid", status: 201 }
+          end
         end
       end
     end
