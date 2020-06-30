@@ -235,6 +235,26 @@ Sign request with barong signature
 | ---- | ----------- |
 | 201 | Sign request with barong signature |
 
+### /otp/check
+
+#### POST
+##### Description:
+
+Check if otp code is valid
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| user_uid | formData | Account UID | Yes | string |
+| otp_code | formData | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Success! OTP Code is valid |
+
 ### /documents
 
 #### POST
