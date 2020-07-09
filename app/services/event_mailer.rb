@@ -99,6 +99,7 @@ class EventMailer
     end
 
     params = {
+      logo: Barong::App.config.smtp_logo_link,
       subject: config[:templates][language][:subject],
       template_name: config[:templates][language][:template_path],
       record: obj.record,

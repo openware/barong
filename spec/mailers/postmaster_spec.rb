@@ -21,7 +21,8 @@ RSpec.describe Postmaster, type: :mailer do
         changes: nil,
         record: record,
         subject: 'Test Email',
-        template_name: 'email_confirmation.en.html.erb'
+        template_name: 'email_confirmation.en.html.erb',
+        logo: 'https://storage.googleapis.com/public_peatio/logo.png'
       }
     end
     let(:mail) { Postmaster.process_payload(payload) }
