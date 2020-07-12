@@ -2,7 +2,7 @@
 
 class KycService
   # passport front + selfie OR driver license front and back + selfie IR id card front and back + selfie
-  REQUIRED_DOC_AMOUNT = { 'PASSPORT': 2, 'DRIVERS_LICENSE': 3, 'GOVERNMENT_ID': 3 }.freeze
+  REQUIRED_DOC_AMOUNT = { 'Passport': 2, 'Driver license': 3, 'Identity card': 3 }.freeze
 
   class << self
     def profile_step(profile)
@@ -25,17 +25,16 @@ class KycService
       return if document.doc_type == 'Address'
 
       user = document.user
-      user_document_label = user.labels.find_by(key: :document)
-
-      if user_document_label.nil? # first document ever
-        user.labels.create(key: :document, value: :pending, scope: :private)
-      else
-        user_document_label.update(value: :pending) # re-submitted document
-      end
 
       docs_batch_count = user.documents.where(identificator: document.identificator).count
-      return unless Barong::App.config.kyc_provider != 'local' ||
-        document.doc_type.in?(['Passport', 'Identity card', 'Driver license']) && REQUIRED_DOC_AMOUNT[document.doc_type] == docs_batch_count
+      if Barong::App.config.kyc_provider == 'local'
+        document_label_update(user)
+        return
+      end
+      return unless document.doc_type.in?(['Passport', 'Identity card', 'Driver license'])
+      return if REQUIRED_DOC_AMOUNT[document.doc_type.to_sym] != docs_batch_count
+
+      document_label_update(user)
 
       KYC.const_get(Barong::App.config.kyc_provider.capitalize, false)::DocumentWorker.perform_async(user.id, document.identificator) # docs verification worker
     end
@@ -60,6 +59,15 @@ class KycService
 
       KYC.const_get(Barong::App.config.kyc_provider.capitalize, false)::VerificationsWorker.perform_async(params) # verification worker
       200
+    end
+
+    def document_label_update(user)
+      user_document_label = user.labels.find_by(key: :document)
+      if user_document_label.nil? # first document ever
+        user.labels.create(key: :document, value: :pending, scope: :private)
+      else
+        user_document_label.update(value: :pending) # re-submitted document
+      end
     end
   end
 end

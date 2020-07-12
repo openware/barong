@@ -32,7 +32,6 @@ describe 'KYC::ApplicantWorker' do
         expect(profile.user.labels.first.key).to eq('profile')
         expect(profile.user.labels.first.value).to eq('submitted')
 
-
         expect(KYCAID::Applicant).to receive(:create)
         KYC::Kycaid::ApplicantWorker.new.perform(profile.id)
 
