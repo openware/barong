@@ -68,12 +68,29 @@ module API::V2
                    type: String,
                    allow_blank: { value: false, message: 'resource.user.empty_topic' },
                    desc: 'Topic of user activity. Allowed: [all, password, session, otp]'
+          optional :time_from,
+                   type: { value: Integer, message: 'resource.user.non_integer_time_from' },
+                   allow_blank: { value: false, message: 'resource.user.empty_time_from' },
+                   desc: "An integer represents the seconds elapsed since Unix epoch."\
+                         "If set, only activities created after the time will be returned."
+          optional :time_to,
+                   type: { value: Integer, message: 'resource.user.non_integer_time_to' },
+                   allow_blank: { value: false, message: 'resource.user.empty_time_to' },
+                   desc: "An integer represents the seconds elapsed since Unix epoch."\
+                         "If set, only activities created before the time will be returned."
+          optional :result,
+                   type: { value: String, message: 'resource.user.non_string_result' },
+                   allow_blank: { value: false, message: 'resource.user.empty_result' },
+                   desc: "Result of user activity. Allowed: [succeed, failed, denied]"
           use :pagination_filters
         end
         get '/activity/:topic' do
           validate_topic!(params[:topic])
           data = current_user.activities.order('id DESC')
           data = data.where(topic: params[:topic]) if params[:topic] != 'all'
+          data = data.tap { |q| q.where!('created_at >= ?', Time.at(params[:time_from])) if params[:time_from] }
+                     .tap { |q| q.where!('created_at < ?', Time.at(params[:time_to])) if params[:time_to] }
+                     .tap { |q| q.where!(result: params[:result]) if params[:result] }
 
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
 
