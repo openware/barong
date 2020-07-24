@@ -20,7 +20,7 @@ gem 'fog-aws', '~> 3.5.2'
 gem 'fog-google', '~> 1.9.1'
 
 gem 'kycaid'
-gem 'sidekiq'
+gem 'sidekiq', '>= 6.0.7'
 # GLI
 gem 'gli', '~> 2.19.0'
 
