@@ -21,17 +21,21 @@ class EventMailer
   def listen
     unlisten
 
-    @bunny_session = Bunny::Session.new(rabbitmq_credentials).tap(&:start)
+    @bunny_session = Bunny::Session.new(rabbitmq_credentials).tap do |session|
+      session.start
+      Kernel.at_exit { session.stop }
+    end
+
     @bunny_channel = @bunny_session.channel
 
-    queue = @bunny_channel.queue('', auto_delete: true, durable: true)
+    queue = @bunny_channel.queue('barong.postmaster.event.mailer', auto_delete: false, durable: true)
     @events.each do |event|
       exchange = @bunny_channel.direct(@exchanges[event[:exchange].to_sym][:name])
       queue.bind(exchange, routing_key: event[:key])
     end
 
     Rails.logger.info { 'Listening for events.' }
-    queue.subscribe(manual_ack: true, block: true, &method(:handle_message))
+    queue.subscribe(manual_ack: false, block: true, &method(:handle_message))
   end
 
   def unlisten
@@ -107,7 +111,6 @@ class EventMailer
     }
 
     Postmaster.process_payload(params).deliver_now
-    @bunny_channel.acknowledge(delivery_info.delivery_tag, false)
   rescue StandardError => e
     Rails.logger.error { e.inspect }
 
