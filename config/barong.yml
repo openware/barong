@@ -25,3 +25,7 @@ captcha_protected_endpoints:
   - session_create
   - password_reset
   - email_confirmation
+profile_verification_roles:
+  - superadmin
+  # - admin
+  # - kyc_worker
