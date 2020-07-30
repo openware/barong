@@ -995,4 +995,99 @@ describe API::V2::Admin::Users do
       end
     end
   end
+
+  context 'comments' do
+    describe 'POST /api/v2/admin/users/comments' do
+      let(:url) { '/api/v2/admin/users/comments' }
+      let(:params) { {} }
+      let(:do_request) { post url, headers: auth_header, params: params }
+
+
+      context 'successfull request' do
+        let(:params) do
+          {
+            uid: experimental_user.uid,
+            title: 'some useful title',
+            data: 'some useless data.',
+          }
+        end
+        let(:do_request) { post url, headers: auth_header, params: params }
+    
+        it 'creates new comment' do
+          expect { do_request }.to change { Comment.count }.by 1 
+          expect(response.status).to eq 201
+        end
+    
+        it 'saves author_uid' do
+          do_request
+          expect(Comment.last.author_uid).to eq test_user.uid
+          expect(json_body[:comments][0][:author_uid]).to eq test_user.uid
+          expect(response.status).to eq 201
+        end
+      end
+
+      context 'errored request' do
+        let(:params) do
+          {
+            uid: experimental_user.uid,
+            title: Faker::Lorem.characters(number: 65),
+            data: 'some useless data.',
+          }
+        end
+
+        it 'returns error because of length of comment' do
+          expect { do_request }.to change { Comment.count }.by 0 
+          expect(json_body[:errors]).to eq ['admin.comments.title_too_long']
+          expect(response.status).to eq 422
+        end
+      end
+    end
+  
+    describe 'PUT /api/v2/admin/users/comments' do
+      let(:url) { '/api/v2/admin/users/comments' }
+      let!(:seeded) { Comment.create(author_uid: test_user.uid, user_id: experimental_user.id, title: 'preseeded record', data: 'prev') }
+      let(:params) do
+        {
+          id: seeded.id,
+          uid: experimental_user.uid,
+          data: 'next.',
+        }
+      end
+      let(:do_request) { put url, headers: auth_header, params: params }
+  
+      it 'does not create new comment' do
+        expect { do_request }.not_to change { Comment.count } 
+        expect(response.status).to eq 200
+      end
+  
+      it 'comment does not exist' do
+        put url, headers: auth_header, params: { id: seeded.id+1, uid: experimental_user.uid, title: 'vv', data: 'ww' }
+        expect(response.status).to eq 404
+      end
+  
+      it 'changes data' do
+        do_request
+        expect(seeded.reload.data).to eq 'next.'
+        expect(seeded.reload.title).to eq 'preseeded record'
+        expect(response.status).to eq 200
+      end
+    end
+
+    describe 'DELETE /api/v2/admin/users/comments' do
+      let(:url) { '/api/v2/admin/users/comments' }
+      let!(:seeded) { Comment.create(author_uid: test_user.uid, user_id: experimental_user.id, title: 'preseeded record', data: 'prev') }
+      let(:params) { { id: seeded.id } }
+      let(:do_request) { delete url, headers: auth_header, params: params }
+  
+      it 'does not create new comment' do
+        expect { do_request }.to change { Comment.count }.by -1 
+        expect(response.status).to eq 200
+      end
+  
+      it 'comment does not exist' do
+        put url, headers: auth_header, params: { id: seeded.id+1, uid: experimental_user.uid, title: 'vv', data: 'ww' }
+        expect(response.status).to eq 404
+      end
+    end
+  end
 end
