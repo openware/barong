@@ -120,7 +120,11 @@ class Profile < ApplicationRecord
     profile_label = user.labels.find_by(key: :profile)
     return unless profile_full? && profile_label.present?
 
-    profile_label.update(value: :verified)
+    if profile_full?
+      profile_label.update(value: :verified)
+    else
+      profile_label.update(value: :partial)
+    end
   end
 
   def create_profile_label
