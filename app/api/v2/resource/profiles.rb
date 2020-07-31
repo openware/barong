@@ -42,7 +42,6 @@ module API::V2
 
           profile = current_user.create_profile(declared(params, include_missing: false))
           code_error!(profile.errors.details, 422) if profile.errors.any?
-          current_user.labels.create(key: 'profile', value: 'verified', scope: 'private')
 
           present profile, with: API::V2::Entities::Profile
 
