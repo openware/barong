@@ -27,6 +27,7 @@ module KYC
           profile.update(applicant_id: applicant.applicant_id, state: 'rejected')
         elsif applicant.applicant_id
           profile.update(applicant_id: applicant.applicant_id, state: 'verified')
+          Rails.logger.info("For user with uid: #{profile.user.uid} applied kycaid applicant_id: #{applicant.applicant_id}")
         end
       end
     end

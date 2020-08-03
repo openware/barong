@@ -48,17 +48,20 @@ RSpec.describe Document, type: :model do
 
   context 'Document creation' do
     let!(:current_user) { create(:user) }
-    let(:create_document) { create :document, user: current_user }
+    let(:create_document) { create :document, user: current_user, doc_type: 'Passport', doc_category: 'front_side' }
+    let(:create_document_second) { create :document, user: current_user, doc_type: 'Passport', doc_category: 'selfie' }
     let(:create_without_label) { create :document, user: current_user, update_labels: false }
     let(:document_label) { current_user.labels.first }
 
     context 'when it is first document' do
       it 'adds new document label' do
-        expect { create_document }.to change { current_user.reload.labels.count }.from(0).to(1)
+        create_document
+        expect { create_document_second }.to change { current_user.reload.labels.count }.from(0).to(1)
       end
 
       it 'new document label is document: pending' do
         create_document
+        create_document_second
         expect(document_label.key).to eq 'document'
         expect(document_label.value).to eq 'pending'
       end
@@ -74,11 +77,13 @@ RSpec.describe Document, type: :model do
       end
 
       it 'does not add new label' do
-        expect { create_document }.to_not change { Label.count }
+        create_document
+        expect { create_document_second }.to_not change { Label.count }
       end
 
       it 'changes label value to pending' do
         create_document
+        create_document_second
         expect(current_user.labels.first.value).to eq 'pending'
       end
     end

@@ -113,7 +113,7 @@ module Barong
         )
 
         unless restriction.save
-          raise ConfigError.new("Can't create permission: #{permission.errors.full_messages.join('; ')}")
+          raise ConfigError.new("Can't create restriction: #{restriction.errors.full_messages.join('; ')}")
         end
       end
     end

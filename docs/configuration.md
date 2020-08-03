@@ -79,8 +79,10 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_event_api_rabbitmq_port` | 5672 | any valid port string | rabbitmq server port |
 | `barong_event_api_rabbitmq_username` | guest | any string value | rabbitmq server access username |
 | `barong_event_api_rabbitmq_password` | guest | any string value | rabbitmq server access password |
+| `barong_redis_cluster` | `false` | `false` `true` | define redis mode usage (https://redis.io/topics/cluster-tutorial) |
 | `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
-| `barong_vault_address` | `http://localhost:8200` | any valid url  | vault server url with port |
+| `barong_redis_password` | ~ | any string value | redis server access password |
+| `barong_vault_address` | `http://localhost:8200` | any valid url | vault server url with port |
 | `barong_vault_token` | changeme | any string value | vault access token |
 | `barong_vault_app_name` | barong | any string value | the name of the application, all encrypted keys in Vault will be prefixed with this application name |
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |

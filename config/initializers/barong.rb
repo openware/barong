@@ -74,7 +74,9 @@ Barong::App.define do |config|
   config.set(:vault_address, 'http://localhost:8200')
   config.set(:vault_token, 'changeme')
   config.set(:vault_app_name, 'barong')
+  config.set(:redis_cluster, 'false', type: :bool)
   config.set(:redis_url, 'redis://localhost:6379/1')
+  config.set(:redis_password, '')
 
   # CORS configuration  -----------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#api-cors-configuration

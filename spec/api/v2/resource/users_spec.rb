@@ -167,6 +167,27 @@ describe 'Api::V1::Profiles' do
       activities = JSON.parse(response.body)
       expect(activities.first['id']).to be >= activities.last['id']
     end
+    it 'sorts user activities by result' do
+      4.times { create(:activity, user: test_user, result: 'succeed') }
+      get '/api/v2/resource/users/activity/all', params: { result: 'succeed' }, headers: auth_header
+      activities = JSON.parse(response.body)
+      expect(activities.length).to eq(4)
+    end
+    it 'sorts user activities by time range' do
+      4.times { create(:activity, user: test_user, result: 'succeed') }
+      get '/api/v2/resource/users/activity/all', params: { time_from: 5.hours.ago.to_i, time_to: 1.hours.ago.to_i }, headers: auth_header
+      activities = JSON.parse(response.body)
+      expect(activities.length).to eq(1)
+    end
+
+    it 'sorts user activities by time range' do
+      4.times { create(:activity, user: test_user, result: 'succeed') }
+      4.times { create(:activity, user: test_user, result: 'succeed', created_at: 10.hours.ago) }
+
+      get '/api/v2/resource/users/activity/all', params: { time_from: 5.hours.ago.to_i}, headers: auth_header
+      activities = JSON.parse(response.body)
+      expect(activities.length).to eq(4)
+    end
   end
 
   describe 'POST /api/v2/resource/users/password' do
