@@ -75,7 +75,7 @@ describe API::V2::Management::Users, type: :request do
         data[:uid] = user.uid
         do_request
         expect(response.status).to eq 422
-        expect_body.to eq(error: 'uid, email, phone_num are mutually exclusive')
+        expect_body.to eq(error: "uid, email, phone_num are mutually exclusive")
       end
 
       it 'denies access unless enough signatures are supplied' do

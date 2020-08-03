@@ -27,10 +27,17 @@ module KYC
                              or in  selfie image creation for: #{@user.uid}: #{selfie_document.error} #{selfie_document.errors}")
           @user.labels.find_by(key: :document, scope: :private).update(value: 'rejected')
         elsif document.document_id && selfie_document.document_id
-          docs.update_all(metadata: { document_id: @document_id }.to_json)
+          front_file&.update(metadata: { document_id: document.document_id }.to_json)
+          back_file&.update(metadata: { document_id: document.document_id }.to_json)
+          selfie_file&.update(metadata: { document_id: selfie_document.document_id }.to_json)
           verification = ::KYCAID::Verification.create(verification_params)
 
-          Rails.logger.info("Verification for user: #{@user.uid} kycaid id of verification: #{verification.verification_id}")
+          if verification.error || verification.errors
+            Rails.logger.info("Error in verification creation for: #{@user.uid}: #{verification.error} #{verification.errors}")
+            @user.labels.find_by(key: :document, scope: :private).update(value: 'rejected')
+          end
+
+          Rails.logger.info("Verification for user document with uid: #{@user.uid}, kycaid id of verification: #{verification.verification_id}")
         end
       end
 

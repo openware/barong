@@ -16,6 +16,7 @@ describe 'Documents API test' do
         doc_type: 'Passport',
         doc_expire: '3020-01-22',
         doc_number: 'AA1234BB',
+        doc_category: 'front_side',
         upload: [
           image
         ]
@@ -56,7 +57,7 @@ describe 'Documents API test' do
       end
 
       expect(response.status).to eq(400)
-      expect_body.to eq(errors: ["resource.documents.limit_will_be_reached"])
+      expect_body.to eq(errors: ['resource.documents.limit_will_be_reached'])
     end
 
     it 'uploads 2 files at once' do
@@ -84,7 +85,7 @@ describe 'Documents API test' do
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                          ]
+                                           ]
                                          }
       expect(response.status).to eq(201)
       expect(test_user.documents.length).to eq(3)
@@ -108,7 +109,7 @@ describe 'Documents API test' do
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
                                              fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
-                                         ]
+                                           ]
                                          }
       expect(response.status).to eq(400)
     end
@@ -122,7 +123,11 @@ describe 'Documents API test' do
       expect(test_user.labels.find_by(key: :document)).to eq(nil)
       post '/api/v2/resource/documents', headers: auth_header, params: params
       expect(response.status).to eq(201)
-      expect(test_user.labels.find_by(key: :document)).not_to eq(nil)
+      expect(test_user.labels.find_by(key: :document)).to eq(nil)
+      post '/api/v2/resource/documents', headers: auth_header,
+                                         params: params.merge({ doc_category: 'selfie',
+                                                                upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')],
+                                                                identificator: test_user.documents.last.identificator })
       expect(test_user.labels.find_by(key: :document).value).to eq('pending')
     end
 
@@ -134,6 +139,11 @@ describe 'Documents API test' do
       post '/api/v2/resource/documents', headers: auth_header, params: params
       expect(response.status).to eq(201)
       expect(test_user.labels.find_by(key: :document)).not_to eq(nil)
+      expect(test_user.labels.find_by(key: :document).value).to eq('verified')
+      post '/api/v2/resource/documents', headers: auth_header,
+                                         params: params.merge({ doc_category: 'selfie',
+                                                                upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')],
+                                                                identificator: test_user.documents.last.identificator })
       expect(test_user.labels.find_by(key: :document).value).to eq('pending')
     end
 
@@ -150,9 +160,9 @@ describe 'Documents API test' do
     end
 
     it 'renders an error if metadata is not json' do
-      post '/api/v2/resource/documents', headers: auth_header, params: params.merge({metadata: '{ bar: baz }'})
+      post '/api/v2/resource/documents', headers: auth_header, params: params.merge({ metadata: '{ bar: baz }' })
       expect_status_to_eq 422
-      expect_body.to eq(errors: ["metadata.invalid_format"])
+      expect_body.to eq(errors: ['metadata.invalid_format'])
     end
 
     it 'Checks provided params and returns error, cause some of them are not valid or absent' do
@@ -161,21 +171,21 @@ describe 'Documents API test' do
       expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:doc_number), headers: auth_header
-      expect_body.to eq(errors: ["resource.document.missing_doc_number", "resource.document.empty_doc_number"])
+      expect_body.to eq(errors: ['resource.document.missing_doc_number', 'resource.document.empty_doc_number'])
       expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:upload), headers: auth_header
-      expect_body.to eq(errors: ["resource.document.missing_upload"])
+      expect_body.to eq(errors: ['resource.document.missing_upload'])
       expect(response.status).to eq(422)
 
       post '/api/v2/resource/documents', params: params.except(:doc_expire).merge(doc_expire: 'blah'), headers: auth_header
-      expect_body.to eq(errors: ["resource.documents.expire_not_a_date"])
+      expect_body.to eq(errors: ['resource.documents.expire_not_a_date'])
       expect(response.status).to eq(422)
 
       params0 = params
       params0[:upload] = [Faker::Avatar.image]
       post '/api/v2/resource/documents', params: params0, headers: auth_header
-      expect_body.to eq(errors: ["upload.blank"])
+      expect_body.to eq(errors: ['upload.blank'])
       expect(response.status).to eq(422)
     end
 
@@ -189,19 +199,19 @@ describe 'Documents API test' do
       allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
       post '/api/v2/resource/documents', params: params.except(:doc_expire), headers: auth_header
       expect(response.status).to eq(422)
-      expect_body.to eq({ errors: ["resource.documents.invalid_format"] })
+      expect_body.to eq({ errors: ['resource.documents.invalid_format'] })
     end
 
     it 'Returns error when docs expire is not optional and date in past' do
       allow(Barong::App.config).to receive(:required_docs_expire).and_return(true)
-      post '/api/v2/resource/documents', params: params.merge({doc_expire: DateTime.now.to_date - 1}), headers: auth_header
+      post '/api/v2/resource/documents', params: params.merge({ doc_expire: DateTime.now.to_date - 1 }), headers: auth_header
       expect(response.status).to eq(422)
-      expect_body.to eq({ errors: ["resource.documents.already_expired"] })
+      expect_body.to eq({ errors: ['resource.documents.already_expired'] })
     end
 
     it 'Doesnt return error when docs expire is optional and date in past' do
       allow(Barong::App.config).to receive(:required_docs_expire).and_return(false)
-      post '/api/v2/resource/documents', params: params.merge({doc_expire: DateTime.now.to_date - 1}), headers: auth_header
+      post '/api/v2/resource/documents', params: params.merge({ doc_expire: DateTime.now.to_date - 1 }), headers: auth_header
       expect(response.status).to eq(201)
     end
 
