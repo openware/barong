@@ -99,6 +99,7 @@ Barong::App.define do |config|
   config.set(:smtp_port, 1025)
   config.set(:smtp_host, 'localhost')
   config.set(:smtp_user, '')
+  config.set(:smtp_logo_link, 'https://storage.cloud.google.com/public_peatio/logo.png')
   config.set(:default_language, 'en')
 
   # KYCAID ------------------------------------------------------------

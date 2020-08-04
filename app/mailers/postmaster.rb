@@ -7,6 +7,7 @@ class Postmaster < ApplicationMailer
     @record  = params[:record]
     @changes = params[:changes]
     @user    = params[:user]
+    @logo    = params[:logo]
 
     sender = "#{Barong::App.config.sender_name} <#{Barong::App.config.sender_email}>"
 
