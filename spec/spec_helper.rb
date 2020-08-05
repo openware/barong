@@ -37,6 +37,14 @@ RSpec.configure do |config|
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.before(:each) do
+    allow(Ability).to receive(:load_abilities).and_return({
+      "roles"=>['admin', 'manager', 'accountant', 'superadmin', 'technical', 'compliance', 'support'],
+      "permissions"=>{
+        "superadmin"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]},
+        "admin"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]},
+        "compliance"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]},
+        "member"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]}
+    }})
     allow_any_instance_of(Barong::Authorize).to receive(:validate_csrf!).and_return(true)
     allow(UserStorageTitles).to receive(:list).and_return(['personal', 'company'])
     %w[email phone identity document].each_with_index do |key, index|

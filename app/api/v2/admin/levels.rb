@@ -12,6 +12,8 @@ module API
             { code: 401, message: 'Invalid bearer token' }
           ]
           get do
+            authorize! :read, Level
+
             present Level.all, with: API::V2::Entities::Level
           end
         end

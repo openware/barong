@@ -23,6 +23,9 @@ gem 'kycaid'
 gem 'sidekiq', '>= 6.0.7'
 # GLI
 gem 'gli', '~> 2.19.0'
+##
+## abilities and permissions for admin API module
+gem 'cancancan', '~> 2.3.0'
 
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

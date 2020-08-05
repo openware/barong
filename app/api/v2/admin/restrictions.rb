@@ -27,6 +27,8 @@ module API
             use :pagination_filters
           end
           get do
+            authorize! :read, Restriction
+
             restrictions = Restriction.all
             restrictions = params[:category] ? restrictions.where(category: params[:category]) : restrictions
             restrictions = params[:scope] ? restrictions.where(scope: params[:scope]) : restrictions
@@ -56,6 +58,8 @@ module API
                      desc: 'In combination with expire_time gives full controll over token expiration'
           end
           post '/whitelink' do
+            authorize! :create, Restriction
+
             whitelink_token = Digest::SHA256.hexdigest(SecureRandom.hex(10))
 
             expires_in = params[:range] == 'day' ? params[:expire_time].days : params[:expire_time].hours
@@ -90,6 +94,8 @@ module API
                      allow_blank: false
           end
           post do
+            authorize! :create, Restriction
+
             restriction = Restriction.new(declared(params, include_missing: false))
 
             code_error!(restriction.errors.details, 422) unless restriction.save
@@ -126,6 +132,8 @@ module API
                      allow_blank: false
           end
           put do
+            authorize! :update, Restriction
+
             target_restriction = Restriction.find_by(id: params[:id])
 
             error!({ errors: ['admin.restriction.doesnt_exist'] }, 404) if target_restriction.nil?
@@ -151,6 +159,8 @@ module API
                      desc: 'Restriction id'
           end
           delete do
+            authorize! :destroy, Restriction
+
             target_restriction = Restriction.find_by(id: params[:id])
 
             error!({ errors: ['admin.restriction.doesnt_exist'] }, 404) if target_restriction.nil?

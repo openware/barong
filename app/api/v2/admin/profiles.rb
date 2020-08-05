@@ -18,6 +18,8 @@ module API
           end
 
           get do
+            authorize! :read, Profile
+
             present paginate(Profile.all), with: API::V2::Entities::Profile
           end
 
@@ -34,6 +36,8 @@ module API
           end
 
           put do
+            authorize! :update, Profile
+
             target_profile = User.find_by(uid: params[:uid])&.submitted_profile
             return error!({ errors: ['admin.profiles.doesnt_exist_or_not_editable'] }, 404) if target_profile.nil?
 
