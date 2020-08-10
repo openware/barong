@@ -2,9 +2,6 @@
 
 # User model
 class User < ApplicationRecord
-  ROLES = %w[superadmin admin manager accountant compliance support technical member broker trader maker]
-  ADMIN_ROLES = %w[superadmin admin accountant compliance support technical manager member]
-
   acts_as_eventable prefix: 'user', on: %i[create update]
 
   has_secure_password

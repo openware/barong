@@ -1,9 +1,3 @@
-roles:
-  - superadmin
-  - admin
-  - compliance
-  - support
-
 permissions:
   superadmin:
     manage:

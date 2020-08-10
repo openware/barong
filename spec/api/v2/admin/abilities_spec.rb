@@ -4,25 +4,36 @@ describe API::V2::Admin::Abilities, type: :request do
   include_context 'bearer authentication'
 
   let!(:create_admin_permission) do
-      create :permission,
-             role: 'admin'
+    create :permission,
+           role: 'admin'
   end
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
   end
-  let(:test_user) { create(:user, email: 'example@gmail.com', role: 'admin') }
 
   describe 'GET /api/v2/admin/abilities' do
-    it 'get all roles and permissions' do
-      get '/api/v2/admin/abilities',  headers: auth_header
-      result = JSON.parse(response.body)
-      expect(response).to be_successful
-      expect(result['roles'].count).to eq 7
-      expect(result['roles']).to eq ['admin', 'manager', 'accountant', 'superadmin', 'technical', 'compliance', 'support']
+    context 'superadmin user' do
+      let(:test_user) { create(:user, email: 'example@gmail.com', role: 'admin') }
+      it 'get all roles and permissions' do
+        get '/api/v2/admin/abilities', headers: auth_header
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result).to eq(
+          'read' => %w[Level APIKey Permission],
+          'manage' => %w[User Activity Profile Label]
+        )
+      end
+    end
 
-      expect(result['permissions'].count).to eq 4
-      expect(result['permissions']['superadmin'].keys).to eq ['manage']
+    context 'member user' do
+      let(:test_user) { create(:user, email: 'example@gmail.com', role: 'member') }
+      it 'get all roles and permissions' do
+        get '/api/v2/admin/abilities', headers: auth_header
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result).to eq({})
+      end
     end
   end
 end
