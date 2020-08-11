@@ -14,7 +14,7 @@ steps:
     VAULT_ADDR: http://vault:8200
 
 - name: Run rspec
-  image: ruby:2.6.5
+  image: ruby:2.6.6
   environment:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -25,6 +25,7 @@ steps:
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
   commands:
+    - bundle update --bundler
     - bundle
     - ./bin/init_config
     - rake db:create db:migrate
