@@ -7,13 +7,13 @@ describe 'Api::V2::Admin::APIKeys' do
     create :permission,
            role: 'member'
   end
-  let!(:create_admin_permission) do
+  let!(:create_superadmin_permission) do
     create :permission,
-           role: 'admin'
+           role: 'superadmin'
   end
 
   describe 'GET /api/v2/admin/api_keys' do
-    let!(:test_user) { create(:user, otp: otp_enabled) }
+    let!(:test_user) { create(:user, otp: otp_enabled, role: 'superadmin') }
     let(:otp_enabled) { true }
     let!(:first_api_key) { create :api_key, user: test_user }
     let!(:second_api_key) { create :api_key, user: test_user }

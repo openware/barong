@@ -27,6 +27,8 @@ module API
             use :pagination_filters
           end
           get do
+            admin_authorize! :read, APIKey
+
             target_user = User.find_by(uid: params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 

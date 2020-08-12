@@ -15,7 +15,7 @@ describe API::V2::Admin::Profiles do
     create :permission,
            role: 'member'
   end
-
+  let!(:test_user) { create(:user, role: 'superadmin') }
   let!(:profile1) { create(:profile) }
   let!(:profile2) { create(:profile) }
   let!(:profile3) { create(:profile) }
@@ -117,6 +117,8 @@ describe API::V2::Admin::Profiles do
     end
 
     context 'unsuccessful response' do
+      let!(:admin_test) { test_user.update(role: 'admin') }
+
       let!(:superadmin_with_profile) do
         @user = create :user, role: 'superadmin'
         create(:profile, user_id: @user.id, state: 'submitted', author: test_user.uid)

@@ -26,6 +26,7 @@ module API::V2
       mount Admin::Restrictions
       mount Admin::Profiles
       mount Admin::Levels
+      mount Admin::Abilities
     end
   end
 end

@@ -22,6 +22,8 @@ module API
             optional :created_to
           end
           get do
+            admin_authorize! :read, User
+
             result = {}
 
             signup = API::V2::Queries::ActivityFilter.new(Activity.all).call(

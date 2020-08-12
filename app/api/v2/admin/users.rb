@@ -61,6 +61,8 @@ module API
             use :pagination_filters
           end
           get do
+            admin_authorize! :read, User
+
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
             users = API::V2::Queries::UserFilter.new(User.all.order(params[:order_by] => params[:ordering])).call(params).uniq
             users.tap { |q| present paginate(q), with: entity }
@@ -87,6 +89,8 @@ module API
             exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           post '/update' do
+            admin_authorize! :update, User
+
             target_user = User.find_by_uid(params[:uid])
 
             # Ruby Hash returns array on keys and values
@@ -133,6 +137,8 @@ module API
                      desc: 'user role'
           end
           post '/role' do
+            admin_authorize! :update, User
+
             target_user = User.find_by_uid(params[:uid])
 
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
@@ -175,6 +181,8 @@ module API
             exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           put do
+            admin_authorize! :update, User
+
             target_user = User.find_by_uid(params[:uid])
 
             # Ruby Hash returns array on keys and values
@@ -239,6 +247,8 @@ module API
             use :pagination_filters
           end
           get '/documents/pending' do
+            admin_authorize! :read, User
+
             users_with_pending_or_replaced_docs = User.with_pending_or_replaced_docs.order('labels.updated_at ASC')
 
             users = API::V2::Queries::UserFilter.new(users_with_pending_or_replaced_docs).call(params)
@@ -256,6 +266,8 @@ module API
             params do
             end
             get '/list' do
+              admin_authorize! :read, User
+
               labels = Label.where(scope: 'private').group(:key, :value).size
 
               present labels
@@ -274,6 +286,8 @@ module API
               use :pagination_filters
             end
             get do
+              admin_authorize! :read, User
+
               users = User.joins(:labels).where(labels: { key: params[:key], value: params[:value] })
 
               users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
@@ -304,6 +318,8 @@ module API
               optional :scope, type: String, desc: "Label scope: 'public' or 'private'. Default is public", allow_blank: false
             end
             post do
+              admin_authorize! :create, Label
+
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(params[:uid])
@@ -357,6 +373,8 @@ module API
                        desc: 'When true label will be created if not exist'
             end
             post '/update' do
+              admin_authorize! :update, Label
+
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(declared_params[:uid])
@@ -419,6 +437,8 @@ module API
                        desc: 'Label value.'
             end
             put do
+              admin_authorize! :update, Label
+
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(declared_params[:uid])
@@ -458,6 +478,8 @@ module API
                        desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
             end
             delete do
+              admin_authorize! :destroy, Label
+
               declared_params = declared(params, include_missing: false)
 
               target_user = User.find_by_uid(params[:uid])
@@ -488,6 +510,8 @@ module API
                      desc: 'user uniq id'
           end
           get '/:uid' do
+            admin_authorize! :read, User
+
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
@@ -510,6 +534,8 @@ module API
                      desc: 'data storage uniq title'
           end
           delete '/data_storage' do
+            admin_authorize! :destroy, User
+
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 

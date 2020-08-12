@@ -26,6 +26,8 @@ module API
             use :pagination_filters
           end
           get do
+            admin_authorize! :read, Permission
+
             Permission.all.tap { |q| present paginate(q) }
           end
 
@@ -52,6 +54,8 @@ module API
                      allow_blank: false
           end
           post do
+            admin_authorize! :create, Permission
+
             validate_params!(params)
 
             declared_params = declared(params, include_missing: false)
@@ -79,6 +83,8 @@ module API
                      desc: 'permission id'
           end
           delete do
+            admin_authorize! :destroy, Permission
+
             target_permission = Permission.find_by(id: params[:id])
 
             error!({ errors: ['admin.permission.doesnt_exist'] }, 404) if target_permission.nil?
@@ -120,6 +126,8 @@ module API
                      allow_blank: false
           end
           put do
+            admin_authorize! :update, Permission
+
             target_permission = Permission.find_by(id: params[:id])
             error!({ errors: ['admin.permission.doesnt_exist'] }, 404) if target_permission.nil?
 

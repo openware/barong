@@ -28,5 +28,11 @@ module API::V2
       end
       error!({ errors: final }, code)
     end
+
+    def admin_authorize!(*args)
+      AdminAbility.new(current_user).authorize!(*args)
+    rescue CanCan::AccessDenied
+      error!({ errors: ['admin.ability.not_permitted'] }, 401)
+    end
   end
 end

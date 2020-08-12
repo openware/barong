@@ -4,7 +4,8 @@ require 'spec_helper'
 describe API::V2::Admin::Permissions do
   include_context 'bearer authentication'
 
-  let!(:create_admin_permission) { create(:permission, role: 'admin', action: 'accept', verb: 'get') }
+  let!(:create_admin_permission) { create(:permission, role: 'superadmin', action: 'accept', verb: 'get') }
+  let!(:test_user) { create(:user, role: 'superadmin') }
   let!(:create_member_permission) { create(:permission, role: 'member') }
 
   describe 'GET /api/v2/admin/permissions' do
@@ -24,7 +25,7 @@ describe API::V2::Admin::Permissions do
         expect(response).to be_successful
         expect(response.headers.fetch('Total')).to eq '2'
         expect(result.size).to eq 1
-        expect(result.first['role']).to eq 'admin'
+        expect(result.first['role']).to eq 'superadmin'
 
         get '/api/v2/admin/permissions', params: { limit: 1, page: 2 }, headers: auth_header
         result = JSON.parse(response.body)
@@ -73,7 +74,7 @@ describe API::V2::Admin::Permissions do
     end
 
     context 'successful response' do
-      let(:do_request) { post '/api/v2/admin/permissions', params: { role: 'admin', action: 'accept', verb: 'put', path: 'api/v2/admin' }, headers: auth_header }
+      let(:do_request) { post '/api/v2/admin/permissions', params: { role: 'superadmin', action: 'accept', verb: 'put', path: 'api/v2/admin' }, headers: auth_header }
       it 'creates new permission' do
         expect { do_request }.to change { Permission.count }.by(1)
         expect(response).to be_successful
