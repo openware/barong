@@ -6,9 +6,9 @@ module API
       # Admin functionality over abilities
       class Abilities < Grape::API
         namespace :abilities do
-          desc 'Get all roles and permissions of barong cancan.'
+          desc 'Get all roles and admin_permissions of barong cancan.'
           get do
-            Ability.load_abilities['permissions'][current_user.role] || {}
+            Ability.admin_permissions[current_user.role] || {}
           end
         end
       end

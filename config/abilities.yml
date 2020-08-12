@@ -1,4 +1,10 @@
-permissions:
+roles:
+  - superadmin
+  - admin
+  - compliance
+  - support
+
+admin_permissions:
   superadmin:
     manage:
       - User

@@ -39,9 +39,9 @@ RSpec.configure do |config|
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.before(:each) do
-    allow(Ability).to receive(:load_abilities).and_return(
+    allow(Ability).to receive(:abilities).and_return(
       'roles' => %w[admin manager accountant superadmin technical compliance support],
-      'permissions' => {
+      'admin_permissions' => {
         'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level] },
         'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label] },
         'compliance' => { 'read' => %w[User Activity Level], 'manage' => %w[Label], 'update' => %w[Profile] },

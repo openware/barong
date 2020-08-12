@@ -61,7 +61,7 @@ module API
             use :pagination_filters
           end
           get do
-            authorize! :read, User
+            admin_authorize! :read, User
 
             entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
             users = API::V2::Queries::UserFilter.new(User.all.order(params[:order_by] => params[:ordering])).call(params).uniq
@@ -89,7 +89,7 @@ module API
             exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           post '/update' do
-            authorize! :update, User
+            admin_authorize! :update, User
 
             target_user = User.find_by_uid(params[:uid])
 
@@ -137,7 +137,7 @@ module API
                      desc: 'user role'
           end
           post '/role' do
-            authorize! :update, User
+            admin_authorize! :update, User
 
             target_user = User.find_by_uid(params[:uid])
 
@@ -181,7 +181,7 @@ module API
             exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
           end
           put do
-            authorize! :update, User
+            admin_authorize! :update, User
 
             target_user = User.find_by_uid(params[:uid])
 
@@ -247,7 +247,7 @@ module API
             use :pagination_filters
           end
           get '/documents/pending' do
-            authorize! :read, User
+            admin_authorize! :read, User
 
             users_with_pending_or_replaced_docs = User.with_pending_or_replaced_docs.order('labels.updated_at ASC')
 
@@ -266,7 +266,7 @@ module API
             params do
             end
             get '/list' do
-              authorize! :read, User
+              admin_authorize! :read, User
 
               labels = Label.where(scope: 'private').group(:key, :value).size
 
@@ -286,7 +286,7 @@ module API
               use :pagination_filters
             end
             get do
-              authorize! :read, User
+              admin_authorize! :read, User
 
               users = User.joins(:labels).where(labels: { key: params[:key], value: params[:value] })
 
@@ -318,7 +318,7 @@ module API
               optional :scope, type: String, desc: "Label scope: 'public' or 'private'. Default is public", allow_blank: false
             end
             post do
-              authorize! :create, Label
+              admin_authorize! :create, Label
 
               declared_params = declared(params, include_missing: false)
 
@@ -373,7 +373,7 @@ module API
                        desc: 'When true label will be created if not exist'
             end
             post '/update' do
-              authorize! :update, Label
+              admin_authorize! :update, Label
 
               declared_params = declared(params, include_missing: false)
 
@@ -437,7 +437,7 @@ module API
                        desc: 'Label value.'
             end
             put do
-              authorize! :update, Label
+              admin_authorize! :update, Label
 
               declared_params = declared(params, include_missing: false)
 
@@ -478,7 +478,7 @@ module API
                        desc: 'label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters.'
             end
             delete do
-              authorize! :destroy, Label
+              admin_authorize! :destroy, Label
 
               declared_params = declared(params, include_missing: false)
 
@@ -510,7 +510,7 @@ module API
                      desc: 'user uniq id'
           end
           get '/:uid' do
-            authorize! :read, User
+            admin_authorize! :read, User
 
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
@@ -534,7 +534,7 @@ module API
                      desc: 'data storage uniq title'
           end
           delete '/data_storage' do
-            authorize! :destroy, User
+            admin_authorize! :destroy, User
 
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?

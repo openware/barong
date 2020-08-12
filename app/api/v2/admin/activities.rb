@@ -26,7 +26,7 @@ module API
             use :pagination_filters
           end
           get do
-            authorize! :read, Activity
+            admin_authorize! :read, Activity
 
             activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'user')).call(permitted_search_params(params))
             activities.tap { |q| present paginate(q), with: API::V2::Entities::ActivityWithUser }
@@ -49,7 +49,7 @@ module API
                      default: 'created'
           end
           get '/admin' do
-            authorize! :read, Activity
+            admin_authorize! :read, Activity
 
             activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'admin')).call(permitted_search_params(params))
             activities.tap { |q| present paginate(q), with: API::V2::Entities::AdminActivity }

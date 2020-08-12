@@ -4,7 +4,7 @@
 describe Ability do
  
   before do
-    allow(Ability).to receive(:permissions).and_return({
+    allow(Ability).to receive(:admin_permissions).and_return({
       "superadmin"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]},
       "admin"=>{"read"=>["Level", "APIKey", "Permission"], "manage"=>["User", "Activity", "Profile", "Label"]},
       "compliance"=>{"read"=>["Level", "User", "Activity"], "manage"=>["Label"], "update"=>["Profile"]},
@@ -21,7 +21,7 @@ describe Ability do
 
   context 'abilities for superadmin' do
     let(:test_user) { create(:user, email: 'example@gmail.com', role: 'superadmin') }
-    subject(:ability) { Ability.new(test_user) }
+    subject(:ability) { AdminAbility.new(test_user) }
 
     it { is_expected.to be_able_to(:manage, User.new) }
     it { is_expected.to be_able_to(:manage, Activity.new) }
@@ -34,7 +34,7 @@ describe Ability do
 
   context 'abilities for admin' do
     let(:test_user) { create(:user, email: 'example@gmail.com', role: 'admin') }
-    subject(:ability) { Ability.new(test_user) }
+    subject(:ability) { AdminAbility.new(test_user) }
 
     it { is_expected.to be_able_to(:read, Level.new) }
     it { is_expected.to be_able_to(:read, APIKey.new) }
@@ -47,7 +47,7 @@ describe Ability do
 
   context 'abilities for compliance' do
     let(:test_user) { create(:user, email: 'example@gmail.com', role: 'compliance') }
-    subject(:ability) { Ability.new(test_user) }
+    subject(:ability) { AdminAbility.new(test_user) }
 
 
     it { is_expected.to be_able_to(:read, Level.new) }
@@ -59,7 +59,7 @@ describe Ability do
 
   context 'abilities for support' do
     let(:test_user) { create(:user, email: 'example@gmail.com', role: 'support') }
-    subject(:ability) { Ability.new(test_user) }
+    subject(:ability) { AdminAbility.new(test_user) }
 
     it { is_expected.to be_able_to(:read, User.new) }
     it { is_expected.to be_able_to(:read, Activity.new) }

@@ -29,8 +29,8 @@ module API::V2
       error!({ errors: final }, code)
     end
 
-    def authorize!(*args)
-      Ability.new(current_user).authorize!(*args)
+    def admin_authorize!(*args)
+      AdminAbility.new(current_user).authorize!(*args)
     rescue CanCan::AccessDenied
       error!({ errors: ['admin.ability.not_permitted'] }, 401)
     end

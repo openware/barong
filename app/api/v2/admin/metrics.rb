@@ -22,7 +22,7 @@ module API
             optional :created_to
           end
           get do
-            authorize! :read, User
+            admin_authorize! :read, User
 
             result = {}
 
