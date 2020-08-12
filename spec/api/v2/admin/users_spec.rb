@@ -582,6 +582,8 @@ describe API::V2::Admin::Users do
 
   describe 'POST /api/v2/admin/users/labels/update' do
     let(:user) { create(:user, role: 'admin') }
+    let!(:create_superadmin_permission) { create(:permission, role: 'superadmin', action: 'accept', verb: 'get') }
+    let!(:test_user) { create(:user, role: 'superadmin') }
     let(:data) do
       {
         uid: user.uid,

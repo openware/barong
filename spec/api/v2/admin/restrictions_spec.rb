@@ -4,7 +4,8 @@ require 'spec_helper'
 describe API::V2::Admin::Restrictions do
   include_context 'bearer authentication'
 
-  before { create(:permission, role: 'member') }
+  before { create(:permission, role: 'superadmin') }
+  let!(:test_user) { create(:user, role: 'superadmin') }
 
   describe 'GET /api/v2/admin/restrictions' do
     before do
