@@ -27,6 +27,9 @@ module KYC
 
           Rails.logger.info("Verification for user address with uid: #{@user.uid}, kycaid id of verification: #{verification.verification_id}")
         end
+      rescue OpenURI::HTTPError => e
+        Rails.logger.info("#{self.class} caught #{e.inspect()}, retrying in 30 seconds")
+        self.class.perform_in(30.seconds, params)
       end
 
       def address_params
