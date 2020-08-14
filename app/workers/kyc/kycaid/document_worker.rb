@@ -39,6 +39,9 @@ module KYC
 
           Rails.logger.info("Verification for user document with uid: #{@user.uid}, kycaid id of verification: #{verification.verification_id}")
         end
+      rescue OpenURI::HTTPError => e
+        Rails.logger.info("#{self.class} caught #{e.inspect()}, retrying in 30 seconds")
+        self.class.perform_in(30.seconds, user_id, identificator)
       end
 
       def document_params(front_file, back_file)
