@@ -15,8 +15,8 @@ describe 'Api::V2::Admin::APIKeys' do
   describe 'GET /api/v2/admin/api_keys' do
     let!(:test_user) { create(:user, otp: otp_enabled, role: 'superadmin') }
     let(:otp_enabled) { true }
-    let!(:first_api_key) { create :api_key, user: test_user }
-    let!(:second_api_key) { create :api_key, user: test_user }
+    let!(:first_api_key) { create :api_key, key_holder_account: test_user }
+    let!(:second_api_key) { create :api_key, key_holder_account: test_user }
     let(:expected_fields) do
       {
         kid: first_api_key.kid,

@@ -21,6 +21,7 @@ module API::V2
       mount Resource::Otp
       mount Resource::APIKeys
       mount Resource::DataStorage
+      mount Resource::Providers
     end
   end
 end

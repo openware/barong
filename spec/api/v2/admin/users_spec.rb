@@ -237,8 +237,8 @@ describe API::V2::Admin::Users do
     context 'admin user' do
       let(:test_user) { create(:user, role: "admin") }
       let(:user_with_api_keys) { create(:user, state: "active", otp: true) }
-      let!(:api_key1) { create(:api_key, user: user_with_api_keys) }
-      let!(:api_key2) { create(:api_key, user: user_with_api_keys) }
+      let!(:api_key1) { create(:api_key, key_holder_account: user_with_api_keys) }
+      let!(:api_key2) { create(:api_key, key_holder_account: user_with_api_keys) }
 
       it 'renders error if uid is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {

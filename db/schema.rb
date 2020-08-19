@@ -28,7 +28,8 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
   end
 
   create_table "apikeys", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id", null: false, unsigned: true
+    t.bigint "key_holder_account_id", null: false, unsigned: true
+    t.string "key_holder_account_type", default: "User", null: false
     t.string "kid", null: false
     t.string "algorithm", null: false
     t.string "scope"
@@ -37,7 +38,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["kid"], name: "index_apikeys_on_kid", unique: true
-    t.index ["user_id"], name: "index_apikeys_on_user_id"
+    t.index ["key_holder_account_type", "key_holder_account_id"], name: "idx_apikey_on_account"
   end
 
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -144,6 +145,17 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.string "value", limit: 64, null: false
     t.integer "code"
     t.string "state", limit: 16, default: "enabled", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "service_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "uid", null: false
+    t.bigint "provider_id", null: false, unsigned: true
+    t.string "email", null: false
+    t.string "role", default: "service_account", null: false
+    t.integer "level", default: 0, null: false
+    t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

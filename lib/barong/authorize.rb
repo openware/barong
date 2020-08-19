@@ -95,8 +95,8 @@ module Barong
       # corresponding Api Key should be active
       error!({ errors: ['authz.apikey_not_active'] }, 401) unless current_api_key.active?
 
-      user = User.find_by_id(current_api_key.user_id)
-
+      # here User is either User object or ServiceAccount object
+      user = current_api_key.key_holder_account
       validate_user!(user)
 
       validate_permissions!(user)
@@ -128,13 +128,13 @@ module Barong
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 
       if permissions.blank? || actions.include?('DROP') || !actions.include?('ACCEPT')
-        log_activity(user.id, 'denied')
+        log_activity(user.id, 'denied') if user.is_a?(User)
         error!({ errors: ['authz.invalid_permission'] }, 401)
       end
 
       if actions.include?('AUDIT')
         topic = permissions.select { |a| a.action == 'AUDIT' }[0].topic
-        log_activity(user.id, 'succeed', topic)
+        log_activity(user.id, 'succeed', topic) if user.is_a?(User)
       end
     end
 
@@ -215,7 +215,9 @@ module Barong
         error!({ errors: ['authz.invalid_session'] }, 401)
       end
 
-      error!({ errors: ['authz.disabled_2fa'] }, 401) unless user.otp
+      if user.is_a?(User) && !user.otp
+        error!({ errors: ['authz.disabled_2fa'] }, 401)
+      end
     end
 
     # api key headers nil, blank validation

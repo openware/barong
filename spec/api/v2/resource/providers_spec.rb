@@ -2,18 +2,23 @@
 
 describe 'Api::V2::APIKeys' do
   include_context 'bearer authentication'
-  let!(:create_member_permission) do
+  let!(:create_provider_permission) do
     create :permission,
-           role: 'member'
+           role: 'provider'
+  end
+  let!(:create_service_account_permission) do
+    create :permission,
+           role: 'service_account'
   end
   let!(:create_admin_permission) do
     create :permission,
            role: 'admin'
   end
-  let!(:test_user) { create(:user, otp: otp_enabled) }
+  let!(:test_user) { create(:user, otp: otp_enabled, role: 'provider') }
+  let!(:service_account) { create(:service_account, user: test_user) }
   let(:otp_enabled) { true }
-  let!(:first_api_key) { create :api_key, key_holder_account: test_user }
-  let!(:second_api_key) { create :api_key, key_holder_account: test_user }
+  let!(:first_api_key) { create :api_key, key_holder_account: service_account }
+  let!(:second_api_key) { create :api_key, key_holder_account: service_account }
   let(:valid_otp_code) { '1357' }
   let(:invalid_otp_code) { '1234' }
   let(:otp_code) { valid_otp_code }
@@ -30,22 +35,24 @@ describe 'Api::V2::APIKeys' do
   describe 'GET /api/v2/resource/api_keys/' do
     let(:get_params) do
       {
+          service_account_uid: service_account.uid,
           ordering: 'asc',
           oreder_by: 'id'
       }
     end
     let(:post_params) do
       {
+        service_account_uid: service_account.uid,
         scope: 'trade',
         algorithm: 'HS256'
       }
     end
     let(:do_request) do
-      post '/api/v2/resource/api_keys',
+      post '/api/v2/resource/providers/api_keys',
            params: post_params.merge(totp_code: otp_code),
            headers: auth_header
     end
-    let(:do_get_request) { get "/api/v2/resource/api_keys", params: get_params, headers: auth_header }
+    let(:do_get_request) { get "/api/v2/resource/providers/api_keys", params: get_params, headers: auth_header }
     let(:expected_fields) do
       {
         kid: first_api_key.kid,
@@ -78,7 +85,7 @@ describe 'Api::V2::APIKeys' do
         do_get_request
 
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_ordering"])
+        expect_body.to eq(errors: ["resource.providers.invalid_ordering"])
       end
     end
 
@@ -88,7 +95,7 @@ describe 'Api::V2::APIKeys' do
         do_get_request
 
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_attribute"])
+        expect_body.to eq(errors: ["resource.providers.invalid_attribute"])
       end
     end
 
@@ -98,7 +105,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
+        expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
       end
     end
 
@@ -108,7 +115,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
+        expect_body.to eq(errors: ["resource.providers.invalid_totp"])
       end
     end
   end
@@ -179,15 +186,16 @@ describe 'Api::V2::APIKeys' do
     end
   end
 
-  describe 'PATCH /api/v2/resource/api_keys/:kid' do
+  describe 'PUT /api/v2/resource/providers/api_keys/:kid' do
     let(:do_request) do
-      patch "/api/v2/resource/api_keys/#{first_api_key.kid}", params: params.merge(totp_code: otp_code),
+      put "/api/v2/resource/providers/api_keys/#{first_api_key.kid}", params: params.merge(totp_code: otp_code),
                                                headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
     context 'when valid fields' do
       let(:params) do
         {
+          service_account_uid: service_account.uid,
           state: 'inactive',
           scope: 'sell',
           algorithm: 'HS256'
@@ -212,7 +220,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(400)
-          expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
+          expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
         end
       end
 
@@ -222,15 +230,15 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
+          expect_body.to eq(errors: ["resource.providers.invalid_totp"])
         end
       end
     end
   end
 
-  describe 'DELETE /api/v2/resource/api_keys/:uid' do
+  describe 'DELETE /api/v2/resource/providers/api_keys/:uid' do
     let(:do_request) do
-      delete "/api/v2/resource/api_keys/#{first_api_key.kid}?totp_code=#{otp_code}",
+      delete "/api/v2/resource/providers/api_keys/#{first_api_key.kid}?totp_code=#{otp_code}&service_account_uid=#{service_account.uid}",
              headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
@@ -246,7 +254,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(errors: ["resource.api_key.2fa_disabled"])
+        expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
       end
     end
 
@@ -256,7 +264,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.api_key.invalid_totp"])
+        expect_body.to eq(errors: ["resource.providers.invalid_totp"])
       end
     end
   end

@@ -72,7 +72,7 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'with api_keys' do
-      let!(:admin_api_key) { create :api_key, user: @admin }
+      let!(:admin_api_key) { create :api_key, key_holder_account: @admin }
       let(:nonce) { (Time.now.to_f * 1000).to_i }
       let(:secret) { admin_api_key.secret }
       let(:signature) { OpenSSL::HMAC.hexdigest('SHA256', secret, nonce.to_s + admin_api_key.kid ) }

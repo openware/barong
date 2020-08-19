@@ -19,6 +19,7 @@ module API::V2
       mount API::V2::Management::Tools
       mount API::V2::Management::Otp
       mount API::V2::Management::Documents
+      mount API::V2::Management::ServiceAccounts
 
       add_swagger_documentation base_path: '/api/v2/management',
       info: {

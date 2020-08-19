@@ -6,14 +6,15 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_many  :profiles,      dependent: :destroy
-  has_many  :phones,        dependent: :destroy
-  has_many  :data_storages, dependent: :destroy
-  has_many  :comments,      dependent: :destroy
-  has_many  :documents,     dependent: :destroy
-  has_many  :labels,        dependent: :destroy
-  has_many  :api_keys,      dependent: :destroy, class_name: 'APIKey'
-  has_many  :activities,    dependent: :destroy
+  has_many  :profiles,            dependent: :destroy
+  has_many  :phones,              dependent: :destroy
+  has_many  :data_storages,       dependent: :destroy
+  has_many  :comments,            dependent: :destroy
+  has_many  :documents,           dependent: :destroy
+  has_many  :labels,              dependent: :destroy
+  has_many  :activities,          dependent: :destroy
+  has_many  :service_accounts,    dependent: :destroy, foreign_key: "provider_id"
+  has_many :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
 
   validates_length_of :data, maximum: 1024
   validate :role_exists
