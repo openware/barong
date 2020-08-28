@@ -88,7 +88,7 @@ module API::V2
 
             otp_protected!
             declared_params = declared(unified_params, include_missing: false)
-                              .except(:totp_code)
+                              .except(:totp_code, :service_account_uid)
                               .merge(scope: params[:scope]&.split(','))
                               .merge(secret: SecureRandom.hex(16))
 

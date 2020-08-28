@@ -1,4 +1,8 @@
 class AddServiceAccountsAndRelatedChanges < ActiveRecord::Migration[5.2]
+  class APIKey < ActiveRecord::Base
+    self.table_name = :apikeys
+  end
+
   def change
     create_table :service_accounts do |t|
       t.string    :uid,                 null: false
@@ -11,9 +15,16 @@ class AddServiceAccountsAndRelatedChanges < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    remove_column :apikeys, :user_id
     add_column :apikeys, :key_holder_account_id, :bigint, null: false, unsigned: true, after: :id
     add_column :apikeys, :key_holder_account_type, :string, null: false, default: "User", after: :key_holder_account_id
+
+    APIKey.find_each do |api_key|
+      api_key.key_holder_account_type = 'User'
+      api_key.key_holder_account_id = api_key.user_id
+      api_key.save!
+    end
+
+    remove_column :apikeys, :user_id
     add_index :apikeys, [:key_holder_account_type, :key_holder_account_id], name: :idx_apikey_on_account
   end
 end

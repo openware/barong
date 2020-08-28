@@ -107,20 +107,24 @@ module API::V2
           present user, with: API::V2::Entities::UserWithProfile
         end
 
-        desc 'Updates data field of existing user' do
+        desc 'Updates role and data fields of existing user' do
           @settings[:scope] = :write_users
           success API::V2::Entities::UserWithProfile
         end
 
         params do
           requires :uid, type: String, desc: 'User Uid', allow_blank: false
-          requires :data, type: String, desc: 'Any additional key:value pairs in json format', allow_blank: false
+          optional :role, type: String, desc: 'User Role', allow_blank: false
+          optional :data, type: String, desc: 'Any additional key:value pairs in json format', allow_blank: false
+          at_least_one_of :role, :data
         end
 
         post '/update' do
           user = User.find_by_uid(params[:uid])
           error! 'user.doesnt_exist', 422 unless user
-          error!(user.errors.full_messages, 422) unless user.update(data: params[:data])
+
+          u_params = { data: params[:data], role: params[:role] }.compact
+          error!(user.errors.full_messages, 422) unless user.update(u_params)
 
           present user, with: API::V2::Entities::UserWithProfile
         end
