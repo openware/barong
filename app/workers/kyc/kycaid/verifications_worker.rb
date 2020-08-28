@@ -16,9 +16,9 @@ module KYC
         verification.verifications.each do |verificaton_name, verification_decision|
           next unless user.labels.find_by_key(verificaton_name)
 
-          verification_decision.symbolize_keys!
+          verification_decision.deep_symbolize_keys!
         verified = if verificaton_name == 'document'
-            verification_decision[:verified] && verification.dig(:facial, :verified)
+            verification_decision[:verified] && verification.verifications.deep_symbolize_keys.dig(:facial, :verified)
           else
             verification_decision[:verified]
           end
