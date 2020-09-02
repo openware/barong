@@ -11,11 +11,6 @@ module API::V2
         end
       end
 
-      def unified_params
-        params.merge!(kid: SecureRandom.hex(8)) if params[:algorithm].include?('HS')
-        params
-      end
-
       def record_error!(options = {})
         options[:data] = { reason: options[:reason] }.to_json
         options[:result] = 'failed'

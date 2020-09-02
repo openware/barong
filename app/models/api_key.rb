@@ -25,10 +25,26 @@ class APIKey < ApplicationRecord
   }.freeze
 
   validates :user_id, :kid, :secret, presence: true
+  validates :kid, uniqueness: true
   validates :algorithm, inclusion: { in: ALGORITHMS }
 
   belongs_to :user
   scope :active, -> { where(state: 'active') }
+
+  before_validation :assign_kid, if: :hmac?
+
+  def assign_kid
+    return unless kid.blank?
+
+    loop do
+      self.kid = random_kid
+      break unless APIKey.where(kid: kid).any?
+    end
+  end
+
+  def random_kid
+    SecureRandom.hex(8)
+  end
 
   def hmac?
     self.algorithm.include?('HS')

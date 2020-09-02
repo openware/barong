@@ -30,9 +30,6 @@ module API::V2
           requires :algorithm,
                    type: String,
                    allow_blank: false
-          optional :kid,
-                   type: String,
-                   allow_blank: false
           optional :scope,
                    type: String,
                    allow_blank: false,
@@ -45,7 +42,7 @@ module API::V2
         end
         post do
           otp_protected!
-          declared_params = declared(unified_params, include_missing: false)
+          declared_params = declared(params, include_missing: false)
                             .except(:totp_code)
                             .merge(scope: params[:scope]&.split(','))
                             .merge(secret: SecureRandom.hex(16))
