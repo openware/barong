@@ -58,8 +58,6 @@ class TOTPService
       raise e
     end
   
-  private
-  
     def totp_key(uid)
       "totp/keys/#{Vault.application}_#{uid}"
     end
@@ -67,7 +65,7 @@ class TOTPService
     def totp_code_key(uid)
       "totp/code/#{Vault.application}_#{uid}"
     end
-  
+
     def read_data(key)
       with_human_error do
         vault.read(key)

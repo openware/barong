@@ -82,6 +82,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # Add the Sentry Ruby SDK
 gem 'sentry-raven', '~> 2.9.0'
+gem 'pry-rails'
 
 group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
@@ -96,7 +97,6 @@ group :development do
   gem 'listen',       '>= 3.0.5', '< 3.2'
   gem 'annotate', '~> 2.7', '>= 2.7.5'
   gem 'spring'
-  gem 'pry-rails'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
