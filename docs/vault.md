@@ -28,6 +28,8 @@ High-Availability Enabled: false
 
 **barong-rails.hcl**
 
+Replace *opendax* with your vault application name. See [configuration.md](configuration.md#vault-configuration) for more details about vault configuration.
+
 ```bash
 # Access system health status
 path "sys/health" {

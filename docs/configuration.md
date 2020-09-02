@@ -72,19 +72,25 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 | `barong_twilio_service_sid` | - | any string value | twilio service sid, required by configuration of `twilio_verify` policy |
 | `barong_sms_content_template` | Your verification code for Barong: `{{code}}` | any string value containing `{{code}}` | template, used in both configurations as content for SMS |
 
-### Dependencies configuration (vault, redis, rabbitmq, sentry)
+### RabbitMQ configuration
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_event_api_rabbitmq_host` | localhost | any string value | rabbitmq server host |
 | `barong_event_api_rabbitmq_port` | 5672 | any valid port string | rabbitmq server port |
 | `barong_event_api_rabbitmq_username` | guest | any string value | rabbitmq server access username |
 | `barong_event_api_rabbitmq_password` | guest | any string value | rabbitmq server access password |
+
+### Redis configuration
 | `barong_redis_cluster` | `false` | `false` `true` | define redis mode usage (https://redis.io/topics/cluster-tutorial) |
 | `barong_redis_url` | `redis://localhost:6379/1` | any valid url | url of redis server with port |
 | `barong_redis_password` | ~ | any string value | redis server access password |
+
+### Vault configuration
 | `barong_vault_address` | `http://localhost:8200` | any valid url | vault server url with port |
 | `barong_vault_token` | changeme | any string value | vault access token |
-| `barong_vault_app_name` | barong | any string value | the name of the application, all encrypted keys in Vault will be prefixed with this application name |
+| `barong_vault_app_name` | barong | any string value | the name of the application, all encryption keys in Vault will be prefixed with this application name |
+
+### Sentry configuration
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
 
 ### SMTP configuration
