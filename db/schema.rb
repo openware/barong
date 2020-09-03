@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "service_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
-    t.bigint "provider_id", null: false, unsigned: true
+    t.bigint "owner_id", null: false, unsigned: true
     t.string "email", null: false
     t.string "role", default: "service_account", null: false
     t.integer "level", default: 0, null: false

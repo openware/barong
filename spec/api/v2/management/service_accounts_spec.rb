@@ -16,16 +16,16 @@ describe API::V2::Management::ServiceAccounts, type: :request do
     create :permission,
            role: 'member'
   end
-  let!(:create_provider_permission) do
-    create :permission,
-           role: 'provider'
-  end
   let!(:create_service_account_permission) do
     create :permission,
            role: 'service_account'
   end
+  let!(:create_admin_permission) do
+    create :permission,
+           role: 'admin'
+  end
 
-  let!(:user) { create(:user, role: 'provider') }
+  let!(:user) { create(:user, role: 'member') }
   let!(:service_account) { create(:service_account, user: user) }
 
   describe 'Show service_account info' do
@@ -162,7 +162,8 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           {
             service_account_email: 'valid_email@example.com',
             service_account_uid: 'Fai5aesoLEcx',
-            provider_uid: user.uid
+            service_account_role: 'admin',
+            owner_uid: user.uid
           }
         end
 
@@ -178,12 +179,12 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         it 'renders an error' do
           do_request
           expect_status_to_eq 422
-          expect_body.to eq(error: 'provider_uid is missing, provider_uid is empty')
+          expect_body.to eq(error: 'owner_uid is missing, owner_uid is empty, service_account_role is missing, service_account_role is empty')
         end
       end
 
       context 'when email is bad' do
-        let(:params) { { service_account_email: 'bad_email', service_account_uid: 'Fai5aesoLEcx', provider_uid: user.uid } }
+        let(:params) { { service_account_email: 'bad_email', service_account_uid: 'Fai5aesoLEcx', service_account_role: 'member', owner_uid: user.uid } }
 
         it 'renders an error' do
           expect { do_request }.to_not change { ServiceAccount.count }
@@ -192,8 +193,18 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         end
       end
 
+      context 'when role does not exist' do
+        let(:params) { { service_account_email: 'valid_email@example.com', service_account_uid: 'Fai5aesoLEcx', service_account_role: 'invalid', owner_uid: user.uid } }
+
+        it 'renders an error' do
+          expect { do_request }.to_not change { ServiceAccount.count }
+          expect_status_to_eq 422
+          expect_body.to eq(error: ['Role doesnt_exist'])
+        end
+      end
+
       context 'when uid is not uniq, the same as user one' do
-        let(:params) { { service_account_email: 'valid_email@example.com', service_account_uid: user.uid, provider_uid: user.uid } }
+        let(:params) { { service_account_email: 'valid_email@example.com', service_account_uid: user.uid, service_account_role: 'member', owner_uid: user.uid } }
 
         it 'renders an error' do
           expect { do_request }.to_not change { ServiceAccount.count }

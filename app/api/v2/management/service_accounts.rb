@@ -34,12 +34,12 @@ module API::V2
         end
         params do
           use :pagination_filters
-          optional :provider_uid, type: String, allow_blank: false, desc: 'provider uid'
-          optional :provider_email, type: String, allow_blank: false, desc: 'provider email'
+          optional :owner_uid, type: String, allow_blank: false, desc: 'owner uid'
+          optional :owner_email, type: String, allow_blank: false, desc: 'owner email'
         end
         post '/list' do
-          provider = User.find_by(uid: params[:provider_uid]) || User.find_by(email: params[:provider_email]) if params[:provider_uid] || params[:provider_email]
-          service_accs = provider ? provider.service_accounts : ServiceAccount.all
+          owner = User.find_by(uid: params[:owner_uid]) || User.find_by(email: params[:owner_email]) if params[:owner_uid] || params[:owner_email]
+          service_accs = owner ? owner.service_accounts : ServiceAccount.all
 
           service_accs.tap { |q| present paginate(q), with: API::V2::Entities::ServiceAccounts }
           status 200
@@ -50,16 +50,17 @@ module API::V2
           success API::V2::Entities::ServiceAccounts
         end
         params do
+          requires :owner_uid, type: String, allow_blank: false, desc: 'owner uid'
+          requires :service_account_role, type: String, allow_blank: false, desc: 'service_account role'
           optional :service_account_uid, type: String, allow_blank: false, desc: 'service_account uid'
-          requires :provider_uid, type: String, allow_blank: false, desc: 'provider uid'
           optional :service_account_email, type: String, allow_blank: false, desc: 'service_account email'
         end
         post '/create' do
-          provider = User.find_by(uid: params[:provider_uid])
-          error!('Provider doesnt exist', 422) unless provider
+          owner = User.find_by(uid: params[:owner_uid])
+          error!('User doesnt exist', 422) unless owner
 
-          s_params = { email: params[:service_account_email], uid: params[:service_account_uid] }.compact
-          service_acc = ServiceAccount.new(s_params.merge(user: provider))
+          s_params = { email: params[:service_account_email], uid: params[:service_account_uid], role: params[:service_account_role] }.compact
+          service_acc = ServiceAccount.new(s_params.merge(user: owner))
           error!(service_acc.errors.full_messages, 422) unless service_acc.save
 
           present service_acc, with: API::V2::Entities::ServiceAccounts

@@ -18,10 +18,9 @@
 
 # ServiceAccount model
 class ServiceAccount < ApplicationRecord
-  belongs_to :user, foreign_key: "provider_id"
+  belongs_to :user, foreign_key: "owner_id"
   has_many :api_keys, as: :key_holder_account, dependent: :destroy, class_name: 'APIKey'
 
-  validate :provider_role
   validate :role_exists
   validate :email_n_uid_uniqueness
   validates :email,       email: true, presence: true, uniqueness: true
@@ -56,10 +55,6 @@ class ServiceAccount < ApplicationRecord
     errors.add(:role, 'doesnt_exist')
   end
 
-  def provider_role
-    errors.add(:provider_id, 'is not provider role') if self.user.role != 'provider'
-  end
-
   def email_n_uid_uniqueness
     errors.add('email_or_uid', 'not_uniq') if User.find_by(email: email) || User.find_by(uid: uid)
   end
@@ -69,7 +64,8 @@ class ServiceAccount < ApplicationRecord
   def assign_email
     return unless email.blank?
 
-    self.email = "service+#{user.service_accounts.count}+" + user.email
+    name, domain = user.email.split('@')
+    self.email = "#{name}+#{self.uid}@#{domain}"
   end
 
   def assign_uid

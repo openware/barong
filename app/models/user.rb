@@ -13,7 +13,7 @@ class User < ApplicationRecord
   has_many  :documents,           dependent: :destroy
   has_many  :labels,              dependent: :destroy
   has_many  :activities,          dependent: :destroy
-  has_many  :service_accounts,    dependent: :destroy, foreign_key: "provider_id"
+  has_many  :service_accounts,    dependent: :destroy, foreign_key: "owner_id"
   has_many :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
 
   validates_length_of :data, maximum: 1024

@@ -6,7 +6,7 @@ class AddServiceAccountsAndRelatedChanges < ActiveRecord::Migration[5.2]
   def change
     create_table :service_accounts do |t|
       t.string    :uid,                 null: false
-      t.bigint    :provider_id,         null: false, unsigned: true
+      t.bigint    :owner_id,            null: false, unsigned: true
       t.string    :email,               null: false
       t.string    :role,                default: "service_account", null: false
       t.integer   :level,               default: 0, null: false
