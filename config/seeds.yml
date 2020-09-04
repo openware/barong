@@ -264,16 +264,6 @@ permissions:
  # applogic access
  - { role: partner, verb: all, path: api/v2/applogic, action: accept }
 
- # Provider
- # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules and RESOURCE of Service Accounts
- - { role: provider, verb: all, path: api/v2/peatio/account, action: accept }
- - { role: provider, verb: all, path: api/v2/peatio/market, action: accept }
- - { role: provider, verb: all, path: api/v2/barong/resource, action: accept }
- # ranger access
- - { role: provider, verb: get, path: api/v2/ranger, action: accept }
- # applogic access
- - { role: provider, verb: all, path: api/v2/applogic, action: accept }
-
  # Service Account
  # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
  - { role: service_account, verb: all, path: api/v2/peatio/account, action: accept }

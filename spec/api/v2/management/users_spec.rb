@@ -20,10 +20,6 @@ describe API::V2::Management::Users, type: :request do
       create :permission,
              role: 'member'
     end
-    let!(:create_provider_permission) do
-      create :permission,
-             role: 'provider'
-    end
     let!(:user) { create(:user, :with_profile) }
 
     describe 'Show user info' do
@@ -243,7 +239,7 @@ describe API::V2::Management::Users, type: :request do
         let(:params) do
           {
             uid: user.uid,
-            data: { nationality: 'us' }.to_json,
+            data: { nationality: 'us' }.to_json
           }
         end
         it 'updates data field' do
@@ -259,14 +255,14 @@ describe API::V2::Management::Users, type: :request do
         let(:params) do
           {
               uid: user.uid,
-              role: 'provider'
+              role: 'admin'
           }
         end
         it 'updates role field' do
           do_request
 
           expect_status_to_eq 201
-          expect(user.reload.role).to eq('provider')
+          expect(user.reload.role).to eq('admin')
         end
       end
 
@@ -276,7 +272,7 @@ describe API::V2::Management::Users, type: :request do
           {
               uid: user.uid,
               data: { nationality: 'us' }.to_json,
-              role: 'provider'
+              role: 'admin'
           }
         end
         it 'updates data and role fields' do
@@ -284,7 +280,7 @@ describe API::V2::Management::Users, type: :request do
 
           expect_status_to_eq 201
           expect(user.reload.data).to eq({ nationality: 'us' }.to_json)
-          expect(user.reload.role).to eq('provider')
+          expect(user.reload.role).to eq('admin')
         end
       end
 

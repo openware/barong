@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe 'Api::V2::APIKeys' do
+describe 'Api::V2::Resource::ServiceAccounts' do
   include_context 'bearer authentication'
-  let!(:create_provider_permission) do
+  let!(:create_member_permission) do
     create :permission,
-           role: 'provider'
+           role: 'member'
   end
   let!(:create_service_account_permission) do
     create :permission,
@@ -14,7 +14,7 @@ describe 'Api::V2::APIKeys' do
     create :permission,
            role: 'admin'
   end
-  let!(:test_user) { create(:user, otp: otp_enabled, role: 'provider') }
+  let!(:test_user) { create(:user, otp: otp_enabled, role: 'member') }
   let!(:service_account) { create(:service_account, user: test_user) }
   let(:otp_enabled) { true }
   let!(:first_api_key) { create :api_key, key_holder_account: service_account }
@@ -32,12 +32,38 @@ describe 'Api::V2::APIKeys' do
       .with(test_user.uid, nil) { false }
   end
 
-  describe 'GET /api/v2/resource/api_keys/' do
+  describe 'GET /api/v2/resource/service_accounts' do
+    let(:do_request) do
+      get '/api/v2/resource/service_accounts',
+          headers: auth_header
+    end
+
+    let(:expected_fields) do
+      {
+          uid: service_account.uid,
+          email: service_account.email,
+          owner_id: test_user.id,
+          role: service_account.role,
+          level: service_account.level,
+          state: service_account.state,
+      }
+    end
+
+    it 'Return service accounts for current user' do
+      do_request
+
+      expect(json_body.count).to eq 1
+      expect(response.status).to eq(200)
+      expect(json_body.first).to include(expected_fields)
+    end
+  end
+
+  describe 'GET /api/v2/resource/service_accounts/api_keys/' do
     let(:get_params) do
       {
           service_account_uid: service_account.uid,
           ordering: 'asc',
-          oreder_by: 'id'
+          order_by: 'id'
       }
     end
     let(:post_params) do
@@ -48,11 +74,11 @@ describe 'Api::V2::APIKeys' do
       }
     end
     let(:do_request) do
-      post '/api/v2/resource/providers/api_keys',
+      post '/api/v2/resource/service_accounts/api_keys',
            params: post_params.merge(totp_code: otp_code),
            headers: auth_header
     end
-    let(:do_get_request) { get "/api/v2/resource/providers/api_keys", params: get_params, headers: auth_header }
+    let(:do_get_request) { get "/api/v2/resource/service_accounts/api_keys", params: get_params, headers: auth_header }
     let(:expected_fields) do
       {
         kid: first_api_key.kid,
@@ -85,7 +111,7 @@ describe 'Api::V2::APIKeys' do
         do_get_request
 
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.providers.invalid_ordering"])
+        expect_body.to eq(errors: ["resource.service_accounts.invalid_ordering"])
       end
     end
 
@@ -95,7 +121,7 @@ describe 'Api::V2::APIKeys' do
         do_get_request
 
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.providers.invalid_attribute"])
+        expect_body.to eq(errors: ["resource.service_accounts.invalid_attribute"])
       end
     end
 
@@ -105,7 +131,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
+        expect_body.to eq(errors: ["resource.service_accounts.2fa_disabled"])
       end
     end
 
@@ -115,7 +141,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.providers.invalid_totp"])
+        expect_body.to eq(errors: ["resource.service_accounts.invalid_totp"])
       end
     end
   end
@@ -186,9 +212,9 @@ describe 'Api::V2::APIKeys' do
     end
   end
 
-  describe 'PUT /api/v2/resource/providers/api_keys/:kid' do
+  describe 'PUT /api/v2/resource/service_accounts/api_keys/:kid' do
     let(:do_request) do
-      put "/api/v2/resource/providers/api_keys/#{first_api_key.kid}", params: params.merge(totp_code: otp_code),
+      put "/api/v2/resource/service_accounts/api_keys/#{first_api_key.kid}", params: params.merge(totp_code: otp_code),
                                                headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
@@ -220,7 +246,7 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(400)
-          expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
+          expect_body.to eq(errors: ["resource.service_accounts.2fa_disabled"])
         end
       end
 
@@ -230,15 +256,15 @@ describe 'Api::V2::APIKeys' do
         it 'renders an error' do
           do_request
           expect(response.status).to eq(422)
-          expect_body.to eq(errors: ["resource.providers.invalid_totp"])
+          expect_body.to eq(errors: ["resource.service_accounts.invalid_totp"])
         end
       end
     end
   end
 
-  describe 'DELETE /api/v2/resource/providers/api_keys/:uid' do
+  describe 'DELETE /api/v2/resource/service_accounts/api_keys/:uid' do
     let(:do_request) do
-      delete "/api/v2/resource/providers/api_keys/#{first_api_key.kid}?totp_code=#{otp_code}&service_account_uid=#{service_account.uid}",
+      delete "/api/v2/resource/service_accounts/api_keys/#{first_api_key.kid}?totp_code=#{otp_code}&service_account_uid=#{service_account.uid}",
              headers: auth_header
     end
     let(:otp_code) { valid_otp_code }
@@ -254,7 +280,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(400)
-        expect_body.to eq(errors: ["resource.providers.2fa_disabled"])
+        expect_body.to eq(errors: ["resource.service_accounts.2fa_disabled"])
       end
     end
 
@@ -264,7 +290,7 @@ describe 'Api::V2::APIKeys' do
       it 'renders an error' do
         do_request
         expect(response.status).to eq(422)
-        expect_body.to eq(errors: ["resource.providers.invalid_totp"])
+        expect_body.to eq(errors: ["resource.service_accounts.invalid_totp"])
       end
     end
   end
