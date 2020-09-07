@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_many  :labels,              dependent: :destroy
   has_many  :activities,          dependent: :destroy
   has_many  :service_accounts,    dependent: :destroy, foreign_key: "owner_id"
-  has_many :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
+  has_many  :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
 
   validates_length_of :data, maximum: 1024
   validate :role_exists
@@ -170,14 +170,7 @@ class User < ApplicationRecord
   def assign_uid
     return unless uid.blank?
 
-    loop do
-      self.uid = random_uid
-      break unless User.where(uid: uid).any?
-    end
-  end
-
-  def random_uid
-    "%s%s" % [Barong::App.config.uid_prefix.upcase, SecureRandom.hex(5).upcase]
+    self.uid = UIDGenerator.generate(Barong::App.config.uid_prefix)
   end
 end
 

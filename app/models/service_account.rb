@@ -71,14 +71,7 @@ class ServiceAccount < ApplicationRecord
   def assign_uid
     return unless uid.blank?
 
-    loop do
-      self.uid = random_uid
-      break unless User.where(uid: uid).any? || ServiceAccount.where(uid: uid).any?
-    end
-  end
-
-  def random_uid
-    "%s%s" % ["SI", SecureRandom.hex(5).upcase]
+    self.uid = UIDGenerator.generate("SI")
   end
 
   def assign_state_level
