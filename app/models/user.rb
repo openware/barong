@@ -41,6 +41,11 @@ class User < ApplicationRecord
 
   def disable_api_keys
     if otp_previously_changed? && otp == false || state_previously_changed? && state != 'active'
+      service_accounts.each do |service_account|
+        service_account.api_keys.active.each do |key|
+           key.update(state: 'inactive')
+         end
+      end
       api_keys.active.each do |key|
         key.update(state: 'inactive')
       end
