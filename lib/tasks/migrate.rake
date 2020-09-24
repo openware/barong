@@ -6,7 +6,7 @@ namespace 'migrate' do
     puts 'Migrating API keys from secrets to transit keys (new in 2.6)'
     APIKey.find_in_batches do |keys|
       keys.each do |key|
-        legacy_key_path = "/secret/barong/api_key/#{key.kid}"
+        legacy_key_path = "secret/barong/api_key/#{key.kid}"
         secret = TOTPService.read_data(legacy_key_path)
         next unless secret
 
@@ -26,8 +26,8 @@ namespace 'migrate' do
 
     User.find_in_batches do |users|
       users.each do |u|
-        legacy_key_path = "/totp/keys/#{u.uid}"
-        legacy_export_path = "/totp/export/#{u.uid}"
+        legacy_key_path = "totp/keys/#{u.uid}"
+        legacy_export_path = "totp/export/#{u.uid}"
 
         next unless TOTPService.read_data(legacy_key_path)
 

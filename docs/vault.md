@@ -5,11 +5,15 @@
 This document describe how to create vault tokens in order to configure **barong-rails** to be able **to encrypt** and **to decrypt** api_key secrets, **to renew** token and **to manage** totp, to configure **barong-authz** to be able **to decrypt** api_key secrets, **to renew** token.
 
 ## Connect to vault
-
-You can validate it works running the following command:
+The the following variables in your environment with correct values:
 ```bash
-$ vault status
+export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_TOKEN='s.ozytsgX1BcTQaR5Y07SAd2VE'
+```
 
+You can test that it works running the following command:
+```
+$ vault status
 Type: shamir
 Sealed: false
 Key Shares: 1
@@ -119,7 +123,7 @@ vault token create -policy=barong-authz -period=240h
 
 Set those variables according to your deployment:
 ```bash
-export VAULT_URL=http://127.0.0.1:8200
-export VAULT_TOKEN=s.jyH1vmrOmkZ0FZZ0NZtgRenS
-export VAULT_APP_NAME=opendax
+export BARONG_VAULT_ADDRESS=http://127.0.0.1:8200
+export BARONG_VAULT_TOKEN=s.jyH1vmrOmkZ0FZZ0NZtgRenS
+export BARONG_VAULT_APP_NAME=opendax
 ```

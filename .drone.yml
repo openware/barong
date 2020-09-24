@@ -19,6 +19,7 @@ steps:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
     BARONG_VAULT_ADDRESS: http://vault:8200
+    BARONG_VAULT_TOKEN: changeme
     RAILS_ENV: test
     REDIS_URL: redis://redis:6379
     BARONG_REDIS_URL: redis://redis:6379
