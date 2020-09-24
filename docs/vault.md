@@ -2,7 +2,14 @@
 
 ## Introduction
 
-This document describe how to create vault tokens in order to configure **barong-rails** to be able **to encrypt** and **to decrypt** api_key secrets, **to renew** token and **to manage** totp, to configure **barong-authz** to be able **to decrypt** api_key secrets, **to renew** token.
+This document describes how to create vault tokens in order to restrict components access to vault as following
+
+| Component    | Abilities                                               |
+| ------------ | ------------------------------------------------------- |
+| barong-rails | encrypt api keys<br />create TOTP<br />verify TOTP code |
+| barong-authz | decrypt api keys                                        |
+
+
 
 ## Connect to vault
 The the following variables in your environment with correct values:
@@ -26,6 +33,7 @@ Cluster ID: 9f40327d-ec71-9655-b728-7588ce47d0b4
 
 High-Availability Enabled: false
 ```
+
 ## Create ACL groups
 
 ### Create the following policy files
@@ -50,11 +58,6 @@ path "transit/encrypt/opendax_apikeys_*" {
   capabilities = [ "create", "read", "update" ]
 }
 
-# Decrypt engines secrets
-path "transit/decrypt/opendax_apikeys_*" {
-  capabilities = [ "create", "read", "update" ]
-}
-
 # Renew tokens
 path "auth/token/renew" {
   capabilities = [ "update" ]
@@ -65,9 +68,9 @@ path "auth/token/lookup" {
   capabilities = [ "update" ]
 }
 
-# Generate otp code
+# Manage otp keys
 path "totp/keys/opendax_*" {
-  capabilities = ["create", "read"]
+  capabilities = ["create", "read", "update", "delete"]
 }
 
 # Verify an otp code
