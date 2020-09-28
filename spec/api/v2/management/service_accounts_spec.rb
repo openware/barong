@@ -224,6 +224,19 @@ describe API::V2::Management::ServiceAccounts, type: :request do
                 multisig_jwt_management_api_v2({ data: data }, *signers)
     end
 
+    context do
+      let(:params) { {uid: service_account.uid} }
+
+      it do
+        do_request
+        expect_status_to_eq 200
+
+        service_account = JSON.parse(response.body)
+        expect(service_account['state']).to eq 'disabled'
+      end
+    end
+
+
     context 'when params are blank' do
       let(:params) { {} }
 

@@ -31,12 +31,21 @@ class User < ApplicationRecord
 
   before_validation :assign_uid
   after_update :disable_api_keys
+  after_update :disable_service_accounts
 
   def validate_pass!
     return unless (new_record? && password.present?) || password.present?
 
     validation_result = PasswordStrengthChecker.validate!(password)
     errors.add(:password, validation_result) unless validation_result == 'strong'
+  end
+
+  def disable_service_accounts
+    if state != 'active'
+      service_accounts.each do |account|
+        account.update(state: state)
+      end
+    end
   end
 
   def disable_api_keys

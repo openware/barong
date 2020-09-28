@@ -6,7 +6,7 @@
 #
 #  id          :bigint           not null, primary key
 #  uid         :string(255)      not null
-#  provider_id :bigint           unsigned, not null
+#  owner_id :bigint           unsigned, not null
 #  email       :string(255)      not null
 #  role        :string(255)      default("service_account"), not null
 #  level       :integer          default(0), not null
