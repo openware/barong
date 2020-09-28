@@ -29,7 +29,8 @@ class ServiceAccount < ApplicationRecord
   scope :active, -> { where(state: 'active') }
 
   after_update :disable_api_keys
-  before_validation :assign_state_level
+  before_create :assign_state
+  before_validation :assign_level
   before_validation :assign_uid
   before_validation :assign_email
 
@@ -74,8 +75,11 @@ class ServiceAccount < ApplicationRecord
     self.uid = UIDGenerator.generate("SI")
   end
 
-  def assign_state_level
+  def assign_state
     self.state = user.state
+  end
+
+  def assign_level
     self.level = user.level
   end
 end
