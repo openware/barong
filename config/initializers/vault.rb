@@ -37,9 +37,5 @@ if Barong::App.config.vault_token.to_s != ''
     Rails.logger.info '[VAULT] Token is not renewable'
   end
 else
-  if Rails.env.production?
-    raise 'Environment variable BARONG_VAULT_TOKEN is missing'
-  else
-    Rails.logger.warn 'Environment variable BARONG_VAULT_TOKEN is missing'
-  end
+  Rails.logger.warn 'Environment variable BARONG_VAULT_TOKEN is missing'
 end
