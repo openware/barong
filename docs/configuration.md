@@ -87,7 +87,7 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 
 ### Vault configuration
 | `barong_vault_address` | `http://localhost:8200` | any valid url | vault server url with port |
-| `barong_vault_token` | changeme | any string value | vault access token |
+| `barong_vault_token` | | any string value | vault access token |
 | `barong_vault_app_name` | barong | any string value | the name of the application, all encryption keys in Vault will be prefixed with this application name |
 
 ### Sentry configuration
