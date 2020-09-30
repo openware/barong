@@ -12,6 +12,7 @@ describe 'Addresses API test' do
   before do
     allow(Barong::App.config).to receive_messages(required_docs_expire: false)
   end
+
   describe 'POST /api/v2/resource/addresses/' do
     let(:params) do
       {

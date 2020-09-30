@@ -16,7 +16,7 @@ module API::V2
             unless Phone.valid?(phone_number)
 
           error!({ errors: ['resource.phone.number_exist'] }, 400) \
-            if Phone.verified.exists?(number: phone_number)
+            if Phone.verified.find_by_number(phone_number)
         end
       end
 
@@ -55,7 +55,7 @@ module API::V2
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          error!({ errors: ['resource.phone.exists'] }, 400) if current_user.phones.exists?(number: phone_number)
+          error!({ errors: ['resource.phone.exists'] }, 400) if current_user.phones.find_by_number(phone_number)
 
           phone = current_user.phones.create(number: phone_number)
           code_error!(phone.errors.details, 422) if phone.errors.any?
@@ -88,7 +88,7 @@ module API::V2
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          phone = current_user.phones.find_by(number: phone_number)
+          phone = current_user.phones.find_by_number(phone_number)
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
           Barong::App.config.twilio_provider.send_confirmation(phone, declared_params[:channel])
@@ -117,7 +117,7 @@ module API::V2
           validate_phone!(declared_params[:phone_number])
 
           phone_number = Phone.international(declared_params[:phone_number])
-          phone = current_user.phones.find_by(number: phone_number)
+          phone = current_user.phones.find_by_number(phone_number)
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
           verification = Barong::App.config.twilio_provider.verify_code?(number: phone_number, code: declared_params[:verification_code], user: current_user)

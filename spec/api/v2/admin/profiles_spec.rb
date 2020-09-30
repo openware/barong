@@ -68,15 +68,13 @@ describe API::V2::Admin::Profiles do
 
     context 'successful response' do
       it 'works correctly' do
-        post '/api/v2/admin/profiles', params: request_params.merge(uid: user.uid), headers: auth_header
+        expect { post '/api/v2/admin/profiles', params: request_params.merge(uid: user.uid), headers: auth_header }
+          .to change { Profile.count }.by(1)
 
         expect(response.status).to eq(201)
-        profile = Profile.find_by(request_params)
-        expect(profile).to be
         expect(json_body[:state]).to eq('submitted')
-        expect(profile.state).to eq('submitted')
-        expect(profile.author).to eq(test_user.uid)
-        expect(profile.metadata).to be_blank
+        expect(json_body[:metadata]).to be_blank
+        expect(Profile.last.author).to eq(test_user.uid)
       end
     end
   end

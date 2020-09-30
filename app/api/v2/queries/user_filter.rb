@@ -14,8 +14,6 @@ module API::V2::Queries
       scoped = filter_by_uid(scoped, params[:uid])
       scoped = filter_by_email(scoped, params[:email])
       scoped = filter_by_role(scoped, params[:role])
-      scoped = filter_by_first_name(scoped, params[:first_name])
-      scoped = filter_by_last_name(scoped, params[:last_name])
       scoped = filter_by_country(scoped, params[:country])
       scoped = filter_by_level(scoped, params[:level])
       scoped = filter_by_state(scoped, params[:state])
@@ -56,16 +54,6 @@ module API::V2::Queries
     # adds where(users.state = state) to query
     def filter_by_state(scoped, state = nil)
       state ? scoped.where(users: { state: state }) : scoped
-    end
-
-    # adds where(users.first_name = first_name) to query
-    def filter_by_first_name(scoped, first_name = nil)
-      first_name ? scoped.where(profiles: { first_name: first_name }) : scoped
-    end
-
-    # adds where(users.last_name = last_name) to query
-    def filter_by_last_name(scoped, last_name = nil)
-      last_name ? scoped.where(profiles: { last_name: last_name }) : scoped
     end
 
     # adds where(users.country = country) to query

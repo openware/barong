@@ -2,13 +2,18 @@
 
 # User document model
 class Document < ApplicationRecord
+  include Encryptable
+
   acts_as_eventable prefix: 'document', on: %i[create]
 
   mount_uploader :upload, Barong::App.config.uploader
 
   STATES = %w[verified pending replaced rejected].freeze
 
+  attr_encrypted :doc_number
+
   belongs_to :user
+
   validates :doc_type, :upload, presence: true
   validates :doc_type, inclusion: { in: DocumentTypes.list }
   validates :doc_expire, presence: true, if: -> { Barong::App.config.required_docs_expire }
@@ -22,6 +27,7 @@ class Document < ApplicationRecord
 
   validate :doc_expire_not_in_the_past, if: -> { Barong::App.config.required_docs_expire }
   after_commit :start_document_kyc_verification, on: :create
+  before_save :save_doc_number_index
 
   attr_writer :update_labels
 
@@ -53,19 +59,29 @@ class Document < ApplicationRecord
 
     errors.add(:doc_expire, :invalid) if doc_expire < Date.current
   end
+
+  def save_doc_number_index
+    if doc_number.present?
+      self.doc_number_index = Zlib::crc32(doc_number + Barong::App.config.crc32_salt)
+    end
+  end
 end
 
 # == Schema Information
 #
 # Table name: documents
 #
-#  id         :bigint           not null, primary key
-#  user_id    :bigint           unsigned, not null
-#  upload     :string(255)
-#  doc_type   :string(255)
-#  doc_number :string(255)
-#  doc_expire :date
-#  metadata   :text(65535)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                   :bigint           not null, primary key
+#  user_id              :bigint           unsigned, not null
+#  upload               :string(255)
+#  doc_type             :string(255)
+#  doc_expire           :date
+#  doc_number_encrypted :string(255)
+#  doc_number_index     :bigint
+#  doc_issue            :date
+#  doc_category         :string(255)
+#  identificator        :string(255)
+#  metadata             :text(65535)
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
