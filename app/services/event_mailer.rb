@@ -111,7 +111,7 @@ class EventMailer
   rescue StandardError => e
     Rails.logger.error { e.inspect }
 
-    raise e if is_db_connection_error?(e)
+    unlisten if db_connection_error?(e)
   end
 
   def verify_jwt(payload, signer)
@@ -140,7 +140,7 @@ class EventMailer
     true
   end
 
-  def is_db_connection_error?(exception)
+  def db_connection_error?(exception)
     exception.is_a?(Mysql2::Error::ConnectionError) || exception.cause.is_a?(Mysql2::Error)
   end
 
