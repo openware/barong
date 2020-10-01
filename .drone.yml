@@ -42,14 +42,29 @@ steps:
     REPO_NAME: ${DRONE_REPO}
     GITHUB_API_KEY:
       from_secret: kite_bot_key
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
+  commands:
+    - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
+  when:
+    branch:
+      - "*-stable"
+
+- name: Tag snapshot
+  image: quay.io/openware/sdk-citools:2.4.5
+  environment:
+    BOT_USERNAME: kite-bot
+    BOT_NAME: Kite Bot
+    BOT_EMAIL: kite-bot@heliostech.fr
+    BRANCH_NAME: master
+    REPO_NAME: ${DRONE_REPO}
+    GITHUB_API_KEY:
+      from_secret: kite_bot_key
   commands:
     - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
   when:
     branch:
       - master
-      - "*-stable"
+      - "fix/*"
+      - "integration/*"
 
 - name: Generate docs
   image: quay.io/openware/ruby-node:2.6.5
@@ -86,6 +101,8 @@ steps:
     branch:
       - master
       - "*-stable"
+      - "fix/*"
+      - "integration/*"
 
 - name: Redeploy on master.devkube.com
   image: rubykube/microkube:0.2.0
