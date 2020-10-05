@@ -14,6 +14,8 @@ Rails offers a handy ActiveSupport::MessageEncryptor class, that hides away all 
 
 Service object class doing the actual heavy lifting, but only exposing two straightforward public class methods encrypt and decrypt.
 
+System have weekly salt rotation, so encrypted keys in DB will be prepended with salt, which will be mix of year and week number starting from 0.
+
 Make sure to store `SECRET_KEY_BASE` somewhere safe otherwise, you would not be able to decrypt your secure data, also you need to have this ENV variable at the start of your application as it will not create models (Profile, Phone, Documents) which have encrypted fields.
 
 #### Searching by encrypted values

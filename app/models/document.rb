@@ -62,7 +62,7 @@ class Document < ApplicationRecord
 
   def save_doc_number_index
     if doc_number.present?
-      self.doc_number_index = Zlib::crc32(doc_number + Barong::App.config.crc32_salt)
+      self.doc_number_index = SaltedCrc32.generate_hash(doc_number)
     end
   end
 end

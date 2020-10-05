@@ -40,12 +40,12 @@ class Phone < ApplicationRecord
     end
 
     def find_by_number(number, attrs={})
-      attrs.merge!(number_index: Zlib::crc32(number + Barong::App.config.crc32_salt))
+      attrs.merge!(number_index: SaltedCrc32.generate_hash(number))
       find_by(attrs)
     end
 
     def find_by_number!(number)
-      find_by!(number_index: Zlib::crc32(number + Barong::App.config.crc32_salt))
+      find_by!(number_index: SaltedCrc32.generate_hash(number))
     end
   end
 
@@ -66,7 +66,7 @@ class Phone < ApplicationRecord
 
   def save_number_index
     if number.present?
-      self.number_index = Zlib::crc32(number + Barong::App.config.crc32_salt)
+      self.number_index = SaltedCrc32.generate_hash(number)
     end
   end
 end
