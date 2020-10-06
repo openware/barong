@@ -1,25 +1,9 @@
 # frozen_string_literal: true
-# == Schema Information
-#
-# Table name: profiles
-#
-#  id         :bigint           not null, primary key
-#  user_id    :bigint
-#  first_name :string(255)
-#  last_name  :string(255)
-#  dob        :date
-#  address    :string(255)
-#  postcode   :string(255)
-#  city       :string(255)
-#  country    :string(255)
-#  state      :integer          default("drafted"), unsigned
-#  metadata   :text(65535)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
 
 # Profile model
 class Profile < ApplicationRecord
+  include Encryptable
+
   acts_as_eventable prefix: 'profile', on: %i[create update]
 
   belongs_to :user
@@ -28,6 +12,11 @@ class Profile < ApplicationRecord
 
   EDITABLE_PARAMS = { drafted: %w[first_name last_name dob address postcode city country metadata]}
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
+
+  attr_encrypted :first_name
+  attr_encrypted :last_name
+  attr_encrypted :dob
+  attr_encrypted :address
 
   validates :first_name, length: 1..255,
                          format: {
@@ -62,7 +51,7 @@ class Profile < ApplicationRecord
                       },
                       if: proc { |a| a.address.present? }
   validates :metadata, data_is_json: true
-  validate  :profile_state!, on: :create
+  validate :profile_state!, on: :create
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
 
@@ -102,10 +91,10 @@ class Profile < ApplicationRecord
   end
 
   def squish_spaces
-    first_name&.squish!
-    last_name&.squish!
-    city&.squish!
-    postcode&.squish!
+    self.first_name = first_name&.squish
+    self.last_name = last_name&.squish
+    self.city = city&.squish
+    self.postcode = postcode&.squish
   end
 
   def profile_state!
@@ -124,3 +113,28 @@ class Profile < ApplicationRecord
     KycService.profile_step(self)
   end
 end
+
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id                   :bigint           not null, primary key
+#  user_id              :bigint
+#  author               :string(255)
+#  applicant_id         :string(255)
+#  first_name_encrypted :string(255)
+#  last_name_encrypted  :string(255)
+#  dob_encrypted        :string(255)
+#  address_encrypted    :string(255)
+#  postcode             :string(255)
+#  city                 :string(255)
+#  country              :string(255)
+#  state                :integer          default("drafted"), unsigned
+#  metadata             :text(65535)
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_profiles_on_user_id  (user_id)
+#

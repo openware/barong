@@ -33,6 +33,9 @@ end
 
 kstore = Barong::KeyStore.new(pkey)
 
+# Define default value for secret_key_base in test and development mode
+ENV['SECRET_KEY_BASE'] = '' unless Rails.env.production?
+
 Barong::App.define do |config|
   # General configuration ---------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#general-configuration
@@ -50,7 +53,8 @@ Barong::App.define do |config|
   config.set(:gateway, 'cloudflare', values: %w[akamai cloudflare])
   config.set(:jwt_expire_time, '3600', type: :integer)
   config.set(:profile_double_verification, 'false', type: :bool)
-  
+  config.set(:crc32_salt, '')
+
   # Password configuration  -----------------------------------------------
   # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration
   config.set(:password_regexp, '^(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:digit:]])(?=.*[[:graph:]]).{8,80}$', type: :regexp)

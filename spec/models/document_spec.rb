@@ -28,6 +28,7 @@ RSpec.describe Document, type: :model do
     create :permission,
            role: 'member'
   end
+
   it { should belong_to(:user) }
 
   describe 'validation' do

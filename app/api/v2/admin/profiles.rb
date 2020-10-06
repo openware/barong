@@ -81,10 +81,10 @@ module API
 
             declared_params = declared(params.except(:uid), include_missing: false)
             declared_params.merge!(state: 'submitted', author: current_user.uid)
-  
+
             profile = target_user.profiles.create(declared_params)
             code_error!(profile.errors.details, 422) if profile.errors.any?
-  
+
             present profile, with: API::V2::Entities::Profile
             status 201
           end

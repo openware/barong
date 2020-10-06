@@ -35,10 +35,6 @@ module API
                      type: String
             optional :role,
                      type: String
-            optional :first_name,
-                     type: String
-            optional :last_name,
-                     type: String
             optional :country,
                      type: String
             optional :level,

@@ -154,119 +154,150 @@ describe 'API::V2::Resource::Profiles' do
 
     it 'accept / , ; in address' do
       request_params[:address] = '28/2 Kevin Brook; Miami, USA'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:address]).to eq request_params[:address]
     end
 
     it 'accept . in address' do
       request_params[:address] = 'Larkin Fork.South, New York/AP'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:address]).to eq request_params[:address]
     end
 
     it 'accept # ~ \ : " & ( ) in address' do
       request_params[:address] = '28~1/2 \"Kevin & Brook": (Miami, USA)'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:address]).to eq request_params[:address]
     end
 
     it "accept ' in address" do
       request_params[:address] = "'Larkin Fork' South New York"
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:address]).to eq request_params[:address]
     end
 
     it "accept – in address" do
       request_params[:address] = "'Larkin–Fork' South New York"
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:address]).to eq request_params[:address]
     end
 
     it "doesn't accept @ in address" do
       request_params[:address] = "'Larkin–Fork' @South New York"
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .not_to change { Profile.count }
       expect(response.status).to eq(422)
     end
 
     it 'accept . in city' do
       request_params[:city] = 'St. Petersburg'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:city]).to eq request_params[:city]
     end
 
     it 'accept dash in city' do
       request_params[:city] = 'Hubli–Dharwad'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:city]).to eq request_params[:city]
     end
 
     it 'accept hyphen in city' do
       request_params[:city] = 'Hubli-Dharwad'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:city]).to eq request_params[:city]
     end
 
     it 'accept \' in city' do
       request_params[:city] = 'Cava de\' Tirreni'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
+      res = json_body
+      expect(res[:city]).to eq request_params[:city]
     end
 
     it "doesn't accept # in city" do
       request_params[:city] = 'Cava de\' #Tirreni'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .not_to change { Profile.count }
       expect(response.status).to eq(422)
     end
 
     it "doesn't accept @ in city" do
       request_params[:city] = 'Cava de\' @Tirreni'
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .not_to change { Profile.count }
       expect(response.status).to eq(422)
     end
 
     it 'creates new profile with only required fields' do
-      post url, params: request_params, headers: auth_header
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
-      expect(profile.metadata).to be_blank
+
+      res = json_body
+      expect(res[:last_name]).to eq request_params[:last_name]
+      expect(res[:first_name]).to eq request_params[:first_name]
+      expect(res[:dob]).to eq request_params[:dob].to_s
+      expect(res[:country]).to eq request_params[:country]
+      expect(res[:city]).to eq request_params[:city]
+      expect(res[:address]).to eq request_params[:address]
+      expect(res[:postcode]).to eq request_params[:postcode]
+      expect(res[:metadata]).to be_blank
     end
 
     it 'creates new profile with corean symbols fields' do
-      post url, params: asian_params, headers: auth_header
+      expect { post url, params: asian_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(asian_params)
-      expect(profile).to be
+
+      res = json_body
+      expect(res[:last_name]).to eq asian_params[:last_name]
+      expect(res[:first_name]).to eq asian_params[:first_name]
+      expect(res[:dob]).to eq asian_params[:dob].to_s
+      expect(res[:country]).to eq asian_params[:country]
+      expect(res[:city]).to eq asian_params[:city]
+      expect(res[:address]).to eq asian_params[:address]
+      expect(res[:postcode]).to eq asian_params[:postcode]
+      expect(res[:metadata]).to be_blank
     end
 
     it 'creates new profile with all metadata fields' do
-      post url, params: request_params.merge(optional_params), headers: auth_header
+      expect { post url, params: request_params.merge(optional_params), headers: auth_header }
+        .to change { Profile.count }.by (1)
       expect(response.status).to eq(201)
-      profile = Profile.find_by(request_params)
-      expect(profile).to be
-      expect(profile.metadata).to eq(optional_params[:metadata])
+
+      res = json_body
+      expect(res[:metadata]).to eq(optional_params[:metadata])
     end
 
     it 'renders an error if metadata is not json' do
-      post url, params: request_params.merge({ metadata: '{ bar: baz }' }), headers: auth_header
+      expect { post url, params: request_params.merge({ metadata: '{ bar: baz }' }), headers: auth_header }
+        .not_to change { Profile.count }
       expect_status_to_eq 422
       expect_body.to eq(errors: ["metadata.invalid_format"])
     end
@@ -313,108 +344,74 @@ describe 'API::V2::Resource::Profiles' do
     context 'partial creating profile' do
       context 'empty params' do
 
-        before do
-          post url, params: {}, headers: auth_header
+        it 'returns profile' do
+          expect { post url, params: {}, headers: auth_header }
+            .to change { Profile.count }.by (1)
+
+          expect(response.status).to eq(201)
+          expect(json_body[:state]).to eq('drafted')
+          expect(json_body[:metadata].blank?).to be_truthy
+          Profile::OPTIONAL_PARAMS.each { |p|
+            expect(json_body[p].blank?).to be_truthy
+          }
+          Profile::OPTIONAL_PARAMS.each { |p|
+            expect(json_body.with_indifferent_access[p].blank?).to be_truthy
+          }
+          expect(Profile.last.user.labels.find_by(key: 'profile').value).to eq('drafted')
         end
-
-        subject { Profile.last }
-
-        it { expect(response.status).to eq(201) }
-
-        it { Profile::OPTIONAL_PARAMS.each { |p| expect(json_body[p].blank?).to be_truthy } }
-
-        it { expect(json_body[:state]).to eq('drafted') }
-
-        it { expect(subject).to be }
-
-        it { Profile::OPTIONAL_PARAMS.each { |p| expect(subject.attributes[p].blank?).to be_truthy } }
-
-        it { expect(subject.metadata.blank?).to be_truthy }
-
-        it { expect(subject.state).to eq('drafted') }
-
-        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
 
       context 'several params' do
-
         let(:params) { { last_name: Faker::Name.last_name, first_name: Faker::Name.first_name } }
 
-        subject { Profile.find_by(params) }
+        it 'returns profile' do
+          expect { post url, params: params, headers: auth_header }
+            .to change { Profile.count }.by (1)
 
-        before do
-          post url, params: params, headers: auth_header
+          expect(response.status).to eq(201)
+          expect(json_body[:first_name].nil?).to be_falsey
+          expect(json_body[:last_name].nil?).to be_falsey
+          expect(json_body[:state]).to eq('drafted')
+          expect(json_body[:metadata].blank?).to be_truthy
+          (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p|
+            expect(json_body.with_indifferent_access[p].blank?).to be_truthy
+          }
+          expect(Profile.last.user.labels.find_by(key: :profile).value).to eq('drafted')
         end
-
-        it { expect(response.status).to eq(201) }
-
-        it { expect(json_body[:first_name].nil?).to be_falsey }
-
-        it { expect(json_body[:last_name].nil?).to be_falsey }
-
-        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(JSON.parse(response.body)[p].blank?).to be_truthy } }
-
-        it { expect(json_body[:state]).to eq('drafted') }
-
-        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(subject.attributes[p.to_sym].blank?).to be_truthy } }
-
-        it { expect(subject.metadata.blank?).to be_truthy }
-
-        it { expect(subject.state).to eq('drafted') }
-
-        it { expect(subject.user.labels.find_by(key: :profile).value).to eq('drafted') }
       end
 
       context 'several params with profile confirmation' do
-
         let(:params) { { last_name: Faker::Name.last_name, first_name: Faker::Name.first_name } }
 
-        subject { Profile.find_by(params) }
+        it 'returns profile' do
+          expect { post url, params: params.merge(confirm: true), headers: auth_header }
+            .to change { Profile.count }.by (1)
 
-        before do
-          post url, params: params.merge(confirm: true), headers: auth_header
+          expect(response.status).to eq(201)
+          expect(json_body[:first_name].nil?).to be_falsey
+          expect(json_body[:last_name].nil?).to be_falsey
+          expect(json_body[:state]).to eq('submitted')
+          expect(json_body[:metadata].blank?).to be_truthy
+          (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p|
+            expect(json_body.with_indifferent_access[p].blank?).to be_truthy
+          }
+          expect(Profile.last.user.labels.find_by(key: :profile).value).to eq('submitted')
         end
-
-        it { expect(response.status).to eq(201) }
-
-        it { expect(json_body[:first_name].nil?).to be_falsey }
-
-        it { expect(json_body[:last_name].nil?).to be_falsey }
-
-        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(JSON.parse(response.body)[p].blank?).to be_truthy } }
-
-        it { expect(json_body[:state]).to eq('submitted') }
-
-        it { (Profile::OPTIONAL_PARAMS - params.stringify_keys.keys).each { |p| expect(subject.attributes[p.to_sym].blank?).to be_truthy } }
-
-        it { expect(subject.metadata.blank?).to be_truthy }
-
-        it { expect(subject.state).to eq('submitted') }
-
-        it { expect(subject.user.labels.find_by(key: :profile).value).to eq('submitted') }
       end
 
       context 'full profile params' do
+        it 'returns profile' do
+          expect { post url, params: request_params, headers: auth_header }
+            .to change { Profile.count }.by (1)
 
-        subject { Profile.find_by(request_params) }
-
-        before do
-          post url, params: request_params, headers: auth_header
+          expect(response.status).to eq(201)
+          expect(json_body[:state]).to eq('drafted')
+          expect(json_body[:metadata].blank?).to be_truthy
+          request_params.keys.each { |p|
+            expect(json_body[p].present?).to be_truthy
+          }
+          expect(Profile.last.user.labels.find_by(key: 'profile').value).to eq('drafted')
         end
-
-        it { expect(response.status).to eq(201) }
-
-        it { request_params.keys.each { |p| expect(json_body[p].present?).to be_truthy } }
-
-        it { expect(json_body[:state]).to eq('drafted') }
-
-        it { request_params.stringify_keys.keys.each { |p| expect(subject.attributes[p].present?).to be_truthy } }
-
-        it { expect(subject.metadata.blank?).to be_truthy }
-
-        it { expect(subject.state).to eq('drafted') }
-
-        it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
     end
   end
@@ -521,14 +518,12 @@ describe 'API::V2::Resource::Profiles' do
       let!(:profile) { create(:profile, user: test_user)}
 
       it 'returns submitted profile' do
-        put url, params: request_params.merge(confirm: true), headers: auth_header
+        expect { put url, params: request_params.merge(confirm: true), headers: auth_header }
+          .not_to change { Profile.count }
 
         expect(response.status).to eq(200)
-        profile = Profile.find_by(request_params)
-        expect(profile).to be
         expect(json_body[:state]).to eq('submitted')
-        expect(profile.state).to eq('submitted')
-        expect(profile.metadata).to be_blank
+        expect(profile[:metadata]).to be_blank
       end
     end
 
@@ -536,25 +531,21 @@ describe 'API::V2::Resource::Profiles' do
       let!(:profile) { create(:profile, user: test_user, last_name: nil, first_name: nil) }
 
       it 'returns partial profile' do
-        put url, params: request_params.except(:first_name), headers: auth_header
+        expect { put url, params: request_params.except(:first_name), headers: auth_header }
+          .not_to change { Profile.count }
 
         expect(response.status).to eq(200)
-        profile = Profile.find_by(request_params.except(:first_name))
-        expect(profile).to be
         expect(json_body[:state]).to eq('drafted')
-        expect(profile.state).to eq('drafted')
-        expect(profile.metadata).to be_blank
+        expect(json_body[:metadata]).to be_blank
       end
 
       it 'returns completed profile' do
-        put url, params: request_params, headers: auth_header
+        expect { put url, params: request_params, headers: auth_header }
+          .not_to change { Profile.count }
 
         expect(response.status).to eq(200)
-        profile = Profile.find_by(request_params)
-        expect(profile).to be
         expect(json_body[:state]).to eq('drafted')
-        expect(profile.state).to eq('drafted')
-        expect(profile.metadata).to be_blank
+        expect(json_body[:metadata]).to be_blank
       end
     end
   end

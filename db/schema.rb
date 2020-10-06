@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_125225) do
+ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -63,14 +63,16 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.bigint "user_id", null: false, unsigned: true
     t.string "upload"
     t.string "doc_type"
-    t.string "doc_number"
     t.date "doc_expire"
+    t.string "doc_number_encrypted"
+    t.bigint "doc_number_index"
+    t.date "doc_issue"
+    t.string "doc_category"
     t.string "identificator"
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "doc_issue"
-    t.string "doc_category"
+    t.index ["doc_number_index"], name: "index_documents_on_doc_number_index"
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
@@ -108,12 +110,13 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
   create_table "phones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id", null: false, unsigned: true
     t.string "country", null: false
-    t.string "number", null: false
     t.string "code", limit: 5
+    t.string "number_encrypted", null: false
+    t.bigint "number_index", null: false
     t.datetime "validated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["number"], name: "index_phones_on_number"
+    t.index ["number_index"], name: "index_phones_on_number_index"
     t.index ["user_id"], name: "index_phones_on_user_id"
   end
 
@@ -121,10 +124,10 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.bigint "user_id"
     t.string "author"
     t.string "applicant_id"
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
-    t.string "address"
+    t.string "first_name_encrypted"
+    t.string "last_name_encrypted"
+    t.string "dob_encrypted"
+    t.string "address_encrypted"
     t.string "postcode"
     t.string "city"
     t.string "country"
