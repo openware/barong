@@ -49,6 +49,11 @@ class Phone < ApplicationRecord
     end
   end
 
+  def sub_masked_number
+    code_count = parse_code.length
+    number.sub(/(?<=\A.{#{code_count}})(.*)(?=.{4}\z)/) { |match| '*' * match.length }
+  end
+
   private
 
   def generate_code
@@ -58,6 +63,11 @@ class Phone < ApplicationRecord
   def parse_country
     data = Phonelib.parse(number)
     self.country = data.country
+  end
+
+  def parse_code
+    data = Phonelib.parse(number)
+    data.country_code
   end
 
   def sanitize_number

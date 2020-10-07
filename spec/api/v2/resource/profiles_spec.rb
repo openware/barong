@@ -260,9 +260,9 @@ describe 'API::V2::Resource::Profiles' do
       expect(response.status).to eq(201)
 
       res = json_body
-      expect(res[:last_name]).to eq request_params[:last_name]
+      expect(res[:last_name]).to eq request_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
       expect(res[:first_name]).to eq request_params[:first_name]
-      expect(res[:dob]).to eq request_params[:dob].to_s
+      expect(res[:dob]).to eq request_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
       expect(res[:country]).to eq request_params[:country]
       expect(res[:city]).to eq request_params[:city]
       expect(res[:address]).to eq request_params[:address]
@@ -276,9 +276,10 @@ describe 'API::V2::Resource::Profiles' do
       expect(response.status).to eq(201)
 
       res = json_body
+
       expect(res[:last_name]).to eq asian_params[:last_name]
       expect(res[:first_name]).to eq asian_params[:first_name]
-      expect(res[:dob]).to eq asian_params[:dob].to_s
+      expect(res[:dob]).to eq asian_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
       expect(res[:country]).to eq asian_params[:country]
       expect(res[:city]).to eq asian_params[:city]
       expect(res[:address]).to eq asian_params[:address]
@@ -437,7 +438,9 @@ describe 'API::V2::Resource::Profiles' do
 
       get url, headers: auth_header
       expect(response.status).to eq(200)
-      expected_json = request_params.merge(state: 'drafted').merge(optional_params).to_json
+      last_name = request_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
+      dob = request_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
+      expected_json = request_params.merge(state: 'drafted', last_name: last_name,dob: dob).merge(optional_params).to_json
       expect(JSON.parse(response.body)[0].except('created_at', 'updated_at')).to eq(JSON.parse(expected_json))
     end
   end

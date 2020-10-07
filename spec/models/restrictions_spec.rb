@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe Restriction, type: :model do
   context 'create' do
     it { should_not allow_value('planet').for(:scope) }
