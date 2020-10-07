@@ -20,7 +20,7 @@ module API
           get do
             admin_authorize! :read, Profile
 
-            present paginate(Profile.all), with: API::V2::Entities::Profile
+            present paginate(Profile.all), with: API::V2::Admin::Entities::Profile
           end
 
           desc "Verify user's profile",
@@ -54,7 +54,7 @@ module API
               code_error!(target_profile.errors.details, 422)
             end
 
-            present target_profile, with: API::V2::Entities::Profile
+            present target_profile, with: API::V2::Admin::Entities::Profile
           end
 
           desc 'Create a profile for user',
@@ -85,7 +85,7 @@ module API
             profile = target_user.profiles.create(declared_params)
             code_error!(profile.errors.details, 422) if profile.errors.any?
 
-            present profile, with: API::V2::Entities::Profile
+            present profile, with: API::V2::Admin::Entities::Profile
             status 201
           end
         end

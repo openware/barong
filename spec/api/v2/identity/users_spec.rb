@@ -407,17 +407,25 @@ describe API::V2::Identity::Users do
     end
 
     context 'when token is valid' do
-      let(:user) { create(:user, state: 'pending', email: 'valid_email@email.com') }
+      let(:user) { create(:user, :with_profile, state: 'pending', email: 'valid_email@email.com') }
       let(:params) { { token: codec.encode(sub: 'confirmation', email: user.email, uid: user.uid) } }
       it 'updates state to active' do
         do_request
         expect_status_to_eq 201
+
+        result = JSON.parse(response.body)
+        expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
+        expect(result['profiles'][0]['dob']).to eq user.profiles.first.sub_masked_dob
       end
 
       it 'returns utilized on the second attempt' do
         token_params = params
         post '/api/v2/identity/users/email/confirm_code', params: token_params
         expect_status_to_eq 201
+
+        result = JSON.parse(response.body)
+        expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
+        expect(result['profiles'][0]['dob']).to eq user.profiles.first.sub_masked_dob
 
         user.reload.update(state: 'pending')
         post '/api/v2/identity/users/email/confirm_code', params: token_params
@@ -429,6 +437,10 @@ describe API::V2::Identity::Users do
         token_params = params
         post '/api/v2/identity/users/email/confirm_code', params: token_params
         expect_status_to_eq 201
+
+        result = JSON.parse(response.body)
+        expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
+        expect(result['profiles'][0]['dob']).to eq user.profiles.first.sub_masked_dob
 
         user.reload.update(state: 'pending')
         travel Barong::App.config.jwt_expire_time + 10.seconds

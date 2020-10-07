@@ -52,6 +52,7 @@ class Profile < ApplicationRecord
                       if: proc { |a| a.address.present? }
   validates :metadata, data_is_json: true
   validate :profile_state!, on: :create
+  validate :dob_not_in_the_future
 
   scope :kept, -> { joins(:user).where(users: { discarded_at: nil }) }
 
@@ -63,6 +64,14 @@ class Profile < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def sub_masked_last_name
+    last_name.sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length } if last_name
+  end
+
+  def sub_masked_dob
+    dob.to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length } if dob
   end
 
   def as_json_for_event_api
@@ -111,6 +120,14 @@ class Profile < ApplicationRecord
 
   def start_profile_kyc_verification
     KycService.profile_step(self)
+  end
+
+  def dob_not_in_the_future
+    return if dob.nil?
+
+    self.dob = dob.to_date
+    return errors.add(:dob, :invalid_format, message: 'invalid date format') unless dob.is_a?(Date)
+    return errors.add(:dob, :invalid, message: 'cant be in future') if dob > Date.current
   end
 end
 

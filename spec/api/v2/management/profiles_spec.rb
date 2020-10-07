@@ -51,9 +51,12 @@ describe API::V2::Management::Profiles, type: :request do
 
       it 'creates a profile' do
         expect { do_request }.to change { Profile.count }.by(1)
+        expect_status_to_eq 201
+
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'drafted'
-        expect_status_to_eq 201
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
       end
     end
 
@@ -73,9 +76,11 @@ describe API::V2::Management::Profiles, type: :request do
 
       it 'create a profile' do
         expect { do_request }.to change { Profile.count }
+        expect_status_to_eq 201
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'drafted'
-        expect_status_to_eq 201
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
       end
     end
 
@@ -96,9 +101,11 @@ describe API::V2::Management::Profiles, type: :request do
 
       it 'create a profile' do
         expect { do_request }.to change { Profile.count }
+        expect_status_to_eq 201
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'rejected'
-        expect_status_to_eq 201
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
       end
     end
 

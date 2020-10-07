@@ -1,26 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: profiles
-#
-#  id         :bigint           not null, primary key
-#  user_id    :bigint
-#  first_name :string(255)
-#  last_name  :string(255)
-#  dob        :date
-#  address    :string(255)
-#  postcode   :string(255)
-#  city       :string(255)
-#  country    :string(255)
-#  state      :integer          default("drafted"), unsigned
-#  metadata   :text(65535)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
-require 'rails_helper'
-
 RSpec.describe Profile, type: :model do
   describe 'squish_spaces' do
     let!(:create_member_permission) do
@@ -220,6 +199,27 @@ RSpec.describe Profile, type: :model do
       expect(user.labels.first.key).to eq 'profile'
       expect(user.labels.first.value).to eq 'verified'
     end
+
+    context 'dob param' do
+      let!(:profile) { create(:profile, user_id: user.id, state: 'verified') }
+
+      it 'should be valid dob' do
+        profile.update(dob: Time.now)
+        expect(profile.valid?).to eq true
+      end
+
+      it 'should be invalid dob format' do
+        profile.update(dob: '')
+        expect(profile.valid?).to eq false
+        expect(profile.errors[:dob]).to eq ["invalid date format"]
+      end
+
+      it 'should be invalid dob format' do
+        profile.update(dob: Time.now + 3.days)
+        expect(profile.valid?).to eq false
+        expect(profile.errors[:dob]).to eq ["cant be in future"]
+      end
+    end
   end
 
   context 'update_document_label' do
@@ -283,6 +283,74 @@ RSpec.describe Profile, type: :model do
                                                       changes: { first_name: old_name },
                                                       record: hash_including(first_name: new_name)
                                                      ))
+    end
+  end
+
+  context 'submasked fields' do
+    let!(:create_member_permission) do
+      create :permission,
+              role: 'member'
+    end
+
+    let!(:user) { create(:user) }
+
+    let!(:profile) do
+      create :profile, first_name: 'Oleksandr',
+                       last_name: 'Berezniy',
+                       city: 'New  York',
+                       postcode: 'AB 135-144',
+                       dob: Date.new(2007, 5, 12)
+    end
+
+    let!(:profile_without_last_name) do
+      create :profile, first_name: 'Oleksandr',
+                       last_name: nil,
+                       city: 'New  York',
+                       postcode: 'AB 135-144'
+    end
+
+    let!(:profile_without_dob) do
+      create :profile, first_name: 'Oleksandr',
+                       last_name: nil,
+                       city: 'New  York',
+                       postcode: 'AB 135-144',
+                       dob: nil
+    end
+
+    context 'last_name' do
+      it { expect(profile.sub_masked_last_name).to eq 'B*******' }
+
+      it 'should mask all letters except first one' do
+        profile.update(last_name: 'Teylor_1')
+        expect(profile.sub_masked_last_name).to eq 'T*******'
+      end
+
+      it 'should mask all letters except first one' do
+        profile.update(last_name: ' Last name ')
+        expect(profile.sub_masked_last_name).to eq 'L********'
+      end
+
+      it 'should mask all letters except first one' do
+        profile.update(last_name: '')
+        expect(profile.sub_masked_last_name).to eq ''
+      end
+
+      it 'should mask all letters except first one' do
+        expect(profile_without_last_name.sub_masked_last_name).to eq nil
+      end
+    end
+
+    context 'dob' do
+      it { expect(profile.sub_masked_dob).to eq '2007-05-**' }
+
+      it 'should mask only date numbers' do
+        profile.update(dob: Date.new(2020, 12, 12))
+        expect(profile.sub_masked_dob).to eq '2020-12-**'
+      end
+
+      it 'should mask only date numbers' do
+        expect(profile_without_dob.sub_masked_dob).to eq nil
+      end
     end
   end
 end

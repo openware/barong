@@ -34,7 +34,9 @@ describe 'Api::V2::Admin::APIKeys' do
     context 'successful' do
       it 'Returns api keys for selected account' do
         do_request
+
         expect(response.status).to eq(200)
+        expect(json_body.first.keys).to match_array %i[kid algorithm scope state created_at updated_at]
         expect(json_body.first).to include(expected_fields)
         expect(json_body.first).not_to include(:secret)
       end
@@ -45,6 +47,7 @@ describe 'Api::V2::Admin::APIKeys' do
         do_request
 
         expect(response.status).to eq(200)
+        expect(json_body.first.keys).to match_array %i[kid algorithm scope state created_at updated_at]
         expect(json_body.first).to include(expected_fields)
         expect(json_body.first).not_to include(:secret)
       end
@@ -55,6 +58,7 @@ describe 'Api::V2::Admin::APIKeys' do
         do_request
 
         expect(response.status).to eq(200)
+        expect(json_body.first.keys).to match_array %i[kid algorithm scope state created_at updated_at]
         expect(json_body.second).to include(expected_fields)
         expect(json_body.second).not_to include(:secret)
       end

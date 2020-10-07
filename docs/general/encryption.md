@@ -7,7 +7,15 @@ Data sensitivity will be defined as follow:\
 **Very High**: Passport number, Driver’s license number
 
 Low and Medium will not be masked on the UI.
-High and very high must be masked and encrypted in database.
+
+| Field | Mask |  Comment |
+|---|---|---|
+| Street address | No mask  | No need  |
+| First Name | No mask | No need  |
+| Last Name | B****** | Display first letter  |
+| Phone Number | +380 **** 4556 | Display country code and last 4 digits  |
+| Date of birth | 1980-01-** | Hide day |
+| Document Number | FG****64 | First 2 number and last 2 digits |
 
 ### Approach
 Rails offers a handy ActiveSupport::MessageEncryptor class, that hides away all the complexity of data encryption, and was wrapped in a simple to use service object or reusable module.

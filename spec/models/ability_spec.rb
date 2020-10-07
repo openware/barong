@@ -1,8 +1,7 @@
-# encoding: UTF-8
 # frozen_string_literal: true
 
 describe Ability do
- 
+
   before do
     allow(Ability).to receive(:admin_permissions).and_return({
       "superadmin"=>{"manage"=>["User", "Activity", "Ability", "APIKey", "Profile", "Permission", "Label", "Restriction", "Level"]},
