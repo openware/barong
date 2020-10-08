@@ -48,7 +48,7 @@ class EncryptionService
     delete_expired_keys
 
     unless @cache[salt]
-      # Initialize hash for specific sale
+      # Initialize hash for specific salt
       @cache[salt] = {}
 
       # Put key value from key generator
