@@ -44,12 +44,32 @@ class EncryptionService
 
   def self.get_master_key(salt)
     @cache ||= {}
+    # Delete keys with expired date
+    delete_expired_keys
+
     unless @cache[salt]
-      @cache[salt] = ActiveSupport::KeyGenerator.new(
+      # Initialize hash for specific sale
+      @cache[salt] = {}
+
+      # Put key value from key generator
+      @cache[salt]['key'] = ActiveSupport::KeyGenerator.new(
         ENV.fetch('SECRET_KEY_BASE')
       ).generate_key(salt, ActiveSupport::MessageEncryptor.key_len)
+
+      # Put expire date for specific key
+      @cache[salt]['expire_date'] = 1.week.from_now
     end
 
-    @cache[salt]
+    @cache[salt]['key']
+  end
+
+  def self.delete_expired_keys
+    return unless @cache.is_a?(Hash)
+
+    # Iterate through all @cache values
+    @cache.each do |salt, values|
+      # Delete key if expire date expired
+      @cache.delete(salt) if values['expire_date'].present? && values['expire_date'] < Time.now
+    end
   end
 end

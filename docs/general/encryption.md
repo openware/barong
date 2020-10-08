@@ -23,3 +23,11 @@ Make sure to store `SECRET_KEY_BASE` somewhere safe otherwise, you would not be 
 To have ability to search by encrypted fields, system implements additional field named `attribute_index` which use [crc32 algorithm](http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html) for storing attribute value.
 
 Make sure you have `BARONG_CRC32_SALT` to make algrithm more powerful.
+
+#### Rotation
+
+To update all encrypted fields to latest key values (salt will be "#{current_year}#{current_week}"), you can use following rake tasks:
+
+`rake rotate:phones`
+`rake rotate:profiles`
+`rake rotate:documents`
