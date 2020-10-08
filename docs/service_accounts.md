@@ -1,12 +1,13 @@
 # Service Accounts
-Service account is an account on the platform that belongs to User.
+In Barong a service account belongs to a user.
 
-User cannot create a Service account, but it can be created via Management API. There is no possibility to login into Service Account, but you can use it via API Keys.
+Service accounts are currently created only via Management API (server to server API).
+There is no possibility to login into service account, it's used through API using an API Key.
 
-User has an ability to list Service Accounts, that belongs to him. Also User can create, update, delete and list API Keys for these Service Accounts using his own OTP.
+User has an ability to list his service accounts. Also User can create, update, delete and list API Keys for these service accounts using his own OTP.
 
-Service Account will have the same level and as User, to which it belongs, but the role can be any.
+A user service account has the same level as the user, the role can be different.
 
-If User disable OTP, all API Keys for his Service Accounts becomes inactive.
+If User disable OTP, all API Keys for his service accounts will become inactive.
 
-If User state changes, his Service Accounts also changes the state.
+If a user state changes, his service accounts state will change accordingly.
