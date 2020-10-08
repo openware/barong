@@ -24,11 +24,12 @@ class APIKey < ApplicationRecord
     algorithm: 'RS256'
   }.freeze
 
-  validates :user_id, :kid, :secret, presence: true
+  validates :kid, :secret, presence: true
   validates :kid, uniqueness: true
   validates :algorithm, inclusion: { in: ALGORITHMS }
 
-  belongs_to :user
+  belongs_to :key_holder_account, polymorphic: true
+
   scope :active, -> { where(state: 'active') }
 
   before_validation :assign_kid, if: :hmac?
@@ -59,12 +60,14 @@ end
 #
 # Table name: apikeys
 #
-#  id         :bigint           not null, primary key
-#  user_id    :bigint           unsigned, not null
-#  kid        :string(255)      not null
-#  algorithm  :string(255)      not null
-#  scope      :string(255)
-#  state      :string(255)      default("active"), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                      :bigint           not null, primary key
+#  key_holder_account_id   :bigint           unsigned, not null
+#  key_holder_account_type :string(255)      default("User"), not null
+#  kid                     :string(255)      not null
+#  algorithm               :string(255)      not null
+#  scope                   :string(255)
+#  secret_encrypted        :string(1024)
+#  state                   :string(255)      default("active"), not null
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
 #

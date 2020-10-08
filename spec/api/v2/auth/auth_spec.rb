@@ -178,7 +178,7 @@ describe '/api/v2/auth functionality test' do
     include_context 'bearer authentication'
     let!(:test_user) { create(:user, otp: otp_enabled) }
     let(:otp_enabled) { true }
-    let!(:api_key) { create :api_key, user: test_user }
+    let!(:api_key) { create :api_key, key_holder_account: test_user }
     let(:otp_code) { '1357' }
     let(:nonce) { (Time.now.to_f * 1000).to_i }
     let(:kid) { api_key.kid }

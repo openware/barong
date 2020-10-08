@@ -225,7 +225,7 @@ describe API::V2::Management::Users, type: :request do
       end
     end
 
-    describe 'Update data of existing user' do
+    describe 'Update role and data of existing user' do
       let(:signers) { %i[alex jeff] }
       let(:data) { params.merge(scope: :write_users) }
 
@@ -247,6 +247,55 @@ describe API::V2::Management::Users, type: :request do
 
           expect_status_to_eq 201
           expect(user.reload.data).to eq({ nationality: 'us' }.to_json)
+        end
+      end
+
+      context 'when role is present' do
+        let(:user) { create :user }
+        let(:params) do
+          {
+              uid: user.uid,
+              role: 'admin'
+          }
+        end
+        it 'updates role field' do
+          do_request
+
+          expect_status_to_eq 201
+          expect(user.reload.role).to eq('admin')
+        end
+      end
+
+      context 'when data and role are present' do
+        let(:user) { create :user }
+        let(:params) do
+          {
+              uid: user.uid,
+              data: { nationality: 'us' }.to_json,
+              role: 'admin'
+          }
+        end
+        it 'updates data and role fields' do
+          do_request
+
+          expect_status_to_eq 201
+          expect(user.reload.data).to eq({ nationality: 'us' }.to_json)
+          expect(user.reload.role).to eq('admin')
+        end
+      end
+
+      context 'when none of parameters are present' do
+        let(:user) { create :user }
+        let(:params) do
+          {
+              uid: user.uid,
+          }
+        end
+        it 'renders error' do
+          do_request
+
+          expect_status_to_eq 422
+          expect_body.to eq(error: "role, data are missing, at least one parameter must be provided")
         end
       end
     end
