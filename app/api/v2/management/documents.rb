@@ -19,9 +19,7 @@ module API::V2
 
         desc 'Push documents to barong DB' do
           @settings[:scope] = :write_documents
-          success API::V2::Entities::UserWithProfile
         end
-
         params do
           requires :uid, type: String, allow_blank: false, desc: 'User uid'
           requires :doc_type,
@@ -55,7 +53,6 @@ module API::V2
                    type: String,
                    desc: 'Any additional key: value pairs in json string format'
         end
-
         post do
           user = User.find_by(uid: params[:uid])
           error!(errors: ['user doesnt exist']) unless user

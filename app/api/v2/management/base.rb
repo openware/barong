@@ -35,13 +35,13 @@ module API::V2
         }
       },
       models: [
-        Entities::Label,
-        Entities::APIKey,
+        API::V2::Entities::Label,
+        API::V2::Entities::APIKey,
+        API::V2::Entities::UserWithFullInfo,
+        API::V2::Entities::User,
         Entities::Profile,
-        Entities::User,
         Entities::UserWithProfile,
-        Entities::UserWithFullInfo,
-        Entities::UserWithKYC
+        Entities::UserWithKYC,
       ],
       api_version: 'v2',
       doc_version: Barong::Application::GIT_TAG,

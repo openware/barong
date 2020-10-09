@@ -55,8 +55,8 @@ describe API::V2::Management::Profiles, type: :request do
 
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'drafted'
-        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
-        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
       end
     end
 
@@ -79,8 +79,8 @@ describe API::V2::Management::Profiles, type: :request do
         expect_status_to_eq 201
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'drafted'
-        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
-        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
       end
     end
 
@@ -104,8 +104,8 @@ describe API::V2::Management::Profiles, type: :request do
         expect_status_to_eq 201
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['state']).to eq 'rejected'
-        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name].sub(/(?<=\A.{1})(.*)/) { |match| '*' * match.length }
-        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s.sub(/(?<=\A.{8})(.*)/) { |match| '*' * match.length }
+        expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+        expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
       end
     end
 

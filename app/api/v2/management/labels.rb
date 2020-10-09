@@ -16,13 +16,11 @@ module API::V2
         end
       end
 
-      LabelEntity = API::V2::Entities::Label
-
       desc 'Label related routes'
       resource :labels do
         desc 'Get all labels assigned to users' do
           @settings[:scope] = :read_users
-          success API::V2::Entities::Label
+          success API::V2::Entities::User
         end
         params do
           requires :key, type: String, allow_blank: false, desc: 'Label key.'
@@ -50,7 +48,7 @@ module API::V2
 
         desc 'Get user collection filtered on label attributes' do
           @settings[:scope] = :read_labels
-          success API::V2::Entities::Label
+          success API::V2::Entities::AdminLabelView
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
@@ -61,7 +59,7 @@ module API::V2
 
         desc "Create a label with 'private' scope and assigns to users" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::AdminLabelView
+          success API::V2::Entities::Label
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
@@ -83,7 +81,7 @@ module API::V2
 
         desc "Update a label with 'private' scope" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::AdminLabelView
+          success API::V2::Entities::Label
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
@@ -118,7 +116,7 @@ module API::V2
 
         desc "Delete a label with 'private' scope" do
           @settings[:scope] = :write_labels
-          success API::V2::Entities::AdminLabelView
+
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'

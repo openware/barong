@@ -47,6 +47,9 @@ describe API::V2::Management::Users, type: :request do
 
         expect(response.status).to eq 201
         expect(json_body.keys).to eq extended_attributes
+        expect(json_body).to include(:profiles, :comments, :phones, :documents)
+        expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
+        expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
       end
 
       it 'reads full user info by email' do
@@ -55,6 +58,9 @@ describe API::V2::Management::Users, type: :request do
         do_request
         expect(response.status).to eq 201
         expect(json_body.keys).to eq extended_attributes
+        expect(json_body).to include(:profiles, :comments, :phones, :documents)
+        expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
+        expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
       end
 
       let!(:phone) do
@@ -67,6 +73,9 @@ describe API::V2::Management::Users, type: :request do
         do_request
         expect(response.status).to eq 201
         expect(json_body.keys).to eq extended_attributes
+        expect(json_body).to include(:profiles, :comments, :phones, :documents)
+        expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
+        expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
       end
 
       it 'allows only one of phone, uid, email' do
@@ -220,6 +229,16 @@ describe API::V2::Management::Users, type: :request do
 
             expect(response.status).to eq 200
             expect(json_body.count).to eq (1)
+            expect(json_body[0]).not_to include(:profiles)
+          end
+
+          it 'returns filetered list of users with extended param' do
+            users_list_params[:extended] = true
+            post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
+            expect(response.status).to eq 200
+            expect(json_body[0]).to include(:profiles)
+            expect(json_body.first[:profiles][0][:last_name]).to eq user.profiles[0].last_name
+            expect(json_body.first[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
           end
         end
       end
@@ -235,7 +254,7 @@ describe API::V2::Management::Users, type: :request do
       end
 
       context 'when data is present' do
-        let(:user) { create :user }
+        let!(:user) { create :user, :with_profile }
         let(:params) do
           {
             uid: user.uid,
@@ -246,6 +265,9 @@ describe API::V2::Management::Users, type: :request do
           do_request
 
           expect_status_to_eq 201
+          expect(json_body).to include(:profiles)
+          expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
+          expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
           expect(user.reload.data).to eq({ nationality: 'us' }.to_json)
         end
       end
@@ -458,6 +480,8 @@ describe API::V2::Management::Users, type: :request do
           it 'creates a profile' do
             expect { do_request }.to change { Profile.count }.by(1)
             result = JSON.parse(response.body)
+            expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+            expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
             expect(result['profiles'][0]['state']).to eq 'drafted'
             expect_status_to_eq 201
           end
@@ -478,6 +502,8 @@ describe API::V2::Management::Users, type: :request do
           it 'create a profile' do
             expect { do_request }.to change { Profile.count }
             result = JSON.parse(response.body)
+            expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+            expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
             expect(result['profiles'][0]['state']).to eq 'drafted'
             expect_status_to_eq 201
           end
@@ -499,6 +525,8 @@ describe API::V2::Management::Users, type: :request do
           it 'create a profile' do
             expect { do_request }.to change { Profile.count }
             result = JSON.parse(response.body)
+            expect(result['profiles'][0]['last_name']).to eq profile_params[:last_name]
+            expect(result['profiles'][0]['dob']).to eq profile_params[:dob].to_s
             expect(result['profiles'][0]['state']).to eq 'rejected'
             expect_status_to_eq 201
           end
