@@ -16,6 +16,7 @@ module API::V2
       mount API::V2::Management::Labels
       mount API::V2::Management::Users
       mount API::V2::Management::Profiles
+      mount API::V2::Management::Phones
       mount API::V2::Management::Tools
       mount API::V2::Management::Otp
       mount API::V2::Management::Documents
@@ -40,6 +41,8 @@ module API::V2
         API::V2::Entities::UserWithFullInfo,
         API::V2::Entities::User,
         Entities::Profile,
+        Entities::Phone,
+        Entities::Document,
         Entities::UserWithProfile,
         Entities::UserWithKYC,
       ],
