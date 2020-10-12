@@ -7,6 +7,7 @@ class Phone < ApplicationRecord
   include Encryptable
 
   TWILIO_CHANNELS = %w[call sms].freeze
+  DEFAULT_COUNTRY_CODE_COUNT = 2
 
   belongs_to :user
 
@@ -50,7 +51,8 @@ class Phone < ApplicationRecord
   end
 
   def sub_masked_number
-    code_count = parse_code.length
+    code_count = parse_code&.length
+    code_count = DEFAULT_COUNTRY_CODE_COUNT unless code_count
     number.sub(/(?<=\A.{#{code_count}})(.*)(?=.{4}\z)/) { |match| '*' * match.length }
   end
 

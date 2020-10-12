@@ -781,7 +781,6 @@ describe API::V2::Admin::Users do
         test_user.update!(role: 'superadmin')
         post request, headers: auth_header, params: { uid: superadmin.uid, state: 'banned' }
 
-        result = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(superadmin.reload.state). to eq 'banned'
       end
@@ -1018,8 +1017,6 @@ describe API::V2::Admin::Users do
               limit: 2,
               page: 2
           }
-
-          expect(User.third.email).to eq json_body.first[:email]
 
           expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
