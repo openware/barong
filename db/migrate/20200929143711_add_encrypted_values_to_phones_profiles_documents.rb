@@ -7,7 +7,7 @@ class AddEncryptedValuesToPhonesProfilesDocuments < ActiveRecord::Migration[5.2]
 
     # Encrypt number
     Phone.find_each(batch_size: 100) do |phone|
-      phone.update!(number: phone.read_attribute(:number))
+      phone.update_attribute(:number, phone.read_attribute(:number))
     end
 
     remove_column :phones, :number, :string
@@ -27,7 +27,7 @@ class AddEncryptedValuesToPhonesProfilesDocuments < ActiveRecord::Migration[5.2]
         address:    profile.read_attribute(:address)
       }.compact
 
-      profile.update!(attrs) if attrs.present?
+      profile.update_attributes(attrs) if attrs.present?
     end
 
     remove_column :profiles, :first_name, :string
@@ -42,7 +42,7 @@ class AddEncryptedValuesToPhonesProfilesDocuments < ActiveRecord::Migration[5.2]
 
     # Encrypt doc_number
     Document.where.not(doc_number: nil).find_each(batch_size: 100) do |document|
-      document.update!(doc_number: document.read_attribute(:doc_number))
+      document.update_attribute(:doc_number, document.read_attribute(:doc_number))
     end
 
     remove_column :documents, :doc_number, :string
