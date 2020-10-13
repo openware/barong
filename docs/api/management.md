@@ -12,7 +12,7 @@ Management API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
-### /labels/delete
+### /api/v2/management/labels/delete
 
 #### POST
 ##### Description
@@ -32,7 +32,7 @@ Delete a label with 'private' scope
 | ---- | ----------- |
 | 201 | Delete a label with 'private' scope |
 
-### /labels
+### /api/v2/management/labels
 
 #### PUT
 ##### Description
@@ -75,7 +75,7 @@ Create a label with 'private' scope and assigns to users
 | ---- | ----------- | ------ |
 | 201 | Create a label with 'private' scope and assigns to users | [API_V2_Entities_Label](#api_v2_entities_label) |
 
-### /labels/list
+### /api/v2/management/labels/list
 
 #### POST
 ##### Description
@@ -94,7 +94,7 @@ Get user collection filtered on label attributes
 | ---- | ----------- | ------ |
 | 201 | Get user collection filtered on label attributes | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |
 
-### /labels/filter/users
+### /api/v2/management/labels/filter/users
 
 #### POST
 ##### Description
@@ -119,7 +119,7 @@ Get all labels assigned to users
 | ---- | ----------- | ------ |
 | 201 | Get all labels assigned to users | [API_V2_Entities_User](#api_v2_entities_user) |
 
-### /users/import
+### /api/v2/management/users/import
 
 #### POST
 ##### Description
@@ -149,7 +149,7 @@ Imports an existing user
 | ---- | ----------- | ------ |
 | 201 | Imports an existing user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /users/update
+### /api/v2/management/users/update
 
 #### POST
 ##### Description
@@ -170,7 +170,7 @@ Updates role and data fields of existing user
 | ---- | ----------- | ------ |
 | 201 | Updates role and data fields of existing user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /users
+### /api/v2/management/users
 
 #### POST
 ##### Description
@@ -191,7 +191,7 @@ Creates new user
 | ---- | ----------- | ------ |
 | 201 | Creates new user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /users/list
+### /api/v2/management/users/list
 
 #### POST
 ##### Description
@@ -215,7 +215,7 @@ Returns array of users as collection
 | ---- | ----------- | ------ |
 | 201 | Returns array of users as collection | [API_V2_Entities_User](#api_v2_entities_user) |
 
-### /users/get
+### /api/v2/management/users/get
 
 #### POST
 ##### Description
@@ -236,7 +236,7 @@ Get users and profile information
 | ---- | ----------- | ------ |
 | 201 | Get users and profile information | [API_V2_Management_Entities_UserWithKYC](#api_v2_management_entities_userwithkyc) |
 
-### /profiles
+### /api/v2/management/profiles
 
 #### POST
 ##### Description
@@ -264,7 +264,27 @@ Imports a profile for user
 | ---- | ----------- | ------ |
 | 201 | Imports a profile for user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /phones
+### /api/v2/management/phones/delete
+
+#### POST
+##### Description
+
+Delete phone number for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+| number | formData | User phone number | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Delete phone number for user |
+
+### /api/v2/management/phones
 
 #### POST
 ##### Description
@@ -275,7 +295,7 @@ Create phone number for user
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | User Uid | Yes | string |
+| uid | formData | User uid | Yes | string |
 | number | formData | User phone number | Yes | string |
 
 ##### Responses
@@ -284,7 +304,26 @@ Create phone number for user
 | ---- | ----------- |
 | 201 | Create phone number for user |
 
-### /otp/sign
+### /api/v2/management/phones/get
+
+#### POST
+##### Description
+
+Get user phone numbers
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Get user phone numbers |
+
+### /api/v2/management/otp/sign
 
 #### POST
 ##### Description
@@ -304,7 +343,7 @@ Sign request with barong signature
 | ---- | ----------- |
 | 201 | Sign request with barong signature |
 
-### /documents
+### /api/v2/management/documents
 
 #### POST
 ##### Description
@@ -331,7 +370,7 @@ Push documents to barong DB
 | ---- | ----------- |
 | 201 | Push documents to barong DB |
 
-### /service_accounts/delete
+### /api/v2/management/service_accounts/delete
 
 #### POST
 ##### Description
@@ -350,7 +389,7 @@ Delete specific service_account
 | ---- | ----------- | ------ |
 | 201 | Delete specific service_account | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
 
-### /service_accounts/create
+### /api/v2/management/service_accounts/create
 
 #### POST
 ##### Description
@@ -372,7 +411,7 @@ Create service_account
 | ---- | ----------- | ------ |
 | 201 | Create service_account | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
 
-### /service_accounts/list
+### /api/v2/management/service_accounts/list
 
 #### POST
 ##### Description
@@ -394,7 +433,7 @@ Get service_accounts as a paginated collection
 | ---- | ----------- | ------ |
 | 201 | Get service_accounts as a paginated collection | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
 
-### /service_accounts/get
+### /api/v2/management/service_accounts/get
 
 #### POST
 ##### Description
@@ -414,7 +453,7 @@ Get specific service_account information
 | ---- | ----------- | ------ |
 | 201 | Get specific service_account information | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
 
-### /timestamp
+### /api/v2/management/timestamp
 
 #### POST
 ##### Description

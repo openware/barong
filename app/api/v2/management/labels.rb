@@ -116,7 +116,6 @@ module API::V2
 
         desc "Delete a label with 'private' scope" do
           @settings[:scope] = :write_labels
-
         end
         params do
           requires :user_uid, type: String, allow_blank: false, desc: 'User uid'
