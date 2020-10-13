@@ -49,6 +49,7 @@ module API::V2
       api_version: 'v2',
       doc_version: Barong::Application::GIT_TAG,
       hide_format: true,
+      add_base_path: true,
       hide_documentation_path: true,
       mount_path: '/management.json'
     end

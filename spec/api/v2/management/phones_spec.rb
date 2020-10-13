@@ -6,6 +6,7 @@ describe API::V2::Management::Phones, type: :request do
     management_api_v2_security_configuration.merge! \
       scopes: {
         write_phones:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] },
+        read_phones:  { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] },
       }
   end
   let!(:create_admin_permission) do
@@ -17,6 +18,67 @@ describe API::V2::Management::Phones, type: :request do
            role: 'member'
   end
   let!(:user) { create(:user) }
+
+  describe 'POST /phones/get' do
+    let(:signers) { %i[alex jeff] }
+    let(:data) { params.merge(scope: :read_phones) }
+
+    let(:do_request) do
+      post_json '/api/v2/management/phones/get',
+                multisig_jwt_management_api_v2({ data: data }, *signers)
+    end
+
+    let(:params) do
+      phone_params
+    end
+
+    context 'valid request' do
+      context 'user without phones' do
+        let(:phone_params) do
+          {
+            uid: user.uid
+          }
+        end
+
+        it 'get list of phones' do
+          do_request
+          expect_status_to_eq 201
+          expect_body.to eq []
+        end
+      end
+
+      context 'user with phones' do
+        let!(:phone) { create(:phone, user: user) }
+        let(:phone_params) do
+          {
+            uid: user.uid
+          }
+        end
+
+        it 'get list of phones' do
+          do_request
+          expect_status_to_eq 201
+          expect(json_body.count).to eq 1
+          expect(json_body.first[:number]).to eq phone.number
+          expect(json_body.first[:country]).to eq phone.country
+        end
+      end
+    end
+
+    context 'invalid request' do
+      let(:phone_params) do
+        {
+          uid: 'invalid_uid'
+        }
+      end
+
+      it 'renders an error' do
+        do_request
+        expect_body.to eq(error: 'user.doesnt_exist')
+        expect_status.to eq 422
+      end
+    end
+  end
 
   describe 'POST /phones' do
     let(:signers) { %i[alex jeff] }
@@ -60,7 +122,7 @@ describe API::V2::Management::Phones, type: :request do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: "management.phone.invalid_num")
+          expect_body.to eq(error: 'management.phone.invalid_num')
           expect_status.to eq 400
         end
       end
@@ -106,13 +168,13 @@ describe API::V2::Management::Phones, type: :request do
           let(:phone_params) do
             {
               uid: user.uid,
-              number: "++#{phone.number}"
+              number: '++#{phone.number}'
             }
           end
 
           it 'renders an error' do
             do_request
-            expect_body.to eq(error: 'management.phone.number_exist')
+            expect_body.to eq(error: 'management.phone.invalid_num')
             expect_status.to eq 400
           end
         end
@@ -132,7 +194,7 @@ describe API::V2::Management::Phones, type: :request do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: "management.phone.number_exist")
+          expect_body.to eq(error: 'management.phone.number_exist')
           expect_status.to eq 400
         end
       end
@@ -148,8 +210,108 @@ describe API::V2::Management::Phones, type: :request do
 
         it 'renders an error' do
           do_request
-          expect_body.to eq(error: "management.phone.exists")
+          expect_body.to eq(error: 'management.phone.exists')
           expect_status.to eq 400
+        end
+      end
+    end
+  end
+
+  describe 'POST /phone/delete' do
+    let(:signers) { %i[alex jeff] }
+    let(:data) { params.merge(scope: :write_phones) }
+
+    let(:do_request) do
+      post_json '/api/v2/management/phones/delete',
+                multisig_jwt_management_api_v2({ data: data }, *signers)
+    end
+
+    let(:params) do
+      phone_params
+    end
+
+    context 'valid request' do
+      context 'user with one phone number' do
+        let!(:phone) { create(:phone, number: '447418084106', user_id: user.id)}
+
+        let(:phone_params) do
+          {
+            uid:  user.uid,
+            number: phone.number
+          }
+        end
+
+        it 'show deleted phone' do
+          expect { do_request }.to change { Phone.count }.by(-1)
+          expect_status.to eq 201
+          expect(json_body[:number]).to eq phone.number
+          expect(json_body[:country]).to eq phone.country
+        end
+      end
+
+      context 'user with several phone numbers' do
+        let!(:phone1) { create(:phone, number: '447418084106', user_id: user.id)}
+        let!(:phone2) { create(:phone, number: '447418084107', user_id: user.id)}
+
+        let(:phone_params) do
+          {
+            uid:  user.uid,
+            number: phone2.number
+          }
+        end
+
+        it 'show deleted phone' do
+          expect { do_request }.to change { Phone.count }.by(-1)
+          expect_status.to eq 201
+          expect(json_body[:number]).to eq phone2.number
+          expect(json_body[:country]).to eq phone2.country
+        end
+      end
+    end
+
+    context 'invalid request' do
+      context 'invalid user' do
+        let(:phone_params) do
+          {
+            uid: 'invalid_uid',
+            number: 'number'
+          }
+        end
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(error: 'user.doesnt_exist')
+          expect_status.to eq 422
+        end
+      end
+
+      context 'invalid phone number' do
+        let(:phone_params) do
+          {
+            uid: user.uid,
+            number: 'invalid_number'
+          }
+        end
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(error: 'management.phone.doesnt_exists')
+          expect_status.to eq 422
+        end
+      end
+
+      context 'non existed phone number' do
+        let(:phone_params) do
+          {
+            uid: user.uid,
+            number: '1111111111'
+          }
+        end
+
+        it 'renders an error' do
+          do_request
+          expect_body.to eq(error: 'management.phone.doesnt_exists')
+          expect_status.to eq 422
         end
       end
     end
