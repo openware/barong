@@ -125,10 +125,10 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.bigint "user_id"
     t.string "author"
     t.string "applicant_id"
-    t.string "first_name_encrypted"
-    t.string "last_name_encrypted"
+    t.string "first_name_encrypted", limit: 1024
+    t.string "last_name_encrypted", limit: 1024
     t.string "dob_encrypted"
-    t.string "address_encrypted"
+    t.string "address_encrypted", limit: 1024
     t.string "postcode"
     t.string "city"
     t.string "country"

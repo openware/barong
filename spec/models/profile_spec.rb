@@ -309,6 +309,35 @@ RSpec.describe Profile, type: :model do
     end
   end
 
+  context 'validation' do
+    let!(:create_member_permission) do
+      create :permission,
+              role: 'member'
+    end
+
+    context 'encrypted fields length' do
+      let!(:profile) { create(:profile) }
+
+      it 'encrypted first name should be valid with 255 characters' do
+        profile.update(first_name: Faker::Alphanumeric.alphanumeric(number: 255))
+
+        expect(profile.valid?).to eq true
+      end
+
+      it 'encrypted last name should be valid with 255 characters' do
+        profile.update(last_name: Faker::Alphanumeric.alphanumeric(number: 255))
+
+        expect(profile.valid?).to eq true
+      end
+
+      it 'encrypted address should be valid with 255 characters' do
+        profile.update(address: Faker::Alphanumeric.alphanumeric(number: 255))
+
+        expect(profile.valid?).to eq true
+      end
+    end
+  end
+
   context 'submasked fields' do
     let!(:create_member_permission) do
       create :permission,

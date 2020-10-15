@@ -13,10 +13,10 @@ class AddEncryptedValuesToPhonesProfilesDocuments < ActiveRecord::Migration[5.2]
     remove_column :phones, :number, :string
 
     # Profiles Table
-    add_column :profiles, :first_name_encrypted, :string, after: :applicant_id
-    add_column :profiles, :last_name_encrypted, :string, after: :first_name_encrypted
+    add_column :profiles, :first_name_encrypted, :string, limit: 1024, after: :applicant_id
+    add_column :profiles, :last_name_encrypted, :string, limit: 1024, after: :first_name_encrypted
     add_column :profiles, :dob_encrypted, :string, after: :last_name_encrypted
-    add_column :profiles, :address_encrypted, :string, after: :dob_encrypted
+    add_column :profiles, :address_encrypted, :string, limit: 1024, after: :dob_encrypted
 
     # Encrypt first_name, last_name, dob, address
     Profile.find_each(batch_size: 100) do |profile|
