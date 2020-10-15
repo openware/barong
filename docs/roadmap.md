@@ -12,10 +12,21 @@
 
 ## v2.5
 
- * Faster Barong Authorizer
- * Dynamic routing from Database
- * Support for API Rate limiter per route
- 
+ * Support of KyC provider (KyCAID)[https://kycaid.com/]
+ * Admin comments on users
+ * Double verification for user profile edit
+
+## v2.6
+
+ * Vault prefix and policies
+ * Configurable abilities
+
+## v2.7
+
+ * Fast barong authorizer
+ * Dynamic routing from database
+ * Configuration storage in vault
+
 ## v3.0
 
  * OAuth Sign-up and Login support

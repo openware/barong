@@ -24,6 +24,7 @@ http --session barong_session https://your.domain/api/v2/barong/identity/session
 ```
 
 3. Validate your session
+
 ```bash
 http --session barong_session https://your.domain.com/api/v2/peatio/account/balances
 ```

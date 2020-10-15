@@ -8,12 +8,24 @@
 
 # Overview
 
-Barong is oAuth server for [Openware.com][openware.com] stack.
+Barong is a authentication service for microservice architectures using JWT standard.
+
+It includes the following features:
+
+- Registration of users
+- Role based access control (RBAC)
+- Embedded KyC process
+- Integrated [KycAID](https://www.openware.com/sdk/docs/barong/kycaid.html) plugin
+- Mailing system: event based, support multi-language, secured by cryptographic signatures
+- [Service accounts](https://www.openware.com/sdk/docs/barong/service-accounts.html)
+- Focused on user privacy: sensitive informations are encrypted in database using vault, masks are applied on fields in user API endpoints
+
+Made with :love: by [Openware][https://www.openware.com].
 
 # Development
 
 Prerequisites:
-- Ruby version: `2.5.3`
+- Ruby version: `2.6.6`
 - Bundler preinstalled
 - MySQL preinstalled
 
@@ -32,12 +44,7 @@ bin/init_config
 bundle exec rake db:create db:migrate
 ```
 
-4. Install JS dependencies
-```
-yarn install
-```
-
-5. Start local server
+4. Start local server
 ```
 bundle exec rails server
 ```
@@ -52,22 +59,21 @@ In the process of verification Barong assign different levels to accounts
 - Level 3 will apply after identity & document verification
 
 # Useful links to documentation
-[Barong environments overview](https://github.com/openware/barong/blob/master/docs/configuration.md#barong-environments-overview)
+[Barong configuration](https://www.openware.com/sdk/docs/barong/configuration.html)
 
-[Barong configurations overview](https://github.com/openware/barong/blob/master/docs/configuration.md#barong-configurations-overview)
+[Troubleshooting](https://www.openware.com/sdk/docs/barong/troubleshooting.html)
 
-[Troubleshooting](https://github.com/openware/barong/blob/master/docs/troubleshooting.md)
+[REST API documentation](https://www.openware.com/sdk/docs/barong/rest-api.html)
 
-[REST API documentation](https://github.com/openware/barong/blob/master/docs/api/rest_api.md)
+[API Keys creation and usage](https://www.openware.com/sdk/docs/barong/general/api-keys.html)
 
-[API Keys creation and usage](https://github.com/openware/barong/blob/master/docs/general/api-keys.md)
+[Captcha policy overview and configuration](https://www.openware.com/sdk/docs/barong/general/captcha.html)
 
-[Captcha policy overview and configuration](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+[Setting up 2FA](https://www.openware.com/sdk/docs/barong/2fa.html)
 
-[Setting up 2FA](https://github.com/openware/barong/blob/master/docs/general/2fa.md)
+[Barong password hashing](https://www.openware.com/sdk/docs/barong/general/password-hashing.html)
 
-[Barong password hashing](https://github.com/openware/barong/blob/master/docs/general/password_hashing.md#barong-password-hashing)
-
+[Barong data encryption](https://www.openware.com/sdk/docs/barong/general/encryption.html)
 
 # License
-Barong is released under the terms of the [Apache License 2.0](./LICENSE.md).
+Barong is released under the terms of the [Apache License 2.0](https://github.com/openware/barong/blob/master/LICENSE.md).

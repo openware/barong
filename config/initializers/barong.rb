@@ -38,7 +38,7 @@ ENV['SECRET_KEY_BASE'] = '' unless Rails.env.production?
 
 Barong::App.define do |config|
   # General configuration ---------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#general-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#general-configuration
   config.set(:app_name, 'Barong')
   config.set(:domain, 'openware.com')
   config.set(:uid_prefix, 'ID', regex: /^[A-z]{2,6}$/)
@@ -56,13 +56,13 @@ Barong::App.define do |config|
   config.set(:crc32_salt, '')
 
   # Password configuration  -----------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration
   config.set(:password_regexp, '^(?=.*[[:lower:]])(?=.*[[:upper:]])(?=.*[[:digit:]])(?=.*[[:graph:]]).{8,80}$', type: :regexp)
   config.set(:password_min_entropy, '14', type: :integer)
   config.set(:password_use_dictionary, 'true', type: :bool)
 
   # CAPTCHA configuration ---------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#captcha-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#captcha-configuration
   config.set(:captcha, 'none', values: %w[none recaptcha geetest])
   config.set(:geetest_id, '')
   config.set(:geetest_key, '')
@@ -70,7 +70,7 @@ Barong::App.define do |config|
   config.set(:recaptcha_secret_key, '')
 
   # Dependencies configuration (vault, redis, rabbitmq) ---------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#dependencies-configuration-vault-redis-rabbitmq
+  # https://www.openware.com/sdk/docs/barong/configuration.html#dependencies-configuration-vault-redis-rabbitmq
   config.set(:event_api_rabbitmq_host, 'localhost')
   config.set(:event_api_rabbitmq_port, '5672')
   config.set(:event_api_rabbitmq_username, 'guest')
@@ -83,13 +83,13 @@ Barong::App.define do |config|
   config.set(:vault_app_name, 'barong')
 
   # CORS configuration  -----------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#api-cors-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#api-cors-configuration
   config.set(:api_cors_origins, '*')
   config.set(:api_cors_max_age, '3600')
   config.set(:api_cors_allow_credentials, 'false', type: :bool)
 
   # Config files configuration ----------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#config-files-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#config-files-configuration
   config.set(:config, 'config/barong.yml', type: :path)
   config.set(:maxminddb_path, '', type: :path)
   config.set(:seeds_file, Rails.root.join('config', 'seeds.yml'), type: :path)

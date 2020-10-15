@@ -26,7 +26,7 @@
 | `barong_password_use_dictionary` | true | bool | activates or deactivates most common password dictionary check |
 
 ### Storage configuration
-More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
+More details in [storage configuration doc](#storage-configuration)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -51,7 +51,7 @@ More details in [storage configuration doc](https://github.com/openware/barong/b
 | `barong_api_cors_allow_credentials` | false | `false` `true` | allows cookies to be sent in cross-domain responses |
 
 ### CAPTCHA configuration
-More details in [captcha policy doc](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+More details in [captcha policy doc](https://www.openware.com/sdk/docs/barong/general/captcha.html)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -62,7 +62,7 @@ More details in [captcha policy doc](https://github.com/openware/barong/blob/mas
 | `barong_recaptcha_secret_key` | - | any string value | secret key for RECAPTCHA |
 
 ### Twilio configuration
-More details in [twilio configuration](https://github.com/openware/barong/blob/master/docs/configuration.md#twilio-configuration)
+More details in [twilio configuration](#twilio-configuration)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |

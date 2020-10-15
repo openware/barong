@@ -1,23 +1,22 @@
-# Using mailer
+# Barong mailer
 
-Mailer in the barong app is a script for listening Event API and send emails.
+Mailer in the barong app is a deamon listening events from RabbitMQ, it renders emails using templates in the language set in user profile (if possible) and send emails.
 
 This guide explains the basics of using mailer to manage events from rubykube Event API.
 
-Nowadays mailer support two components, that produce events
+It is usually used by following components:
 
-- [Barong](https://github.com/rubykube/barong)
-- [Peatio](https://github.com/rubykube/peatio)
+- [Barong](https://www.openware.com/sdk/docs.html#barong)
+- [Peatio](https://www.openware.com/sdk/docs.html#peatio)
 
-Read more about **peatio** Event API [here](https://github.com/rubykube/peatio/blob/master/docs/api/event_api.md).
-
-Read more about **barong** Event API [here](https://github.com/rubykube/barong/blob/master/docs/event_api.md).
+Read more about [Peatio Event API](https://www.openware.com/sdk/docs/peatio/api/event-api.html).
+Read more about [Barong Event API](https://www.openware.com/sdk/docs/barong/event-api.html).
 
 ## Concepts
 
 An _Event_ is a message produced to message broker in [RFC7515](https://tools.ietf.org/html/rfc7515).
 
-Usually, events have the following structure
+Events have the following structure:
 
 ```JSON
 {
@@ -38,7 +37,7 @@ Usually, events have the following structure
 
 By specification defined in _RFC7515_ we can build a JSON Web Token.
 
-After parsing of prebuild JWT, you will receive this payload with this structure.
+After parsing of prebuilt JWT, you will receive this payload with this structure.
 
 ```JSON
 {
@@ -102,7 +101,7 @@ Mailer creates one queue and bind pre-defined exchanges to it.
 
 ## Configuration
 
-Mailer is pretty flexible tool, you can cusomize alomost everything. Biggest part of customizations defined in `mailer.yml`, but you can also modify templates.
+Mailer is a flexible tool, you can cusomize alomost everything. Biggest part of customizations defined in `mailer.yml`, but you can also modify templates.
 
 Each Event API provider uses own AMQP exchange and algorithm to sign payload.
 

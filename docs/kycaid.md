@@ -1,5 +1,5 @@
 # Barong KYCAID configuration
-In 2.5 (and higher) versions of Barong we introduce new option for KYC management - fully automated KYC provider `KYCAID` - https://www.kycaid.com/
+In Barong 2.5 and higher you can use the external KyC provider (KYCAID)[https://www.kycaid.com/] to fully automated your KYC process.
 
 ### Basic configuration
 Barong now support 2 ways of managing KYC - `local` and `kycaid`. You can switch between them using `BARONG_KYC_PROVIDER` env. By default this ENV has `kycaid`, as a value. If you set `local`as a value, then legacy flow will be turned on. `Profile` and `Document` steps will require manual admin approve from tower.
@@ -9,7 +9,7 @@ Once every credential is setted up correctly `KYCAID` will work in Barong out of
 
 1) We need to set up a bucket for storing docs (docs submitted by user will be stored both in barong and on KYCAID side)
 Basic creds needed for that should be set in envs: `barong_storage_provider`, `barong_storage_bucket_name`, `barong_storage_access_key`, `barong_storage_secret_key`. 
-More about available options read [here]( https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
+More about available options read here: [Barong storage configuration](https://www.openware.com/sdk/docs/barong/configuration.html#storage-configuration)
 2) We need to set up authorization creds for KYCAID (get one on official site https://www.kycaid.com/). ENVs for that available under namings: 
 `barong_kycaid_authorization_token` - for auth secret token, 
 `barong_kycaid_sandbox_mode` - for switching between test mode and prod mode (`true` by default)

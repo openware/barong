@@ -6,8 +6,9 @@ Barong since 2.0 version use OpenBSD bcrypt() password hashing algorithm, that a
 
 As a base Barong takes [bcrypt-ruby gem](https://github.com/codahale/bcrypt-ruby) - Ruby binding for the OpenBSD bcrypt() With [rails 5 has_secure_password](https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html) it gives us full power of algorithm.
 
-More about algorithm you can find [here](https://github.com/openware/barong/edit/master/docs/general/password_hashing.md)
-More about additional password strength and regexp configuration [here](https://github.com/openware/barong/blob/master/docs/configuration.md#password-configuration)
+Read more about [password hashing algorithm in barong](https://www.openware.com/sdk/docs/barong/general/password-hashing.html).
+
+Read more about additional [password strength and regexp configuration](https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration).
 
 ### Challenge–response test (captcha protection)
 
@@ -28,7 +29,7 @@ captcha_protected_endpoints:
 
 Captcha will be verified on `SERVER` side. All requests without captcha will be denied with `error` `captcha_response.missing`
 
-More about captcha you can read here [captcha policy doc](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+More about captcha you can read here [captcha policy documentation](https://www.openware.com/sdk/docs/barong/general/captcha.html).
 
 ### CSRF protection
 `Cross-Site Request Forgery` (`CSRF`) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. CSRF attacks specifically target state-changing requests, not theft of data since the attacker has no way to see the response to the forged request.
@@ -49,6 +50,6 @@ This is the flow we went for:
 This approach is called a per-session token method.
 
 For further information check the links down below:
-1) https://www.owasp.org/index.php/Main_Page
-2) https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#javascript-guidance-for-auto-inclusion-of-csrf-tokens-as-an-ajax-request-header
-3) https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project
+* https://www.owasp.org/index.php/Main_Page
+* https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#javascript-guidance-for-auto-inclusion-of-csrf-tokens-as-an-ajax-request-header
+* https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project
