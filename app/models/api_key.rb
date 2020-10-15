@@ -5,14 +5,7 @@ class APIKey < ApplicationRecord
 
   include Vault::EncryptedModel
 
-  vault_lazy_decrypt!
-
-  vault_attribute :secret
-
   ALGORITHMS = ['HS256'].freeze
-
-  serialize :scope, Array
-
   JWT_OPTIONS = {
     verify_expiration: true,
     verify_iat: true,
@@ -24,15 +17,24 @@ class APIKey < ApplicationRecord
     algorithm: 'RS256'
   }.freeze
 
+
+  vault_lazy_decrypt!
+
+  vault_attribute :secret
+
+  serialize :scope, Array
+
+  belongs_to :key_holder_account, polymorphic: true
+
   validates :kid, :secret, presence: true
   validates :kid, uniqueness: true
   validates :algorithm, inclusion: { in: ALGORITHMS }
 
-  belongs_to :key_holder_account, polymorphic: true
+  before_validation :assign_kid, if: :hmac?
+  before_validation :validate_key_holder_state, on: :create
+  before_validation :validate_api_key_state, on: :update
 
   scope :active, -> { where(state: 'active') }
-
-  before_validation :assign_kid, if: :hmac?
 
   def assign_kid
     return unless kid.blank?
@@ -54,6 +56,16 @@ class APIKey < ApplicationRecord
   def active?
     self.state == 'active'
   end
+
+  private
+
+  def validate_key_holder_state
+    errors.add(:key_holder_account, :invalid, message: 'non active state for key holder account') unless key_holder_account.active?
+  end
+
+  def validate_api_key_state
+    errors.add(:state, :invalid, message: 'cant activate api key with disabled key holder account') if active? && !key_holder_account.active?
+  end
 end
 
 # == Schema Information
@@ -70,4 +82,9 @@ end
 #  state                   :string(255)      default("active"), not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#
+# Indexes
+#
+#  idx_apikey_on_account  (key_holder_account_type,key_holder_account_id)
+#  index_apikeys_on_kid   (kid) UNIQUE
 #

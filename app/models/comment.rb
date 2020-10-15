@@ -1,3 +1,11 @@
+# frozen_string_literal: true
+
+class Comment < ApplicationRecord
+  belongs_to :user
+
+  validates :title, :data, :author_uid, presence: true
+end
+
 # == Schema Information
 #
 # Table name: comments
@@ -10,9 +18,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-
-class Comment < ApplicationRecord
-  belongs_to :user
-
-  validates :title, :data, :author_uid, presence: true
-end
+# Indexes
+#
+#  index_comments_on_user_id  (user_id)
+#

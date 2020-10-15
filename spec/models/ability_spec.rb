@@ -11,7 +11,7 @@ describe Ability do
     })
   end
 
-  let!(:create_permissions) do 
+  let!(:create_permissions) do
     create(:permission, role: 'superadmin', action: 'accept', verb: 'get')
     create(:permission, role: 'admin', action: 'accept', verb: 'get')
     create(:permission, role: 'compliance', action: 'accept', verb: 'get')

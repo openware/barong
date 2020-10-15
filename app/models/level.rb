@@ -6,19 +6,6 @@ class Level < ApplicationRecord
   validates :value, uniqueness: { scope: :key }
 end
 
-  # == Schema Information
-  # Schema version: 20180907133821
-  #
-  # Table name: levels
-  #
-  #  id          :bigint(8)        not null, primary key
-  #  key         :string(255)
-  #  value       :string(255)
-  #  description :string(255)
-  #  created_at  :datetime         not null
-  #  updated_at  :datetime         not null
-  #
-
 # == Schema Information
 #
 # Table name: levels
