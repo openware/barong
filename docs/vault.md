@@ -13,12 +13,14 @@ This document describes how to create vault tokens in order to restrict componen
 
 ## Connect to vault
 The the following variables in your environment with correct values:
+
 ```bash
 export VAULT_ADDR='http://127.0.0.1:8200'
 export VAULT_TOKEN='s.ozytsgX1BcTQaR5Y07SAd2VE'
 ```
 
 You can test that it works running the following command:
+
 ```
 $ vault status
 Type: shamir
@@ -40,7 +42,7 @@ High-Availability Enabled: false
 
 **barong-rails.hcl**
 
-Replace *opendax* with your vault application name. See [configuration.md](configuration.md#vault-configuration) for more details about vault configuration.
+Replace *opendax* with your vault application name. See [barong vault configuration](https://www.openware.com/sdk/docs/barong/configuration.html#vault-configuration) for more details.
 
 ```bash
 # Access system health status
@@ -125,6 +127,7 @@ vault token create -policy=barong-authz -period=240h
 ## Configure Barong
 
 Set those variables according to your deployment:
+
 ```bash
 export BARONG_VAULT_ADDRESS=http://127.0.0.1:8200
 export BARONG_VAULT_TOKEN=s.jyH1vmrOmkZ0FZZ0NZtgRenS

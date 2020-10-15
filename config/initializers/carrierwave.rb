@@ -6,7 +6,7 @@ require 'carrierwave/storage/fog'
 
 Barong::App.define do |config|
   # Storage configuration 
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#storage-configuration
 
   config.set(:storage_provider, 'local')
   config.set(:storage_bucket_name, 'local')

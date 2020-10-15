@@ -1,6 +1,7 @@
 # Barong errors list
 
 ## Resource module errors
+
 ```
 resource.labels.private   -                 Can't update Label.
 resource.user.no_activity                   No activity recorded or wrong topic
@@ -27,6 +28,7 @@ resource.password.no_change_provided        New password cant be the same, as ol
 ```
 
 ## Identity module errors
+
 ```
 identity.user.invalid_referral_format   Invalid referral uid format
 identity.user.referral_doesnt_exist     Referral doesn't exist
@@ -47,6 +49,7 @@ identity.session.invalid_otp            OTP code is invalid
 ```
 
 ## Admin module errors
+
 ```
 admin.user.update_himself    Admin can't update himself
 admin.user.enable_2fa        Manual 2FA enabling not allowed
@@ -60,6 +63,7 @@ admin.user.label_no_matches  Search result is empty array
 ```
 
 ## General errors
+
 ```
 record.not_found                Record is not found
 jwt.decode_and_verify           Failed to decode and verify JWT
@@ -75,6 +79,7 @@ authz.unexistent_apikey         X-Auth-Apikey header is invalid
 
 ## Validation errors
 ### Admin module
+
 ```
 admin.user.non_integer_page
 admin.user.non_positive_page
@@ -95,6 +100,7 @@ admin.user.empty_value
 ```
 
 ### Identity module
+
 ```
 identity.user.missing_email
 identity.user.empty_email
@@ -113,6 +119,7 @@ identity.session.invalid_captcha_format
 ```
 
 ### Resource module
+
 ```
 resource.otp.missing_code
 resource.otp.empty_code
