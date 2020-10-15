@@ -1,21 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: service_accounts
-#
-#  id          :bigint           not null, primary key
-#  uid         :string(255)      not null
-#  owner_id :bigint           unsigned, not null
-#  email       :string(255)      not null
-#  role        :string(255)      default("service_account"), not null
-#  level       :integer          default(0), not null
-#  state       :string(255)      default("pending"), not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#
-
-
 # ServiceAccount model
 class ServiceAccount < ApplicationRecord
   belongs_to :user, foreign_key: "owner_id"
@@ -83,3 +67,18 @@ class ServiceAccount < ApplicationRecord
     self.level = user.level
   end
 end
+
+# == Schema Information
+#
+# Table name: service_accounts
+#
+#  id         :bigint           not null, primary key
+#  uid        :string(255)      not null
+#  owner_id   :bigint           unsigned, not null
+#  email      :string(255)      not null
+#  role       :string(255)      default("service_account"), not null
+#  level      :integer          default(0), not null
+#  state      :string(255)      default("pending"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#

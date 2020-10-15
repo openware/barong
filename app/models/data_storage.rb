@@ -1,18 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: data_storages
-#
-#  id         :bigint           not null, primary key
-#  user_id    :bigint           unsigned, not null
-#  title      :string(64)       not null
-#  data       :text(65535)      not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
-
 # Data Storage model
 class DataStorage < ApplicationRecord
   BLACKLISTED_TITLES = %w[document label profile phone user].freeze
@@ -36,3 +23,19 @@ class DataStorage < ApplicationRecord
     }
   end
 end
+
+# == Schema Information
+#
+# Table name: data_storages
+#
+#  id         :bigint           not null, primary key
+#  user_id    :bigint           unsigned, not null
+#  title      :string(64)       not null
+#  data       :text(65535)      not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_data_storages_on_user_id_and_title  (user_id,title) UNIQUE
+#
