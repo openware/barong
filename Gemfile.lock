@@ -295,6 +295,7 @@ GEM
       eventmachine
       jwt
       mysql2
+    pg (1.2.3)
     phonelib (0.6.45)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -477,6 +478,7 @@ DEPENDENCIES
   mini_racer
   mysql2 (>= 0.4.4, < 0.6.0)
   peatio (~> 0.4.4)
+  pg (~> 1.2)
   phonelib (~> 0.6.45)
   pry-byebug
   pry-rails
