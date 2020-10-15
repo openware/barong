@@ -139,10 +139,10 @@ end
 #  user_id              :bigint
 #  author               :string(255)
 #  applicant_id         :string(255)
-#  first_name_encrypted :string(255)
-#  last_name_encrypted  :string(255)
+#  first_name_encrypted :string(1024)
+#  last_name_encrypted  :string(1024)
 #  dob_encrypted        :string(255)
-#  address_encrypted    :string(255)
+#  address_encrypted    :string(1024)
 #  postcode             :string(255)
 #  city                 :string(255)
 #  country              :string(255)
