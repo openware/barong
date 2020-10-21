@@ -67,7 +67,9 @@ module API::V2
                      .fetch(:keychain)
                      .slice(*scope.fetch(:permitted_signers))
                      .each_with_object({}) { |(k, v), memo| memo[k] = v.fetch(:value) }
+          puts keychain
           result   = JWT::Multisig.verify_jwt(jwt, keychain, security_configuration.fetch(:jwt, {}))
+          puts result
         rescue StandardError => e
           Rails.logger.error "ManagementAPI check_jwt error: #{e.inspect}"
           raise Exceptions::Authentication, \

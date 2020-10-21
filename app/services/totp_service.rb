@@ -26,7 +26,7 @@ class TOTPService
                  generate: true,
                  issuer: Barong::App.config.app_name,
                  account_name: email,
-                 qr_size: 300)
+                 qr_size: 100)
     end
   
     def exist?(uid)

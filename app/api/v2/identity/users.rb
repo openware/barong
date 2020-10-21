@@ -205,6 +205,33 @@ module API::V2
             status 201
           end
 
+          desc 'Check reset password token',
+          success: { code: 201, message: 'Check password reset code' },
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ]
+          params do
+            requires :token,
+                     type: String,
+                     message: 'identity.user.missing_pass_token',
+                     allow_blank: false,
+                     desc: 'Token from email'
+          end
+          post '/check_code' do
+            payload = codec.decode_and_verify(
+              params[:token],
+              pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
+            )
+
+            # check if reset_password token is latest requested and was not used before
+            if Rails.cache.read(payload[:jti]) == 'utilized'
+              error!({ errors: ['identity.user.utilized_token'] }, 422)
+            end
+
+            status 201
+          end
+
           desc 'Sets new account password',
           success: { code: 201, message: 'Resets password' },
           failure: [
@@ -267,6 +294,7 @@ module API::V2
                             })
             status 201
           end
+
         end
       end
     end
