@@ -22,6 +22,40 @@
 http --session barong_session https://your.domain/api/v2/barong/identity/sessions \
   email=your@email.com password=changeme otp_code=000000
 ```
+Example of response:
+```json
+{
+    "created_at": "2020-06-01T07:01:20Z",
+    "csrf_token": "f5b36515a428328e199a",
+    "data": "{\"language\":\"en\"}",
+    "data_storages": [],
+    "email": "your@example.com",
+    "labels": [
+        {
+            "created_at": "2020-06-01T07:01:45Z",
+            "key": "email",
+            "scope": "private",
+            "updated_at": "2020-06-01T07:01:45Z",
+            "value": "verified"
+        }
+    ],
+    "level": 5,
+    "otp": true,
+    "phones": [
+        {
+            "country": "FR",
+            "number": "33*****0471",
+            "validated_at": "2020-06-01T07:03:18.000Z"
+        }
+    ],
+    "profiles": [],
+    "referral_uid": null,
+    "role": "member",
+    "state": "active",
+    "uid": "IDAF1AED1A42",
+    "updated_at": "2020-10-22T18:01:09Z"
+}
+```
 
 3. Validate your session
 
@@ -33,7 +67,7 @@ http --session barong_session https://your.domain.com/api/v2/peatio/account/bala
 
 ```
 http --session barong_session https://your.domain.com/api/v2/barong/resource/api_keys \
-  algorithm=HS256 totp_code=681757
+  algorithm=HS256 totp_code=681757 x-csrf-token:f5b36515a428328e199a
 ```
 
 Expected response:
@@ -67,9 +101,11 @@ Expected response:
 
 To authenticate using API key you need to pass next 3 headers:
 
-`X-Auth-Apikey` - Access Key for API key (see 'How to create API key section ?')
-`X-Auth-Nonce` - Timestamp in milliseconds (can be passed as a string)
-`X-Auth-Signature` - HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key
+| Header           | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| X-Auth-Apikey    | Access Key for API key (see 'How to create API key section ?') |
+| X-Auth-Nonce     | Timestamp in milliseconds (can be passed as a string)        |
+| X-Auth-Signature | HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key |
 
 1. Generate X-Auth-Nonce - unique string (e.g current unix timestamp)
 
@@ -83,9 +119,9 @@ Nonce will be validated on server side to be not older than 5 seconds from the g
 2. Calculate X-Auth-Signature header.
 
 X-Auth-Signature is HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key.
-  
+
 ```ruby
-nonce = '1584524005143' # timestamp in milliseconds
+nonce = (Time.now.to_f * 1000).to_i.to_s # timestamp in milliseconds, ex: 1584524005143
 access_key = '61d025b8573501c2' # Access Key from 'How to create API key section ?'
 secret_key = '2d0b4979c7fe6986daa8e21d1dc0644f' # Secret Key from 'How to create API key section ?'
 OpenSSL::HMAC.hexdigest("SHA256", secret_key, nonce + access_key)
