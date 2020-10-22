@@ -1,8 +1,8 @@
 # Barong API keys creation and usage
 
-This document explains how to create an API key on barong using the UI or command line tool.
-This API key can be used to access microservices in the cluster protected by barong authentication.
-You can find below an example how to use the API key.
+This document explain how to create an API key on barong using the UI or command line tool.
+This API key can be used to access each micro-service in the cluster protected by barong authentication.
+Read below an example how to use the API key.
 
 ## How to create API key ?
 
