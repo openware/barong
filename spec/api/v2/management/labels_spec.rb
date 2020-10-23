@@ -70,11 +70,10 @@ describe API::V2::Management::Labels, type: :request do
       end
 
       it 'returns user with profile if extended is true' do
-        # filtering params key: 'profile', value: 'pending', scope: 'private', extended: true
         data[:extended] = true
         do_request
 
-        expect(json_body.first.keys).to include(:profiles)
+        expect(json_body.first).to include(:profiles)
       end
     end
 

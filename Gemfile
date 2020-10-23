@@ -29,7 +29,7 @@ gem 'cancancan', '~> 2.3.0'
 
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.4', '>= 5.2.4.3'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 # Use Puma as the app server
@@ -53,9 +53,9 @@ gem 'grape-swagger-entity', '~> 0.5'
 gem 'grape_logging', '~> 1.8'
 gem 'memoist', '~> 0.16'
 gem 'jwt', '~> 2.2'
-gem 'jwt-multisig', '~> 1.0', '>= 1.0.2'
+gem 'jwt-multisig', '~> 1.0', '>= 1.0.4'
 gem 'bunny'
-gem 'phonelib',     '~> 0.6.0'
+gem 'phonelib',     '~> 0.6.45'
 gem 'twilio-ruby',  '~> 5.25.4'
 gem 'vault',        '~> 0.1'
 gem 'vault-rails', git: 'https://github.com/rubykube/vault-rails'
@@ -106,5 +106,7 @@ group :test do
   # gem 'chromedriver-helper'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
   gem 'shoulda-matchers', '~> 4.0.1.0'
-  gem 'rails-controller-testing', '>= 1.0.4'
+  gem 'rails-controller-testing', '>= 1.0.5'
 end
+
+gem "pg", "~> 1.2"

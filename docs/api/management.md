@@ -12,10 +12,10 @@ Management API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
-### /labels/delete
+### /api/v2/management/labels/delete
 
 #### POST
-##### Description:
+##### Description
 
 Delete a label with 'private' scope
 
@@ -28,14 +28,14 @@ Delete a label with 'private' scope
 
 ##### Responses
 
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 201 | Delete a label with 'private' scope | [AdminLabelView](#adminlabelview) |
+| Code | Description |
+| ---- | ----------- |
+| 201 | Delete a label with 'private' scope |
 
-### /labels
+### /api/v2/management/labels
 
 #### PUT
-##### Description:
+##### Description
 
 Update a label with 'private' scope
 
@@ -47,16 +47,16 @@ Update a label with 'private' scope
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | Yes | string |
 | description | formData | Label desc. | No | string |
-| replace | formData | When true label will be created if not exist | No | Boolean |
+| replace | formData | When true label will be created if not exist | No | boolean |
 
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 200 | Update a label with 'private' scope | [AdminLabelView](#adminlabelview) |
+| 200 | Update a label with 'private' scope | [API_V2_Entities_Label](#api_v2_entities_label) |
 
 #### POST
-##### Description:
+##### Description
 
 Create a label with 'private' scope and assigns to users
 
@@ -73,12 +73,12 @@ Create a label with 'private' scope and assigns to users
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Create a label with 'private' scope and assigns to users | [AdminLabelView](#adminlabelview) |
+| 201 | Create a label with 'private' scope and assigns to users | [API_V2_Entities_Label](#api_v2_entities_label) |
 
-### /labels/list
+### /api/v2/management/labels/list
 
 #### POST
-##### Description:
+##### Description
 
 Get user collection filtered on label attributes
 
@@ -92,12 +92,12 @@ Get user collection filtered on label attributes
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Get user collection filtered on label attributes | [Label](#label) |
+| 201 | Get user collection filtered on label attributes | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |
 
-### /labels/filter/users
+### /api/v2/management/labels/filter/users
 
 #### POST
-##### Description:
+##### Description
 
 Get all labels assigned to users
 
@@ -108,7 +108,7 @@ Get all labels assigned to users
 | key | formData | Label key. | Yes | string |
 | value | formData | Label value. | No | string |
 | scope | formData | Label scope. | No | string |
-| extended | formData | When true endpoint returns full information about users | No | Boolean |
+| extended | formData | When true endpoint returns full information about users | No | boolean |
 | range | formData |  | No | string |
 | page | formData | Page number (defaults to 1). | No | integer |
 | limit | formData | Number of users per page (defaults to 100, maximum is 100). | No | integer |
@@ -117,12 +117,12 @@ Get all labels assigned to users
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Get all labels assigned to users | [Label](#label) |
+| 201 | Get all labels assigned to users | [API_V2_Entities_User](#api_v2_entities_user) |
 
-### /users/import
+### /api/v2/management/users/import
 
 #### POST
-##### Description:
+##### Description
 
 Imports an existing user
 
@@ -147,12 +147,33 @@ Imports an existing user
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Imports an existing user | [UserWithProfile](#userwithprofile) |
+| 201 | Imports an existing user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /users
+### /api/v2/management/users/update
 
 #### POST
-##### Description:
+##### Description
+
+Updates role and data fields of existing user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User Uid | Yes | string |
+| role | formData | User Role | No | string |
+| data | formData | Any additional key:value pairs in json format | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Updates role and data fields of existing user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
+
+### /api/v2/management/users
+
+#### POST
+##### Description
 
 Creates new user
 
@@ -168,12 +189,12 @@ Creates new user
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Creates new user | [UserWithProfile](#userwithprofile) |
+| 201 | Creates new user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
 
-### /users/list
+### /api/v2/management/users/list
 
 #### POST
-##### Description:
+##### Description
 
 Returns array of users as collection
 
@@ -181,7 +202,7 @@ Returns array of users as collection
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
-| extended | formData | When true endpoint returns full information about users | No | Boolean |
+| extended | formData | When true endpoint returns full information about users | No | boolean |
 | range | formData |  | No | string |
 | from | formData | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
 | to | formData | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
@@ -192,12 +213,12 @@ Returns array of users as collection
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Returns array of users as collection | [User](#user) |
+| 201 | Returns array of users as collection | [API_V2_Entities_User](#api_v2_entities_user) |
 
-### /users/get
+### /api/v2/management/users/get
 
 #### POST
-##### Description:
+##### Description
 
 Get users and profile information
 
@@ -213,12 +234,99 @@ Get users and profile information
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Get users and profile information | [UserWithProfile](#userwithprofile) |
+| 201 | Get users and profile information | [API_V2_Management_Entities_UserWithKYC](#api_v2_management_entities_userwithkyc) |
 
-### /otp/sign
+### /api/v2/management/profiles
 
 #### POST
-##### Description:
+##### Description
+
+Imports a profile for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User Uid | Yes | string |
+| first_name | formData |  | No | string |
+| last_name | formData |  | No | string |
+| dob | formData | Birthday date | No | date |
+| address | formData |  | No | string |
+| postcode | formData |  | No | string |
+| city | formData |  | No | string |
+| country | formData |  | No | string |
+| state | formData |  | No | string |
+| metadata | formData |  | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Imports a profile for user | [API_V2_Management_Entities_UserWithProfile](#api_v2_management_entities_userwithprofile) |
+
+### /api/v2/management/phones/delete
+
+#### POST
+##### Description
+
+Delete phone number for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+| number | formData | User phone number | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Delete phone number for user |
+
+### /api/v2/management/phones
+
+#### POST
+##### Description
+
+Create phone number for user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+| number | formData | User phone number | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create phone number for user |
+
+### /api/v2/management/phones/get
+
+#### POST
+##### Description
+
+Get user phone numbers
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | User uid | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Get user phone numbers |
+
+### /api/v2/management/otp/sign
+
+#### POST
+##### Description
 
 Sign request with barong signature
 
@@ -235,10 +343,10 @@ Sign request with barong signature
 | ---- | ----------- |
 | 201 | Sign request with barong signature |
 
-### /documents
+### /api/v2/management/documents
 
 #### POST
-##### Description:
+##### Description
 
 Push documents to barong DB
 
@@ -253,19 +361,102 @@ Push documents to barong DB
 | file_ext | formData | Document file extension | Yes | string |
 | upload | formData | Base64 encoded document | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
-| update_labels | formData | If set to false, user label will not be created/updated | No | Boolean |
+| update_labels | formData | If set to false, user label will not be created/updated | No | boolean |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Push documents to barong DB |
+
+### /api/v2/management/service_accounts/delete
+
+#### POST
+##### Description
+
+Delete specific service_account
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | service_account uid | Yes | string |
 
 ##### Responses
 
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
-| 201 | Push documents to barong DB | [UserWithProfile](#userwithprofile) |
+| 201 | Delete specific service_account | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
 
-### /timestamp
+### /api/v2/management/service_accounts/create
 
 #### POST
-##### Description:
+##### Description
+
+Create service_account
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| owner_uid | formData | owner uid | Yes | string |
+| service_account_role | formData | service_account role | Yes | string |
+| service_account_uid | formData | service_account uid | No | string |
+| service_account_email | formData | service_account email | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Create service_account | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
+
+### /api/v2/management/service_accounts/list
+
+#### POST
+##### Description
+
+Get service_accounts as a paginated collection
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| page | formData | Page number (defaults to 1). | No | integer |
+| limit | formData | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+| owner_uid | formData | owner uid | No | string |
+| owner_email | formData | owner email | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get service_accounts as a paginated collection | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
+
+### /api/v2/management/service_accounts/get
+
+#### POST
+##### Description
+
+Get specific service_account information
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| uid | formData | service_account uid | No | string |
+| email | formData | service_account email | No | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get specific service_account information | [API_V2_Entities_ServiceAccounts](#api_v2_entities_serviceaccounts) |
+
+### /api/v2/management/timestamp
+
+#### POST
+##### Description
 
 Returns server time in seconds since Unix epoch.
 
@@ -277,10 +468,21 @@ Returns server time in seconds since Unix epoch.
 
 ### Models
 
-
-#### AdminLabelView
+#### API_V2_Entities_Label
 
 Create a label with 'private' scope and assigns to users
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| key | string | Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | No |
+| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
+| scope | string | Label scope: 'public' or 'private' | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_AdminLabelView
+
+Get user collection filtered on label attributes
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -291,51 +493,7 @@ Create a label with 'private' scope and assigns to users
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### Label
-
-Get all labels assigned to users
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| key | string | Label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | No |
-| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
-| scope | string | Label scope: 'public' or 'private' | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-#### UserWithProfile
-
-Push documents to barong DB
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
-| data | string | additional phone and profile info | No |
-| profiles | [Profile](#profile) |  | No |
-| referral_uid | string | UID of referrer | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-#### Profile
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| first_name | string |  | No |
-| last_name | string |  | No |
-| dob | date | Birthday date | No |
-| address | string |  | No |
-| postcode | string |  | No |
-| city | string |  | No |
-| country | string |  | No |
-| state | string |  | No |
-| metadata | object | Profile additional fields | No |
-
-#### User
+#### API_V2_Entities_User
 
 Returns array of users as collection
 
@@ -350,7 +508,119 @@ Returns array of users as collection
 | referral_uid | string | UID of referrer | No |
 | data | string | additional phone and profile info | No |
 
-#### APIKey
+#### API_V2_Management_Entities_UserWithProfile
+
+Imports a profile for user
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string |  | No |
+| data | string | additional phone and profile info | No |
+| profiles | [API_V2_Management_Entities_Profile](#api_v2_management_entities_profile) |  | No |
+| referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Management_Entities_Profile
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| first_name | string |  | No |
+| last_name | string | Last name | No |
+| dob | date | Birthday date | No |
+| address | string |  | No |
+| postcode | string |  | No |
+| city | string |  | No |
+| country | string |  | No |
+| state | string |  | No |
+| metadata | object | Profile additional fields | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Management_Entities_UserWithKYC
+
+Get users and profile information
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean |  | No |
+| state | string |  | No |
+| data | string | additional phone and profile info | No |
+| profiles | [API_V2_Management_Entities_Profile](#api_v2_management_entities_profile) |  | No |
+| labels | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |  | No |
+| phones | [API_V2_Management_Entities_Phone](#api_v2_management_entities_phone) |  | No |
+| documents | [API_V2_Management_Entities_Document](#api_v2_management_entities_document) |  | No |
+| data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
+| comments | [API_V2_Entities_Comment](#api_v2_entities_comment) |  | No |
+| referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Management_Entities_Phone
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| country | string |  | No |
+| number | string |  | No |
+| validated_at | s (g) |  | No |
+
+#### API_V2_Management_Entities_Document
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| upload | string | file url | No |
+| doc_type | string | document type: passport, driver license | No |
+| doc_number | string | document number: AB123123 type | No |
+| doc_expire | string | expire date of uploaded documents | No |
+| metadata | string | any additional stored data | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_DataStorage
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| title | string | any additional data title | No |
+| data | string | any additional data json key:value pairs | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_Comment
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | comment id | No |
+| author_uid | string | comment author | No |
+| title | string | comment title | No |
+| data | string | comment plain text | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_ServiceAccounts
+
+Get specific service_account information
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| state | string |  | No |
+| user | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_APIKey
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -362,7 +632,7 @@ Returns array of users as collection
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### UserWithFullInfo
+#### API_V2_Entities_UserWithFullInfo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -377,56 +647,31 @@ Returns array of users as collection
 | data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
-| labels | [Label](#label) |  | No |
-| phones | [Phone](#phone) |  | No |
-| profiles | [Profile](#profile) |  | No |
-| data_storages | [DataStorage](#datastorage) |  | No |
+| labels | [API_V2_Entities_Label](#api_v2_entities_label) |  | No |
+| phones | [API_V2_Entities_Phone](#api_v2_entities_phone) |  | No |
+| profiles | [API_V2_Entities_Profile](#api_v2_entities_profile) |  | No |
+| data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
 
-#### Phone
+#### API_V2_Entities_Phone
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | country | string |  | No |
-| number | string |  | No |
+| number | string | Submasker phone number | No |
 | validated_at | s (g) |  | No |
 
-#### DataStorage
+#### API_V2_Entities_Profile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| title | string | any additional data title | No |
-| data | string | any additional data json key:value pairs | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-#### UserWithKYC
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean |  | No |
+| first_name | string |  | No |
+| last_name | string | Submasked last name | No |
+| dob | date | Submasked birthday date | No |
+| address | string |  | No |
+| postcode | string |  | No |
+| city | string |  | No |
+| country | string |  | No |
 | state | string |  | No |
-| data | string | additional phone and profile info | No |
-| profiles | [Profile](#profile) |  | No |
-| labels | [AdminLabelView](#adminlabelview) |  | No |
-| phones | [Phone](#phone) |  | No |
-| documents | [Document](#document) |  | No |
-| data_storages | [DataStorage](#datastorage) |  | No |
-| referral_uid | string | UID of referrer | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-#### Document
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| upload | string | file url | No |
-| doc_type | string | document type: passport, driver license | No |
-| doc_number | string | document number: AB123123 type | No |
-| doc_expire | string | expire date of uploaded documents | No |
-| metadata | string | any additional stored data | No |
+| metadata | object | Profile additional fields | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |

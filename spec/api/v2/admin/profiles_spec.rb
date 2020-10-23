@@ -29,7 +29,9 @@ describe API::V2::Admin::Profiles do
 
         result = JSON.parse(response.body)
         expect(response).to be_successful
+
         expect(result.count).to eq(Profile.count)
+        expect(result.first.keys).to match_array %w[first_name last_name dob address postcode city country state metadata created_at updated_at]
       end
 
       it 'returns paginated profiles' do
@@ -40,6 +42,8 @@ describe API::V2::Admin::Profiles do
         expect(response.headers.fetch('Total')).to eq '5'
         expect(result.size).to eq 1
         expect(result.first['first_name']).to eq profile1.first_name
+        expect(result.first['last_name']).to eq profile1.last_name
+        expect(result.first['dob']).to eq profile1.dob.to_s
 
         get '/api/v2/admin/profiles', params: { limit: 1, page: 2 }, headers: auth_header
         result = JSON.parse(response.body)
@@ -48,6 +52,9 @@ describe API::V2::Admin::Profiles do
         expect(response.headers.fetch('Total')).to eq '5'
         expect(result.size).to eq 1
         expect(result.first['first_name']).to eq profile2.first_name
+        expect(result.first['last_name']).to eq profile2.last_name
+        expect(result.first['dob']).to eq profile2.dob.to_s
+
       end
     end
   end
@@ -68,15 +75,17 @@ describe API::V2::Admin::Profiles do
 
     context 'successful response' do
       it 'works correctly' do
-        post '/api/v2/admin/profiles', params: request_params.merge(uid: user.uid), headers: auth_header
+        expect { post '/api/v2/admin/profiles', params: request_params.merge(uid: user.uid), headers: auth_header }
+          .to change { Profile.count }.by(1)
 
         expect(response.status).to eq(201)
-        profile = Profile.find_by(request_params)
-        expect(profile).to be
+        expect(json_body.keys).to match_array %i[first_name last_name dob address postcode city country state metadata created_at updated_at]
+        expect(json_body[:first_name]).to eq Profile.last.first_name
+        expect(json_body[:last_name]).to eq Profile.last.last_name
+        expect(json_body[:dob]).to eq Profile.last.dob.to_s
         expect(json_body[:state]).to eq('submitted')
-        expect(profile.state).to eq('submitted')
-        expect(profile.author).to eq(test_user.uid)
-        expect(profile.metadata).to be_blank
+        expect(json_body[:metadata]).to be_blank
+        expect(Profile.last.author).to eq(test_user.uid)
       end
     end
   end
@@ -94,6 +103,10 @@ describe API::V2::Admin::Profiles do
         expect(response.status).to eq(200)
         profile = @member.profiles.last
         expect(profile).to be
+        expect(json_body.keys).to match_array %i[first_name last_name dob address postcode city country state metadata created_at updated_at]
+        expect(json_body[:first_name]).to eq profile.first_name
+        expect(json_body[:last_name]).to eq profile.last_name
+        expect(json_body[:dob]).to eq profile.dob.to_s
         expect(json_body[:state]).to eq('verified')
         expect(profile.state).to eq('verified')
       end
@@ -110,6 +123,10 @@ describe API::V2::Admin::Profiles do
         expect(response.status).to eq(200)
         profile = @user.profiles.last
         expect(profile).to be
+        expect(json_body.keys).to match_array %i[first_name last_name dob address postcode city country state metadata created_at updated_at]
+        expect(json_body[:first_name]).to eq profile.first_name
+        expect(json_body[:last_name]).to eq profile.last_name
+        expect(json_body[:dob]).to eq profile.dob.to_s
         expect(json_body[:state]).to eq('verified')
         expect(profile.state).to eq('verified')
         expect(profile.metadata).to be_blank
@@ -167,6 +184,10 @@ describe API::V2::Admin::Profiles do
         expect(response.status).to eq(200)
         profile = test_user.profiles.last
         expect(profile).to be
+        expect(json_body.keys).to match_array %i[first_name last_name dob address postcode city country state metadata created_at updated_at]
+        expect(json_body[:first_name]).to eq profile.first_name
+        expect(json_body[:last_name]).to eq profile.last_name
+        expect(json_body[:dob]).to eq profile.dob.to_s
         expect(json_body[:state]).to eq('rejected')
         expect(profile.state).to eq('rejected')
       end
@@ -177,6 +198,10 @@ describe API::V2::Admin::Profiles do
         expect(response.status).to eq(200)
         profile = test_user.profiles.last
         expect(profile).to be
+        expect(json_body.keys).to match_array %i[first_name last_name dob address postcode city country state metadata created_at updated_at]
+        expect(json_body[:first_name]).to eq profile.first_name
+        expect(json_body[:last_name]).to eq profile.last_name
+        expect(json_body[:dob]).to eq profile.dob.to_s
         expect(json_body[:state]).to eq('rejected')
         expect(profile.state).to eq('rejected')
         expect(profile.metadata).to be_blank

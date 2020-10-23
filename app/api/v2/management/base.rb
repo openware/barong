@@ -16,9 +16,11 @@ module API::V2
       mount API::V2::Management::Labels
       mount API::V2::Management::Users
       mount API::V2::Management::Profiles
+      mount API::V2::Management::Phones
       mount API::V2::Management::Tools
       mount API::V2::Management::Otp
       mount API::V2::Management::Documents
+      mount API::V2::Management::ServiceAccounts
 
       add_swagger_documentation base_path: '/api/v2/management',
       info: {
@@ -34,17 +36,20 @@ module API::V2
         }
       },
       models: [
-        Entities::Label,
-        Entities::APIKey,
+        API::V2::Entities::Label,
+        API::V2::Entities::APIKey,
+        API::V2::Entities::UserWithFullInfo,
+        API::V2::Entities::User,
         Entities::Profile,
-        Entities::User,
+        Entities::Phone,
+        Entities::Document,
         Entities::UserWithProfile,
-        Entities::UserWithFullInfo,
-        Entities::UserWithKYC
+        Entities::UserWithKYC,
       ],
       api_version: 'v2',
       doc_version: Barong::Application::GIT_TAG,
       hide_format: true,
+      add_base_path: true,
       hide_documentation_path: true,
       mount_path: '/management.json'
     end

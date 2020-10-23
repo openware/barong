@@ -15,7 +15,7 @@ module API::V2
 
         desc 'Imports a profile for user' do
           @settings[:scope] = :write_users
-          success API::V2::Entities::UserWithProfile
+          success API::V2::Management::Entities::UserWithProfile
         end
 
         params do
@@ -32,14 +32,14 @@ module API::V2
         end
 
         post do
-          user =  User.find_by(uid: params[:uid])
+          user = User.find_by(uid: params[:uid])
           error! 'user.doesnt_exist', 422 unless user
 
           profile_params = params.slice(*profile_param_keys)
           profile = Profile.new(profile_params.merge(user_id: user.id))
           error!(profile.errors.full_messages, 422) unless profile.save
 
-          present user, with: API::V2::Entities::UserWithProfile
+          present user, with: API::V2::Management::Entities::UserWithProfile
         end
       end
     end

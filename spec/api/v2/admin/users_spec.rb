@@ -14,7 +14,7 @@ describe API::V2::Admin::Users do
            role: 'member'
   end
 
-  let(:experimental_user) { create(:user, state: "pending") }
+  let(:experimental_user) { create(:user, :with_document_phone_profile, state: "pending") }
 
   describe 'GET /api/v2/admin/users' do
     let(:do_request) { get '/api/v2/admin/users', headers: auth_header }
@@ -35,6 +35,7 @@ describe API::V2::Admin::Users do
       it 'returns list of users' do
         do_request
 
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
@@ -53,6 +54,7 @@ describe API::V2::Admin::Users do
         params[:order_by] = 'id'
         do_search_request
 
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
@@ -65,6 +67,7 @@ describe API::V2::Admin::Users do
         params[:order_by] = 'id'
         do_search_request
 
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.fifth.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.fourth.except(:referral_uid)
@@ -97,6 +100,7 @@ describe API::V2::Admin::Users do
         do_search_request
 
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body).not_to include(test_user)
       end
 
@@ -104,6 +108,7 @@ describe API::V2::Admin::Users do
         params[:level] = 2
         do_search_request
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(level: 2).count
       end
 
@@ -111,6 +116,7 @@ describe API::V2::Admin::Users do
         params[:state] = 'active'
         do_search_request
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(state: 'active').count
       end
 
@@ -119,6 +125,7 @@ describe API::V2::Admin::Users do
         params[:state] = 'active'
         do_search_request
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(level: 2, state: 'active').count
       end
 
@@ -128,12 +135,12 @@ describe API::V2::Admin::Users do
         create :profile, user_id: user.id, first_name: 'peatio', last_name: 'barong', country: 'us', state: 'rejected'
       end
 
-
       it 'returns only uniq set of users' do
         user_with_profiles
 
         do_search_request
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.count
       end
 
@@ -141,6 +148,7 @@ describe API::V2::Admin::Users do
         params[:first_name] = 'peatio'
         do_search_request
         expect(response.status).to eq 200
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
       end
 
       it 'returns filtered list of users when several params given (profile attribute) : first_name and country' do
@@ -151,18 +159,26 @@ describe API::V2::Admin::Users do
         expect(response.status).to eq 200
       end
 
-      let(:extended_params) { { extended: true } }
-      let(:do_extended_info_request) { get '/api/v2/admin/users', headers: auth_header, params: extended_params }
+      context 'extended params' do
+        let(:extended_params) { { extended: true } }
+        let(:do_extended_info_request) { get '/api/v2/admin/users', headers: auth_header, params: extended_params }
+        let!(:user) { create(:user, :with_profile) }
 
-      it 'returns list of users with full info' do
-        do_extended_info_request
-        expect(User.count).to eq json_body.count
+        it 'returns list of users with full info' do
+          do_extended_info_request
+          expect(User.count).to eq json_body.count
 
-        expect(json_body.first.keys).to include(:profiles)
+          expect(json_body.first.keys).to include(:profiles)
 
-        expect(response.headers.fetch('Total')).to eq User.all.count.to_s
-        expect(response.headers.fetch('Page')).to eq '1'
-        expect(response.headers.fetch('Per-Page')).to eq '100'
+          expect(response.headers.fetch('Total')).to eq User.all.count.to_s
+          expect(response.headers.fetch('Page')).to eq '1'
+          expect(response.headers.fetch('Per-Page')).to eq '100'
+          expect(json_body.first.keys).to match_array %i[email uid role level otp state data profiles referral_uid created_at updated_at]
+          expect(json_body.last[:profiles][0][:first_name]).to eq user.profiles.first.first_name
+          expect(json_body.last[:profiles][0][:last_name]).to eq user.profiles.first.last_name
+          expect(json_body.last[:profiles][0][:address]).to eq user.profiles.first.address
+          expect(json_body.last[:profiles][0][:dob]).to eq user.profiles.first.dob.to_s
+        end
       end
 
       it 'returns list of users (ASC ordered) in search' do
@@ -170,6 +186,7 @@ describe API::V2::Admin::Users do
         do_search_request
 
         expect(json_body.count).to eq 1
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         expect(json_body[0][:email]).to eq 'testa@gmail.com'
       end
 
@@ -181,6 +198,7 @@ describe API::V2::Admin::Users do
         expect(json_body.count).to eq User.all.count
 
         expect_status.to eq(200)
+        expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
       end
 
       context 'pagination test' do
@@ -194,6 +212,7 @@ describe API::V2::Admin::Users do
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
           expect(response.headers.fetch('Per-Page')).to eq '2'
+          expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         end
 
         it 'returns 2nd page, limit 2 users per page' do
@@ -203,10 +222,10 @@ describe API::V2::Admin::Users do
           }
           expect(validate_fields(User.third)).to eq json_body.first.except(:referral_uid)
           expect(validate_fields(User.fourth)).to eq json_body.second.except(:referral_uid)
-
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
+          expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
         end
       end
     end
@@ -218,8 +237,8 @@ describe API::V2::Admin::Users do
     context 'admin user' do
       let(:test_user) { create(:user, role: "admin") }
       let(:user_with_api_keys) { create(:user, state: "active", otp: true) }
-      let!(:api_key1) { create(:api_key, user: user_with_api_keys) }
-      let!(:api_key2) { create(:api_key, user: user_with_api_keys) }
+      let!(:api_key1) { create(:api_key, key_holder_account: user_with_api_keys) }
+      let!(:api_key2) { create(:api_key, key_holder_account: user_with_api_keys) }
 
       it 'renders error if uid is misssing' do
         put '/api/v2/admin/users', headers: auth_header, params: {
@@ -356,7 +375,7 @@ describe API::V2::Admin::Users do
     let(:do_request) { get '/api/v2/admin/users/' + experimental_user.uid, headers: auth_header }
 
     context 'admin user' do
-      let(:test_user) { create(:user, role: "admin") }
+      let(:test_user) { create(:user, :with_document_phone_profile, role: "admin") }
 
       it 'renders error if uid is invalid' do
         get '/api/v2/admin/users/asdasdsad', headers: auth_header
@@ -366,13 +385,22 @@ describe API::V2::Admin::Users do
 
       it 'returns user info' do
         do_request
+
         expect(response.status).to eq 200
+
+        expect(json_body.keys).to match_array %i[email uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
         expect(json_body[:uid]).to eq experimental_user.uid
         expect(json_body[:role]).to eq experimental_user.role
         expect(json_body[:email]).to eq experimental_user.email
         expect(json_body[:level]).to eq experimental_user.level
         expect(json_body[:otp]).to eq experimental_user.otp
         expect(json_body[:state]).to eq experimental_user.state
+        expect(json_body[:profiles][0][:first_name]).to eq experimental_user.profiles[0].first_name
+        expect(json_body[:profiles][0][:last_name]).to eq experimental_user.profiles[0].last_name
+        expect(json_body[:profiles][0][:address]).to eq experimental_user.profiles[0].address
+        expect(json_body[:profiles][0][:dob]).to eq experimental_user.profiles[0].dob.to_s
+        expect(json_body[:documents][0][:doc_number]).to eq experimental_user.documents[0].doc_number
+        expect(json_body[:phones][0][:number]).to eq experimental_user.phones[0].number
       end
     end
   end
@@ -505,7 +533,7 @@ describe API::V2::Admin::Users do
     end
   end
 
-  describe 'POST /api/v2/admin/labels' do
+  describe 'DELETE /api/v2/admin/labels' do
     let(:do_request) { delete '/api/v2/admin/users/labels', headers: auth_header }
 
     context 'admin user' do
@@ -575,7 +603,7 @@ describe API::V2::Admin::Users do
         }
         experimental_user.reload
         expect(response.status).to eq 200
-        expect(experimental_user.labels).to eq []
+        expect(experimental_user.labels.count).to eq 1
       end
     end
   end
@@ -704,6 +732,8 @@ describe API::V2::Admin::Users do
           }
 
           expect(json_body.count).to eq 2
+
+          expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
           expect(User.first.email).to eq json_body.first[:email]
           expect(User.second.email).to eq json_body.second[:email]
 
@@ -722,6 +752,7 @@ describe API::V2::Admin::Users do
 
           expect(User.third.email).to eq json_body.first[:email]
 
+          expect(json_body.first.keys).to match_array %i[email uid role level otp state referral_uid data]
           expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
@@ -750,7 +781,6 @@ describe API::V2::Admin::Users do
         test_user.update!(role: 'superadmin')
         post request, headers: auth_header, params: { uid: superadmin.uid, state: 'banned' }
 
-        result = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(superadmin.reload.state). to eq 'banned'
       end
@@ -988,8 +1018,6 @@ describe API::V2::Admin::Users do
               page: 2
           }
 
-          expect(User.third.email).to eq json_body.first[:email]
-
           expect(response.headers.fetch('Total')).to eq private_document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
@@ -1014,16 +1042,24 @@ describe API::V2::Admin::Users do
           }
         end
         let(:do_request) { post url, headers: auth_header, params: params }
-    
+
         it 'creates new comment' do
-          expect { do_request }.to change { Comment.count }.by 1 
+          expect { do_request }.to change { Comment.count }.by 1
           expect(response.status).to eq 201
         end
-    
+
         it 'saves author_uid' do
           do_request
+
+          expect(json_body.keys).to match_array %i[email uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
           expect(Comment.last.author_uid).to eq test_user.uid
           expect(json_body[:comments][0][:author_uid]).to eq test_user.uid
+          expect(json_body[:profiles][0][:first_name]).to eq experimental_user.profiles[0].first_name
+          expect(json_body[:profiles][0][:last_name]).to eq experimental_user.profiles[0].last_name
+          expect(json_body[:profiles][0][:address]).to eq experimental_user.profiles[0].address
+          expect(json_body[:profiles][0][:dob]).to eq experimental_user.profiles[0].dob.to_s
+          expect(json_body[:documents][0][:doc_number]).to eq experimental_user.documents[0].doc_number
+          expect(json_body[:phones][0][:number]).to eq experimental_user.phones[0].number
           expect(response.status).to eq 201
         end
       end
@@ -1038,13 +1074,13 @@ describe API::V2::Admin::Users do
         end
 
         it 'returns error because of length of comment' do
-          expect { do_request }.to change { Comment.count }.by 0 
+          expect { do_request }.to change { Comment.count }.by 0
           expect(json_body[:errors]).to eq ['admin.comments.title_too_long']
           expect(response.status).to eq 422
         end
       end
     end
-  
+
     describe 'PUT /api/v2/admin/users/comments' do
       let(:url) { '/api/v2/admin/users/comments' }
       let!(:seeded) { Comment.create(author_uid: test_user.uid, user_id: experimental_user.id, title: 'preseeded record', data: 'prev') }
@@ -1056,17 +1092,17 @@ describe API::V2::Admin::Users do
         }
       end
       let(:do_request) { put url, headers: auth_header, params: params }
-  
+
       it 'does not create new comment' do
-        expect { do_request }.not_to change { Comment.count } 
+        expect { do_request }.not_to change { Comment.count }
         expect(response.status).to eq 200
       end
-  
+
       it 'comment does not exist' do
         put url, headers: auth_header, params: { id: seeded.id+1, uid: experimental_user.uid, title: 'vv', data: 'ww' }
         expect(response.status).to eq 404
       end
-  
+
       it 'changes data' do
         do_request
         expect(seeded.reload.data).to eq 'next.'
@@ -1080,12 +1116,12 @@ describe API::V2::Admin::Users do
       let!(:seeded) { Comment.create(author_uid: test_user.uid, user_id: experimental_user.id, title: 'preseeded record', data: 'prev') }
       let(:params) { { id: seeded.id } }
       let(:do_request) { delete url, headers: auth_header, params: params }
-  
+
       it 'does not create new comment' do
-        expect { do_request }.to change { Comment.count }.by -1 
+        expect { do_request }.to change { Comment.count }.by -1
         expect(response.status).to eq 200
       end
-  
+
       it 'comment does not exist' do
         put url, headers: auth_header, params: { id: seeded.id+1, uid: experimental_user.uid, title: 'vv', data: 'ww' }
         expect(response.status).to eq 404

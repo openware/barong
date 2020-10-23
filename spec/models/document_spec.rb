@@ -1,23 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: documents
-#
-#  id         :bigint           not null, primary key
-#  user_id    :bigint           unsigned, not null
-#  upload     :string(255)
-#  doc_type   :string(255)
-#  doc_number :string(255)
-#  doc_expire :date
-#  metadata   :text(65535)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-
-
-require 'rails_helper'
-
 RSpec.describe Document, type: :model do
   ## Test of relationships
   let!(:create_admin_permission) do
@@ -28,6 +10,7 @@ RSpec.describe Document, type: :model do
     create :permission,
            role: 'member'
   end
+
   it { should belong_to(:user) }
 
   describe 'validation' do
@@ -103,6 +86,22 @@ RSpec.describe Document, type: :model do
 
       it 'remains value verified' do
         expect { create_document }.to_not change { document_label }
+      end
+    end
+  end
+
+  context 'submasked fields' do
+    let!(:current_user) { create(:user) }
+    let(:document) { create :document, user: current_user, doc_type: 'Passport', doc_number: 'M0993353' }
+    let(:document_without_doc_number) { create :document, user: current_user, doc_type: 'Passport', doc_number: nil }
+
+    context 'number' do
+      it { expect(document.sub_masked_doc_number).to eq 'M0****53' }
+      it { expect(document_without_doc_number.sub_masked_doc_number).to eq nil }
+
+      it 'should mask first 2 letters and last 2 digits' do
+        document.update(doc_type: 'Driver license', doc_number: 'BO231283013DSAS23')
+        expect(document.sub_masked_doc_number).to eq 'BO*************23'
       end
     end
   end

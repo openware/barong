@@ -6,7 +6,9 @@ module API
       # Phone request response
       class Phone < API::V2::Entities::Base
         expose :country, documentation: { type: 'String' }
-        expose :number, documentation: { type: 'String' }
+        expose :number, documentation: { type: 'String', desc: 'Submasker phone number' } do |phone|
+          phone.sub_masked_number
+        end
         expose :validated_at, documentation: { type: 'Datetime' }
       end
     end

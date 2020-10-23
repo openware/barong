@@ -2,16 +2,16 @@
 
 require 'vault/rails'
 
-if Barong::App.config.vault_token.to_s != ''
-  Vault::Rails.configure do |config|
-    config.enabled = Rails.env.production?
-    config.address = Barong::App.config.vault_address
-    config.token = Barong::App.config.vault_token
-    config.ssl_verify = false
-    config.timeout = 60
-    config.application = Barong::App.config.vault_app_name
-  end
+Vault::Rails.configure do |config|
+  config.enabled = Rails.env.production?
+  config.address = Barong::App.config.vault_address
+  config.token = Barong::App.config.vault_token
+  config.ssl_verify = false
+  config.timeout = 60
+  config.application = Barong::App.config.vault_app_name
+end
 
+if Barong::App.config.vault_token.to_s != ''
   def renew_process
     token = Vault.auth_token.lookup(Vault.token)
     time = token.data[:ttl] * (1 + rand) * 0.1
@@ -37,9 +37,5 @@ if Barong::App.config.vault_token.to_s != ''
     Rails.logger.info '[VAULT] Token is not renewable'
   end
 else
-  if Rails.env.production?
-    raise 'Environment variable BARONG_VAULT_TOKEN is missing'
-  else
-    Rails.logger.warn 'Environment variable BARONG_VAULT_TOKEN is missing'
-  end
+  Rails.logger.warn 'Environment variable BARONG_VAULT_TOKEN is missing'
 end

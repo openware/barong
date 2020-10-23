@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_125225) do
+ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -28,7 +28,8 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
   end
 
   create_table "apikeys", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "user_id", null: false, unsigned: true
+    t.bigint "key_holder_account_id", null: false, unsigned: true
+    t.string "key_holder_account_type", default: "User", null: false
     t.string "kid", null: false
     t.string "algorithm", null: false
     t.string "scope"
@@ -36,8 +37,8 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.string "state", default: "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["key_holder_account_type", "key_holder_account_id"], name: "idx_apikey_on_account"
     t.index ["kid"], name: "index_apikeys_on_kid", unique: true
-    t.index ["user_id"], name: "index_apikeys_on_user_id"
   end
 
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -63,14 +64,16 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.bigint "user_id", null: false, unsigned: true
     t.string "upload"
     t.string "doc_type"
-    t.string "doc_number"
     t.date "doc_expire"
+    t.string "doc_number_encrypted"
+    t.bigint "doc_number_index"
+    t.date "doc_issue"
+    t.string "doc_category"
     t.string "identificator"
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "doc_issue"
-    t.string "doc_category"
+    t.index ["doc_number_index"], name: "index_documents_on_doc_number_index"
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
@@ -108,12 +111,13 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
   create_table "phones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id", null: false, unsigned: true
     t.string "country", null: false
-    t.string "number", null: false
     t.string "code", limit: 5
+    t.string "number_encrypted", null: false
+    t.bigint "number_index", null: false
     t.datetime "validated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["number"], name: "index_phones_on_number"
+    t.index ["number_index"], name: "index_phones_on_number_index"
     t.index ["user_id"], name: "index_phones_on_user_id"
   end
 
@@ -121,10 +125,10 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.bigint "user_id"
     t.string "author"
     t.string "applicant_id"
-    t.string "first_name"
-    t.string "last_name"
-    t.date "dob"
-    t.string "address"
+    t.string "first_name_encrypted", limit: 1024
+    t.string "last_name_encrypted", limit: 1024
+    t.string "dob_encrypted"
+    t.string "address_encrypted", limit: 1024
     t.string "postcode"
     t.string "city"
     t.string "country"
@@ -141,6 +145,17 @@ ActiveRecord::Schema.define(version: 2020_09_02_125225) do
     t.string "value", limit: 64, null: false
     t.integer "code"
     t.string "state", limit: 16, default: "enabled", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "service_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "uid", null: false
+    t.bigint "owner_id", null: false, unsigned: true
+    t.string "email", null: false
+    t.string "role", default: "service_account", null: false
+    t.integer "level", default: 0, null: false
+    t.string "state", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

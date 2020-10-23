@@ -2,16 +2,25 @@
 
 ## Introduction
 
-This document describe how to create vault tokens in order to configure **barong-rails** to be able **to encrypt** and **to decrypt** api_key secrets, **to renew** token and **to manage** totp, to configure **barong-authz** to be able **to decrypt** api_key secrets, **to renew** token.
+This document describes how to create vault tokens in order to restrict components access to vault as following
+
+| Component    | Abilities                                               |
+| ------------ | ------------------------------------------------------- |
+| barong-rails | encrypt api keys<br />create TOTP<br />verify TOTP code |
+| barong-authz | decrypt api keys                                        |
+
+
 
 ## Connect to vault
 The the following variables in your environment with correct values:
+
 ```bash
 export VAULT_ADDR='http://127.0.0.1:8200'
 export VAULT_TOKEN='s.ozytsgX1BcTQaR5Y07SAd2VE'
 ```
 
 You can test that it works running the following command:
+
 ```
 $ vault status
 Type: shamir
@@ -26,13 +35,14 @@ Cluster ID: 9f40327d-ec71-9655-b728-7588ce47d0b4
 
 High-Availability Enabled: false
 ```
+
 ## Create ACL groups
 
 ### Create the following policy files
 
 **barong-rails.hcl**
 
-Replace *opendax* with your vault application name. See [configuration.md](configuration.md#vault-configuration) for more details about vault configuration.
+Replace *opendax* with your vault application name. See [barong vault configuration](https://www.openware.com/sdk/docs/barong/configuration.html#vault-configuration) for more details.
 
 ```bash
 # Access system health status
@@ -50,11 +60,6 @@ path "transit/encrypt/opendax_apikeys_*" {
   capabilities = [ "create", "read", "update" ]
 }
 
-# Decrypt engines secrets
-path "transit/decrypt/opendax_apikeys_*" {
-  capabilities = [ "create", "read", "update" ]
-}
-
 # Renew tokens
 path "auth/token/renew" {
   capabilities = [ "update" ]
@@ -65,9 +70,9 @@ path "auth/token/lookup" {
   capabilities = [ "update" ]
 }
 
-# Generate otp code
+# Manage otp keys
 path "totp/keys/opendax_*" {
-  capabilities = ["create", "read"]
+  capabilities = ["create", "read", "update", "delete"]
 }
 
 # Verify an otp code
@@ -122,6 +127,7 @@ vault token create -policy=barong-authz -period=240h
 ## Configure Barong
 
 Set those variables according to your deployment:
+
 ```bash
 export BARONG_VAULT_ADDRESS=http://127.0.0.1:8200
 export BARONG_VAULT_TOKEN=s.jyH1vmrOmkZ0FZZ0NZtgRenS

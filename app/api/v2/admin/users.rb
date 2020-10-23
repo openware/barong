@@ -35,10 +35,6 @@ module API
                      type: String
             optional :role,
                      type: String
-            optional :first_name,
-                     type: String
-            optional :last_name,
-                     type: String
             optional :country,
                      type: String
             optional :level,
@@ -63,9 +59,9 @@ module API
           get do
             admin_authorize! :read, User
 
-            entity = params[:extended] ? API::V2::Entities::UserWithProfile : API::V2::Entities::User
+            entity = params[:extended] ? API::V2::Admin::Entities::UserWithProfile : API::V2::Entities::User
             users = API::V2::Queries::UserFilter.new(User.all.order(params[:order_by] => params[:ordering])).call(params).uniq
-            users.tap { |q| present paginate(q), with: entity }
+            present paginate(users), with: entity
           end
 
           desc 'Update user attributes',
@@ -253,8 +249,8 @@ module API
 
             users = API::V2::Queries::UserFilter.new(users_with_pending_or_replaced_docs).call(params)
 
-            entity = params[:extended] ? API::V2::Entities::UserWithKYC : API::V2::Entities::User
-            users.all.tap { |q| present paginate(q), with: entity }
+            entity = params[:extended] ? API::V2::Admin::Entities::UserWithKYC : API::V2::Entities::User
+            present paginate(users), with: entity
           end
 
           namespace :labels do
@@ -290,7 +286,7 @@ module API
 
               users = User.joins(:labels).where(labels: { key: params[:key], value: params[:value] })
 
-              users.all.tap { |q| present paginate(q), with: API::V2::Entities::User }
+              present paginate(users), with: API::V2::Entities::User
             end
 
             desc 'Adds label for user',
@@ -515,7 +511,7 @@ module API
             target_user = User.find_by_uid(params[:uid])
             error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
 
-            present target_user, with: API::V2::Entities::UserWithKYC
+            present target_user, with: API::V2::Admin::Entities::UserWithKYC
           end
 
           desc "Deletes user's data storage record",
@@ -544,7 +540,7 @@ module API
 
             target_user.labels.find_by(key: storage.title, scope: 'private')
             storage.destroy
-            present target_user, with: API::V2::Entities::UserWithKYC
+            present target_user, with: API::V2::Admin::Entities::UserWithKYC
           end
 
           namespace :comments do
@@ -572,19 +568,19 @@ module API
             post do
               target_user = User.find_by_uid(params[:uid])
               error!({ errors: ['admin.user.doesnt_exist'] }, 404) if target_user.nil?
-  
+
               comment = Comment.new(
                                       user_id: target_user.id,
                                       data: params[:data],
                                       title: params[:title],
                                       author_uid: current_user[:uid],
                                     )
-  
+
               code_error!(data_storage.errors.details, 422) unless comment.save
-  
-              present target_user, with: API::V2::Entities::UserWithKYC
+
+              present target_user, with: API::V2::Admin::Entities::UserWithKYC
             end
-  
+
             desc "Edit user's comment",
             security: [{ "BearerToken": [] }],
             failure: [
@@ -608,10 +604,10 @@ module API
             put do
               comment = Comment.find(params[:id])
               error!({ errors: ['admin.comment.doesnt_exist'] }, 404) if comment.nil?
-  
+
               code_error!(comment.errors.details, 422) unless comment.update(params.slice(:data, :title))
-  
-              present comment.user, with: API::V2::Entities::UserWithKYC
+
+              present comment.user, with: API::V2::Admin::Entities::UserWithKYC
             end
 
             desc "Delete user's comment",
@@ -627,10 +623,10 @@ module API
             delete do
               comment = Comment.find(params[:id])
               error!({ errors: ['admin.comment.doesnt_exist'] }, 404) if comment.nil?
-  
+
               code_error!(comment.errors.details, 422) unless comment.destroy
-  
-              present comment.user, with: API::V2::Entities::UserWithKYC
+
+              present comment.user, with: API::V2::Admin::Entities::UserWithKYC
             end
           end
         end

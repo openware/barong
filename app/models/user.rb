@@ -6,14 +6,15 @@ class User < ApplicationRecord
 
   has_secure_password
 
-  has_many  :profiles,      dependent: :destroy
-  has_many  :phones,        dependent: :destroy
-  has_many  :data_storages, dependent: :destroy
-  has_many  :comments,      dependent: :destroy
-  has_many  :documents,     dependent: :destroy
-  has_many  :labels,        dependent: :destroy
-  has_many  :api_keys,      dependent: :destroy, class_name: 'APIKey'
-  has_many  :activities,    dependent: :destroy
+  has_many  :profiles,            dependent: :destroy
+  has_many  :phones,              dependent: :destroy
+  has_many  :data_storages,       dependent: :destroy
+  has_many  :comments,            dependent: :destroy
+  has_many  :documents,           dependent: :destroy
+  has_many  :labels,              dependent: :destroy
+  has_many  :activities,          dependent: :destroy
+  has_many  :service_accounts,    dependent: :destroy, foreign_key: "owner_id"
+  has_many  :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
 
   validates_length_of :data, maximum: 1024
   validate :role_exists
@@ -30,6 +31,7 @@ class User < ApplicationRecord
 
   before_validation :assign_uid
   after_update :disable_api_keys
+  after_update :disable_service_accounts
 
   def validate_pass!
     return unless (new_record? && password.present?) || password.present?
@@ -38,8 +40,21 @@ class User < ApplicationRecord
     errors.add(:password, validation_result) unless validation_result == 'strong'
   end
 
+  def disable_service_accounts
+    if state != 'active'
+      service_accounts.each do |account|
+        account.update(state: state)
+      end
+    end
+  end
+
   def disable_api_keys
     if otp_previously_changed? && otp == false || state_previously_changed? && state != 'active'
+      service_accounts.each do |service_account|
+        service_account.api_keys.active.each do |key|
+           key.update(state: 'inactive')
+         end
+      end
       api_keys.active.each do |key|
         key.update(state: 'inactive')
       end
@@ -169,14 +184,7 @@ class User < ApplicationRecord
   def assign_uid
     return unless uid.blank?
 
-    loop do
-      self.uid = random_uid
-      break unless User.where(uid: uid).any?
-    end
-  end
-
-  def random_uid
-    "%s%s" % [Barong::App.config.uid_prefix.upcase, SecureRandom.hex(5).upcase]
+    self.uid = UIDGenerator.generate(Barong::App.config.uid_prefix)
   end
 end
 
@@ -196,4 +204,9 @@ end
 #  referral_id     :bigint
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#  index_users_on_uid    (uid) UNIQUE
 #

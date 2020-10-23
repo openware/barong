@@ -8,11 +8,11 @@ module API::V2
           @options = options
           super(message)
         end
-  
+
         def headers
           @options.fetch(:headers, {})
         end
-  
+
         def status
           @options.fetch(:status)
         end

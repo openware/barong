@@ -16,6 +16,7 @@
 | `barong_apikey_nonce_lifetime` | 5000 | integer representation of milliseconds | nonce in api key headers should not be older than this env value  |
 | `barong_gateway` | 'cloudflare' | `cloudflare`, `akamai` | while turned on (`true`) user IP on session and AuthZ level will firstly be checked in TRUE_CLIENT_IP header |
 | `barong_jwt_expire_time` | '3600' | integer representation of seconds  | general purpose tokens (reset password, confirm email) expiration time |
+| `crc32_salt` | - | any string value | salt for crc32 algorithm which used to searching in encrypted fields |
 
 ### Password configuration
 | Env name | Default value | Possible values | Description |
@@ -25,7 +26,7 @@
 | `barong_password_use_dictionary` | true | bool | activates or deactivates most common password dictionary check |
 
 ### Storage configuration
-More details in [storage configuration doc](https://github.com/openware/barong/blob/master/docs/configuration.md#storage-configuration)
+More details in [storage configuration doc](#storage-configuration)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -50,7 +51,7 @@ More details in [storage configuration doc](https://github.com/openware/barong/b
 | `barong_api_cors_allow_credentials` | false | `false` `true` | allows cookies to be sent in cross-domain responses |
 
 ### CAPTCHA configuration
-More details in [captcha policy doc](https://github.com/openware/barong/blob/master/docs/general/captcha.md)
+More details in [captcha policy doc](https://www.openware.com/sdk/docs/barong/general/captcha.html)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -61,7 +62,7 @@ More details in [captcha policy doc](https://github.com/openware/barong/blob/mas
 | `barong_recaptcha_secret_key` | - | any string value | secret key for RECAPTCHA |
 
 ### Twilio configuration
-More details in [twilio configuration](https://github.com/openware/barong/blob/master/docs/configuration.md#twilio-configuration)
+More details in [twilio configuration](#twilio-configuration)
 
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -87,7 +88,7 @@ More details in [twilio configuration](https://github.com/openware/barong/blob/m
 
 ### Vault configuration
 | `barong_vault_address` | `http://localhost:8200` | any valid url | vault server url with port |
-| `barong_vault_token` | changeme | any string value | vault access token |
+| `barong_vault_token` | | any string value | vault access token |
 | `barong_vault_app_name` | barong | any string value | the name of the application, all encryption keys in Vault will be prefixed with this application name |
 
 ### Sentry configuration

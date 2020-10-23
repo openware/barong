@@ -39,14 +39,15 @@ describe API::V2::Admin::Activities do
         it 'returns list of activities' do
           get '/api/v2/admin/activities', headers: auth_header
           activities = JSON.parse(response.body)
-          expect(Activity.where(category: 'user').count).to eq activities.count
-          expect(Activity.first.user_ip).to eq activities[0]['user_ip']
-          expect(Activity.first.user_agent).to eq activities[0]['user_agent']
-          expect(Activity.first.topic).to eq activities[0]['topic']
-          expect(Activity.first.action).to eq activities[0]['action']
-          expect(Activity.first.result).to eq activities[0]['result']
-          expect(Activity.first.user).to eq first_user
-          expect(Activity.second.user).to eq second_user
+          user_activites = Activity.where(category: 'user')
+          expect(user_activites.count).to eq activities.count
+          expect(user_activites.last.user_ip).to eq activities[0]['user_ip']
+          expect(user_activites.last.user_agent).to eq activities[0]['user_agent']
+          expect(user_activites.last.topic).to eq activities[0]['topic']
+          expect(user_activites.last.action).to eq activities[0]['action']
+          expect(user_activites.last.result).to eq activities[0]['result']
+          expect(user_activites.last.user.email).to eq activities[0]['user']['email']
+          expect(first_user.email).to eq activities[2]['user']['email']
         end
 
         it 'returns list of activities filtered by action' do
@@ -90,16 +91,17 @@ describe API::V2::Admin::Activities do
         it 'returns list of activities' do
           get '/api/v2/admin/activities/admin', headers: auth_header
           activities = JSON.parse(response.body)
+
           expect(Activity.count).to eq activities.count
-          expect(Activity.first.user_ip).to eq activities[0]['user_ip']
-          expect(Activity.first.user_agent).to eq activities[0]['user_agent']
-          expect(Activity.first.topic).to eq activities[0]['topic']
-          expect(Activity.first.action).to eq activities[0]['action']
-          expect(Activity.first.result).to eq activities[0]['result']
-          expect(Activity.first.user).to eq first_user
-          expect(Activity.first.target).to eq second_user
-          expect(Activity.third.user).to eq second_user
-          expect(Activity.third.target).to eq second_user
+          expect(Activity.third.user_ip).to eq activities[0]['user_ip']
+          expect(Activity.third.user_agent).to eq activities[0]['user_agent']
+          expect(Activity.third.topic).to eq activities[0]['topic']
+          expect(Activity.third.action).to eq activities[0]['action']
+          expect(Activity.third.result).to eq activities[0]['result']
+          expect(Activity.third.user.email).to eq activities[0]['admin']['email']
+          expect(Activity.third.target.email).to eq activities[0]['target']['email']
+          expect(Activity.first.user.email).to eq activities[2]['admin']['email']
+          expect(Activity.first.target.email).to eq activities[2]['target']['email']
         end
 
         it 'returns list of activities filtered by action' do

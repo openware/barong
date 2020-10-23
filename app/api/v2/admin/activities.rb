@@ -29,7 +29,7 @@ module API
             admin_authorize! :read, Activity
 
             activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'user')).call(permitted_search_params(params))
-            activities.tap { |q| present paginate(q), with: API::V2::Entities::ActivityWithUser }
+            present paginate(activities), with: API::V2::Admin::Entities::ActivityWithUser
           end
 
           desc 'Returns array of activities as paginated collection',
@@ -52,7 +52,7 @@ module API
             admin_authorize! :read, Activity
 
             activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'admin')).call(permitted_search_params(params))
-            activities.tap { |q| present paginate(q), with: API::V2::Entities::AdminActivity }
+            activities.tap { |q| present paginate(q), with: API::V2::Admin::Entities::AdminActivity }
           end
         end
       end

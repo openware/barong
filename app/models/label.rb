@@ -47,7 +47,7 @@ class Label < ApplicationRecord
     }
   end
 
-private
+  private
 
   def normalize_fields
     self.key = key.to_s.downcase.squish
@@ -77,29 +77,6 @@ private
   end
 end
 
-  # == Schema Information
-  # Schema version: 20181101143041
-  #
-  # Table name: labels
-  #
-  #  id         :bigint(8)        not null, primary key
-  #  user_id    :bigint(8)        not null
-  #  key        :string(255)      not null
-  #  value      :string(255)      not null
-  #  scope      :string(255)      default("public"), not null
-  #  created_at :datetime         not null
-  #  updated_at :datetime         not null
-  #
-  # Indexes
-  #
-  #  index_labels_on_user_id                    (user_id)
-  #  index_labels_on_key_and_scope_and_user_id  (key,scope,user_id) UNIQUE
-  #
-  # Foreign Keys
-  #
-  #  fk_rails_c02659cdf4  (user_id => users.id) ON DELETE => cascade
-  #
-
 # == Schema Information
 #
 # Table name: labels
@@ -112,4 +89,9 @@ end
 #  description :string(255)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_labels_on_user_id                    (user_id)
+#  index_labels_on_user_id_and_key_and_scope  (user_id,key,scope)
 #

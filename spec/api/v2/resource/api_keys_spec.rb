@@ -12,8 +12,8 @@ describe 'Api::V2::APIKeys' do
   end
   let!(:test_user) { create(:user, otp: otp_enabled) }
   let(:otp_enabled) { true }
-  let!(:first_api_key) { create :api_key, user: test_user }
-  let!(:second_api_key) { create :api_key, user: test_user }
+  let!(:first_api_key) { create :api_key, key_holder_account: test_user }
+  let!(:second_api_key) { create :api_key, key_holder_account: test_user }
   let(:valid_otp_code) { '1357' }
   let(:invalid_otp_code) { '1234' }
   let(:otp_code) { valid_otp_code }

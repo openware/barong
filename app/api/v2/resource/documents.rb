@@ -12,7 +12,7 @@ module API::V2
                { code: 401, message: 'Invalid bearer token' }
              ]
         get do
-          current_user.documents.as_json(only: %i[upload doc_type doc_number doc_expire])
+          present current_user.documents, with: Entities::Document, only: %i[upload doc_type doc_number doc_expire]
         end
 
         desc 'Upload a new document for current user',

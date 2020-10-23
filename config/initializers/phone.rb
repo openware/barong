@@ -4,7 +4,7 @@ require_dependency 'barong/mock_sms'
 
 Barong::App.define do |config|
   # Twilio configuration ----------------------
-  # https://github.com/openware/barong/blob/master/docs/configuration.md#twilio-configuration
+  # https://www.openware.com/sdk/docs/barong/configuration.html#twilio-configuration
 
   config.write(:twilio_provider, TwilioSmsSendService)
 

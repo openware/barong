@@ -1,5 +1,34 @@
+---
 kind: pipeline
-name: default
+name: "Mysql 5.7"
+
+services:
+- name: database
+  image: mysql:5.7
+  ports:
+    - 3306
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+- name: rabbitmq
+  image: rabbitmq:3.8.9
+  ports:
+    - 5672
+
+- name: vault
+  image: vault:0.11.4
+  ports:
+    - 8200
+  environment:
+    SKIP_SETCAP: 1
+    BARONG_VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    BARONG_VAULT_ADDRESS: http://vault:8200
+
+- name: redis
+  image: redis:4.0
+  ports:
+    - 6379
 
 steps:
 - name: Configure Vault
@@ -42,14 +71,29 @@ steps:
     REPO_NAME: ${DRONE_REPO}
     GITHUB_API_KEY:
       from_secret: kite_bot_key
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
+  commands:
+    - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
+  when:
+    branch:
+      - "*-stable"
+
+- name: Tag snapshot
+  image: quay.io/openware/sdk-citools:2.4.5
+  environment:
+    BOT_USERNAME: kite-bot
+    BOT_NAME: Kite Bot
+    BOT_EMAIL: kite-bot@heliostech.fr
+    BRANCH_NAME: master
+    REPO_NAME: ${DRONE_REPO}
+    GITHUB_API_KEY:
+      from_secret: kite_bot_key
   commands:
     - BUNDLE_GEMFILE=/sdk/Gemfile bundle exec rake --rakefile=/sdk/Rakefile ci:prebuild
   when:
     branch:
       - master
-      - "*-stable"
+      - "fix/*"
+      - "integration/*"
 
 - name: Generate docs
   image: quay.io/openware/ruby-node:2.6.5
@@ -86,6 +130,8 @@ steps:
     branch:
       - master
       - "*-stable"
+      - "fix/*"
+      - "integration/*"
 
 - name: Redeploy on master.devkube.com
   image: rubykube/microkube:0.2.0
@@ -126,16 +172,29 @@ steps:
       - master
       - "*-stable"
 
+
+trigger:
+  event:
+    - push
+
+image_pull_secrets:
+- dockerconfigjson
+
+
+---
+kind: pipeline
+name: "MariaDB 10.3"
+
 services:
 - name: database
-  image: mariadb
+  image: mariadb:10.3
   ports:
     - 3306
   environment:
     MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
 - name: rabbitmq
-  image: rabbitmq:3.7.6
+  image: rabbitmq:3.8.9
   ports:
     - 5672
 
@@ -154,9 +213,186 @@ services:
   ports:
     - 6379
 
+steps:
+- name: Configure Vault
+  image: vault:0.11.4
+  commands:
+    - vault secrets disable secret
+    - vault secrets enable -path=secret -version=1 kv
+    - vault secrets enable totp
+  environment:
+    VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    VAULT_ADDR: http://vault:8200
+
+- name: Run rspec
+  image: ruby:2.6.6
+  environment:
+    DATABASE_HOST: database
+    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDRESS: http://vault:8200
+    BARONG_VAULT_TOKEN: changeme
+    RAILS_ENV: test
+    REDIS_URL: redis://redis:6379
+    BARONG_REDIS_URL: redis://redis:6379
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
+  commands:
+    - gem update bundler
+    - bundle install --system
+    - ./bin/init_config
+    - rake db:create db:migrate
+    - bundle exec rspec
+
 trigger:
   event:
     - push
+  branch:
+    - "compatibility/*"
+    - "*-stable"
 
-image_pull_secrets:
-- dockerconfigjson
+---
+kind: pipeline
+name: "MySQL 8.0"
+
+services:
+- name: database
+  image: mysql:8.0
+  commands:
+    - /entrypoint.sh --default-authentication-plugin=mysql_native_password
+  ports:
+    - 3306
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+
+- name: rabbitmq
+  image: rabbitmq:3.8.9
+  ports:
+    - 5672
+
+- name: vault
+  image: vault:0.11.4
+  ports:
+    - 8200
+  environment:
+    SKIP_SETCAP: 1
+    BARONG_VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    BARONG_VAULT_ADDRESS: http://vault:8200
+
+- name: redis
+  image: redis:4.0
+  ports:
+    - 6379
+
+steps:
+- name: Configure Vault
+  image: vault:0.11.4
+  commands:
+    - vault secrets disable secret
+    - vault secrets enable -path=secret -version=1 kv
+    - vault secrets enable totp
+  environment:
+    VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    VAULT_ADDR: http://vault:8200
+
+- name: Run rspec
+  image: ruby:2.6.6
+  environment:
+    DATABASE_HOST: database
+    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDRESS: http://vault:8200
+    BARONG_VAULT_TOKEN: changeme
+    RAILS_ENV: test
+    REDIS_URL: redis://redis:6379
+    BARONG_REDIS_URL: redis://redis:6379
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
+  commands:
+    - gem update bundler
+    - bundle install --system
+    - ./bin/init_config
+    - rake db:create db:migrate
+    - bundle exec rspec
+
+trigger:
+  event:
+    - push
+  branch:
+    - "compatibility/*"
+    - "*-stable"
+
+---
+kind: pipeline
+name: "PostgreSQL 13.0"
+
+services:
+- name: database
+  image: postgres:13.0
+  ports:
+    - 5432
+  environment:
+    POSTGRES_PASSWORD: changeme
+
+- name: rabbitmq
+  image: rabbitmq:3.8.9
+  ports:
+    - 5672
+
+- name: vault
+  image: vault:0.11.4
+  ports:
+    - 8200
+  environment:
+    SKIP_SETCAP: 1
+    BARONG_VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    BARONG_VAULT_ADDRESS: http://vault:8200
+
+- name: redis
+  image: redis:4.0
+  ports:
+    - 6379
+
+steps:
+- name: Configure Vault
+  image: vault:0.11.4
+  commands:
+    - vault secrets disable secret
+    - vault secrets enable -path=secret -version=1 kv
+    - vault secrets enable totp
+  environment:
+    VAULT_TOKEN: changeme
+    VAULT_DEV_ROOT_TOKEN_ID: changeme
+    VAULT_ADDR: http://vault:8200
+
+- name: Run rspec
+  image: ruby:2.6.6
+  environment:
+    DATABASE_HOST: database
+    DATABASE_ADAPTER: postgresql
+    DATABASE_PORT: "5432"
+    DATABASE_PASS: changeme
+    DATABASE_USER: postgres
+    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
+    BARONG_VAULT_ADDRESS: http://vault:8200
+    BARONG_VAULT_TOKEN: changeme
+    RAILS_ENV: test
+    REDIS_URL: redis://redis:6379
+    BARONG_REDIS_URL: redis://redis:6379
+    RAILS_MASTER_KEY:
+      from_secret: rails_master_key
+  commands:
+    - gem update bundler
+    - bundle install --system
+    - ./bin/init_config
+    - rake db:create db:migrate
+    - bundle exec rspec
+
+trigger:
+  event:
+    - push
+  branch:
+    - "compatibility/*"
+    - "*-stable"

@@ -29,3 +29,7 @@ end
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_permissions_on_topic  (topic)
+#

@@ -10,6 +10,7 @@ describe API::V2::Management::Documents, type: :request do
         write_documents: { permitted_signers: %i[alex jeff], mandatory_signers: %i[alex] },
       }
   end
+
   let!(:create_admin_permission) do
     create :permission,
            role: 'admin'

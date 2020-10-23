@@ -2,11 +2,11 @@
 
 ## Profiles story and administration
 
-This document aims to cover and explain original profiles submit-n-verify process and possible customizations
+This document explain original profiles submit-n-verify process and possible customizations.
 
 ## Version
 
-Story described in the document actual for latest 2.5 stable version and all higher upgrades.
+Story described in the document actual for latest 2.5 stable version and higher.
 
 ## User side of the story
 
@@ -14,6 +14,7 @@ Story described in the document actual for latest 2.5 stable version and all hig
 
 `Story`:
 User can submit profile with following fields (all are optional by default):   (via `POST /resource/profiles`) 
+
 ```
     t.string "first_name"
     t.string "last_name"
@@ -24,6 +25,7 @@ User can submit profile with following fields (all are optional by default):   (
     t.string "country"
     t.text "metadata"
 ```
+
 Profile creates with `drafted` state in database. At this point user can edit the information (via `PUT /resource/profiles`), and administrators will not review it yet. 
 Once all the information is edited and validated by user correctly, he can submit profile for verification (via `PUT /resource/profiles`) by passing `confirmation: true` in the params. Profile state changes to "submitted" in database and from now on this profile is pending for admin verification.
 

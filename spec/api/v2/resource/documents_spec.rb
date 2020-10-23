@@ -221,11 +221,12 @@ describe 'Documents API test' do
 
       get '/api/v2/resource/documents', headers: auth_header
       response_arr = JSON.parse(response.body)
+
       expect(response_arr.count).to eq(1)
       expect(response_arr.last['upload']).to_not be_nil
       expect(response_arr.last['doc_type']).to eq('Passport')
       expect(response_arr.last['doc_expire']).to eq('3020-01-22')
-      expect(response_arr.last['doc_number']).to eq('AA1234BB')
+      expect(response_arr.last['doc_number']).to eq('AA****BB')
       expect(response.status).to eq(200)
     end
 

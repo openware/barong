@@ -22,6 +22,7 @@ describe API::V2::Identity::Sessions do
     let(:uri) { '/api/v2/identity/sessions' }
     subject!(:user) do
       create :user,
+            :with_profile,
              email: email,
              password: password,
              password_confirmation: password
@@ -45,17 +46,20 @@ describe API::V2::Identity::Sessions do
 
       context 'captcha behaviour when captcha policy is recaptcha' do
         before { allow(Barong::App.config).to receive_messages(captcha: 'recaptcha') }
-  
+
         it 'doesnt require captcha if endpoint is not in the protection list' do
           allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create"]})
-  
           do_request
+
           expect_status_to_eq 200
+          result = JSON.parse(response.body)
+          expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
+          expect(result['profiles'][0]['dob']).to eq user.profiles.first.sub_masked_dob
         end
-  
+
         it 'require captcha if endpoint is in the protection list' do
           allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create", "session_create"]})
-  
+
           do_request
           expect_status_to_eq 400
           expect_body.to eq(errors: ["identity.captcha.required"])
@@ -67,6 +71,9 @@ describe API::V2::Identity::Sessions do
 
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
         expect_status.to eq(200)
+        result = JSON.parse(response.body)
+        expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
+        expect(result['profiles'][0]['dob']).to eq user.profiles.first.sub_masked_dob
 
         check_session
         expect(response.status).to eq(200)
