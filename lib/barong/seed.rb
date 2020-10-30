@@ -96,9 +96,13 @@ module Barong
     def seed_restrictions
       logger.info "Seeding restrictions"
       return logger.info "Restrictions seed is empty!" if seeds["restrictions"].empty?
-      
+
       seeds["restrictions"].each do |seed|
         logger.info "---"
+        if Restriction.find_by(category: seed["category"], scope: seed["scope"], value: seed["value"], state: seed["state"]).present?
+          logger.info "Restriction '#{seed['category']}' '#{seed['scope']} #{seed['value']}' #{seed['state']}' already exists"
+          next
+        end
         raise ConfigError.new("category missing in restrictions seed") if seed["category"].nil?
         raise ConfigError.new("scope is missing in restrictions seed") if seed["scope"].nil?
         raise ConfigError.new("value is missing in restrictions seed") if seed["value"].nil?
