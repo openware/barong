@@ -1,4 +1,12 @@
-[openware.com]: https://www.openware.com
+![Cryptocurrency Exchange Platform - Barong](https://github.com/openware/meta/raw/main/images/github_barong.png)
+
+<h3 align="center">
+<a href="https://www.openware.com/sdk">Guide</a> <span>&vert;</span>
+<a href="https://www.openware.com/sdk/api/barong/rest-api.html">API Docs</a> <span>&vert;</span>
+<a href="https://www.openware.com/">Consulting</a> <span>&vert;</span>
+<a href="https://t.me/peatio">Community</a>
+</h3>
+<h6 align="center">Component part of <a href="https://github.com/openware/opendax">OpenDAX Trading Platform</a></h6>
 
 # Barong
 [![Build Status](https://ci.openware.work/api/badges/openware/barong/status.svg)](https://ci.openware.work/openware/barong)
