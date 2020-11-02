@@ -3,8 +3,10 @@
 # Barong
 [![Build Status](https://ci.openware.work/api/badges/openware/barong/status.svg)](https://ci.openware.work/openware/barong)
 
-Barong is a authentication service for microservice architectures using JWT standard.
-It's developped and maintained by [Openware](https://www.openware.com) team.
+Barong is an authentication service for microservice architectures using JWT standard.
+
+It's focused on security and rich KyC features, in a matter of fact it's used in Openware [Crypto exchange software](https://www.openware.com) stack.
+
 
 # Overview
 
@@ -71,6 +73,8 @@ In the process of verification Barong assign different levels to accounts
 [Barong password hashing](https://www.openware.com/sdk/docs/barong/general/password-hashing.html)
 
 [Barong data encryption](https://www.openware.com/sdk/docs/barong/general/encryption.html)
+
+[Crypto exchange software](https://www.openware.com)
 
 # License
 Barong is released under the terms of the [Apache License 2.0](https://github.com/openware/barong/blob/master/LICENSE.md).
