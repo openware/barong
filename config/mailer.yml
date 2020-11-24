@@ -22,10 +22,10 @@ events:
     key: user.email.confirmation.token
     exchange: barong_system
     templates:
-      en:
+      EN:
         subject: Registration Confirmation
         template_path: email_confirmation.en.html.erb
-      ru:
+      RU:
         subject: Подтверждение Регистрации
         template_path: email_confirmation.ru.html.erb
 
@@ -33,10 +33,10 @@ events:
     key: user.password.reset.token
     exchange: barong_system
     templates:
-      en:
+      EN:
         subject: Password Reset
         template_path: password_reset.en.html.erb
-      ru:
+      RU:
         subject: Сброс Пароля
         template_path: password_reset.ru.html.erb
 
@@ -44,7 +44,7 @@ events:
     key: label.created
     exchange: barong_model
     templates:
-      en:
+      EN:
         subject: Phone verified
         template_path: label.en.html.erb
 
@@ -52,7 +52,7 @@ events:
     key: label.updated
     exchange: barong_model
     templates:
-      en:
+      EN:
         subject: Label Updated
         template_path: label.en.html.erb
 
@@ -60,7 +60,7 @@ events:
     key: session.create
     exchange: barong_system
     templates:
-      en:
+      EN:
         subject: New Login
         template_path: session_create.en.html.erb
 
@@ -68,7 +68,7 @@ events:
     key: deposit.updated
     exchange: peatio
     templates:
-      en:
+      EN:
         subject: Deposit Accepted
         template_path: deposit_accepted.en.html.erb
 
@@ -76,7 +76,7 @@ events:
     key: withdraw.updated
     exchange: peatio
     templates:
-      en:
+      EN:
         subject: Withdrawal Succeed
         template_path: withdraw_succeed.en.html.erb
 
@@ -84,7 +84,7 @@ events:
     key: beneficiary.created
     exchange: peatio
     templates:
-      en:
+      EN:
         subject: New Beneficiary
         template_path: new_beneficiary.en.html.erb
 
@@ -97,6 +97,6 @@ events:
   #       record.user.role: 'member'
   #   exchange: barong_system
   #   templates:
-  #     en:
+  #     EN:
   #       subject: New Login
   #       template_path: session_create.en.html.erb
