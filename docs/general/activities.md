@@ -28,6 +28,8 @@ Here you can see a list of possible fields for activity:
 
 ##### Useful commands
 If you want to delete old activities you can run next command
-`bundle exec rake activities:delete[from,to]`
 
-Be sure that your parameters has valid date string, such as `YYYY-mm-dd`
+Be sure that your parameters has valid date string, such as `YYYY-mm-dd` !
+```
+bundle exec rake activities:delete[from,to]
+```
