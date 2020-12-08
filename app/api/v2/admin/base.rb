@@ -5,8 +5,10 @@ require_dependency 'barong/middleware/jwt_authenticator'
 module API::V2
   module Admin
     class Base < Grape::API
+      PREFIX = '/admin'
+
       use Barong::Middleware::JWTAuthenticator, \
-        pubkey: Rails.configuration.x.keystore.public_key
+            pubkey: Rails.configuration.x.keystore.public_key
 
       cascade false
 
@@ -27,6 +29,25 @@ module API::V2
       mount Admin::Profiles
       mount Admin::Levels
       mount Admin::Abilities
+
+      add_swagger_documentation base_path: File.join(API::Base::PREFIX, API::V2::Base::API_VERSION, 'barong', PREFIX),
+                                add_base_path: true,
+                                mount_path:  '/swagger',
+                                api_version: API::V2::Base::API_VERSION,
+                                doc_version: Barong::Application::GIT_TAG,
+                                info: {
+                                  title: 'Barong',
+                                  description: 'RESTful AdminAPI for barong OAuth server'
+                                },
+                                models: [
+                                  API::V2::Admin::Entities::ActivityWithUser,
+                                  API::V2::Admin::Entities::AdminActivity,
+                                  API::V2::Admin::Entities::Document,
+                                  API::V2::Admin::Entities::Phone,
+                                  API::V2::Admin::Entities::Profile,
+                                  API::V2::Admin::Entities::UserWithKYC,
+                                  API::V2::Admin::Entities::UserWithProfile
+                                ]
     end
   end
 end

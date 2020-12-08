@@ -1,6 +1,8 @@
 module API::V2
   module Management
     class Base < Grape::API
+      PREFIX = '/management'
+
       do_not_route_options!
 
       rescue_from(API::V2::Management::Exceptions::Base) { |e| error!(e.message, e.status, e.headers) }
@@ -22,36 +24,34 @@ module API::V2
       mount API::V2::Management::Documents
       mount API::V2::Management::ServiceAccounts
 
-      add_swagger_documentation base_path: '/api/v2/management',
-      info: {
-        title: 'Barong',
-        description: 'Management API for barong OAuth server'
-      },
-      security_definitions: {
-        "BearerToken": {
-          description: 'Bearer Token authentication',
-          type: 'jwt',
-          name: 'Authorization',
-          in: 'header'
-        }
-      },
-      models: [
-        API::V2::Entities::Label,
-        API::V2::Entities::APIKey,
-        API::V2::Entities::UserWithFullInfo,
-        API::V2::Entities::User,
-        Entities::Profile,
-        Entities::Phone,
-        Entities::Document,
-        Entities::UserWithProfile,
-        Entities::UserWithKYC,
-      ],
-      api_version: 'v2',
-      doc_version: Barong::Application::GIT_TAG,
-      hide_format: true,
-      add_base_path: true,
-      hide_documentation_path: true,
-      mount_path: '/management.json'
+      add_swagger_documentation base_path: File.join(API::Base::PREFIX, API::V2::Base::API_VERSION, 'barong', PREFIX),
+                                info: {
+                                  title: 'Barong',
+                                  description: 'Management API for barong OAuth server'
+                                },
+                                mount_path:  '/swagger',
+                                security_definitions: {
+                                  "BearerToken": {
+                                    description: 'Bearer Token authentication',
+                                    type: 'jwt',
+                                    name: 'Authorization',
+                                    in: 'header'
+                                  }
+                                },
+                                models: [
+                                  API::V2::Entities::Label,
+                                  API::V2::Entities::APIKey,
+                                  API::V2::Entities::UserWithFullInfo,
+                                  API::V2::Entities::User,
+                                  API::V2::Management::Entities::Profile,
+                                  API::V2::Management::Entities::Phone,
+                                  API::V2::Management::Entities::Document,
+                                  API::V2::Management::Entities::UserWithProfile,
+                                  API::V2::Management::Entities::UserWithKYC,
+                                ],
+                                api_version: API::V2::Base::API_VERSION,
+                                doc_version: Barong::Application::GIT_TAG,
+                                add_base_path: true
     end
   end
 end
