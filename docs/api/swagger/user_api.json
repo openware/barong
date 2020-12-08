@@ -1648,7 +1648,7 @@
             "name": "metadata",
             "description": "Any additional key: value pairs in json string format",
             "type": "string",
-            "required": false
+            "required": true
           },
           {
             "in": "formData",
@@ -2120,7 +2120,29 @@
             "description": "Document type",
             "type": "string",
             "required": true
-          },
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Password strength testing"
+          }
+        },
+        "tags": [
+          "api"
+        ],
+        "operationId": "postApiV2BarongIdentityPasswordValidate"
+      }
+    },
+    "/api/v2/barong/resource/service_accounts/api_keys/{kid}": {
+      "put": {
+        "description": "Updates an api key",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
           {
             "in": "formData",
             "name": "address",
@@ -2206,13 +2228,52 @@
     },
     "/api/v2/barong/public/time": {
       "get": {
-        "description": "Get server current unix timestamp.",
+        "description": "List all api keys for specific service account.",
         "produces": [
           "application/json"
         ],
-        "responses": {
-          "200": {
-            "description": "Get server current unix timestamp."
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ordering",
+            "description": "If set, returned values will be sorted in specific order, defaults to 'asc'.",
+            "type": "string",
+            "default": "asc",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "order_by",
+            "description": "Name of the field, which result will be ordered by.",
+            "type": "string",
+            "default": "id",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number (defaults to 1).",
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Number of users per page (defaults to 100, maximum is 100).",
+            "type": "integer",
+            "format": "int32",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100,
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "service_account_uid",
+            "type": "string",
+            "required": true
           }
         },
         "tags": [
@@ -2229,7 +2290,13 @@
         ],
         "responses": {
           "200": {
-            "description": "Test connectivity"
+            "description": "List all api keys for specific service account."
+          },
+          "400": {
+            "description": "Require 2FA and totp code"
+          },
+          "401": {
+            "description": "Invalid bearer token"
           }
         },
         "tags": [
@@ -2244,21 +2311,22 @@
         "produces": [
           "application/json"
         ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
+        "security": [
           {
-            "in": "formData",
-            "name": "password",
-            "description": "User password",
-            "type": "string",
-            "required": true
+            "BearerToken": [
+
+            ]
           }
         ],
         "responses": {
-          "201": {
-            "description": "Password strength testing"
+          "200": {
+            "description": "List all service accounts for current user."
+          },
+          "400": {
+            "description": "Require 2FA and totp code"
+          },
+          "401": {
+            "description": "Invalid bearer token"
           }
         },
         "tags": [
@@ -2806,6 +2874,36 @@
         "state": {
           "type": "string",
           "description": "Service Account State: active, disabled"
+        },
+        "user": {
+          "$ref": "#/definitions/API_V2_Entities_User"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "API_V2_Entities_ServiceAccounts": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "state": {
+          "type": "string"
         },
         "user": {
           "$ref": "#/definitions/API_V2_Entities_User"
