@@ -12,7 +12,7 @@ module Barong
       end
 
       def before
-        return if request.path == '/api/v2/swagger.json'
+        return if request.path.include? 'swagger'
 
         raise(Peatio::Auth::Error, 'Header Authorization missing') \
           unless authorization_present?

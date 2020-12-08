@@ -36,9 +36,22 @@ do
   sleep 1
 done
 sleep 5 # Wait additional time until Rails starts listen port.
-curl http://localhost:3000/api/v2/restful_api.json > tmp/rest_swagger.json
-curl http://localhost:3000/api/v2/management/management.json > tmp/management_swagger.json
-swagger-markdown -i tmp/rest_swagger.json -o ./docs/rest_api.md
-swagger-markdown -i tmp/management_swagger.json -o ./docs/management.md
-cat tmp/rest_swagger.json | prettyjson > docs/rest_api.json
+
+curl http://localhost:3000/api/v2/swagger > tmp/user_api_v2_swagger.json
+curl http://localhost:3000/api/v2/management/swagger > tmp/management_api_v2_swagger.json
+curl http://localhost:3000/api/v2/admin/swagger > tmp/admin_api_v2_swagger.json
+
+mkdir -p docs/api/swagger
+
+swagger-markdown -i tmp/user_api_v2_swagger.json -o ./docs/api/barong_user_api_v2.md
+swagger-markdown -i tmp/management_api_v2_swagger.json -o ./docs/api/barong_management_api_v2.md
+swagger-markdown -i tmp/admin_api_v2_swagger.json -o ./docs/api/barong_admin_api_v2.md
+
+ruby -r json -e "puts JSON.pretty_generate(JSON.parse(File.read('tmp/user_api_v2_swagger.json')))" \
+      > docs/api/swagger/user_api.json
+ruby -r json -e "puts JSON.pretty_generate(JSON.parse(File.read('tmp/management_api_v2_swagger.json')))" \
+      > docs/api/swagger/management_api.json
+ruby -r json -e "puts JSON.pretty_generate(JSON.parse(File.read('tmp/admin_api_v2_swagger.json')))" \
+      > docs/api/swagger/admin_api.json
+
 kill $(cat tmp/pids/server.pid)

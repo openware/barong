@@ -1,7 +1,7 @@
 # Barong
 RESTful API for barong OAuth server
 
-## Version: 2.4.0
+## Version: 2.7.0
 
 ### Security
 **BearerToken**  
@@ -12,781 +12,10 @@ RESTful API for barong OAuth server
 |Name|Authorization|
 |In|header|
 
-### /admin/levels
-
-#### GET
-##### Description:
-
-Returns array of permissions as paginated collection
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of permissions as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/profiles
-
-#### PUT
-##### Description:
-
-Update a profile for user
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData |  | Yes | string |
-| first_name | formData |  | No | string |
-| last_name | formData |  | No | string |
-| dob | formData |  | No | date |
-| address | formData |  | No | string |
-| postcode | formData |  | No | string |
-| city | formData |  | No | string |
-| country | formData |  | No | string |
-| state | formData |  | No | string |
-| metadata | formData | Any additional key: value pairs in json string format | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Update a profile for user |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### GET
-##### Description:
-
-Return all profiles
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Return all profiles |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/restrictions
-
-#### DELETE
-##### Description:
-
-Delete restriction
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | query | Restriction id | Yes | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Delete restriction |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### PUT
-##### Description:
-
-Update restriction
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | formData | Restriction id | Yes | integer |
-| scope | formData |  | No | string |
-| value | formData |  | No | string |
-| state | formData |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Update restriction |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+### /api/v2/barong/identity/users/password/confirm_code
 
 #### POST
-##### Description:
-
-Create restriction
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| scope | formData |  | Yes | string |
-| value | formData |  | Yes | string |
-| state | formData |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Create restriction |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### GET
-##### Description:
-
-Returns array of restrictions as a paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| scope | query |  | No | string |
-| range | query |  | No | string |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of restrictions as a paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/metrics
-
-#### GET
-##### Description:
-
-Returns main statistic in the given time period
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| created_from | query |  | No | string |
-| created_to | query |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns main statistic in the given time period |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/activities/admin
-
-#### GET
-##### Description:
-
-Returns array of activities as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| topic | query |  | No | string |
-| action | query |  | No | string |
-| uid | query |  | No | string |
-| email | query |  | No | string |
-| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
-| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-| target_uid | query |  | No | string |
-| range | query |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of activities as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/activities
-
-#### GET
-##### Description:
-
-Returns array of activities as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| topic | query |  | No | string |
-| action | query |  | No | string |
-| uid | query |  | No | string |
-| email | query |  | No | string |
-| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
-| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of activities as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/permissions
-
-#### PUT
-##### Description:
-
-Update Permission
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | formData | Permission id | Yes | integer |
-| role | formData | permission field - role | No | string |
-| verb | formData | permission field - request verb | No | string |
-| path | formData | permission field - request path | No | string |
-| action | formData |  | No | string |
-| topic | formData |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Update Permission |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### DELETE
-##### Description:
-
-Deletes permission
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | query | permission id | Yes | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Deletes permission |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### POST
-##### Description:
-
-Create permission
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| role | formData |  | Yes | string |
-| verb | formData |  | Yes | string |
-| path | formData |  | Yes | string |
-| action | formData |  | Yes | string |
-| topic | formData |  | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Create permission |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### GET
-##### Description:
-
-Returns array of permissions as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of permissions as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/data_storage
-
-#### DELETE
-##### Description:
-
-Deletes user's data storage record
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | query | user uniq id | Yes | string |
-| title | query | data storage uniq title | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Deletes user's data storage record |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/{uid}
-
-#### GET
-##### Description:
-
-Returns user info
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | path | user uniq id | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns user info |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/labels
-
-#### DELETE
-##### Description:
-
-Deletes label for user
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | query | user uniq id | Yes | string |
-| key | query | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
-| scope | query | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 204 | Deletes label for user |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### PUT
-##### Description:
-
-Update user label scope
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| key | formData | Label key. | Yes | string |
-| scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
-| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
-| value | formData | Label value. | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Update user label scope |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 404 | Record is not found |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### POST
-##### Description:
-
-Adds label for user
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| key | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
-| value | formData | label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | Yes | string |
-| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
-| scope | formData | Label scope: 'public' or 'private'. Default is public | No | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Adds label for user |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### GET
-##### Description:
-
-Returns array of users as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| key | query | Label key | Yes | string |
-| value | query | Label value | Yes | string |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/labels/update
-
-#### POST
-##### Description:
-
-Update user label value
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| key | formData | Label key. | Yes | string |
-| scope | formData | label key. [a-z0-9_-]+ should be used. Min - 3, max - 255 characters. | Yes | string |
-| value | formData | Label value. | Yes | string |
-| description | formData | label description. [A-Za-z0-9_-] should be used. max - 255 characters. | No | string |
-| replace | formData | When true label will be created if not exist | No | Boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Update user label value |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 404 | Record is not found |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/labels/list
-
-#### GET
-##### Description:
-
-Returns existing labels keys and values
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns existing labels keys and values |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/documents/pending
-
-#### GET
-##### Description:
-
-Returns array of users with pending or replaced documents as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| extended | query | When true endpoint returns full information about users | No | Boolean |
-| uid | query |  | No | string |
-| email | query |  | No | string |
-| role | query |  | No | string |
-| first_name | query |  | No | string |
-| last_name | query |  | No | string |
-| country | query |  | No | string |
-| level | query |  | No | integer |
-| state | query |  | No | string |
-| range | query |  | No | string |
-| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
-| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users with pending or replaced documents as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users
-
-#### PUT
-##### Description:
-
-Update user attributes
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| state | formData | user state | No | string |
-| otp | formData | user 2fa status | No | Boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Update user attributes |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-#### GET
-##### Description:
-
-Returns array of users as paginated collection
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| extended | query | When true endpoint returns full information about users | No | Boolean |
-| uid | query |  | No | string |
-| email | query |  | No | string |
-| role | query |  | No | string |
-| first_name | query |  | No | string |
-| last_name | query |  | No | string |
-| country | query |  | No | string |
-| level | query |  | No | integer |
-| state | query |  | No | string |
-| range | query |  | No | string |
-| from | query | An integer represents the seconds elapsed since Unix epoch.If set, only records FROM the time will be retrieved. | No | integer |
-| to | query | An integer represents the seconds elapsed since Unix epoch.If set, only records BEFORE the time will be retrieved. | No | integer |
-| page | query | Page number (defaults to 1). | No | integer |
-| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/role
-
-#### POST
-##### Description:
-
-Update user role
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| role | formData | user role | Yes | string |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Update user role |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /admin/users/update
-
-#### POST
-##### Description:
-
-Update user attributes
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| uid | formData | user uniq id | Yes | string |
-| state | formData | user state | No | string |
-| otp | formData | user 2fa status | No | Boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 201 | Update user attributes |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
-### /identity/users/password/confirm_code
-
-#### POST
-##### Description:
+##### Description
 
 Sets new account password
 
@@ -797,7 +26,6 @@ Sets new account password
 | reset_password_token | formData | Token from email | Yes | string |
 | password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
-| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -808,10 +36,10 @@ Sets new account password
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-### /identity/users/password/generate_code
+### /api/v2/barong/identity/users/password/generate_code
 
 #### POST
-##### Description:
+##### Description
 
 Send password reset instructions
 
@@ -820,7 +48,6 @@ Send password reset instructions
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
-| lang | formData | Language in iso-2 format | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 
 ##### Responses
@@ -832,10 +59,10 @@ Send password reset instructions
 | 404 | User doesn't exist |
 | 422 | Validation errors |
 
-### /identity/users/email/confirm_code
+### /api/v2/barong/identity/users/email/confirm_code
 
 #### POST
-##### Description:
+##### Description
 
 Confirms an account
 
@@ -844,7 +71,6 @@ Confirms an account
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | token | formData | Token from email | Yes | string |
-| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -854,10 +80,10 @@ Confirms an account
 | 400 | Required params are missing |
 | 422 | Validation errors |
 
-### /identity/users/email/generate_code
+### /api/v2/barong/identity/users/email/generate_code
 
 #### POST
-##### Description:
+##### Description
 
 Send confirmations instructions
 
@@ -866,7 +92,6 @@ Send confirmations instructions
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | Account email | Yes | string |
-| lang | formData | Client env language | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 
 ##### Responses
@@ -877,10 +102,10 @@ Send confirmations instructions
 | 400 | Required params are missing |
 | 422 | Validation errors |
 
-### /identity/users/register_geetest
+### /api/v2/barong/identity/users/register_geetest
 
 #### GET
-##### Description:
+##### Description
 
 Register Geetest captcha
 
@@ -890,10 +115,10 @@ Register Geetest captcha
 | ---- | ----------- |
 | 200 | Register Geetest captcha |
 
-### /identity/users
+### /api/v2/barong/identity/users
 
 #### POST
-##### Description:
+##### Description
 
 Creates new user
 
@@ -904,7 +129,6 @@ Creates new user
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
 | refid | formData | Referral uid | No | string |
-| lang | formData | Client env language | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 | data | formData | Any additional key: value pairs in json string format | No | string |
 
@@ -916,10 +140,31 @@ Creates new user
 | 400 | Required params are missing |
 | 422 | Validation errors |
 
-### /identity/sessions
+### /api/v2/barong/identity/users/access
+
+#### POST
+##### Description
+
+Creates new whitelist restriction
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| whitelink_token | formData |  | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Creates new user |
+| 400 | Required params are missing |
+| 422 | Validation errors |
+
+### /api/v2/barong/identity/sessions
 
 #### DELETE
-##### Description:
+##### Description
 
 Destroy current session
 
@@ -932,7 +177,7 @@ Destroy current session
 | 404 | Record is not found |
 
 #### POST
-##### Description:
+##### Description
 
 Start a new session
 
@@ -953,10 +198,10 @@ Start a new session
 | 400 | Required params are empty |
 | 404 | Record is not found |
 
-### /identity/configs
+### /api/v2/barong/identity/configs
 
 #### GET
-##### Description:
+##### Description
 
 Get barong configurations
 
@@ -966,10 +211,10 @@ Get barong configurations
 | ---- | ----------- |
 | 200 | Get barong configurations |
 
-### /identity/version
+### /api/v2/barong/identity/version
 
 #### GET
-##### Description:
+##### Description
 
 Get barong version
 
@@ -979,10 +224,10 @@ Get barong version
 | ---- | ----------- |
 | 200 | Get barong version |
 
-### /identity/time
+### /api/v2/barong/identity/time
 
 #### GET
-##### Description:
+##### Description
 
 Get server current unix timestamp.
 
@@ -992,10 +237,10 @@ Get server current unix timestamp.
 | ---- | ----------- |
 | 200 | Get server current unix timestamp. |
 
-### /identity/ping
+### /api/v2/barong/identity/ping
 
 #### GET
-##### Description:
+##### Description
 
 Test connectivity
 
@@ -1005,10 +250,10 @@ Test connectivity
 | ---- | ----------- |
 | 200 | Test connectivity |
 
-### /identity/password/validate
+### /api/v2/barong/identity/password/validate
 
 #### POST
-##### Description:
+##### Description
 
 Password strength testing
 
@@ -1024,10 +269,151 @@ Password strength testing
 | ---- | ----------- |
 | 201 | Password strength testing |
 
-### /resource/data_storage
+### /api/v2/barong/resource/service_accounts/api_keys/{kid}
+
+#### PUT
+##### Description
+
+Updates an api key
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| service_account_uid | formData |  | Yes | string |
+| kid | path |  | Yes | string |
+| scope | formData | comma separated scopes | No | string |
+| state | formData | State of API Key. "active" state means key is active and can be used for auth | No | string |
+| totp_code | formData | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Updates an api key |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### DELETE
+##### Description
+
+Delete an api key for specific service account
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| service_account_uid | query |  | Yes | string |
+| kid | path |  | Yes | string |
+| totp_code | query | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 204 | Succefully deleted |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 404 | Record is not found |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /api/v2/barong/resource/service_accounts/api_keys
 
 #### POST
-##### Description:
+##### Description
+
+Create api key for specific service account.
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| service_account_uid | formData |  | Yes | string |
+| algorithm | formData |  | Yes | string |
+| scope | formData | comma separated scopes | No | string |
+| totp_code | formData | Code from Google Authenticator | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Create api key for specific service account. |
+| 400 | Require 2FA and totp code |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+#### GET
+##### Description
+
+List all api keys for specific service account.
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| ordering | query | If set, returned values will be sorted in specific order, defaults to 'asc'. | No | string |
+| order_by | query | Name of the field, which result will be ordered by. | No | string |
+| page | query | Page number (defaults to 1). | No | integer |
+| limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
+| service_account_uid | query |  | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | List all api keys for specific service account. |
+| 400 | Require 2FA and totp code |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /api/v2/barong/resource/service_accounts
+
+#### GET
+##### Description
+
+List all service accounts for current user.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | List all service accounts for current user. |
+| 400 | Require 2FA and totp code |
+| 401 | Invalid bearer token |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /api/v2/barong/resource/data_storage
+
+#### POST
+##### Description
 
 Create data storage
 
@@ -1052,10 +438,10 @@ Create data storage
 | --- | --- |
 | BearerToken | |
 
-### /resource/api_keys
+### /api/v2/barong/resource/api_keys
 
 #### GET
-##### Description:
+##### Description
 
 List all api keys for current account.
 
@@ -1063,6 +449,8 @@ List all api keys for current account.
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
+| ordering | query | If set, returned values will be sorted in specific order, defaults to 'asc'. | No | string |
+| order_by | query | Name of the field, which result will be ordered by. | No | string |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
@@ -1081,7 +469,7 @@ List all api keys for current account.
 | BearerToken | |
 
 #### POST
-##### Description:
+##### Description
 
 Create an api key
 
@@ -1090,7 +478,6 @@ Create an api key
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | algorithm | formData |  | Yes | string |
-| kid | formData |  | No | string |
 | scope | formData | comma separated scopes | No | string |
 | totp_code | formData | Code from Google Authenticator | Yes | string |
 
@@ -1109,10 +496,10 @@ Create an api key
 | --- | --- |
 | BearerToken | |
 
-### /resource/api_keys/{kid}
+### /api/v2/barong/resource/api_keys/{kid}
 
 #### DELETE
-##### Description:
+##### Description
 
 Delete an api key
 
@@ -1139,7 +526,7 @@ Delete an api key
 | BearerToken | |
 
 #### PATCH
-##### Description:
+##### Description
 
 Updates an api key
 
@@ -1168,10 +555,10 @@ Updates an api key
 | --- | --- |
 | BearerToken | |
 
-### /resource/otp/verify
+### /api/v2/barong/resource/otp/verify
 
 #### POST
-##### Description:
+##### Description
 
 Verify 2FA code
 
@@ -1196,10 +583,10 @@ Verify 2FA code
 | --- | --- |
 | BearerToken | |
 
-### /resource/otp/disable
+### /api/v2/barong/resource/otp/disable
 
 #### POST
-##### Description:
+##### Description
 
 Disable 2FA
 
@@ -1224,10 +611,10 @@ Disable 2FA
 | --- | --- |
 | BearerToken | |
 
-### /resource/otp/enable
+### /api/v2/barong/resource/otp/enable
 
 #### POST
-##### Description:
+##### Description
 
 Enable 2FA
 
@@ -1252,10 +639,10 @@ Enable 2FA
 | --- | --- |
 | BearerToken | |
 
-### /resource/otp/generate_qrcode
+### /api/v2/barong/resource/otp/generate_qrcode
 
 #### POST
-##### Description:
+##### Description
 
 Generate qr code for 2FA
 
@@ -1273,10 +660,10 @@ Generate qr code for 2FA
 | --- | --- |
 | BearerToken | |
 
-### /resource/phones/verify
+### /api/v2/barong/resource/phones/verify
 
 #### POST
-##### Description:
+##### Description
 
 Verify a phone
 
@@ -1302,10 +689,10 @@ Verify a phone
 | --- | --- |
 | BearerToken | |
 
-### /resource/phones/send_code
+### /api/v2/barong/resource/phones/send_code
 
 #### POST
-##### Description:
+##### Description
 
 Resend activation code
 
@@ -1332,10 +719,10 @@ Resend activation code
 | --- | --- |
 | BearerToken | |
 
-### /resource/phones
+### /api/v2/barong/resource/phones
 
 #### POST
-##### Description:
+##### Description
 
 Add new phone
 
@@ -1363,7 +750,7 @@ Add new phone
 | BearerToken | |
 
 #### GET
-##### Description:
+##### Description
 
 Returns list of user's phones
 
@@ -1380,10 +767,10 @@ Returns list of user's phones
 | --- | --- |
 | BearerToken | |
 
-### /resource/documents
+### /api/v2/barong/resource/documents
 
 #### POST
-##### Description:
+##### Description
 
 Upload a new document for current user
 
@@ -1395,6 +782,8 @@ Upload a new document for current user
 | doc_number | formData | Document number | Yes | string |
 | upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
 | doc_expire | formData | Document expiration date | No | date |
+| doc_category | formData | Category of the submitted document - front/back/selfie etc. | No | string |
+| identificator | formData | Identificator for documents to be supplied together | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
 
 ##### Responses
@@ -1413,7 +802,7 @@ Upload a new document for current user
 | BearerToken | |
 
 #### GET
-##### Description:
+##### Description
 
 Return current user documents list
 
@@ -1430,10 +819,10 @@ Return current user documents list
 | --- | --- |
 | BearerToken | |
 
-### /resource/profiles
+### /api/v2/barong/resource/profiles
 
 #### PUT
-##### Description:
+##### Description
 
 Update a profile for current_user
 
@@ -1449,7 +838,7 @@ Update a profile for current_user
 | city | formData |  | No | string |
 | country | formData |  | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
-| confirm | formData | Profile confirmation | No | Boolean |
+| confirm | formData | Profile confirmation | No | boolean |
 
 ##### Responses
 
@@ -1466,7 +855,7 @@ Update a profile for current_user
 | BearerToken | |
 
 #### POST
-##### Description:
+##### Description
 
 Create a profile for current_user
 
@@ -1482,7 +871,7 @@ Create a profile for current_user
 | city | formData |  | No | string |
 | country | formData |  | No | string |
 | metadata | formData | Any additional key: value pairs in json string format | No | string |
-| confirm | formData | Profile confirmation | No | Boolean |
+| confirm | formData | Profile confirmation | No | boolean |
 
 ##### Responses
 
@@ -1500,10 +889,10 @@ Create a profile for current_user
 | --- | --- |
 | BearerToken | |
 
-### /resource/profiles/me
+### /api/v2/barong/resource/profiles/me
 
 #### GET
-##### Description:
+##### Description
 
 Return profiles of current resource owner
 
@@ -1521,10 +910,10 @@ Return profiles of current resource owner
 | --- | --- |
 | BearerToken | |
 
-### /resource/labels/{key}
+### /api/v2/barong/resource/labels/{key}
 
 #### DELETE
-##### Description:
+##### Description
 
 Delete a label  with 'public' scope.
 
@@ -1550,7 +939,7 @@ Delete a label  with 'public' scope.
 | BearerToken | |
 
 #### PATCH
-##### Description:
+##### Description
 
 Update a label with 'public' scope.
 
@@ -1578,7 +967,7 @@ Update a label with 'public' scope.
 | BearerToken | |
 
 #### GET
-##### Description:
+##### Description
 
 Return a label by key.
 
@@ -1603,10 +992,10 @@ Return a label by key.
 | --- | --- |
 | BearerToken | |
 
-### /resource/labels
+### /api/v2/barong/resource/labels
 
 #### POST
-##### Description:
+##### Description
 
 Create a label with 'public' scope.
 
@@ -1633,7 +1022,7 @@ Create a label with 'public' scope.
 | BearerToken | |
 
 #### GET
-##### Description:
+##### Description
 
 List all labels for current user.
 
@@ -1650,10 +1039,10 @@ List all labels for current user.
 | --- | --- |
 | BearerToken | |
 
-### /resource/users/password
+### /api/v2/barong/resource/users/password
 
 #### PUT
-##### Description:
+##### Description
 
 Sets new account password
 
@@ -1664,7 +1053,6 @@ Sets new account password
 | old_password | formData | Previous account password | Yes | string |
 | new_password | formData | User password | Yes | string |
 | confirm_password | formData | User password | Yes | string |
-| lang | formData | Language in iso-2 format | No | string |
 
 ##### Responses
 
@@ -1675,10 +1063,10 @@ Sets new account password
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-### /resource/users/activity/{topic}
+### /api/v2/barong/resource/users/activity/{topic}
 
 #### GET
-##### Description:
+##### Description
 
 Returns user activity
 
@@ -1687,6 +1075,9 @@ Returns user activity
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | topic | path | Topic of user activity. Allowed: [all, password, session, otp] | Yes | string |
+| time_from | query | An integer represents the seconds elapsed since Unix epoch.If set, only activities created after the time will be returned. | No | integer |
+| time_to | query | An integer represents the seconds elapsed since Unix epoch.If set, only activities created before the time will be returned. | No | integer |
+| result | query | Result of user activity. Allowed: [succeed, failed, denied] | No | string |
 | page | query | Page number (defaults to 1). | No | integer |
 | limit | query | Number of users per page (defaults to 100, maximum is 100). | No | integer |
 
@@ -1696,12 +1087,12 @@ Returns user activity
 | ---- | ----------- |
 | 200 | Returns user activity |
 
-### /resource/users/me
+### /api/v2/barong/resource/users/me
 
 #### DELETE
-##### Description:
+##### Description
 
-Returns current user
+Blocks current user
 
 ##### Parameters
 
@@ -1714,10 +1105,27 @@ Returns current user
 
 | Code | Description |
 | ---- | ----------- |
-| 204 | Returns current user |
+| 204 | Blocks current user |
+
+#### PUT
+##### Description
+
+Updates current user data field
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| data | formData | Any additional key: value pairs in json string format | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Updates current user data field |
 
 #### GET
-##### Description:
+##### Description
 
 Returns current user
 
@@ -1727,10 +1135,125 @@ Returns current user
 | ---- | ----------- |
 | 200 | Returns current user |
 
+### /api/v2/barong/resource/addresses
+
+#### POST
+##### Description
+
+Upload a new address approval document for current user
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| country | formData | Document type | Yes | string |
+| address | formData | Document number | Yes | string |
+| upload | formData | Array of Rack::Multipart::UploadedFile | Yes | string |
+| city | formData | Document expiration date | Yes | string |
+| postcode | formData | Any additional key: value pairs in json string format | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Document is uploaded |
+| 400 | Required params are empty |
+| 401 | Invalid bearer token |
+| 422 | Validation errors |
+
+##### Security
+
+| Security Schema | Scopes |
+| --- | --- |
+| BearerToken | |
+
+### /api/v2/barong/public/configs
+
+#### GET
+##### Description
+
+Get barong configurations
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Get barong configurations |
+
+### /api/v2/barong/public/version
+
+#### GET
+##### Description
+
+Get barong version
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Get barong version |
+
+### /api/v2/barong/public/time
+
+#### GET
+##### Description
+
+Get server current unix timestamp.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Get server current unix timestamp. |
+
+### /api/v2/barong/public/ping
+
+#### GET
+##### Description
+
+Test connectivity
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Test connectivity |
+
+### /api/v2/barong/public/password/validate
+
+#### POST
+##### Description
+
+Password strength testing
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| password | formData | User password | Yes | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | Password strength testing |
+
+### /api/v2/barong/public/kyc
+
+#### POST
+##### Description
+
+KYC callback
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 201 | KYC callback |
+
 ### Models
 
-
-#### Level
+#### API_V2_Entities_Level
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1738,7 +1261,7 @@ Returns current user
 | key | string | Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
 | value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
 
-#### Label
+#### API_V2_Entities_Label
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1748,7 +1271,7 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### APIKey
+#### API_V2_Entities_APIKey
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1760,21 +1283,23 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### Profile
+#### API_V2_Entities_Profile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | first_name | string |  | No |
-| last_name | string |  | No |
-| dob | date | Birthday date | No |
+| last_name | string | Submasked last name | No |
+| dob | date | Submasked birthday date | No |
 | address | string |  | No |
 | postcode | string |  | No |
 | city | string |  | No |
 | country | string |  | No |
 | state | string |  | No |
 | metadata | object | Profile additional fields | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
 
-#### User
+#### API_V2_Entities_User
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1787,7 +1312,7 @@ Returns current user
 | referral_uid | string | UID of referrer | No |
 | data | string | additional phone and profile info | No |
 
-#### UserWithProfile
+#### API_V2_Entities_UserWithProfile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1798,12 +1323,12 @@ Returns current user
 | otp | boolean | is 2FA enabled for account | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profiles | [Profile](#profile) |  | No |
+| profiles | [API_V2_Entities_Profile](#api_v2_entities_profile) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### UserWithKYC
+#### API_V2_Entities_UserWithKYC
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1814,16 +1339,17 @@ Returns current user
 | otp | boolean |  | No |
 | state | string |  | No |
 | data | string | additional phone and profile info | No |
-| profiles | [Profile](#profile) |  | No |
-| labels | [AdminLabelView](#adminlabelview) |  | No |
-| phones | [Phone](#phone) |  | No |
-| documents | [Document](#document) |  | No |
-| data_storages | [DataStorage](#datastorage) |  | No |
+| profiles | [API_V2_Entities_Profile](#api_v2_entities_profile) |  | No |
+| labels | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |  | No |
+| phones | [API_V2_Entities_Phone](#api_v2_entities_phone) |  | No |
+| documents | [API_V2_Entities_Document](#api_v2_entities_document) |  | No |
+| data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
+| comments | [API_V2_Entities_Comment](#api_v2_entities_comment) |  | No |
 | referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### AdminLabelView
+#### API_V2_Entities_AdminLabelView
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1834,27 +1360,27 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### Phone
+#### API_V2_Entities_Phone
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | country | string |  | No |
-| number | string |  | No |
+| number | string | Submasker phone number | No |
 | validated_at | s (g) |  | No |
 
-#### Document
+#### API_V2_Entities_Document
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | upload | string | file url | No |
 | doc_type | string | document type: passport, driver license | No |
-| doc_number | string | document number: AB123123 type | No |
+| doc_number | string | Submasker document number: AB123123 type | No |
 | doc_expire | string | expire date of uploaded documents | No |
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### DataStorage
+#### API_V2_Entities_DataStorage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1863,7 +1389,18 @@ Returns current user
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
-#### UserWithFullInfo
+#### API_V2_Entities_Comment
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | comment id | No |
+| author_uid | string | comment author | No |
+| title | string | comment title | No |
+| data | string | comment plain text | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_UserWithFullInfo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1878,12 +1415,12 @@ Returns current user
 | data | string | additional phone and profile info | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
-| labels | [Label](#label) |  | No |
-| phones | [Phone](#phone) |  | No |
-| profiles | [Profile](#profile) |  | No |
-| data_storages | [DataStorage](#datastorage) |  | No |
+| labels | [API_V2_Entities_Label](#api_v2_entities_label) |  | No |
+| phones | [API_V2_Entities_Phone](#api_v2_entities_phone) |  | No |
+| profiles | [API_V2_Entities_Profile](#api_v2_entities_profile) |  | No |
+| data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
 
-#### Activity
+#### API_V2_Entities_Activity
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -1894,3 +1431,16 @@ Returns current user
 | result | string |  | No |
 | data | string |  | No |
 | created_at | string |  | No |
+
+#### API_V2_Entities_ServiceAccounts
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string |  | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| state | string |  | No |
+| user | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
