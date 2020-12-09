@@ -62,7 +62,7 @@ steps:
     - bundle exec rspec
 
 - name: Bump and tag
-  image: quay.io/openware/sdk-citools:2.6.0
+  image: quay.io/openware/sdk-citools:2.6.1
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -78,7 +78,7 @@ steps:
       - "*-stable"
 
 - name: Tag snapshot
-  image: quay.io/openware/sdk-citools:2.6.0
+  image: quay.io/openware/sdk-citools:2.6.1
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -147,7 +147,7 @@ steps:
       - master
 
 - name: Push and Notify
-  image: quay.io/openware/sdk-citools:2.6.0
+  image: quay.io/openware/sdk-citools:2.6.1
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
