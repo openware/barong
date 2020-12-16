@@ -70,6 +70,8 @@ permissions:
  - { role: accountant, verb: get, path: api/v2/peatio/admin/liabilities, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/revenues, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/expenses, action: accept }
+ # accountant doesnt have access to see pending documents
+ - { role: accountant, verb: get, path: api/v2/barong/admin/users/documents/pending, action: drop }
  # accountant doesnt have access to manage platform roles and permissions
  - { role: accountant, verb: all, path: api/v2/barong/admin/users/role, action: drop }
  - { role: accountant, verb: all, path: api/v2/barong/admin/permissions, action: drop }
@@ -102,6 +104,14 @@ permissions:
  - { role: compliance, verb: get, path: api/v2/barong/admin/users, action: accept }
  - { role: compliance, verb: delete, path: api/v2/barong/admin/users, action: accept }
  - { role: compliance, verb: get, path: api/v2/barong/admin/activities, action: accept }
+  # has no ability to see the configurations
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/adjustments, action: drop }
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/revenues, action: drop }
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/blockchains, action: drop }
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/wallets, action: drop }
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/trading_fees, action: drop }
+ - { role: compliance, verb: all, path: api/v2/peatio/admin/withdraw_limits, action: drop }
+ - { role: compliance, verb: all, path: api/v2/barong/admin/restrictions, action: drop }
  # compliance doesnt have access to change users roles
  - { role: compliance, verb: all, path: api/v2/barong/admin/users/role, action: drop }
  # compliance doesnt have access to admin activities
@@ -138,6 +148,12 @@ permissions:
  - { role: technical, verb: all, path: api/v2/peatio/admin/withdraw_limits, action: accept }
  # technical has an ability to create and update restrictions
  - { role: technical, verb: all, path: api/v2/barong/admin/restrictions, action: accept }
+ # has no ability to see and update Deposit, Withdraw, Adjustments
+ - { role: technical, verb: all, path: api/v2/peatio/admin/deposits, action: drop }
+ - { role: technical, verb: all, path: api/v2/peatio/admin/withdraws, action: drop }
+ - { role: technical, verb: all, path: api/v2/peatio/admin/adjustments, action: drop }
+ # technical doesnt have access to see pending documents
+ - { role: technical, verb: get, path: api/v2/barong/admin/users/documents/pending, action: drop }
  # technical doesnt have access to admin activities
  - { role: technical, verb: all, path: api/v2/barong/admin/activities/admin, action: drop }
  # technical doesnt have access to manage platform roles and permissions
@@ -163,6 +179,16 @@ permissions:
  # has read only access to several statistic and user-related endpoints
  - { role: support, verb: get, path: api/v2/barong/admin, action: accept }
  - { role: support, verb: get, path: api/v2/peatio/admin, action: accept }
+ # has no ability to see the configurations
+ - { role: support, verb: all, path: api/v2/peatio/admin/adjustments, action: drop }
+ - { role: support, verb: all, path: api/v2/peatio/admin/revenues, action: drop }
+ - { role: support, verb: all, path: api/v2/peatio/admin/blockchains, action: drop }
+ - { role: support, verb: all, path: api/v2/peatio/admin/wallets, action: drop }
+ - { role: support, verb: all, path: api/v2/peatio/admin/trading_fees, action: drop }
+ - { role: support, verb: all, path: api/v2/peatio/admin/withdraw_limits, action: drop }
+ - { role: support, verb: all, path: api/v2/barong/admin/restrictions, action: drop }
+ # has ability to disable 2FA
+ - { role: support, verb: post, path: api/v2/barong/admin/users/update, action: accept }
  # support doesnt have access to admin activities
  - { role: support, verb: all, path: api/v2/barong/admin/activities/admin, action: drop }
  # support doesnt have access to manage platform roles and permissions
@@ -217,7 +243,7 @@ permissions:
  # applogic access
  - { role: member, verb: all, path: api/v2/applogic, action: accept }
  
-  # MAKER
+ # MAKER
  - { role: maker, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: maker, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: maker, verb: all, path: api/v2/finex/market, action: accept }
@@ -233,7 +259,7 @@ permissions:
  - { role: service_account, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: service_account, verb: all, path: api/v2/finex/market, action: accept }
  - { role: service_account, verb: all, path: api/v2/barong/resource, action: accept }
- # Service Account can not interact with password, 2FA, KYC, API keys
+ # Service Account can not interact with Password, 2FA, KYC, API keys, Beneficiary, Deposit and Withdraw
  - { role: service_account, verb: all, path: api/v2/barong/resource/otp, action: drop }
  - { role: service_account, verb: all, path: api/v2/barong/resource/phones, action: drop }
  - { role: service_account, verb: all, path: api/v2/barong/resource/profiles, action: drop }
@@ -242,6 +268,9 @@ permissions:
  - { role: service_account, verb: all, path: api/v2/applogic/private/tenants, action: drop }
  - { role: service_account, verb: all, path: api/v2/barong/resource/api_keys, action: drop }
  - { role: service_account, verb: all, path: api/v2/barong/resource/users/password, action: drop }
+ - { role: service_account, verb: all, path: api/v2/peatio/account/deposit_address, action: drop }
+ - { role: service_account, verb: all, path: api/v2/peatio/account/withdraws, action: drop }
+ - { role: service_account, verb: all, path: api/v2/peatio/account/beneficiaries, action: drop }
  # ranger access
  - { role: service_account, verb: get, path: api/v2/ranger, action: accept }
  # applogic access
