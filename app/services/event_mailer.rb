@@ -86,9 +86,9 @@ class EventMailer
     obj   = JSON.parse(event.to_json, object_class: OpenStruct)
 
     user  = User.includes(:profiles).find_by(uid: obj.record.user.uid)
-    language = user.language.to_sym
+    language = user.language.downcase.to_sym
 
-    unless config[:templates].key?(language)
+    unless config[:templates].keys.map(&:downcase).include?(language)
       Rails.logger.error { "Language #{language} is not supported. Skipping." }
       return
     end
