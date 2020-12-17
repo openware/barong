@@ -60,5 +60,5 @@ admin_permissions:
       - Label
       - Level
       - Profile
-     manage:
+    manage:
       - User
