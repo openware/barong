@@ -149,6 +149,9 @@ permissions:
  - { role: technical, verb: all, path: api/v2/peatio/admin/wallets, action: accept }
  - { role: technical, verb: all, path: api/v2/peatio/admin/trading_fees, action: accept }
  - { role: technical, verb: all, path: api/v2/peatio/admin/withdraw_limits, action: accept }
+ # technical has access to delete orders
+ - { role: technical, verb: delete, path: api/v2/finex/admin/bulk/orders_by_id, action: accept }
+ - { role: technical, verb: post, path: api/v2/finex/admin/orders/cancel, action: accept }
  # technical has an ability to create and update restrictions
  - { role: technical, verb: all, path: api/v2/barong/admin/restrictions, action: accept }
  # has no ability to see and update Deposit, Withdraw, Adjustments
