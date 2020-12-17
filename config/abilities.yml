@@ -36,6 +36,7 @@ admin_permissions:
       - Level
       - Label
       - Profile
+      - Activity
     manage:
       - APIKey
       - Restriction
@@ -45,7 +46,8 @@ admin_permissions:
       - User
       - Level
       - Label
-      - Profile 
+      - Profile
+      - Activity
   compliance:
     read:
       - Ability
@@ -60,5 +62,6 @@ admin_permissions:
       - Label
       - Level
       - Profile
+      - Activity
     manage:
       - User
