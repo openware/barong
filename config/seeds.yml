@@ -42,8 +42,11 @@ permissions:
 # ADMIN
 # admin has nearly full access to barong and peatio api, except managing permissions
  - { role: admin, verb: all, path: api/v2, action: accept }
+
  # ranger access
  - { role: admin, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: admin, verb: get, path: api/v2/open_finance, action: accept }
  # admin doesnt have access to manage platform roles and permissions
  - { role: admin, verb: all, path: api/v2/barong/admin/permissions, action: drop }
  # admin doesnt have access to manage roles
@@ -152,6 +155,8 @@ permissions:
  - { role: technical, verb: all, path: api/v2/peatio/admin/deposits, action: drop }
  - { role: technical, verb: all, path: api/v2/peatio/admin/withdraws, action: drop }
  - { role: technical, verb: all, path: api/v2/peatio/admin/adjustments, action: drop }
+ # Finex upstream access
+ - { role: technical, verb: get, path: api/v2/open_finance, action: accept }
  # technical doesnt have access to see pending documents
  - { role: technical, verb: get, path: api/v2/barong/admin/users/documents/pending, action: drop }
  # technical doesnt have access to admin activities
@@ -210,7 +215,7 @@ permissions:
  # get abilities
  - { role: support, verb: all, path: api/v2/peatio/admin/abilities, action: accept }
  - { role: support, verb: all, path: api/v2/barong/admin/abilities, action: accept }
- 
+
 # TRADER
  # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
  - { role: trader, verb: all, path: api/v2/peatio/account, action: accept }
@@ -219,9 +224,11 @@ permissions:
  - { role: trader, verb: all, path: api/v2/barong/resource, action: accept }
  # ranger access
  - { role: trader, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: trader, verb: get, path: api/v2/open_finance, action: accept }
  #applogic access
  - { role: trader, verb: all, path: api/v2/applogic, action: accept }
- 
+
  # BROKER
  # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
  - { role: broker, verb: all, path: api/v2/peatio/account, action: accept }
@@ -230,6 +237,8 @@ permissions:
  - { role: broker, verb: all, path: api/v2/barong/resource, action: accept }
  # ranger access
  - { role: broker, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: broker, verb: get, path: api/v2/open_finance, action: accept }
  #applogic access
  - { role: broker, verb: all, path: api/v2/applogic, action: accept }
 
@@ -240,9 +249,11 @@ permissions:
  - { role: member, verb: all, path: api/v2/barong/resource, action: accept }
  # ranger access
  - { role: member, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: member, verb: get, path: api/v2/open_finance, action: accept }
  # applogic access
  - { role: member, verb: all, path: api/v2/applogic, action: accept }
- 
+
  # MAKER
  - { role: maker, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: maker, verb: all, path: api/v2/peatio/market, action: accept }
@@ -250,6 +261,8 @@ permissions:
  - { role: maker, verb: all, path: api/v2/barong/resource, action: accept }
  # ranger access
  - { role: maker, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: maker, verb: get, path: api/v2/open_finance, action: accept }
  # applogic access
  - { role: maker, verb: all, path: api/v2/applogic, action: accept }
 
