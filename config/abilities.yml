@@ -61,4 +61,4 @@ admin_permissions:
       - Level
       - Profile
      manage:
-      - Users
+      - User
