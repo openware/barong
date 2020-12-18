@@ -277,25 +277,27 @@ permissions:
  # applogic access
  - { role: maker, verb: all, path: api/v2/applogic, action: accept }
 
- # Service Account
+ # Service Account  Maker
  # has standard user permissions to ACCOUNT, MARKET, RESOURCE modules
- - { role: service_account, verb: all, path: api/v2/peatio/account, action: accept }
- - { role: service_account, verb: all, path: api/v2/peatio/market, action: accept }
- - { role: service_account, verb: all, path: api/v2/finex/market, action: accept }
- - { role: service_account, verb: all, path: api/v2/barong/resource, action: accept }
+ - { role: sa_maker, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: sa_maker, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: sa_maker, verb: all, path: api/v2/finex/market, action: accept }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource, action: accept }
  # Service Account can not interact with Password, 2FA, KYC, API keys, Beneficiary, Deposit and Withdraw
- - { role: service_account, verb: all, path: api/v2/barong/resource/otp, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/phones, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/profiles, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/documents, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/addresses, action: drop }
- - { role: service_account, verb: all, path: api/v2/applogic/private/tenants, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/api_keys, action: drop }
- - { role: service_account, verb: all, path: api/v2/barong/resource/users/password, action: drop }
- - { role: service_account, verb: all, path: api/v2/peatio/account/deposit_address, action: drop }
- - { role: service_account, verb: all, path: api/v2/peatio/account/withdraws, action: drop }
- - { role: service_account, verb: all, path: api/v2/peatio/account/beneficiaries, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/otp, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/phones, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/profiles, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/documents, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/addresses, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/applogic/private/tenants, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/api_keys, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/barong/resource/users/password, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/peatio/account/deposit_address, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/peatio/account/withdraws, action: drop }
+ - { role: sa_maker, verb: all, path: api/v2/peatio/account/beneficiaries, action: drop }
+ # Finex upstream access
+ - { role: sa_maker, verb: get, path: api/v2/open_finance, action: accept }
  # ranger access
- - { role: service_account, verb: get, path: api/v2/ranger, action: accept }
+ - { role: sa_maker, verb: get, path: api/v2/ranger, action: accept }
  # applogic access
- - { role: service_account, verb: all, path: api/v2/applogic, action: accept }
+ - { role: sa_maker, verb: all, path: api/v2/applogic, action: accept }
