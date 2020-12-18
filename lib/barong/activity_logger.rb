@@ -18,8 +18,8 @@ module Barong
                               " action: #{params[:action]}, result: #{params[:result]}, data: #{params[:data]}")
             Activity.create(params)
           rescue StandardError => e
-            Rails.logger.error { "Failed to create activity with params: #{params}" \
-                                 "Inspect error: #{e.inspect}" }
+            Rails.logger.error { "Failed to create activity with params: #{params}\n" \
+                                 "Inspect error: #{e.inspect}\n#{e.backtrace.join("\n")}" }
           end
         end
       end
