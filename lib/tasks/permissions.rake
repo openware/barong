@@ -2,7 +2,7 @@
 
 namespace :permissions do
   desc 'Load user permissionse'
-  task load: :environment do
+  task reload: :environment do
     Permission.transaction do
       # Delete old permissions
       Permission.delete_all
