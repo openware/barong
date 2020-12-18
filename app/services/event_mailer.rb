@@ -87,8 +87,10 @@ class EventMailer
 
     user  = User.includes(:profiles).find_by(uid: obj.record.user.uid)
     language = user.language.downcase.to_sym
+    Rails.logger.info { "User #{user.email} has '#{language}' email language" }
+    template_config = config[:templates].transform_keys(&:downcase)
 
-    unless config[:templates].keys.map(&:downcase).include?(language)
+    unless template_config.keys.include?(language)
       Rails.logger.error { "Language #{language} is not supported. Skipping." }
       return
     end
@@ -99,8 +101,8 @@ class EventMailer
     end
 
     params = {
-      subject: config[:templates][language][:subject],
-      template_name: config[:templates][language][:template_path],
+      subject: template_config[language][:subject],
+      template_name: template_config[language][:template_path],
       record: obj.record,
       changes: obj.changes,
       user: user
