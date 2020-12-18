@@ -5,163 +5,64 @@ roles:
   - accountant
   - compliance
   - support
-  - member
-  - broker
-  - trader
-  - maker
-  - sa_maker
 
 admin_permissions:
   superadmin:
     manage:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
-      - Operations::Revenue
-      - Member
-      - Account
-      - Beneficiary
-      - PaymentAddress
-      - Deposit
-      - Withdraw
-      - WithdrawLimit
-      - Blockchain
-      - Currency
-      - Engine
-      - Market
-      - TradingFee
-      - Wallet
-      - Adjustment  
-    read:
-      - Trade
-      - Order
-    update:
-      - Order
+      - Ability
+      - User
+      - Level
+      - Label
+      - Profile
+      - Activity
+      - APIKey
+      - Permission
+      - Restriction
   admin:
-    manage:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
-      - Operations::Revenue
-      - Member
-      - Account
-      - Beneficiary
-      - PaymentAddress
-      - Deposit
-      - Withdraw
-      - WithdrawLimit
-      - Blockchain
-      - Currency
-      - Engine
-      - Market
-      - TradingFee
-      - Wallet
-      - Adjustment 
     read:
-      - Trade
-      - Order
-    update:
-      - Order
+      - Permission
+    manage:
+      - Ability
+      - User
+      - Level
+      - Label
+      - Profile
+      - APIKey
+      - Restriction
   technical:
     read:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
+      - Ability
+      - User
+      - Level
+      - Label
+      - Profile
+      - Activity
     manage:
-      - WithdrawLimit
-      - Blockchain
-      - Currency
-      - Engine
-      - Market
-      - TradingFee
-      - Wallet
-    read:
-      - Trade
-      - Order
-      - Member
-    update:
-      - Order
+      - APIKey
+      - Restriction
   accountant:
     read:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
-      - Operations::Revenue
-      - Member
-      - Account
-      - Beneficiary
-      - PaymentAddress
-      - Deposit
-      - Withdraw
-      - Blockchain
-      - Currency
-      - Trade
-      - Order
-    create:
-      - Deposits::Fiat
-      - Adjustment
+      - Ability
+      - User
+      - Level
+      - Label
+      - Profile
+      - Activity
   compliance:
     read:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
-      - Member
-      - Account
-      - Beneficiary
-      - PaymentAddress
-      - Deposit
-      - Withdraw
+      - Ability
+      - Activity
+    manage:
+      - User
+      - Level
+      - Label
+      - Profile
   support:
     read:
-      - Operations::Account
-      - Operations::Asset
-      - Operations::Expense
-      - Operations::Liability
-      - Member
-      - Account
-      - Beneficiary
-      - PaymentAddress
-      - Deposit
-      - Withdraw
-      - Currency
-      - Engine
-      - Market
-      - Trade
-      - Order
-
-user_permissions:
-  superadmin:
-    manage: all
-  admin:
-    manage: all
-  technical:
-    manage: all
-  accountant:
-    manage: all
-  compliance:
-    manage: all
-  support:
-    manage: all
-  member:
-    manage: all
-  broker:
-    manage: all
-  trader:
-    manage: all
-  maker:
-    manage: all
-  sa_maker:
-    read:
-      - Operations::Account
-      - Order
-      - Trade
-      - StatsMemberPnl
-    create:
-      - Order
-    update:
-      - Order
+      - Ability
+      - Label
+      - Level
+      - Profile
+      - Activity
+    manage:
+      - User
