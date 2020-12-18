@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 namespace :permissions do
-  desc 'Load user permissionse'
-  task load: :environment do
+  desc 'Reload user permissions'
+  task reload: :environment do
     Permission.transaction do
       # Delete old permissions
       Permission.delete_all
