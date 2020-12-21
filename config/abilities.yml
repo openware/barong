@@ -20,6 +20,7 @@ admin_permissions:
       - Restriction
   admin:
     read:
+      - Activity
       - Permission
     manage:
       - Ability
