@@ -19,12 +19,18 @@ elsif Rails.application.credentials.has?(:private_key)
   Rails.logger.info('Loading private key from credentials.yml.enc')
 
 elsif !Rails.env.production?
-  pkey = Barong::KeyStore.generate
-  # TODO: let's store the private and public key here, so we can use them for dev
-  Rails.logger.warn('Warning !! Generating private key')
+  # Generates private key
+  key = Barong::KeyStore.generate
+  pkey = key.to_pem
+  pub_key = key.public_key.to_pem
 
+  # Save private/public keys
+  Barong::KeyStore.save!(pkey, 'config/rsa-key')
+  Barong::KeyStore.save!(pub_key, 'config/rsa-key.pub')
+
+  Rails.logger.warn('Warning !! Generating private key')
 else
-  raise 'Private key not found'
+  raise 'Private key not found or invalid'
 end
 
 kstore = Barong::KeyStore.new(pkey)

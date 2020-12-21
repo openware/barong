@@ -115,7 +115,7 @@ class EventMailer
   rescue StandardError => e
     Rails.logger.error { e.inspect }
 
-    unlisten if db_connection_error?(e)
+    unlisten if db_connection_error?(e) || timeout_error?(e)
   end
 
   def verify_jwt(payload, signer)
@@ -146,6 +146,10 @@ class EventMailer
 
   def db_connection_error?(exception)
     exception.is_a?(Mysql2::Error::ConnectionError) || exception.cause.is_a?(Mysql2::Error)
+  end
+
+  def timeout_error?(exception)
+    exception.is_a?(Net::OpenTimeout)
   end
 
   def safe_dig(hash, keypath, default = nil)

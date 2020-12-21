@@ -17,7 +17,7 @@ rails console
 1. Generate the barong public key in base64 format
 
 ```
-cat config/rsa-key.pub | base64 -w0
+cat config/rsa-key.pub | base64 -w0 (base64 -b0 for MacOS users)
 ```
 
 2. Configure it in config/mailer.yml
