@@ -68,6 +68,7 @@ permissions:
  - { role: accountant, verb: get, path: api/v2/peatio/admin/blockchains, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/orders, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/markets, action: accept }
+ - { role: accountant, verb: get, path: api/v2/peatio/admin/engine, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/trades, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/deposits, action: accept }
  - { role: accountant, verb: get, path: api/v2/peatio/admin/withdraws, action: accept }
@@ -109,12 +110,14 @@ permissions:
  - { role: compliance, verb: get, path: api/v2/peatio/admin/beneficiaries, action: accept }
  - { role: compliance, verb: get, path: api/v2/peatio/admin/currencies, action: accept }
  - { role: compliance, verb: all, path: api/v2/barong/admin/users, action: accept }
- # has ability to see deposit, withdraw, operations (pertial)
+ # has ability to see deposit, withdraw, operations (partial)
  - { role: compliance, verb: get, path: api/v2/peatio/admin/deposits, action: accept }
  - { role: compliance, verb: get, path: api/v2/peatio/admin/withdraws, action: accept }
  - { role: compliance, verb: get, path: api/v2/peatio/admin/assets, action: accept }
  - { role: compliance, verb: get, path: api/v2/peatio/admin/liabilities, action: accept }
  - { role: compliance, verb: get, path: api/v2/peatio/admin/expenses, action: accept }
+ - { role: compliance, verb: get, path: api/v2/peatio/admin/markets, action: accept }
+ - { role: compliance, verb: get, path: api/v2/peatio/admin/engine, action: accept }
  # has no ability to see the configurations
  - { role: compliance, verb: all, path: api/v2/peatio/admin/adjustments, action: drop }
  - { role: compliance, verb: all, path: api/v2/peatio/admin/revenues, action: drop }
