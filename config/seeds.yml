@@ -44,7 +44,6 @@ permissions:
 # ADMIN
 # admin has nearly full access to barong and peatio api, except managing permissions
  - { role: admin, verb: all, path: api/v2, action: accept }
-
  # ranger access
  - { role: admin, verb: get, path: api/v2/ranger, action: accept }
  # Finex upstream access
