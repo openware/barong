@@ -27,19 +27,22 @@ class EventMailer
     end
 
     @bunny_channel = @bunny_session.channel
+    # Delete old queue if some exists
+    @bunny_channel.queue_delete('barong.postmaster.event.mailer') if @bunny_session.queue_exists?('barong.postmaster.event.mailer')
+
     # Define fanout exchanges which will broadcast
     # all the messages they receives to all the queues they know
-    retry_exchange = @bunny_channel.fanout('retry.exchange')
-    main_exchange = @bunny_channel.fanout('main.exchange')
+    retry_exchange = @bunny_channel.fanout('barong.event.mailer.retry.exchange')
+    main_exchange = @bunny_channel.fanout('barong.event.mailer.main.exchange')
 
-    queue = @bunny_channel.queue('barong.event.mailer', auto_delete: false, durable: true,
+    queue = @bunny_channel.queue('barong.event.mailer.main', auto_delete: false, durable: true,
       arguments: {
         :'x-dead-letter-exchange' => retry_exchange.name,
       }
     )
     queue.bind(main_exchange)
 
-    retry_queue = @bunny_channel.queue('retry.barong.event.mailer', auto_delete: false, durable: true,
+    retry_queue = @bunny_channel.queue('barong.event.mailer.retry', auto_delete: false, durable: true,
       arguments: {
         :'x-dead-letter-exchange' => main_exchange.name,
         :'x-message-ttl' => 120000   # will trigger retry every 2 minutes
