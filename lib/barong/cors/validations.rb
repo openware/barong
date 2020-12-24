@@ -22,7 +22,7 @@ module Barong
         end
 
         def validate_max_age(max_age)
-          if max_age.present? && max_age.match?(/^[0-9]*$/)
+          if max_age.present? && max_age.to_s.match?(/^[0-9]*$/)
             max_age
           else
             Rails.logger.info { 'WARNING: Incorect or missing API_CORS_MAX_AGE value. Using default value: 3600' }
