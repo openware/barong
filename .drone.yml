@@ -31,7 +31,7 @@ steps:
     - rspec
 
 - name: Bump and tag
-  image: quay.io/openware/sdk-citools:2.4.5
+  image: quay.io/openware/sdk-citools:2.6.7
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
@@ -97,7 +97,7 @@ steps:
       - master
 
 - name: Push and Notify
-  image: quay.io/openware/sdk-citools:2.4.5
+  image: quay.io/openware/sdk-citools:2.6.7
   environment:
     BOT_USERNAME: kite-bot
     BOT_NAME: Kite Bot
