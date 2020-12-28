@@ -14,9 +14,10 @@ class AuthorizeController < ActionController::Metal
     unless params[:path] == 'api/v2/barong/identity/users/access'
       Restriction::CATEGORIES.each do |category|
         restriction = first_matched_restriction(category)
-        if restriction && category != 'whitelist'
-          Rails.logger.info("Access denied for ip #{request.remote_ip} because of #{restriction[0]} restriction")
-          return access_error!("authz.restrict.#{category}", restriction[1])
+        if restriction && category.in?(%w[blacklist maintenance])
+          return deny_access(category, restriction)
+        elsif restriction && category == 'blocklogin' && params[:path] == 'api/v2/barong/identity/session'
+          return deny_access(category, restriction)
         elsif restriction && category == 'whitelist'
           break
         end
@@ -57,15 +58,20 @@ class AuthorizeController < ActionController::Metal
   def fetch_restrictions
     enabled = Restriction.where(state: 'enabled').to_a
 
-    Restriction::CATEGORIES.inject(Hash.new) do |table, category|
+    Restriction::CATEGORIES.inject({}) do |table, category|
       grouped_by_category = enabled.select { |r| r.category == category }
 
-      grouped_by_scope = Restriction::SCOPES.inject(Hash.new) do |table, scope|
+      grouped_by_scope = Restriction::SCOPES.inject({}) do |table, scope|
         scope_restrictions = grouped_by_category.select { |r| r.scope == scope }.pluck(:value, :code)
         table.tap { |t| t[scope] = scope_restrictions }
       end
       table.tap { |t| t[category] = grouped_by_scope }
     end
+  end
+
+  def deny_access(category, restriction)
+    Rails.logger.info("Access denied for ip #{request.remote_ip} because of #{restriction[0]} restriction")
+    access_error!("authz.restrict.#{category}", restriction[1])
   end
 
   def session
@@ -89,6 +95,6 @@ class AuthorizeController < ActionController::Metal
       ip = true_client_ip unless true_client_ip.nil? || true_client_ip.empty?
     end
 
-    return ip
+    ip
   end
 end
