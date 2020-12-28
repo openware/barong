@@ -13,10 +13,12 @@ The order of matching IP with existing rules is strict and cant be changed:
 1. Whitelist ( all -> ip -> ip_subnet -> country -> continent )
 2. Maintenance ( all -> ip -> ip_subnet -> country -> continent )
 3. Blacklist ( all -> ip -> ip_subnet -> country -> continent )
+4. Blocklogin ( all -> ip -> ip_subnet -> country -> continent )
 
 `Whitelist` - rule, that marks IP as trusted, as IP that can have an access to the server APIs
 `Maintenance` - when enabled, will return an error - 471 (by default) to any request to server in a range of rules `scope` (Typically, should be used with `all` and in maintenance platform purposes)
 `Blacklist` - when enabled, will return an error - `code`, which can be customized by the rule. Code can be different for different `scopes`, and can be used to display different error or kind alert of UI. Default `code` for errors `{ continent: 423, country: 423, ip_subnet: 403, ip: 401, all: 401 }`
+`Blocklogin` - acts as `Blacklist`, but applies only on `sessions` endpoint.
 
 ##### How to configure
 Restrictions can be:

@@ -19,7 +19,33 @@ describe '/api/v2/auth functionality test' do
   end
   let(:do_create_session_request) { post uri, params: params }
   let(:auth_request) { '/api/v2/auth/tasty_endpoint' }
+  let(:auth_session_create_request) { '/api/v2/auth/api/v2/barong/identity/sessions' }
 
+
+  describe 'test blocklogin restriction' do
+    let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent', category: 'blocklogin', code: 425) }
+    before do
+      Rails.cache.delete('restrictions')
+    end
+
+    context 'block session creation' do
+      before do
+        allow_any_instance_of(Barong::Authorize).to receive(:validate_session!).and_return(true)
+        allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
+      end
+
+      it do
+        post auth_session_create_request, params: params
+        expect(response.status).to eq(restriction.code)
+      end
+
+      it do
+        do_create_session_request # This request will be successful because path doesn't include 'api/v2/auth'
+        get auth_request
+        expect(response.status).to eq(200)
+      end
+    end
+  end
   describe 'test blacklist restrictions' do
     before do
       allow_any_instance_of(Barong::Authorize).to receive(:validate_session!).and_return(true)
