@@ -24,7 +24,15 @@ class Restriction < ApplicationRecord
 
   before_validation :assign_code
 
+  after_save :destroy_sessions
+
   private
+
+  def destroy_sessions
+    if category == 'blocklogin' && state == 'enabled'
+      Rails.cache.delete_matched('*_session_id*') if state_previously_changed? || created_at_previously_changed?
+    end
+  end
 
   def assign_code
     return unless code.blank? || category == 'whitelist'
