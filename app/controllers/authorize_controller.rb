@@ -16,7 +16,7 @@ class AuthorizeController < ActionController::Metal
         restriction = first_matched_restriction(category)
         if restriction && category.in?(%w[blacklist maintenance])
           return deny_access(category, restriction)
-        elsif restriction && category == 'blocklogin' && params[:path] == 'api/v2/barong/identity/session'
+        elsif restriction && category == 'blocklogin' && params[:path] == 'api/v2/barong/identity/sessions'
           return deny_access(category, restriction)
         elsif restriction && category == 'whitelist'
           break
