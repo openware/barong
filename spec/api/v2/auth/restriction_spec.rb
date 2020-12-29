@@ -23,12 +23,13 @@ describe '/api/v2/auth functionality test' do
 
 
   describe 'test blocklogin restriction' do
-    let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent', category: 'blocklogin', code: 425) }
     before do
+      allow(Rails.cache).to receive(:delete_matched).and_return(nil)
       Rails.cache.delete('restrictions')
     end
 
     context 'block session creation' do
+      let!(:restriction) { create(:restriction, value: 'EUROPE', scope: 'continent', category: 'blocklogin', code: 425) }
       before do
         allow_any_instance_of(Barong::Authorize).to receive(:validate_session!).and_return(true)
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return(london_ip)
