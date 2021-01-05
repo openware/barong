@@ -220,3 +220,20 @@ changes: {
   level: 0
 }
 ```
+
+
+### Queues and exchanges schema
+![Mailer-Schema](images/amqp-mailer-schema.jpg)
+### How retries works
+
+RabbitMQ Cluster is part of our infrastructure and the default queuing solution. RabbitMQ has Dead Letter Exchanges (DLX), which allows us to simulate message scheduling.
+
+#### Steps to test the solution:
+1. Publish message to TargetQueue
+2. Consumer gets the message and tries to process it
+3. Process fails, consumer rejects the message
+4. Rabbit routes the message to RetryExchange
+5. Message moves to RetryQueue, sits for 2 minutes
+6. When message expires, it is resent to TargetExchange and routed to TargetQueue
+
+![Mailer-Retry](images/mailer-retry.jpg)
