@@ -34,8 +34,14 @@ module Barong
         raise Barong::KeyStore::Fatal
       end
 
+      def save!(key, path)
+        File.open(path, 'w+') { |file| file.write(key) }
+      rescue
+        raise Barong::KeyStore::Fatal
+      end
+
       def generate
-        OpenSSL::PKey::RSA.generate(2048).to_pem
+        OpenSSL::PKey::RSA.generate(2048)
       end
     end
 

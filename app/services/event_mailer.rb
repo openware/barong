@@ -27,15 +27,37 @@ class EventMailer
     end
 
     @bunny_channel = @bunny_session.channel
+    # Delete old queue if some exists
+    @bunny_channel.queue_delete('barong.postmaster.event.mailer') if @bunny_session.queue_exists?('barong.postmaster.event.mailer')
 
-    queue = @bunny_channel.queue('barong.postmaster.event.mailer', auto_delete: false, durable: true)
+    # Define fanout exchanges which will broadcast
+    # all the messages they receives to all the queues they know
+    retry_exchange = @bunny_channel.fanout('barong.event.mailer.retry.exchange')
+    main_exchange = @bunny_channel.fanout('barong.event.mailer.main.exchange')
+
+    queue = @bunny_channel.queue('barong.event.mailer.main', auto_delete: false, durable: true,
+      arguments: {
+        :'x-dead-letter-exchange' => retry_exchange.name,
+      }
+    )
+    queue.bind(main_exchange)
+
+    retry_queue = @bunny_channel.queue('barong.event.mailer.retry', auto_delete: false, durable: true,
+      arguments: {
+        :'x-dead-letter-exchange' => main_exchange.name,
+        :'x-message-ttl' => 120000   # will trigger retry every 2 minutes
+    })
+    retry_queue.bind(retry_exchange)
+
     @events.each do |event|
-      exchange = @bunny_channel.direct(@exchanges[event[:exchange].to_sym][:name])
+      exchange_name = @exchanges[event[:exchange].to_sym][:name]
+      exchange = @bunny_channel.direct(exchange_name)
+
       queue.bind(exchange, routing_key: event[:key])
     end
 
     Rails.logger.info { 'Listening for events.' }
-    queue.subscribe(manual_ack: false, block: true, &method(:handle_message))
+    queue.subscribe(manual_ack: true, block: true, &method(:handle_message))
   end
 
   def unlisten
@@ -72,7 +94,17 @@ class EventMailer
   end
 
   def handle_message(delivery_info, _metadata, payload)
-    exchange    = @exchanges.select { |_, ex| ex[:name] == delivery_info[:exchange] }
+    Rails.logger.info { "Start handling a message" }
+    Rails.logger.info { "\nPayload: \n #{payload} \n\n Metadata: \n #{_metadata} \n\n Delivery info: \n #{delivery_info} \n" }
+    exchange = @exchanges.select { |_, ex| ex[:name] == delivery_info[:exchange] }
+
+    # In case of retry message
+    # we should get exchange name from _metadata info
+    if exchange.empty?
+      exchange_name = _metadata[:headers]['x-death'][1]['exchange']
+      exchange = @exchanges.select { |_, ex| ex[:name] == exchange_name }
+    end
+
     exchange_id = exchange.keys.first.to_s
     signer      = exchange[exchange_id.to_sym][:signer]
 
@@ -114,8 +146,21 @@ class EventMailer
     }
 
     Postmaster.process_payload(params).deliver_now
+
+    # Acknowledges a message
+    # Acknowledged message is completely removed from the queue
+    @bunny_channel.ack(delivery_info.delivery_tag)
   rescue StandardError => e
     Rails.logger.error { e.inspect }
+
+    if e.is_a?(JWT::ExpiredSignature)
+      # Acknowledges a message
+      @bunny_channel.ack(delivery_info.delivery_tag)
+    else
+      # Rejects a message
+      # A rejected message dropped by RabbitMQ and goes to dead letter exchange queue
+      @bunny_channel.reject(delivery_info.delivery_tag)
+    end
 
     unlisten if db_connection_error?(e)
   end
