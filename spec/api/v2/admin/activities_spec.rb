@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe API::V2::Admin::Activities do
   include_context 'bearer authentication'
+  include_context 'geoip mock'
 
   describe 'GET /api/v2/admin/activities' do
     let!(:create_admin_permission) do
@@ -42,6 +43,7 @@ describe API::V2::Admin::Activities do
           user_activites = Activity.where(category: 'user')
           expect(user_activites.count).to eq activities.count
           expect(user_activites.last.user_ip).to eq activities[0]['user_ip']
+          expect(Barong::GeoIP.info(ip: user_activites.last.user_ip, key: :country)).to eq activities[0]['user_ip_country']
           expect(user_activites.last.user_agent).to eq activities[0]['user_agent']
           expect(user_activites.last.topic).to eq activities[0]['topic']
           expect(user_activites.last.action).to eq activities[0]['action']
@@ -94,6 +96,7 @@ describe API::V2::Admin::Activities do
 
           expect(Activity.count).to eq activities.count
           expect(Activity.third.user_ip).to eq activities[0]['user_ip']
+          expect(Barong::GeoIP.info(ip: Activity.third.user_ip, key: :country)).to eq activities[0]['user_ip_country']
           expect(Activity.third.user_agent).to eq activities[0]['user_agent']
           expect(Activity.third.topic).to eq activities[0]['topic']
           expect(Activity.third.action).to eq activities[0]['action']

@@ -4,6 +4,9 @@ module API::V2::Admin
   module Entities
     class AdminActivity < API::V2::Entities::Base
       expose :user_ip, documentation: { type: 'String' }
+      expose :user_ip_country, documentation: { type: 'String' } do |activity|
+        Barong::GeoIP.info(ip: activity.user_ip, key: :country)
+      end
       expose :user_agent, documentation: { type: 'String' }
       expose :topic, documentation: { type: 'String' }
       expose :action, documentation: { type: 'String' }
