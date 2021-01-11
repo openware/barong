@@ -120,23 +120,23 @@ date +%s%3N
 
 Nonce will be validated on server side to be not older than 5 seconds from the generation moment
 
-2. Calculate X-Auth-Signature header.
+2. Compute X-Auth-Signature header
 
-X-Auth-Signature is HMAC-SHA256, calculated using concatenation of X-Auth-Nonce and Access Key.
+X-Auth-Signature is computed using HMAC-SHA256 algorithm. The secret used is the nonce concatenated with the access key.
 
-```ruby
-nonce = (Time.now.to_f * 1000).to_i.to_s # timestamp in milliseconds, ex: 1584524005143
-access_key = '61d025b8573501c2' # Access Key from 'How to create API key section ?'
-secret_key = '2d0b4979c7fe6986daa8e21d1dc0644f' # Secret Key from 'How to create API key section ?'
-OpenSSL::HMAC.hexdigest("SHA256", secret_key, nonce + access_key)
-# => "bd42b945e095880e28d046846dbecf655fdf09d95a396a24fe6fe1df42f15d13" 
-```
+Here is an example of bash script generating a signature and doing an API call using curl.
+The hmac256 command used is provided by the [GnuPG libcrypt](https://gnupg.org/software/libgcrypt/index.html).
 
-3. Pass your headers in httpie (note `--session` is not needed anymore)
+```bash
+host="your.domain.com"
+access_key='61d025b8573501c2' # Access Key from 'How to create API key section ?'
+secret_key='2d0b4979c7fe6986daa8e21d1dc0644f' # Secret Key from 'How to create API key section ?'
+nonce=$(date +%s%3N)
 
-```
-http https://your.domain.com/api/v2/peatio/account/balances \
-  "X-Auth-Apikey: 61d025b8573501c2" \
-  "X-Auth-Nonce: 1584524005143" \
-  "X-Auth-Signature: bd42b945e095880e28d046846dbecf655fdf09d95a396a24fe6fe1df42f15d13"
+signature=$(echo -n "${nonce}${access_key}" | hmac256 "${secret_key}")
+
+curl "https://${host}/api/v2/peatio/account/balances" \
+  -H "X-Auth-Apikey: ${access_key}" \
+  -H "X-Auth-Nonce: ${nonce}" \
+  -H "X-Auth-Signature: ${signature}"
 ```
