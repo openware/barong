@@ -122,7 +122,7 @@ Nonce will be validated on server side to be not older than 5 seconds from the g
 
 2. Compute X-Auth-Signature header
 
-X-Auth-Signature is computed using HMAC-SHA256 algorithm. The secret used is the nonce contenated with the access key.
+X-Auth-Signature is computed using HMAC-SHA256 algorithm. The secret used is the nonce concatenated with the access key.
 
 Here is an example of bash script generating a signature and doing an API call using curl.
 The hmac256 command used is provided by the [GnuPG libcrypt](https://gnupg.org/software/libgcrypt/index.html).
