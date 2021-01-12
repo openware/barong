@@ -9,7 +9,7 @@ module API::V2
       mattr_accessor :security_configuration
 
       def before
-        return if request.path == '/api/v2/management/management.json'
+        return if request.path == '/api/v2/management/swagger'
 
         check_request_method!
         check_query_parameters!

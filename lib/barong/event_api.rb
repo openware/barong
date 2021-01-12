@@ -133,7 +133,7 @@ module EventAPI
           iss:   Middlewares.application_name,
           jti:   SecureRandom.uuid,
           iat:   Time.now.to_i,
-          exp:   Time.now.to_i + 60,
+          exp:   (Time.now + 1.hour).to_i,
           event: event_payload
         }
         private_key = Barong::App.config.keystore.private_key

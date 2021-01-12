@@ -50,6 +50,18 @@ module API::V2
           password_regexp: Barong::App.config.password_regexp
         }.compact
       end
+
+      resource :health do
+        desc 'Get application liveness status'
+        get "/alive" do
+          status Services::HealthChecker.alive? ? 200 : 503
+        end
+
+        desc 'Get application readiness status'
+        get "/ready" do
+          status Services::HealthChecker.ready? ? 200 : 503
+        end
+      end
     end
   end
 end

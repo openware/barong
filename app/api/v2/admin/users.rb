@@ -166,6 +166,10 @@ module API
                      type: String,
                      allow_blank: false,
                      desc: 'user uniq id'
+            optional :email,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'User Email'
             optional :state,
                      type: String,
                      allow_blank: false,
@@ -174,7 +178,7 @@ module API
                      type: Boolean,
                      allow_blank: false,
                      desc: 'user 2fa status'
-            exactly_one_of :state, :otp, message: 'admin.user.one_of_state_otp'
+            exactly_one_of :state, :otp, :email, message: 'admin.user.one_of_state_otp_email'
           end
           put do
             admin_authorize! :update, User
@@ -192,6 +196,10 @@ module API
             end
 
             error!({ errors: ['admin.user.update_himself'] }, 422) if target_user.uid == current_user.uid
+
+            if update_param_key == 'email' && !current_user.superadmin?
+              error!({ errors: ['superadmin.user.update_email'] }, 422)
+            end
 
             if update_param_key == 'otp' && update_param_value == true
               error!({ errors: ['admin.user.enable_2fa'] }, 422)

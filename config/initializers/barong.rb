@@ -8,27 +8,29 @@
 require 'barong/app'
 require 'barong/keystore'
 
-begin
-  private_key_path = ENV['JWT_PRIVATE_KEY_PATH']
+private_key_path = ENV['JWT_PRIVATE_KEY_PATH']
 
-  if !private_key_path.nil?
-    pkey = Barong::KeyStore.open!(private_key_path)
-    Rails.logger.info('Loading private key from: ' + private_key_path)
+if !private_key_path.nil?
+  pkey = Barong::KeyStore.open!(private_key_path)
+  Rails.logger.error('Loading private key from: ' + private_key_path)
 
-  elsif Rails.application.credentials.has?(:private_key)
-    pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
-    Rails.logger.info('Loading private key from credentials.yml.enc')
+elsif Rails.application.credentials.has?(:private_key)
+  pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
+  Rails.logger.info('Loading private key from credentials.yml.enc')
 
-  elsif !Rails.env.production?
-    pkey = Barong::KeyStore.generate
-    Rails.logger.warn('Warning !! Generating private key')
+elsif !Rails.env.production?
+  # Generates private key
+  key = Barong::KeyStore.generate
+  pkey = key.to_pem
+  pub_key = key.public_key.to_pem
 
-  else
-    raise Barong::KeyStore::Fatal
-  end
-rescue Barong::KeyStore::Fatal
-  Rails.logger.fatal('Private key is invalid')
-  raise 'FATAL: Private key is invalid'
+  # Save private/public keys
+  Barong::KeyStore.save!(pkey, 'config/rsa-key')
+  Barong::KeyStore.save!(pub_key, 'config/rsa-key.pub')
+
+  Rails.logger.warn('Warning !! Generating private key')
+else
+  raise 'Private key not found or invalid'
 end
 
 kstore = Barong::KeyStore.new(pkey)

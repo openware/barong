@@ -91,6 +91,7 @@ admin.user.empty_state
 admin.user.empty_otp
 admin.user.empty_role
 admin.user.one_of_state_otp
+admin.user.one_of_state_otp_email
 admin.user.missing_key
 admin.user.empty_key
 admin.user.missing_scope

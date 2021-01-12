@@ -2,7 +2,7 @@
 
 class Restriction < ApplicationRecord
   # please, note that order in CATEGORIES contstant defines the ierarchy
-  CATEGORIES = %w[whitelist maintenance blacklist].freeze
+  CATEGORIES = %w[whitelist maintenance blacklist blocklogin].freeze
   SCOPES = %w[continent country ip ip_subnet all]
   # 423 Locked 403 Forbidden 401 Forbidden
   DEFAULT_CODES = { continent: 423, country: 423, ip_subnet: 403, ip: 401, all: 401 }.stringify_keys.freeze
@@ -24,7 +24,15 @@ class Restriction < ApplicationRecord
 
   before_validation :assign_code
 
+  after_save :destroy_sessions
+
   private
+
+  def destroy_sessions
+    if category == 'blocklogin' && state == 'enabled'
+      Rails.cache.delete_matched('*_session_id*') if state_previously_changed? || created_at_previously_changed?
+    end
+  end
 
   def assign_code
     return unless code.blank? || category == 'whitelist'
