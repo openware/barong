@@ -4,6 +4,10 @@ require 'bunny'
 require 'ostruct'
 
 class EventMailer
+  Error = Class.new(StandardError)
+
+  class VerificationError < Error; end
+
   def initialize(events, exchanges, keychain)
     @exchanges = exchanges
     @keychain = keychain
@@ -110,7 +114,7 @@ class EventMailer
 
     result = verify_jwt(payload, signer.to_sym)
 
-    raise "Failed to verify signature from #{signer}." \
+    raise VerificationError, "Failed to verify signature from #{signer}." \
       unless result[:verified].include?(signer.to_sym)
 
     config = @events.select do |event|
@@ -153,7 +157,7 @@ class EventMailer
   rescue StandardError => e
     Rails.logger.error { e.inspect }
 
-    if e.is_a?(JWT::ExpiredSignature)
+    if e.is_a?(JWT::ExpiredSignature) || e.is_a?(JWT::VerificationError) || e.is_a?(VerificationError)
       # Acknowledges a message
       @bunny_channel.ack(delivery_info.delivery_tag)
     else
