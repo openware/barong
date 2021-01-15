@@ -20,6 +20,14 @@ module Barong
           rescue StandardError => e
             Rails.logger.error { "Failed to create activity with params: #{params}\n" \
                                  "Inspect error: #{e.inspect}\n#{e.backtrace.join("\n")}" }
+
+            # If system catch Mysql2::Error::ConnectionError
+            # System will reconnect to DB and push message again to the activities queue
+            if e.is_a? (ActiveRecord::StatementInvalid)
+              ActiveRecord::Base.connection.reconnect!
+              sleep(0.1)
+              @activities.push(options)
+            end
           end
         end
       end
