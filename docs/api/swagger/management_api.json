@@ -1561,7 +1561,7 @@
         },
         "number": {
           "type": "string",
-          "description": "Submasker phone number"
+          "description": "Submasked phone number"
         },
         "validated_at": {
           "type": "s",

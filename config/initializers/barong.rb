@@ -54,6 +54,7 @@ Barong::App.define do |config|
   config.set(:jwt_expire_time, '3600', type: :integer)
   config.set(:profile_double_verification, 'false', type: :bool)
   config.set(:crc32_salt, '')
+  config.set(:api_data_masking_enabled, 'true', type: :bool)
 
   # Password configuration  -----------------------------------------------
   # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration

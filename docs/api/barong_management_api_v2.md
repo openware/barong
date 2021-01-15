@@ -657,7 +657,7 @@ Get specific service_account information
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | country | string |  | No |
-| number | string | Submasker phone number | No |
+| number | string | Submasked phone number | No |
 | validated_at | s (g) |  | No |
 
 #### API_V2_Entities_Profile

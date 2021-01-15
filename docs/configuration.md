@@ -17,6 +17,7 @@
 | `barong_gateway` | 'cloudflare' | `cloudflare`, `akamai` | while turned on (`true`) user IP on session and AuthZ level will firstly be checked in TRUE_CLIENT_IP header |
 | `barong_jwt_expire_time` | '3600' | integer representation of seconds  | general purpose tokens (reset password, confirm email) expiration time |
 | `crc32_salt` | - | any string value | salt for crc32 algorithm which used to searching in encrypted fields |
+| `api_data_masking_enabled` | true | `true`, `false` | while turned on (`true`) user API will be with ecnrypted user data |
 
 ### Password configuration
 | Env name | Default value | Possible values | Description |

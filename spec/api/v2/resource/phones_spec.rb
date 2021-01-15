@@ -31,6 +31,25 @@ describe 'Api::V2::Resources::Phones' do
         expect(json_body.second[:country]).to eq phone2.country
         expect(json_body.second[:validated_at]).to eq phone2.validated_at
       end
+
+      context 'list of users phone without masking' do
+        before do
+          Barong::App.config.stub(:api_data_masking_enabled).and_return(false)
+        end
+
+        it 'returns list of user\'s phones' do
+          do_request
+
+          expect(json_body.length).to eq 2
+
+          expect(json_body.first[:number]).to eq phone1.number
+          expect(json_body.first[:country]).to eq phone1.country
+          expect(json_body.first[:validated_at]).to eq phone1.validated_at
+          expect(json_body.second[:number]).to eq phone2.number
+          expect(json_body.second[:country]).to eq phone2.country
+          expect(json_body.second[:validated_at]).to eq phone2.validated_at
+        end
+      end
     end
 
     describe 'POST /api/v2/resource/phones' do

@@ -39,3 +39,8 @@ To update all encrypted fields to latest key values (salt will be "#{current_yea
 `rake rotate:phones`
 `rake rotate:profiles`
 `rake rotate:documents`
+
+### Fields masking on user API
+
+Sensitive data fields like `last name`, `dob`, `phone number`, `document number` are masked in user API by default.
+You can disable this masking by changing the environment variable `BARONG_API_DATA_MASKING_ENABLED` to `false`.
