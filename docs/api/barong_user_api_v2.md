@@ -1365,7 +1365,7 @@ KYC callback
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | country | string |  | No |
-| number | string | Submasker phone number | No |
+| number | string | Submasked phone number | No |
 | validated_at | s (g) |  | No |
 
 #### API_V2_Entities_Document
@@ -1374,7 +1374,7 @@ KYC callback
 | ---- | ---- | ----------- | -------- |
 | upload | string | file url | No |
 | doc_type | string | document type: passport, driver license | No |
-| doc_number | string | Submasker document number: AB123123 type | No |
+| doc_number | string | Submasked document number: AB123123 type | No |
 | doc_expire | string | expire date of uploaded documents | No |
 | metadata | string | any additional stored data | No |
 | created_at | string |  | No |

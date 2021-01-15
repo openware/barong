@@ -531,9 +531,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -586,9 +584,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -650,9 +646,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -722,9 +716,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -752,9 +744,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -799,9 +789,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -867,9 +855,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -920,9 +906,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -968,9 +952,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1031,9 +1013,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1079,9 +1059,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1124,9 +1102,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1169,9 +1145,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1205,9 +1179,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1254,9 +1226,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1311,9 +1281,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1371,9 +1339,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1405,9 +1371,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1487,9 +1451,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1518,9 +1480,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1607,9 +1567,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1697,9 +1655,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1733,9 +1689,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1772,9 +1726,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1822,9 +1774,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1865,9 +1815,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1917,9 +1865,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -1948,9 +1894,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -2211,9 +2155,7 @@
         ],
         "security": [
           {
-            "BearerToken": [
-
-            ]
+            "BearerToken": []
           }
         ],
         "responses": {
@@ -2634,7 +2576,7 @@
         },
         "number": {
           "type": "string",
-          "description": "Submasker phone number"
+          "description": "Submasked phone number"
         },
         "validated_at": {
           "type": "s",
@@ -2655,7 +2597,7 @@
         },
         "doc_number": {
           "type": "string",
-          "description": "Submasker document number: AB123123 type"
+          "description": "Submasked document number: AB123123 type"
         },
         "doc_expire": {
           "type": "string",

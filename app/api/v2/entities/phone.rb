@@ -6,8 +6,8 @@ module API
       # Phone request response
       class Phone < API::V2::Entities::Base
         expose :country, documentation: { type: 'String' }
-        expose :number, documentation: { type: 'String', desc: 'Submasker phone number' } do |phone|
-          phone.sub_masked_number
+        expose :number, documentation: { type: 'String', desc: 'Submasked phone number' } do |phone|
+          Barong::App.config.api_data_masking_enabled ? phone.sub_masked_number : phone.number
         end
         expose :validated_at, documentation: { type: 'Datetime' }
       end

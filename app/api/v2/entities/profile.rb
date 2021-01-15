@@ -5,10 +5,10 @@ module API::V2
     class Profile < API::V2::Entities::Base
       expose :first_name, documentation: { type: 'String' }
       expose :last_name, documentation: { type: 'String', desc: 'Submasked last name' } do |profile|
-        profile.sub_masked_last_name
+        Barong::App.config.api_data_masking_enabled ? profile.sub_masked_last_name : profile.last_name
       end
       expose :dob, documentation: { type: 'Date', desc: 'Submasked birthday date' } do |profile|
-        profile.sub_masked_dob
+        Barong::App.config.api_data_masking_enabled ? profile.sub_masked_dob : profile.dob
       end
       expose :address, documentation: { type: 'String' }
       expose :postcode, documentation: { type: 'String' }

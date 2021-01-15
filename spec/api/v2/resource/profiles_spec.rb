@@ -270,6 +270,23 @@ describe 'API::V2::Resource::Profiles' do
       expect(res[:metadata]).to be_blank
     end
 
+    it 'creates new profile with only required fields without masking' do
+      Barong::App.config.stub(:api_data_masking_enabled).and_return(false)
+      expect { post url, params: request_params, headers: auth_header }
+        .to change { Profile.count }.by (1)
+      expect(response.status).to eq(201)
+
+      res = json_body
+      expect(res[:last_name]).to eq request_params[:last_name]
+      expect(res[:first_name]).to eq request_params[:first_name]
+      expect(res[:dob]).to eq request_params[:dob].to_s
+      expect(res[:country]).to eq request_params[:country]
+      expect(res[:city]).to eq request_params[:city]
+      expect(res[:address]).to eq request_params[:address]
+      expect(res[:postcode]).to eq request_params[:postcode]
+      expect(res[:metadata]).to be_blank
+    end
+
     it 'creates new profile with corean symbols fields' do
       expect { post url, params: asian_params, headers: auth_header }
         .to change { Profile.count }.by (1)
