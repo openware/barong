@@ -84,6 +84,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'sentry-raven', '~> 2.9.0'
 gem 'pry-rails'
 
+# OmniAuth Auth0 strategy and CSRF protection
+gem 'omniauth-auth0', '~> 2.2'
+gem 'omniauth-rails_csrf_protection', '~> 0.1'
+
 group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug', platforms: [:mri, :mingw, :x64_mingw]
