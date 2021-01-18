@@ -24,7 +24,10 @@
 /public/assets
 .byebug_history
 
-# Ignore master key for decrypting credentials and more.
+# Ignore keys for decrypting credentials and more.
 /config/master.key
+/config/rsa-key
+/config/rsa-key.pub
+
 
 .idea/
