@@ -55,6 +55,12 @@ module API
                 desc: 'Additional phone and profile info'
                }
 
+       expose :username, 
+              documentation: { 
+               type: 'String', 
+               desc: 'User username' 
+              }
+
         expose :profiles, using: Entities::Profile
         expose :labels, using: Entities::AdminLabelView
         expose :phones, using: Entities::Phone

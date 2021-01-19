@@ -78,7 +78,7 @@ class Label < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20210218135634
+# Schema version: 20210316083841
 #
 # Table name: labels
 #

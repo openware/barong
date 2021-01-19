@@ -54,6 +54,12 @@ module API
                 type: 'String',
                 desc: 'Additional phone and profile info'
               }
+
+       expose :username, 
+              documentation: { 
+                type: 'String', 
+                desc: 'User username' 
+              }
       end
     end
   end
