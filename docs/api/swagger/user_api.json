@@ -8,14 +8,6 @@
   "produces": [
     "application/json"
   ],
-  "securityDefinitions": {
-    "BearerToken": {
-      "description": "Bearer Token authentication",
-      "type": "jwt",
-      "name": "Authorization",
-      "in": "header"
-    }
-  },
   "host": "localhost:3000",
   "basePath": "/api/v2/barong",
   "tags": [
@@ -142,7 +134,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Confirms an account"
+            "description": "Confirms an account",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           },
           "400": {
             "description": "Required params are missing"
@@ -264,7 +259,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Creates new user"
+            "description": "Creates new user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           },
           "400": {
             "description": "Required params are missing"
@@ -297,8 +295,8 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Creates new user"
+          "200": {
+            "description": "Whitelist restriction was created"
           },
           "400": {
             "description": "Required params are missing"
@@ -321,7 +319,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Destroy current session"
+            "description": "Session was destroyed"
           },
           "400": {
             "description": "Required params are empty"
@@ -373,7 +371,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Start a new session"
+            "description": "Start a new session",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -485,6 +486,56 @@
         "operationId": "postApiV2BarongIdentityPasswordValidate"
       }
     },
+    "/api/v2/barong/resource/swagger_doc/{name}": {
+      "get": {
+        "description": "Swagger compatible API description for specific API",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "description": "Resource name of mounted API",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "description": "Locale of API documentation",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Swagger compatible API description for specific API"
+          }
+        },
+        "tags": [
+          "api"
+        ],
+        "operationId": "getApiV2BarongResourceSwaggerDocName"
+      }
+    },
+    "/api/v2/barong/resource/swagger_doc": {
+      "get": {
+        "description": "Swagger compatible API description",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Swagger compatible API description"
+          }
+        },
+        "tags": [
+          "api"
+        ],
+        "operationId": "getApiV2BarongResourceSwaggerDoc"
+      }
+    },
     "/api/v2/barong/resource/service_accounts/api_keys/{kid}": {
       "put": {
         "description": "Updates an api key",
@@ -504,13 +555,14 @@
           {
             "in": "path",
             "name": "kid",
+            "description": "Service account kid",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
             "name": "scope",
-            "description": "comma separated scopes",
+            "description": "Comma separated scopes",
             "type": "string",
             "required": false
           },
@@ -529,14 +581,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Updates an api key"
+            "description": "Updates an api key",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -571,6 +621,7 @@
           {
             "in": "path",
             "name": "kid",
+            "description": "Service account kid",
             "type": "string",
             "required": true
           },
@@ -580,11 +631,6 @@
             "description": "Code from Google Authenticator",
             "type": "string",
             "required": true
-          }
-        ],
-        "security": [
-          {
-            "BearerToken": []
           }
         ],
         "responses": {
@@ -626,13 +672,14 @@
           {
             "in": "formData",
             "name": "algorithm",
+            "description": "Service account algorithm",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
             "name": "scope",
-            "description": "comma separated scopes",
+            "description": "Comma separated scopes",
             "type": "string",
             "required": false
           },
@@ -644,14 +691,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create api key for specific service account."
+            "description": "Create api key for specific service account.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Require 2FA and totp code"
@@ -714,14 +759,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "List all api keys for specific service account."
+            "description": "List all api keys for specific service account.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Require 2FA and totp code"
@@ -744,7 +787,9 @@
         ],
         "security": [
           {
-            "BearerToken": []
+            "BearerToken": [
+
+            ]
           }
         ],
         "responses": {
@@ -777,24 +822,21 @@
           {
             "in": "formData",
             "name": "title",
+            "description": "Storage title",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
             "name": "data",
+            "description": "Storage data",
             "type": "string",
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create data storage"
+            "description": "Data Storage was created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -853,14 +895,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "List all api keys for current account."
+            "description": "List all api keys for current account.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Require 2FA and totp code"
@@ -886,13 +926,14 @@
           {
             "in": "formData",
             "name": "algorithm",
+            "description": "API key algorithm",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
             "name": "scope",
-            "description": "comma separated scopes",
+            "description": "Comma separated scopes",
             "type": "string",
             "required": false
           },
@@ -904,14 +945,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create an api key"
+            "description": "Create an api key",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -939,6 +978,7 @@
           {
             "in": "path",
             "name": "kid",
+            "description": "API key kid",
             "type": "string",
             "required": true
           },
@@ -948,11 +988,6 @@
             "description": "Code from Google Authenticator",
             "type": "string",
             "required": true
-          }
-        ],
-        "security": [
-          {
-            "BearerToken": []
           }
         ],
         "responses": {
@@ -986,13 +1021,14 @@
           {
             "in": "path",
             "name": "kid",
+            "description": "API key kid",
             "type": "string",
             "required": true
           },
           {
             "in": "formData",
             "name": "scope",
-            "description": "comma separated scopes",
+            "description": "Comma separated scopes",
             "type": "string",
             "required": false
           },
@@ -1011,14 +1047,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Updates an api key"
+            "description": "Updates an api key",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1057,14 +1091,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Verify 2FA code"
+          "200": {
+            "description": "2FA was verified"
           },
           "400": {
             "description": "2FA has not been enabled for this account or code is missing"
@@ -1100,14 +1129,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Disable 2FA"
+          "200": {
+            "description": "2FA was disabled"
           },
           "400": {
             "description": "2FA has not been enabled for this account or code is missing"
@@ -1143,14 +1167,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Enable 2FA"
+          "200": {
+            "description": "2FA was enabled"
           },
           "400": {
             "description": "2FA has been enabled for this account or code is missing"
@@ -1177,14 +1196,9 @@
         "consumes": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Generate qr code for 2FA"
+          "200": {
+            "description": "QR code was generated"
           },
           "400": {
             "description": "2FA has been enabled for this account"
@@ -1224,14 +1238,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Verify a phone"
+            "description": "Verify a phone",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1279,14 +1291,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Resend activation code"
+          "200": {
+            "description": "Activation code was resend"
           },
           "400": {
             "description": "Required params are empty"
@@ -1337,14 +1344,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Add new phone"
+          "200": {
+            "description": "New phone was added"
           },
           "400": {
             "description": "Required params are empty"
@@ -1369,14 +1371,12 @@
         "produces": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns list of user's phones"
+            "description": "Returns list of user's phones",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Phone"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1449,11 +1449,6 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
             "description": "Document is uploaded"
@@ -1478,14 +1473,12 @@
         "produces": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Return current user documents list"
+            "description": "Return current user documents list",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Document"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1510,18 +1503,21 @@
           {
             "in": "formData",
             "name": "first_name",
+            "description": "First Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "last_name",
+            "description": "Last Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "dob",
+            "description": "Date of Birth",
             "type": "string",
             "format": "date",
             "required": false
@@ -1529,24 +1525,28 @@
           {
             "in": "formData",
             "name": "address",
+            "description": "Address",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "postcode",
+            "description": "Postcode",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "city",
+            "description": "City",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "country",
+            "description": "Country",
             "type": "string",
             "required": false
           },
@@ -1565,14 +1565,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update a profile for current_user"
+            "description": "Update a profile for current_user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Profile"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1598,18 +1596,21 @@
           {
             "in": "formData",
             "name": "first_name",
+            "description": "First Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "last_name",
+            "description": "Last Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "dob",
+            "description": "Date of Birth",
             "type": "string",
             "format": "date",
             "required": false
@@ -1617,24 +1618,28 @@
           {
             "in": "formData",
             "name": "address",
+            "description": "Address",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "postcode",
+            "description": "Postcode",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "city",
+            "description": "City",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "country",
+            "description": "Country",
             "type": "string",
             "required": false
           },
@@ -1653,14 +1658,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create a profile for current_user"
+            "description": "Create a profile for current_user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Profile"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1687,14 +1690,12 @@
         "produces": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Return profiles of current resource owner"
+            "description": "Return profiles of current resource owner",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Profile"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1722,11 +1723,6 @@
             "description": "Label key.",
             "type": "string",
             "required": true
-          }
-        ],
-        "security": [
-          {
-            "BearerToken": []
           }
         ],
         "responses": {
@@ -1772,14 +1768,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update a label with 'public' scope."
+            "description": "Update a label with 'public' scope.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Label"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1813,14 +1807,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Return a label by key."
+            "description": "Return a label by key.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Label"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1863,14 +1855,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create a label with 'public' scope."
+            "description": "Create a label with 'public' scope.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Label"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1892,14 +1882,12 @@
         "produces": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "200": {
-            "description": "List all labels for current user."
+            "description": "List all labels for current user.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Label"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -2023,7 +2011,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns user activity"
+            "description": "Returns user activity",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Activity"
+            }
           }
         },
         "tags": [
@@ -2056,7 +2047,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Blocks current user"
+            "description": "Current user was blocked"
           }
         },
         "tags": [
@@ -2083,7 +2074,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Updates current user data field"
+            "description": "Updates current user data field",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           }
         },
         "tags": [
@@ -2098,7 +2092,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns current user"
+            "description": "Returns current user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_UserWithFullInfo"
+            }
           }
         },
         "tags": [
@@ -2153,14 +2150,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": []
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Document is uploaded"
+            "description": "New address approval document was uploaded"
           },
           "400": {
             "description": "Required params are empty"
@@ -2297,23 +2289,66 @@
     }
   },
   "definitions": {
-    "API_V2_Entities_Level": {
+    "API_V2_Entities_UserWithFullInfo": {
       "type": "object",
       "properties": {
-        "id": {
+        "email": {
+          "type": "string",
+          "description": "User Email"
+        },
+        "uid": {
+          "type": "string",
+          "description": "User UID"
+        },
+        "role": {
+          "type": "string",
+          "description": "User role"
+        },
+        "level": {
           "type": "integer",
           "format": "int32",
-          "description": "Level identifier, level number"
+          "description": "User level"
         },
-        "key": {
-          "type": "string",
-          "description": "Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        "otp": {
+          "type": "boolean",
+          "description": "is 2FA enabled for account"
         },
-        "value": {
+        "state": {
           "type": "string",
-          "description": "Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+          "description": "User state: active, pending, inactive"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "Additional phone and profile info"
+        },
+        "csrf_token": {
+          "type": "string",
+          "description": "Сsrf protection token"
+        },
+        "labels": {
+          "$ref": "#/definitions/API_V2_Entities_Label"
+        },
+        "phones": {
+          "$ref": "#/definitions/API_V2_Entities_Phone"
+        },
+        "profiles": {
+          "$ref": "#/definitions/API_V2_Entities_Profile"
+        },
+        "data_storages": {
+          "$ref": "#/definitions/API_V2_Entities_DataStorage"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
         }
-      }
+      },
+      "description": "Returns current user"
     },
     "API_V2_Entities_Label": {
       "type": "object",
@@ -2336,43 +2371,34 @@
         "updated_at": {
           "type": "string"
         }
-      }
+      },
+      "description": "List all labels for current user."
     },
-    "API_V2_Entities_APIKey": {
+    "API_V2_Entities_Phone": {
       "type": "object",
       "properties": {
-        "kid": {
+        "country": {
           "type": "string",
-          "description": "jwt public key"
+          "description": "Phone country"
         },
-        "algorithm": {
+        "number": {
           "type": "string",
-          "description": "cryptographic hash function type"
+          "description": "Submasked phone number"
         },
-        "scope": {
-          "type": "string",
-          "description": "serialized array of scopes"
-        },
-        "state": {
-          "type": "string",
-          "description": "active/non-active state of key"
-        },
-        "secret": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
+        "validated_at": {
+          "type": "s",
+          "format": "g",
+          "description": "Phone validation date"
         }
-      }
+      },
+      "description": "Returns list of user's phones"
     },
     "API_V2_Entities_Profile": {
       "type": "object",
       "properties": {
         "first_name": {
-          "type": "string"
+          "type": "string",
+          "description": "First Name"
         },
         "last_name": {
           "type": "string",
@@ -2381,22 +2407,27 @@
         "dob": {
           "type": "string",
           "format": "date",
-          "description": "Submasked birthday date"
+          "description": "Submasked birth date"
         },
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "Address"
         },
         "postcode": {
-          "type": "string"
+          "type": "string",
+          "description": "Address Postcode"
         },
         "city": {
-          "type": "string"
+          "type": "string",
+          "description": "City name"
         },
         "country": {
-          "type": "string"
+          "type": "string",
+          "description": "Country name"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "Profile state: drafted, submitted, verified, rejected"
         },
         "metadata": {
           "type": "object",
@@ -2408,30 +2439,175 @@
         "updated_at": {
           "type": "string"
         }
+      },
+      "description": "Return profiles of current resource owner"
+    },
+    "API_V2_Entities_DataStorage": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Any additional data title"
+        },
+        "data": {
+          "type": "string",
+          "description": "Any additional data json key:value pairs"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "API_V2_Entities_APIKey": {
+      "type": "object",
+      "properties": {
+        "kid": {
+          "type": "string",
+          "description": "JWT public key"
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "Cryptographic hash function type"
+        },
+        "scope": {
+          "type": "string",
+          "description": "Serialized array of scopes"
+        },
+        "state": {
+          "type": "string",
+          "description": "active/non-active state of key"
+        },
+        "secret": {
+          "type": "string",
+          "description": "Api key secret"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "Create an api key"
+    },
+    "API_V2_Entities_Document": {
+      "type": "object",
+      "properties": {
+        "upload": {
+          "type": "string",
+          "description": "File url"
+        },
+        "doc_type": {
+          "type": "string",
+          "description": "Document type: passport, driver license, utility bill, identity card, institutional, address, residental"
+        },
+        "doc_number": {
+          "type": "string",
+          "description": "Submasked document number: AB123123 type"
+        },
+        "doc_expire": {
+          "type": "string",
+          "description": "Expire date of uploaded documents"
+        },
+        "metadata": {
+          "type": "string",
+          "description": "Any additional stored data"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "Return current user documents list"
+    },
+    "API_V2_Entities_Activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Activity ID"
+        },
+        "user_ip": {
+          "type": "string",
+          "description": "User IP"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User Browser Agent"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Defined topic (session, adjustments) or general by default"
+        },
+        "action": {
+          "type": "string",
+          "description": "API action: POST => 'create', PUT => 'update', GET => 'read', DELETE => 'delete', PATCH => 'update' or system if there is no match of HTTP method"
+        },
+        "result": {
+          "type": "string",
+          "description": "Status of API response: succeed, failed, denied"
+        },
+        "data": {
+          "type": "string",
+          "description": "Parameters which was sent to specific API endpoint"
+        },
+        "created_at": {
+          "type": "string"
+        }
+      },
+      "description": "Returns user activity"
+    },
+    "API_V2_Entities_Level": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Level identifier, level number"
+        },
+        "key": {
+          "type": "string",
+          "description": "Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        },
+        "value": {
+          "type": "string",
+          "description": "Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        }
       }
     },
     "API_V2_Entities_User": {
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
@@ -2439,7 +2615,7 @@
         },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         }
       }
     },
@@ -2447,35 +2623,40 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
-        },
-        "data": {
           "type": "string",
-          "description": "additional phone and profile info"
-        },
-        "profiles": {
-          "$ref": "#/definitions/API_V2_Entities_Profile"
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "Additional phone and profile info"
+        },
+        "profiles": {
+          "$ref": "#/definitions/API_V2_Entities_Profile"
         },
         "created_at": {
           "type": "string"
@@ -2489,27 +2670,37 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
         },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         },
         "profiles": {
           "$ref": "#/definitions/API_V2_Entities_Profile"
@@ -2528,10 +2719,6 @@
         },
         "comments": {
           "$ref": "#/definitions/API_V2_Entities_Comment"
-        },
-        "referral_uid": {
-          "type": "string",
-          "description": "UID of referrer"
         },
         "created_at": {
           "type": "string"
@@ -2568,176 +2755,30 @@
         }
       }
     },
-    "API_V2_Entities_Phone": {
-      "type": "object",
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "number": {
-          "type": "string",
-          "description": "Submasked phone number"
-        },
-        "validated_at": {
-          "type": "s",
-          "format": "g"
-        }
-      }
-    },
-    "API_V2_Entities_Document": {
-      "type": "object",
-      "properties": {
-        "upload": {
-          "type": "string",
-          "description": "file url"
-        },
-        "doc_type": {
-          "type": "string",
-          "description": "document type: passport, driver license"
-        },
-        "doc_number": {
-          "type": "string",
-          "description": "Submasked document number: AB123123 type"
-        },
-        "doc_expire": {
-          "type": "string",
-          "description": "expire date of uploaded documents"
-        },
-        "metadata": {
-          "type": "string",
-          "description": "any additional stored data"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Entities_DataStorage": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "description": "any additional data title"
-        },
-        "data": {
-          "type": "string",
-          "description": "any additional data json key:value pairs"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
     "API_V2_Entities_Comment": {
       "type": "object",
       "properties": {
         "id": {
           "type": "integer",
           "format": "int32",
-          "description": "comment id"
+          "description": "Comment id"
         },
         "author_uid": {
           "type": "string",
-          "description": "comment author"
+          "description": "Comment author UID"
         },
         "title": {
           "type": "string",
-          "description": "comment title"
+          "description": "Comment title"
         },
         "data": {
           "type": "string",
-          "description": "comment plain text"
+          "description": "Comment plain text"
         },
         "created_at": {
           "type": "string"
         },
         "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Entities_UserWithFullInfo": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "uid": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "otp": {
-          "type": "boolean"
-        },
-        "state": {
-          "type": "string"
-        },
-        "referral_uid": {
-          "type": "string",
-          "description": "UID of referrer"
-        },
-        "csrf_token": {
-          "type": "string",
-          "description": "csrf protection token"
-        },
-        "data": {
-          "type": "string",
-          "description": "additional phone and profile info"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "labels": {
-          "$ref": "#/definitions/API_V2_Entities_Label"
-        },
-        "phones": {
-          "$ref": "#/definitions/API_V2_Entities_Phone"
-        },
-        "profiles": {
-          "$ref": "#/definitions/API_V2_Entities_Profile"
-        },
-        "data_storages": {
-          "$ref": "#/definitions/API_V2_Entities_DataStorage"
-        }
-      }
-    },
-    "API_V2_Entities_Activity": {
-      "type": "object",
-      "properties": {
-        "user_ip": {
-          "type": "string"
-        },
-        "user_agent": {
-          "type": "string"
-        },
-        "topic": {
-          "type": "string"
-        },
-        "action": {
-          "type": "string"
-        },
-        "result": {
-          "type": "string"
-        },
-        "data": {
-          "type": "string"
-        },
-        "created_at": {
           "type": "string"
         }
       }
@@ -2746,20 +2787,25 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "Service Account Role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User Level"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "Service Account State: active, disabled"
         },
         "user": {
           "$ref": "#/definitions/API_V2_Entities_User"

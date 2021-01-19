@@ -7,21 +7,21 @@ module API
       class Labels < Grape::API
         resource :labels do
           desc 'List all labels for current user.',
-               security: [{ "BearerToken": [] }],
-               failure: [
-                 { code: 401, message: 'Invalid bearer token' }
-               ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: Entities::Label
           get do
             present current_user.labels, with: Entities::Label
           end
 
           desc 'Return a label by key.',
-               security: [{ "BearerToken": [] }],
-               failure: [
-                 { code: 400, message: 'Required params are empty' },
-                 { code: 401, message: 'Invalid bearer token' },
-                 { code: 404, message: 'Record is not found' }
-               ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 404, message: 'Record is not found' }
+            ],
+            success: Entities::Label
           params do
             requires :key,
                      type: String,
@@ -36,12 +36,12 @@ module API
           end
 
           desc "Create a label with 'public' scope.",
-               security: [{ "BearerToken": [] }],
-               failure: [
-                 { code: 400, message: 'Required params are empty' },
-                 { code: 401, message: 'Invalid bearer token' },
-                 { code: 422, message: 'Validation errors' }
-               ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: Entities::Label
           params do
             requires :key,
                      type: String,
@@ -67,13 +67,13 @@ module API
           end
 
           desc "Update a label with 'public' scope.",
-               security: [{ "BearerToken": [] }],
-               failure: [
-                 { code: 400, message: 'Required params are empty' },
-                 { code: 401, message: 'Invalid bearer token' },
-                 { code: 404, message: 'Record is not found' },
-                 { code: 422, message: 'Validation errors' }
-               ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 404, message: 'Record is not found' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: Entities::Label
           params do
             requires :key,
                      type: String,
@@ -93,13 +93,12 @@ module API
           end
 
           desc "Delete a label  with 'public' scope.",
-               security: [{ 'BearerToken': [] }],
-               success: { code: 204, message: 'Succefully deleted' },
-               failure: [
-                 { code: 400, message: 'Required params are empty' },
-                 { code: 401, message: 'Invalid bearer token' },
-                 { code: 404, message: 'Record is not found' }
-               ]
+            success: { code: 204, message: 'Succefully deleted' },
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 404, message: 'Record is not found' }
+            ]
           params do
             requires :key,
                      type: String,

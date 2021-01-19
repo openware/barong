@@ -18,11 +18,11 @@ module API::V2
       desc 'User related routes'
       resource :users do
         desc 'Creates new whitelist restriction',
-        success: { code: 201, message: 'Creates new user' },
-        failure: [
-          { code: 400, message: 'Required params are missing' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: 'Whitelist restriction was created' }
         params do
           requires :whitelink_token,
                    type: String,
@@ -45,11 +45,11 @@ module API::V2
         end
 
         desc 'Creates new user',
-        success: { code: 201, message: 'Creates new user' },
-        failure: [
-          { code: 400, message: 'Required params are missing' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          success: API::V2::Entities::UserWithFullInfo,
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ]
         params do
           requires :email,
                    type: String,
@@ -87,7 +87,6 @@ module API::V2
           csrf_token = open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-          status 201
         end
 
         desc 'Register Geetest captcha'
@@ -97,11 +96,11 @@ module API::V2
 
         namespace :email do
           desc 'Send confirmations instructions',
-          success: { code: 201, message: 'Generated verification code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: { code: 201, message: 'Generated verification code' },
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :email,
                      type: String,
@@ -125,11 +124,11 @@ module API::V2
           end
 
           desc 'Confirms an account',
-          success: { code: 201, message: 'Confirms an account' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: API::V2::Entities::UserWithFullInfo,
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :token,
                      type: String,
@@ -159,18 +158,17 @@ module API::V2
                             })
 
             present current_user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-            status 201
           end
         end
 
         namespace :password do
           desc 'Send password reset instructions',
-          success: { code: 201, message: 'Generated password reset code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' },
-            { code: 404, message: 'User doesn\'t exist'}
-          ]
+            success: { code: 201, message: 'Generated password reset code' },
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' },
+              { code: 404, message: 'User doesn\'t exist'}
+            ]
           params do
             requires :email,
                      type: String,
@@ -206,12 +204,12 @@ module API::V2
           end
 
           desc 'Sets new account password',
-          success: { code: 201, message: 'Resets password' },
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: { code: 201, message: 'Resets password' },
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 404, message: 'Record is not found' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :reset_password_token,
                      type: String,

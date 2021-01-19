@@ -7,18 +7,20 @@ module API
       class DataStorage < Grape::API
         resource :data_storage do
           desc 'Create data storage',
-               security: [{ "BearerToken": [] }],
-               failure: [
-                 { code: 401, message: 'Invalid bearer token' },
-                 { code: 422, message: 'Validation errors' }
-               ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: { code: 201, message: 'Data Storage was created' }
           params do
             requires :title,
                      type: String,
-                     allow_blank: false
+                     allow_blank: false,
+                     desc: 'Storage title'
             requires :data,
                      type: String,
-                     allow_blank: false
+                     allow_blank: false,
+                     desc: 'Storage data'
           end
           post do
             declared_params = declared(params)

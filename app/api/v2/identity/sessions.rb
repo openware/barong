@@ -11,7 +11,8 @@ module API::V2
           failure: [
             { code: 400, message: 'Required params are empty' },
             { code: 404, message: 'Record is not found' }
-        ]
+          ],
+          success: API::V2::Entities::UserWithFullInfo
         params do
           requires :email
           requires :password
@@ -77,7 +78,8 @@ module API::V2
           failure: [
             { code: 400, message: 'Required params are empty' },
             { code: 404, message: 'Record is not found' }
-        ]
+          ],
+          success: { code: 200, message: 'Session was destroyed' }
         delete do
           user = User.find_by(uid: session[:uid])
           error!({ errors: ['identity.session.not_found'] }, 404) unless user

@@ -38,9 +38,8 @@ describe 'Api::V1::Profiles' do
       put '/api/v2/resource/users/me', headers: auth_header, params: {
         data: correct_data
       }
-
       expect(test_user.reload.data).to eq(correct_data)
-      expect(response.status).to eq 201
+      expect(response.status).to eq 200
     end
 
     it 'receives invalid data error' do

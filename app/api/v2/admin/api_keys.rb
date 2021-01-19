@@ -10,10 +10,10 @@ module API
           helpers ::API::V2::Admin::NamedParams
 
           desc 'List all api keys for selected account.',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::APIKey
           params do
             requires :uid, type: String, allow_blank: false, desc: 'user uniq id'
             optional :ordering,

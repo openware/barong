@@ -3,7 +3,11 @@
 module API::V2::Admin
   module Entities
     class Phone < API::V2::Entities::Phone
-      expose :number, documentation: { type: 'String' }
+      expose :number,
+             documentation: {
+              type: 'String',
+              desc: 'Phone number'
+             }
     end
   end
 end

@@ -46,7 +46,7 @@ describe API::V2::Management::Users, type: :request do
         do_request
 
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
@@ -57,7 +57,7 @@ describe API::V2::Management::Users, type: :request do
 
         do_request
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
@@ -72,7 +72,7 @@ describe API::V2::Management::Users, type: :request do
 
         do_request
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s

@@ -9,10 +9,10 @@ module API
           helpers ::API::V2::NamedParams
 
           desc 'Return all profiles',
-             security: [{ "BearerToken": [] }],
              failure: [
                { code: 401, message: 'Invalid bearer token' },
-             ]
+             ],
+             success: API::V2::Admin::Entities::Profile
           params do
             use :pagination_filters
           end
@@ -24,12 +24,12 @@ module API
           end
 
           desc "Verify user's profile",
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 401, message: 'Invalid bearer token' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: API::V2::Admin::Entities::Profile
           params do
             requires :uid, type: String
             requires :state, type: String
@@ -58,12 +58,12 @@ module API
           end
 
           desc 'Create a profile for user',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 401, message: 'Invalid bearer token' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: API::V2::Admin::Entities::Profile
           params do
             requires :uid, type: String
             optional :first_name, type: String
