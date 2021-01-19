@@ -4,6 +4,7 @@ module API::V2
   module Entities
     class UserWithProfile < API::V2::Entities::Base
       expose :email, documentation: { type: 'String' }
+      expose :nickname, documentation: { type: 'String' }
       expose :uid, documentation: { type: 'String' }
       expose :role, documentation: { type: 'String' }
       expose :level, documentation: { type: 'Integer' }
