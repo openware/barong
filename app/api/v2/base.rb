@@ -33,7 +33,6 @@ module API::V2
     include ExceptionHandlers
 
     mount Identity::Base => '/identity'
-    mount Auth0::Base => '/auth0'
     mount Public::Base     => '/public'
     mount Resource::Base   => '/resource'
 

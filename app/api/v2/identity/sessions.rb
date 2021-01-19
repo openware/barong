@@ -8,10 +8,10 @@ module API::V2
       desc 'Session related routes'
       resource :sessions do
         desc 'Start a new session',
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' }
-        ]
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 404, message: 'Record is not found' }
+             ]
         params do
           requires :email
           requires :password
@@ -74,10 +74,10 @@ module API::V2
         end
 
         desc 'Destroy current session',
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' }
-        ]
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 404, message: 'Record is not found' }
+             ]
         delete do
           user = User.find_by(uid: session[:uid])
           error!({ errors: ['identity.session.not_found'] }, 404) unless user
@@ -86,6 +86,43 @@ module API::V2
 
           session.destroy
           status(200)
+        end
+
+        namespace :auth0 do
+          desc 'Auth0 access token authentication',
+               success: { code: 200, message: '' },
+               failure: [
+                 { code: 400, message: 'Required params are missing' },
+                 { code: 422, message: 'Validation errors' }
+               ]
+          params do
+            requires :access_token,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Account token'
+          end
+          post '/' do
+            # TODO: Verify access_token
+            payload = JWT.decode(params[:access_token], 
+              nil,
+              false, # Verify the signature of this token
+              algorithm: 'RS256',                          
+              iss: 'https://openware-barong.us.auth0.com/',
+              verify_iss: true,
+              aud: 'https://barong.openware.service/',
+              verify_aud: true)
+
+            email = payload[0]['email']
+            user = User.find_by(email: email)
+
+  
+            activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
+            csrf_token = open_session(user)
+            publish_session_create(user)
+  
+            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+            status 201
+          end
         end
       end
     end
