@@ -5,8 +5,17 @@ module API
     module Entities
       # data storage retrieval entity
       class DataStorage < API::V2::Entities::Base
-        expose :title, documentation: { type: 'String', desc: 'any additional data title' }
-        expose :data, documentation: { type: 'String', desc: 'any additional data json key:value pairs' }
+        expose :title,
+               documentation: {
+                type: 'String',
+                desc: 'Any additional data title'
+               }
+
+        expose :data,
+               documentation: {
+                type: 'String',
+                desc: 'Any additional data json key:value pairs'
+               }
 
         with_options(format_with: :iso_timestamp) do
           expose :created_at

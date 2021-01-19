@@ -31,11 +31,10 @@ module API::V2
                                 },
                                 mount_path:  '/swagger',
                                 security_definitions: {
-                                  "BearerToken": {
-                                    description: 'Bearer Token authentication',
-                                    type: 'jwt',
-                                    name: 'Authorization',
-                                    in: 'header'
+                                  'SecurityScope': {
+                                    description: 'JWT should have signature keychains',
+                                    type: 'basic',
+                                    name: 'Authorization'
                                   }
                                 },
                                 models: [

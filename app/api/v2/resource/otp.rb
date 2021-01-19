@@ -13,11 +13,11 @@ module API::V2
 
       resource :otp do
         desc 'Generate qr code for 2FA',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: '2FA has been enabled for this account' },
-               { code: 401, message: 'Invalid bearer token' }
-             ]
+          failure: [
+            { code: 400, message: '2FA has been enabled for this account' },
+            { code: 401, message: 'Invalid bearer token' }
+          ],
+          success: { code: 200, message: 'QR code was generated' }
         post '/generate_qrcode' do
           if current_user.otp
             otp_error!(reason: '2FA has been already enabled for this account', error_code: 400,
@@ -29,12 +29,12 @@ module API::V2
         end
 
         desc 'Enable 2FA',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: '2FA has been enabled for this account or code is missing' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: '2FA has been enabled for this account or code is missing' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: '2FA was enabled' }
         params do
           requires :code,
                    type: String,
@@ -64,12 +64,12 @@ module API::V2
         end
 
         desc 'Disable 2FA',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: '2FA has not been enabled for this account or code is missing' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: '2FA has not been enabled for this account or code is missing' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: '2FA was disabled' }
         params do
           requires :code,
                    type: String,
@@ -99,12 +99,12 @@ module API::V2
         end
 
         desc 'Verify 2FA code',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: '2FA has not been enabled for this account or code is missing' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: '2FA has not been enabled for this account or code is missing' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: '2FA was verified' }
         params do
           requires :code,
                    type: String,

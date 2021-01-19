@@ -23,22 +23,22 @@ module API::V2
       desc 'Phone related routes'
       resource :phones do
         desc 'Returns list of user\'s phones',
-              security: [{ "BearerToken": [] }],
-              failure: [
-                { code: 401, message: 'Invalid bearer token' },
-              ]
+          failure: [
+            { code: 401, message: 'Invalid bearer token' },
+          ],
+          success: Entities::Phone
         get do
           present current_user.phones, with: Entities::Phone
         end
 
         desc 'Add new phone',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 404, message: 'Record is not found' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'Record is not found' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: 'New phone was added' }
         params do
           requires :phone_number,
                    type: String,
@@ -65,13 +65,13 @@ module API::V2
         end
 
         desc 'Resend activation code',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 404, message: 'Record is not found' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'Record is not found' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: 'Activation code was resend' }
         params do
           requires :phone_number,
                    type: String,
@@ -96,12 +96,12 @@ module API::V2
         end
 
         desc 'Verify a phone',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 404, message: 'Record is not found' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'Record is not found' }
+          ],
+          success: API::V2::Entities::UserWithFullInfo
         params do
           requires :phone_number,
                    type: String,

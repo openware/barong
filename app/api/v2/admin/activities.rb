@@ -16,10 +16,10 @@ module API
           end
 
           desc 'Returns array of activities as paginated collection',
-               security: [{ "BearerToken": [] }],
-               failure: [
-                   { code: 401, message: 'Invalid bearer token' }
-               ]
+            failure: [
+                { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Admin::Entities::ActivityWithUser
           params do
             use :activity_attributes
             use :timeperiod_filters
@@ -33,10 +33,10 @@ module API
           end
 
           desc 'Returns array of activities as paginated collection',
-          security: [{ "BearerToken": [] }],
-          failure: [
-              { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+                { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Admin::Entities::AdminActivity
           params do
             use :activity_attributes
             use :timeperiod_filters
@@ -52,7 +52,7 @@ module API
             admin_authorize! :read, Activity
 
             activities = API::V2::Queries::ActivityFilter.new(Activity.where(category: 'admin')).call(permitted_search_params(params))
-            activities.tap { |q| present paginate(q), with: API::V2::Admin::Entities::AdminActivity }
+            present paginate(activities), with: API::V2::Admin::Entities::AdminActivity
           end
         end
       end

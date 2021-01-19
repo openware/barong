@@ -20,20 +20,21 @@ module API::V2
 
       resource :api_keys do
         desc 'Create an api key',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: Entities::APIKey
         params do
           requires :algorithm,
                    type: String,
-                   allow_blank: false
+                   allow_blank: false,
+                   desc: 'API key algorithm'
           optional :scope,
                    type: String,
                    allow_blank: false,
-                   desc: 'comma separated scopes'
+                   desc: 'Comma separated scopes'
           requires :totp_code,
                    type: String,
                    message: 'resource.api_key.missing_totp',
@@ -64,21 +65,22 @@ module API::V2
         end
 
         desc 'Updates an api key',
-        security: [{ "BearerToken": [] }],
-        failure: [
-          { code: 400, message: 'Required params are empty' },
-          { code: 401, message: 'Invalid bearer token' },
-          { code: 404, message: 'Record is not found' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'Record is not found' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: Entities::APIKey
         params do
           requires :kid,
                    type: String,
-                   allow_blank: false
+                   allow_blank: false,
+                   desc: 'API key kid'
           optional :scope,
                    type: String,
                    allow_blank: false,
-                   desc: 'comma separated scopes'
+                   desc: 'Comma separated scopes'
           optional :state,
                    type: String,
                    allow_blank: false,
@@ -103,17 +105,17 @@ module API::V2
         end
 
         desc 'Delete an api key',
-              security: [{ "BearerToken": [] }],
-              success: { code: 204, message: 'Succefully deleted' },
-              failure: [
-                { code: 400, message: 'Required params are empty' },
-                { code: 401, message: 'Invalid bearer token' },
-                { code: 404, message: 'Record is not found' }
-              ]
+          success: { code: 204, message: 'Succefully deleted' },
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'Record is not found' }
+          ]
         params do
           requires :kid,
                    type: String,
-                   allow_blank: false
+                   allow_blank: false,
+                   desc: 'API key kid'
           requires :totp_code,
                    type: String,
                    allow_blank: false,
@@ -127,11 +129,11 @@ module API::V2
         end
 
         desc 'List all api keys for current account.',
-        security: [{ "BearerToken": [] }],
-        failure: [
-          { code: 400, message: 'Require 2FA and totp code' },
-          { code: 401, message: 'Invalid bearer token' }
-        ]
+          failure: [
+            { code: 400, message: 'Require 2FA and totp code' },
+            { code: 401, message: 'Invalid bearer token' }
+          ],
+          success: Entities::APIKey
         params do
           optional :ordering,
                    values: { value: -> (p){ %w[asc desc].include?(p) }, message: 'resource.api_key.invalid_ordering' },

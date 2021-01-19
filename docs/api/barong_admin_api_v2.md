@@ -3,6 +3,15 @@ RESTful AdminAPI for barong OAuth server
 
 ## Version: 2.7.0
 
+### Security
+**BearerToken**  
+
+|basic|*Basic*|
+|---|---|
+|Description|Bearer Token authentication|
+|Name|Authorization|
+|In|header|
+
 ### /api/v2/barong/admin/users/data_storage
 
 #### DELETE
@@ -19,16 +28,10 @@ Deletes user's data storage record
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 204 | Deletes user's data storage record |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 204 | Deletes user's data storage record | [API_V2_Admin_Entities_UserWithKYC](#api_v2_admin_entities_userwithkyc) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/users/{uid}
 
@@ -45,16 +48,10 @@ Returns user info
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns user info |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns user info | [API_V2_Admin_Entities_UserWithKYC](#api_v2_admin_entities_userwithkyc) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/users/documents/pending
 
@@ -84,16 +81,10 @@ Returns array of users with pending or replaced documents as paginated collectio
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users with pending or replaced documents as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of users with pending or replaced documents as paginated collection | [API_V2_Entities_User](#api_v2_entities_user) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/users
 
@@ -115,14 +106,8 @@ Update user attributes
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Update user attributes |
+| 200 | User attributes were created |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### GET
 ##### Description
@@ -150,16 +135,10 @@ Returns array of users as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of users as paginated collection | [API_V2_Entities_User](#api_v2_entities_user) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/users/role
 
@@ -179,14 +158,8 @@ Update user role
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Update user role |
+| 200 | User role was created |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 ### /api/v2/barong/admin/users/update
 
@@ -207,14 +180,8 @@ Update user attributes
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Update user attributes |
+| 200 | User attributes were updated |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 ### /api/v2/barong/admin/users/labels
 
@@ -235,14 +202,8 @@ Deletes label for user
 
 | Code | Description |
 | ---- | ----------- |
-| 204 | Deletes label for user |
+| 204 | Label was deleted |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### PUT
 ##### Description
@@ -263,22 +224,16 @@ Update user label scope
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Update user label scope |
+| 200 | Label was updated |
 | 400 | Required params are empty |
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 | 422 | Validation errors |
 
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
 #### POST
 ##### Description
 
-Adds label for user
+Add label for user
 
 ##### Parameters
 
@@ -294,14 +249,8 @@ Adds label for user
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Adds label for user |
+| 200 | Label was created |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### GET
 ##### Description
@@ -319,16 +268,10 @@ Returns array of users as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of users as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of users as paginated collection | [API_V2_Entities_User](#api_v2_entities_user) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/users/labels/update
 
@@ -352,17 +295,11 @@ Update user label value
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Update user label value |
+| 200 | Label was updated |
 | 400 | Required params are empty |
 | 401 | Invalid bearer token |
 | 404 | Record is not found |
 | 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 ### /api/v2/barong/admin/users/labels/list
 
@@ -377,12 +314,6 @@ Returns existing labels keys and values
 | ---- | ----------- |
 | 200 | Returns existing labels keys and values |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 ### /api/v2/barong/admin/users/comments
 
@@ -399,16 +330,10 @@ Delete user's comment
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 204 | Delete user's comment |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 204 | Delete user's comment | [API_V2_Admin_Entities_UserWithKYC](#api_v2_admin_entities_userwithkyc) |
+| 401 | Invalid bearer token |  |
 
 #### PUT
 ##### Description
@@ -425,16 +350,10 @@ Edit user's comment
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Edit user's comment |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Edit user's comment | [API_V2_Admin_Entities_UserWithKYC](#api_v2_admin_entities_userwithkyc) |
+| 401 | Invalid bearer token |  |
 
 #### POST
 ##### Description
@@ -451,16 +370,10 @@ Adds new user's comment
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 201 | Adds new user's comment |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Adds new user's comment | [API_V2_Admin_Entities_UserWithKYC](#api_v2_admin_entities_userwithkyc) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/api_keys
 
@@ -481,16 +394,10 @@ List all api keys for selected account.
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | List all api keys for selected account. |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | List all api keys for selected account. | [API_V2_Entities_APIKey](#api_v2_entities_apikey) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/permissions
 
@@ -514,14 +421,8 @@ Update Permission
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Update Permission |
+| 200 | Permission was updated |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### DELETE
 ##### Description
@@ -538,14 +439,8 @@ Deletes permission
 
 | Code | Description |
 | ---- | ----------- |
-| 204 | Deletes permission |
+| 204 | Permission was deleted |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### POST
 ##### Description
@@ -566,14 +461,8 @@ Create permission
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Create permission |
+| 200 | Permission was created |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### GET
 ##### Description
@@ -589,16 +478,10 @@ Returns array of permissions as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of permissions as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of permissions as paginated collection | [API_V2_Entities_Permission](#api_v2_entities_permission) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/activities/admin
 
@@ -624,16 +507,10 @@ Returns array of activities as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of activities as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of activities as paginated collection | [API_V2_Admin_Entities_AdminActivity](#api_v2_admin_entities_adminactivity) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/activities
 
@@ -657,16 +534,10 @@ Returns array of activities as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of activities as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of activities as paginated collection | [API_V2_Admin_Entities_ActivityWithUser](#api_v2_admin_entities_activitywithuser) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/metrics
 
@@ -689,12 +560,6 @@ Returns main statistic in the given time period
 | 200 | Returns main statistic in the given time period |
 | 401 | Invalid bearer token |
 
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
-
 ### /api/v2/barong/admin/restrictions
 
 #### DELETE
@@ -712,14 +577,8 @@ Delete restriction
 
 | Code | Description |
 | ---- | ----------- |
-| 204 | Delete restriction |
+| 204 | Restriction was deleted |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### PUT
 ##### Description
@@ -741,14 +600,8 @@ Update restriction
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Update restriction |
+| 200 | Restriction was updated |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### POST
 ##### Description
@@ -769,14 +622,8 @@ Create restriction
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Create restriction |
+| 200 | Restriction was created |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 #### GET
 ##### Description
@@ -795,16 +642,10 @@ Returns array of restrictions as a paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of restrictions as a paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of restrictions as a paginated collection | [API_V2_Entities_Restriction](#api_v2_entities_restriction) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/restrictions/whitelink
 
@@ -824,14 +665,8 @@ Create whitelink
 
 | Code | Description |
 | ---- | ----------- |
-| 201 | Create whitelink |
+| 200 | Created whitelink |
 | 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
 
 ### /api/v2/barong/admin/profiles
 
@@ -856,18 +691,12 @@ Create a profile for user
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 201 | Create a profile for user |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Create a profile for user | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |
+| 400 | Required params are empty |  |
+| 401 | Invalid bearer token |  |
+| 422 | Validation errors |  |
 
 #### PUT
 ##### Description
@@ -883,18 +712,12 @@ Verify user's profile
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Verify user's profile |
-| 400 | Required params are empty |
-| 401 | Invalid bearer token |
-| 422 | Validation errors |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Verify user's profile | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |
+| 400 | Required params are empty |  |
+| 401 | Invalid bearer token |  |
+| 422 | Validation errors |  |
 
 #### GET
 ##### Description
@@ -910,16 +733,10 @@ Return all profiles
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Return all profiles |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Return all profiles | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/levels
 
@@ -930,16 +747,10 @@ Returns array of permissions as paginated collection
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 200 | Returns array of permissions as paginated collection |
-| 401 | Invalid bearer token |
-
-##### Security
-
-| Security Schema | Scopes |
-| --- | --- |
-| BearerToken | |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Returns array of permissions as paginated collection | [API_V2_Entities_Level](#api_v2_entities_level) |
+| 401 | Invalid bearer token |  |
 
 ### /api/v2/barong/admin/abilities
 
@@ -956,100 +767,44 @@ Get all roles and admin_permissions of barong cancan.
 
 ### Models
 
-#### API_V2_Admin_Entities_ActivityWithUser
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| user_ip | string |  | No |
-| user_agent | string |  | No |
-| topic | string |  | No |
-| action | string |  | No |
-| result | string |  | No |
-| data | string |  | No |
-| user | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
-| created_at | string |  | No |
-
-#### API_V2_Entities_User
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
-| referral_uid | string | UID of referrer | No |
-| data | string | additional phone and profile info | No |
-
-#### API_V2_Admin_Entities_AdminActivity
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| user_ip | string |  | No |
-| user_agent | string |  | No |
-| topic | string |  | No |
-| action | string |  | No |
-| result | string |  | No |
-| data | string |  | No |
-| admin | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
-| target | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
-| created_at | string |  | No |
-
-#### API_V2_Admin_Entities_Document
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| upload | string | file url | No |
-| doc_type | string | document type: passport, driver license | No |
-| doc_number | string | document number: AB123123 type | No |
-| doc_expire | string | expire date of uploaded documents | No |
-| metadata | string | any additional stored data | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
-#### API_V2_Admin_Entities_Phone
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| country | string |  | No |
-| number | string |  | No |
-| validated_at | s (g) |  | No |
-
-#### API_V2_Admin_Entities_Profile
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| first_name | string |  | No |
-| last_name | string | Last name | No |
-| dob | date | Birthday date | No |
-| address | string |  | No |
-| postcode | string |  | No |
-| city | string |  | No |
-| country | string |  | No |
-| state | string |  | No |
-| metadata | object | Profile additional fields | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
-
 #### API_V2_Admin_Entities_UserWithKYC
 
+Adds new user's comment
+
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| otp | boolean |  | No |
-| state | string |  | No |
-| data | string | additional phone and profile info | No |
+| email | string | User Email | No |
+| uid | string | User UID | No |
+| role | string | User role | No |
+| level | integer | User level | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string | User state: active, pending, inactive | No |
+| referral_uid | string | UID of referrer | No |
+| data | string | Additional phone and profile info | No |
 | profiles | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |  | No |
 | labels | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |  | No |
 | phones | [API_V2_Admin_Entities_Phone](#api_v2_admin_entities_phone) |  | No |
 | documents | [API_V2_Admin_Entities_Document](#api_v2_admin_entities_document) |  | No |
 | data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
 | comments | [API_V2_Entities_Comment](#api_v2_entities_comment) |  | No |
-| referral_uid | string | UID of referrer | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Admin_Entities_Profile
+
+Return all profiles
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| first_name | string | First Name | No |
+| last_name | string | Last name | No |
+| dob | date | Birth date | No |
+| address | string | Address | No |
+| postcode | string | Address Postcode | No |
+| city | string | City name | No |
+| country | string | Country name | No |
+| state | string | Profile state: drafted, submitted, verified, rejected | No |
+| metadata | object | Profile additional fields | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -1064,12 +819,32 @@ Get all roles and admin_permissions of barong cancan.
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
+#### API_V2_Admin_Entities_Phone
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| country | string | Phone country | No |
+| number | string | Phone number | No |
+| validated_at | s (g) | Phone validation date | No |
+
+#### API_V2_Admin_Entities_Document
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| upload | string | File url | No |
+| doc_type | string | Document type: passport, driver license, utility bill, identity card, institutional, address, residental | No |
+| doc_number | string | document number: AB123123 type | No |
+| doc_expire | string | Expire date of uploaded documents | No |
+| metadata | string | Any additional stored data | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
 #### API_V2_Entities_DataStorage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| title | string | any additional data title | No |
-| data | string | any additional data json key:value pairs | No |
+| title | string | Any additional data title | No |
+| data | string | Any additional data json key:value pairs | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -1077,25 +852,125 @@ Get all roles and admin_permissions of barong cancan.
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| id | integer | comment id | No |
-| author_uid | string | comment author | No |
-| title | string | comment title | No |
-| data | string | comment plain text | No |
+| id | integer | Comment id | No |
+| author_uid | string | Comment author UID | No |
+| title | string | Comment title | No |
+| data | string | Comment plain text | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
+
+#### API_V2_Entities_User
+
+Returns array of users as paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string | User Email | No |
+| uid | string | User UID | No |
+| role | string | User role | No |
+| level | integer | User level | No |
+| otp | boolean | is 2FA enabled for account | No |
+| state | string | User state: active, pending, inactive | No |
+| referral_uid | string | UID of referrer | No |
+| data | string | Additional phone and profile info | No |
+
+#### API_V2_Entities_APIKey
+
+List all api keys for selected account.
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| kid | string | JWT public key | No |
+| algorithm | string | Cryptographic hash function type | No |
+| scope | string | Serialized array of scopes | No |
+| state | string | active/non-active state of key | No |
+| secret | string | Api key secret | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_Permission
+
+Returns array of permissions as paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | Permission id | No |
+| action | string | Permission action: accept (allow access (drop access), audit (record activity) | No |
+| role | string | Permission user role | No |
+| verb | string | Permission verb: put, post, delete, get | No |
+| path | string | API path | No |
+| topic | string | Permission topic: general, session etc | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Admin_Entities_AdminActivity
+
+Returns array of activities as paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| user_ip | string | User IP | No |
+| user_agent | string | User Browser Agent | No |
+| topic | string | Defined topic (session, adjustments) or general by default | No |
+| action | string | API action: POST => 'create', PUT => 'update', GET => 'read', DELETE => 'delete', PATCH => 'update' or system if there is no match of HTTP method | No |
+| result | string | Status of API response: succeed, failed, denied | No |
+| data | string | Parameters which was sent to specific API endpoint | No |
+| admin | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
+| target | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
+| created_at | string |  | No |
+
+#### API_V2_Admin_Entities_ActivityWithUser
+
+Returns array of activities as paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| user_ip | string | User IP | No |
+| user_agent | string | User Browser Agent | No |
+| topic | string | Defined topic (session, adjustments) or general by default | No |
+| action | string | API action: POST => 'create', PUT => 'update', GET => 'read', DELETE => 'delete', PATCH => 'update' or system if there is no match of HTTP method | No |
+| result | string | Status of API response: succeed, failed, denied | No |
+| data | string | Parameters which was sent to specific API endpoint | No |
+| user | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
+| created_at | string |  | No |
+
+#### API_V2_Entities_Restriction
+
+Returns array of restrictions as a paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | Restriction id | No |
+| category | string | Restriction categories: blacklist, maintenance, whitelist, blocklogin | No |
+| scope | string | Restriction scopes: continent, country, ip, ip_subnet, all | No |
+| value | string | Restriction value: IP address, country abbreviation, all | No |
+| code | integer | Restriction codes: {"continent"=>423, "country"=>423, "ip_subnet"=>403, "ip"=>401, "all"=>401} | No |
+| state | string | Restriction states: disabled, enabled | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
+
+#### API_V2_Entities_Level
+
+Returns array of permissions as paginated collection
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer | Level identifier, level number | No |
+| key | string | Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
+| value | string | Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters. | No |
 
 #### API_V2_Admin_Entities_UserWithProfile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
+| email | string | User Email | No |
+| uid | string | User UID | No |
+| role | string | User role | No |
+| level | integer | User level | No |
 | otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
-| data | string | additional phone and profile info | No |
-| profiles | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |  | No |
+| state | string | User state: active, pending, inactive | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | Additional phone and profile info | No |
+| profiles | [API_V2_Admin_Entities_Profile](#api_v2_admin_entities_profile) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |

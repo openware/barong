@@ -15,6 +15,7 @@ module API::V2
 
         desc 'Get user phone numbers' do
           @settings[:scope] = :read_phones
+          success API::V2::Management::Entities::Phone
         end
         params do
           requires :uid, type: String, desc: 'User uid', allow_blank: false
@@ -28,6 +29,7 @@ module API::V2
 
         desc 'Create phone number for user' do
           @settings[:scope] = :write_phones
+          success API::V2::Management::Entities::Phone
         end
         params do
           requires :uid, type: String, desc: 'User uid', allow_blank: false
@@ -50,6 +52,7 @@ module API::V2
 
         desc 'Delete phone number for user' do
           @settings[:scope] = :write_phones
+          success API::V2::Management::Entities::Phone
         end
         params do
           requires :uid, type: String, desc: 'User uid', allow_blank: false

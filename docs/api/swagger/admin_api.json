@@ -8,6 +8,14 @@
   "produces": [
     "application/json"
   ],
+  "securityDefinitions": {
+    "BearerToken": {
+      "description": "Bearer Token authentication",
+      "type": "basic",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
   "host": "localhost:3000",
   "basePath": "/api/v2/barong/admin",
   "tags": [
@@ -39,19 +47,15 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "204": {
-            "description": "Deletes user's data storage record"
-          },
           "401": {
             "description": "Invalid bearer token"
+          },
+          "204": {
+            "description": "Deletes user's data storage record",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_UserWithKYC"
+            }
           }
         },
         "tags": [
@@ -75,16 +79,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns user info"
+            "description": "Returns user info",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_UserWithKYC"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -203,16 +203,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of users with pending or replaced documents as paginated collection"
+            "description": "Returns array of users with pending or replaced documents as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_User"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -263,16 +259,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update user attributes"
+            "description": "User attributes were created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -393,16 +382,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of users as paginated collection"
+            "description": "Returns array of users as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_User"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -439,16 +424,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Update user role"
+          "200": {
+            "description": "User role was created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -492,16 +470,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Update user attributes"
+          "200": {
+            "description": "User attributes were updated"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -542,16 +513,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "204": {
-            "description": "Deletes label for user"
+            "description": "Label was deleted"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -607,16 +571,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update user label scope"
+            "description": "Label was updated"
           },
           "400": {
             "description": "Required params are empty"
@@ -637,7 +594,7 @@
         "operationId": "putApiV2BarongAdminUsersLabels"
       },
       "post": {
-        "description": "Adds label for user",
+        "description": "Add label for user",
         "produces": [
           "application/json"
         ],
@@ -681,16 +638,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Adds label for user"
+          "200": {
+            "description": "Label was created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -742,16 +692,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of users as paginated collection"
+            "description": "Returns array of users as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_User"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -817,16 +763,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Update user label value"
+          "200": {
+            "description": "Label was updated"
           },
           "400": {
             "description": "Required params are empty"
@@ -852,13 +791,6 @@
         "description": "Returns existing labels keys and values",
         "produces": [
           "application/json"
-        ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
         ],
         "responses": {
           "200": {
@@ -890,19 +822,15 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "204": {
-            "description": "Delete user's comment"
-          },
           "401": {
             "description": "Invalid bearer token"
+          },
+          "204": {
+            "description": "Delete user's comment",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_UserWithKYC"
+            }
           }
         },
         "tags": [
@@ -942,16 +870,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Edit user's comment"
+            "description": "Edit user's comment",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_UserWithKYC"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -993,16 +917,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Adds new user's comment"
+            "description": "Adds new user's comment",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_UserWithKYC"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1065,16 +985,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "List all api keys for selected account."
+            "description": "List all api keys for selected account.",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_APIKey"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1138,16 +1054,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update Permission"
+            "description": "Permission was updated"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1173,16 +1082,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "204": {
-            "description": "Deletes permission"
+            "description": "Permission was deleted"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1233,16 +1135,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Create permission"
+          "200": {
+            "description": "Permission was created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1280,16 +1175,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of permissions as paginated collection"
+            "description": "Returns array of permissions as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Permission"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1382,16 +1273,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of activities as paginated collection"
+            "description": "Returns array of activities as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_AdminActivity"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1471,16 +1358,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of activities as paginated collection"
+            "description": "Returns array of activities as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_ActivityWithUser"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1510,13 +1393,6 @@
             "name": "created_to",
             "type": "string",
             "required": false
-          }
-        ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
           }
         ],
         "responses": {
@@ -1549,16 +1425,9 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "204": {
-            "description": "Delete restriction"
+            "description": "Restriction was deleted"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1606,7 +1475,8 @@
             "enum": [
               "whitelist",
               "maintenance",
-              "blacklist"
+              "blacklist",
+              "blocklogin"
             ],
             "required": false
           },
@@ -1634,16 +1504,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Update restriction"
+            "description": "Restriction was updated"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1689,7 +1552,8 @@
             "enum": [
               "whitelist",
               "maintenance",
-              "blacklist"
+              "blacklist",
+              "blocklogin"
             ],
             "required": true
           },
@@ -1712,16 +1576,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Create restriction"
+          "200": {
+            "description": "Restriction was created"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1758,7 +1615,8 @@
             "enum": [
               "whitelist",
               "maintenance",
-              "blacklist"
+              "blacklist",
+              "blocklogin"
             ],
             "required": false
           },
@@ -1790,16 +1648,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of restrictions as a paginated collection"
+            "description": "Returns array of restrictions as a paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Restriction"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1841,16 +1695,9 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
-          "201": {
-            "description": "Create whitelink"
+          "200": {
+            "description": "Created whitelink"
           },
           "401": {
             "description": "Invalid bearer token"
@@ -1929,16 +1776,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "201": {
-            "description": "Create a profile for user"
+            "description": "Create a profile for user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -1977,16 +1820,12 @@
             "required": true
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Verify user's profile"
+            "description": "Verify user's profile",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
+            }
           },
           "400": {
             "description": "Required params are empty"
@@ -2030,16 +1869,12 @@
             "required": false
           }
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Return all profiles"
+            "description": "Return all profiles",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -2057,16 +1892,12 @@
         "produces": [
           "application/json"
         ],
-        "security": [
-          {
-            "BearerToken": [
-
-            ]
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Returns array of permissions as paginated collection"
+            "description": "Returns array of permissions as paginated collection",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Entities_Level"
+            }
           },
           "401": {
             "description": "Invalid bearer token"
@@ -2097,57 +1928,33 @@
     }
   },
   "definitions": {
-    "API_V2_Admin_Entities_ActivityWithUser": {
-      "type": "object",
-      "properties": {
-        "user_ip": {
-          "type": "string"
-        },
-        "user_agent": {
-          "type": "string"
-        },
-        "topic": {
-          "type": "string"
-        },
-        "action": {
-          "type": "string"
-        },
-        "result": {
-          "type": "string"
-        },
-        "data": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/API_V2_Entities_User"
-        },
-        "created_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Entities_User": {
+    "API_V2_Admin_Entities_UserWithKYC": {
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
@@ -2155,155 +1962,7 @@
         },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
-        }
-      }
-    },
-    "API_V2_Admin_Entities_AdminActivity": {
-      "type": "object",
-      "properties": {
-        "user_ip": {
-          "type": "string"
-        },
-        "user_agent": {
-          "type": "string"
-        },
-        "topic": {
-          "type": "string"
-        },
-        "action": {
-          "type": "string"
-        },
-        "result": {
-          "type": "string"
-        },
-        "data": {
-          "type": "string"
-        },
-        "admin": {
-          "$ref": "#/definitions/API_V2_Entities_User"
-        },
-        "target": {
-          "$ref": "#/definitions/API_V2_Entities_User"
-        },
-        "created_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Admin_Entities_Document": {
-      "type": "object",
-      "properties": {
-        "upload": {
-          "type": "string",
-          "description": "file url"
-        },
-        "doc_type": {
-          "type": "string",
-          "description": "document type: passport, driver license"
-        },
-        "doc_number": {
-          "type": "string",
-          "description": "document number: AB123123 type"
-        },
-        "doc_expire": {
-          "type": "string",
-          "description": "expire date of uploaded documents"
-        },
-        "metadata": {
-          "type": "string",
-          "description": "any additional stored data"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Admin_Entities_Phone": {
-      "type": "object",
-      "properties": {
-        "country": {
-          "type": "string"
-        },
-        "number": {
-          "type": "string"
-        },
-        "validated_at": {
-          "type": "s",
-          "format": "g"
-        }
-      }
-    },
-    "API_V2_Admin_Entities_Profile": {
-      "type": "object",
-      "properties": {
-        "first_name": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string",
-          "description": "Last name"
-        },
-        "dob": {
-          "type": "string",
-          "format": "date",
-          "description": "Birthday date"
-        },
-        "address": {
-          "type": "string"
-        },
-        "postcode": {
-          "type": "string"
-        },
-        "city": {
-          "type": "string"
-        },
-        "country": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "metadata": {
-          "type": "object",
-          "description": "Profile additional fields"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "API_V2_Admin_Entities_UserWithKYC": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "uid": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "otp": {
-          "type": "boolean"
-        },
-        "state": {
-          "type": "string"
-        },
-        "data": {
-          "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         },
         "profiles": {
           "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
@@ -2323,9 +1982,54 @@
         "comments": {
           "$ref": "#/definitions/API_V2_Entities_Comment"
         },
-        "referral_uid": {
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "Adds new user's comment"
+    },
+    "API_V2_Admin_Entities_Profile": {
+      "type": "object",
+      "properties": {
+        "first_name": {
           "type": "string",
-          "description": "UID of referrer"
+          "description": "First Name"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name"
+        },
+        "dob": {
+          "type": "string",
+          "format": "date",
+          "description": "Birth date"
+        },
+        "address": {
+          "type": "string",
+          "description": "Address"
+        },
+        "postcode": {
+          "type": "string",
+          "description": "Address Postcode"
+        },
+        "city": {
+          "type": "string",
+          "description": "City name"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country name"
+        },
+        "state": {
+          "type": "string",
+          "description": "Profile state: drafted, submitted, verified, rejected"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Profile additional fields"
         },
         "created_at": {
           "type": "string"
@@ -2333,7 +2037,8 @@
         "updated_at": {
           "type": "string"
         }
-      }
+      },
+      "description": "Return all profiles"
     },
     "API_V2_Entities_AdminLabelView": {
       "type": "object",
@@ -2362,16 +2067,65 @@
         }
       }
     },
+    "API_V2_Admin_Entities_Phone": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Phone country"
+        },
+        "number": {
+          "type": "string",
+          "description": "Phone number"
+        },
+        "validated_at": {
+          "type": "s",
+          "format": "g",
+          "description": "Phone validation date"
+        }
+      }
+    },
+    "API_V2_Admin_Entities_Document": {
+      "type": "object",
+      "properties": {
+        "upload": {
+          "type": "string",
+          "description": "File url"
+        },
+        "doc_type": {
+          "type": "string",
+          "description": "Document type: passport, driver license, utility bill, identity card, institutional, address, residental"
+        },
+        "doc_number": {
+          "type": "string",
+          "description": "document number: AB123123 type"
+        },
+        "doc_expire": {
+          "type": "string",
+          "description": "Expire date of uploaded documents"
+        },
+        "metadata": {
+          "type": "string",
+          "description": "Any additional stored data"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
     "API_V2_Entities_DataStorage": {
       "type": "object",
       "properties": {
         "title": {
           "type": "string",
-          "description": "any additional data title"
+          "description": "Any additional data title"
         },
         "data": {
           "type": "string",
-          "description": "any additional data json key:value pairs"
+          "description": "Any additional data json key:value pairs"
         },
         "created_at": {
           "type": "string"
@@ -2387,19 +2141,19 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "description": "comment id"
+          "description": "Comment id"
         },
         "author_uid": {
           "type": "string",
-          "description": "comment author"
+          "description": "Comment author UID"
         },
         "title": {
           "type": "string",
-          "description": "comment title"
+          "description": "Comment title"
         },
         "data": {
           "type": "string",
-          "description": "comment plain text"
+          "description": "Comment plain text"
         },
         "created_at": {
           "type": "string"
@@ -2409,39 +2163,284 @@
         }
       }
     },
-    "API_V2_Admin_Entities_UserWithProfile": {
+    "API_V2_Entities_User": {
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
-        },
-        "data": {
           "type": "string",
-          "description": "additional phone and profile info"
-        },
-        "profiles": {
-          "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "Additional phone and profile info"
+        }
+      },
+      "description": "Returns array of users as paginated collection"
+    },
+    "API_V2_Entities_APIKey": {
+      "type": "object",
+      "properties": {
+        "kid": {
+          "type": "string",
+          "description": "JWT public key"
+        },
+        "algorithm": {
+          "type": "string",
+          "description": "Cryptographic hash function type"
+        },
+        "scope": {
+          "type": "string",
+          "description": "Serialized array of scopes"
+        },
+        "state": {
+          "type": "string",
+          "description": "active/non-active state of key"
+        },
+        "secret": {
+          "type": "string",
+          "description": "Api key secret"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "List all api keys for selected account."
+    },
+    "API_V2_Entities_Permission": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Permission id"
+        },
+        "action": {
+          "type": "string",
+          "description": "Permission action: accept (allow access (drop access), audit (record activity)"
+        },
+        "role": {
+          "type": "string",
+          "description": "Permission user role"
+        },
+        "verb": {
+          "type": "string",
+          "description": "Permission verb: put, post, delete, get"
+        },
+        "path": {
+          "type": "string",
+          "description": "API path"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Permission topic: general, session etc"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "Returns array of permissions as paginated collection"
+    },
+    "API_V2_Admin_Entities_AdminActivity": {
+      "type": "object",
+      "properties": {
+        "user_ip": {
+          "type": "string",
+          "description": "User IP"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User Browser Agent"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Defined topic (session, adjustments) or general by default"
+        },
+        "action": {
+          "type": "string",
+          "description": "API action: POST => 'create', PUT => 'update', GET => 'read', DELETE => 'delete', PATCH => 'update' or system if there is no match of HTTP method"
+        },
+        "result": {
+          "type": "string",
+          "description": "Status of API response: succeed, failed, denied"
+        },
+        "data": {
+          "type": "string",
+          "description": "Parameters which was sent to specific API endpoint"
+        },
+        "admin": {
+          "$ref": "#/definitions/API_V2_Entities_User"
+        },
+        "target": {
+          "$ref": "#/definitions/API_V2_Entities_User"
+        },
+        "created_at": {
+          "type": "string"
+        }
+      },
+      "description": "Returns array of activities as paginated collection"
+    },
+    "API_V2_Admin_Entities_ActivityWithUser": {
+      "type": "object",
+      "properties": {
+        "user_ip": {
+          "type": "string",
+          "description": "User IP"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User Browser Agent"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Defined topic (session, adjustments) or general by default"
+        },
+        "action": {
+          "type": "string",
+          "description": "API action: POST => 'create', PUT => 'update', GET => 'read', DELETE => 'delete', PATCH => 'update' or system if there is no match of HTTP method"
+        },
+        "result": {
+          "type": "string",
+          "description": "Status of API response: succeed, failed, denied"
+        },
+        "data": {
+          "type": "string",
+          "description": "Parameters which was sent to specific API endpoint"
+        },
+        "user": {
+          "$ref": "#/definitions/API_V2_Entities_User"
+        },
+        "created_at": {
+          "type": "string"
+        }
+      },
+      "description": "Returns array of activities as paginated collection"
+    },
+    "API_V2_Entities_Restriction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Restriction id"
+        },
+        "category": {
+          "type": "string",
+          "description": "Restriction categories: blacklist, maintenance, whitelist, blocklogin"
+        },
+        "scope": {
+          "type": "string",
+          "description": "Restriction scopes: continent, country, ip, ip_subnet, all"
+        },
+        "value": {
+          "type": "string",
+          "description": "Restriction value: IP address, country abbreviation, all"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Restriction codes: {\"continent\"=>423, \"country\"=>423, \"ip_subnet\"=>403, \"ip\"=>401, \"all\"=>401}"
+        },
+        "state": {
+          "type": "string",
+          "description": "Restriction states: disabled, enabled"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "description": "Returns array of restrictions as a paginated collection"
+    },
+    "API_V2_Entities_Level": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Level identifier, level number"
+        },
+        "key": {
+          "type": "string",
+          "description": "Label key. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        },
+        "value": {
+          "type": "string",
+          "description": "Label value. [A-Za-z0-9_-] should be used. Min - 3, max - 255 characters."
+        }
+      },
+      "description": "Returns array of permissions as paginated collection"
+    },
+    "API_V2_Admin_Entities_UserWithProfile": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User Email"
+        },
+        "uid": {
+          "type": "string",
+          "description": "User UID"
+        },
+        "role": {
+          "type": "string",
+          "description": "User role"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32",
+          "description": "User level"
+        },
+        "otp": {
+          "type": "boolean",
+          "description": "is 2FA enabled for account"
+        },
+        "state": {
+          "type": "string",
+          "description": "User state: active, pending, inactive"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "Additional phone and profile info"
+        },
+        "profiles": {
+          "$ref": "#/definitions/API_V2_Admin_Entities_Profile"
         },
         "created_at": {
           "type": "string"

@@ -22,6 +22,15 @@ module API::V2
       mount Resource::APIKeys
       mount Resource::DataStorage
       mount Resource::ServiceAccounts
+
+      add_swagger_documentation security_definitions: {
+                                  'BearerToken': {
+                                    description: 'Bearer Token authentication',
+                                    type: 'basic',
+                                    name: 'Authorization',
+                                    in: 'header'
+                                  }
+                                }
     end
   end
 end

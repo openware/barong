@@ -7,22 +7,21 @@ module API::V2
       desc 'Documents related routes'
       resource :documents do
         desc 'Return current user documents list',
-             security: [{ 'BearerToken': [] }],
-             failure: [
-               { code: 401, message: 'Invalid bearer token' }
-             ]
+          failure: [
+            { code: 401, message: 'Invalid bearer token' }
+          ],
+          success: Entities::Document
         get do
           present current_user.documents, with: Entities::Document, only: %i[upload doc_type doc_number doc_expire]
         end
 
         desc 'Upload a new document for current user',
-             security: [{ 'BearerToken': [] }],
-             success: { code: 201, message: 'Document is uploaded' },
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          success: { code: 201, message: 'Document is uploaded' },
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ]
         params do
           requires :doc_type,
                    type: String,

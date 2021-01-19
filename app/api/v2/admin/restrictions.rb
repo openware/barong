@@ -9,10 +9,10 @@ module API
           helpers ::API::V2::NamedParams
 
           desc 'Returns array of restrictions as a paginated collection',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::Restriction
           params do
             optional :scope,
                      allow_blank: false,
@@ -35,14 +35,14 @@ module API
             restrictions = params[:to] ? restrictions.where("#{params[:range]}_at <= ?", Time.at(params[:to].to_i)) : restrictions
             restrictions = params[:from] ? restrictions.where("#{params[:range]}_at >= ?", Time.at(params[:from].to_i)) : restrictions
 
-            present paginate(restrictions)
+            present paginate(restrictions), with: API::V2::Entities::Restriction
           end
 
           desc 'Create whitelink',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Created whitelink' }
           params do
             optional :expire_time,
                      allow_blank: false,
@@ -67,14 +67,13 @@ module API
 
             response = { whitelink_token: whitelink_token }
             present response
-            status 201
           end
 
           desc 'Create restriction',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Restriction was created' }
           params do
             requires :scope,
                      allow_blank: false,
@@ -106,10 +105,10 @@ module API
           end
 
           desc 'Update restriction',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Restriction was updated' }
           params do
             requires :id,
                      type: Integer,
@@ -148,10 +147,10 @@ module API
           end
 
           desc 'Delete restriction',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Restriction was deleted' }
           params do
             requires :id,
                      type: Integer,

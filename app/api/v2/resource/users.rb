@@ -26,13 +26,14 @@ module API::V2
       end
 
       resource :users do
-        desc 'Returns current user'
+        desc 'Returns current user',
+          success: API::V2::Entities::UserWithFullInfo
         get '/me' do
           present current_user, with: API::V2::Entities::UserWithFullInfo
-          status(200)
         end
 
-        desc 'Updates current user data field'
+        desc 'Updates current user data field',
+          success: API::V2::Entities::UserWithFullInfo
         params do
           requires :data, type: String, allow_blank: false, desc: 'Any additional key: value pairs in json string format'
         end
@@ -40,10 +41,10 @@ module API::V2
           code_error!(current_user.errors.details, 422) unless current_user.update(data: params[:data])
 
           present current_user, with: API::V2::Entities::UserWithFullInfo
-          status(201)
         end
 
-        desc 'Blocks current user'
+        desc 'Blocks current user',
+          success: { code: 200, message: 'Current user was blocked' }
         params do
           requires :password, type: String, allow_blank: false, desc: 'Account password'
           optional :otp_code, type: String, allow_blank: false, desc: 'Code from Google Authenticator'
@@ -62,7 +63,8 @@ module API::V2
           status(200)
         end
 
-        desc 'Returns user activity'
+        desc 'Returns user activity',
+          success: Entities::Activity
         params do
           requires :topic,
                    type: String,
@@ -94,16 +96,16 @@ module API::V2
 
           error!({ errors: ['resource.user.no_activity'] }, 422) unless data.present?
 
-          present paginate(data)
+          present paginate(data), with: Entities::Activity
         end
 
         desc 'Sets new account password',
-        success: { code: 201, message: 'Changes password' },
-        failure: [
-          { code: 400, message: 'Required params are empty' },
-          { code: 404, message: 'Record is not found' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          success: { code: 201, message: 'Changes password' },
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 404, message: 'Record is not found' },
+            { code: 422, message: 'Validation errors' }
+          ]
         params do
           requires :old_password,
                    type: String,
