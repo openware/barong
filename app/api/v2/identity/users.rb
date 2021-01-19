@@ -51,6 +51,10 @@ module API::V2
           { code: 422, message: 'Validation errors' }
         ]
         params do
+          requires :nickname,
+                   type: String,
+                   allow_blank: false,
+                   desc: 'User Nickname'
           requires :email,
                    type: String,
                    allow_blank: false,
@@ -73,7 +77,7 @@ module API::V2
           verify_captcha!(response: params['captcha_response'], endpoint: 'user_create')
 
           declared_params = declared(params, include_missing: false)
-          user_params = declared_params.slice('email', 'password', 'data')
+          user_params = declared_params.slice('email', 'password', 'data', 'nickname')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 
