@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 2021_01_20_100145) do
   create_table "jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "reference_type", null: false
     t.bigint "reference_id", null: false
-    t.integer "type", null: false
+    t.integer "job_type", null: false
     t.text "description", null: false
     t.integer "state", null: false
     t.datetime "start_at", null: false
