@@ -132,6 +132,48 @@ describe API::V2::Identity::Users do
         expect_status_to_eq 201
       end
     end
+
+    context 'when nickname is invalid' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+
+      it 'renders an error too_short' do
+        params[:nickname] = 'qwe'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["nickname.too_short"])
+      end
+
+  
+      it 'renders an error too_long' do
+        params[:nickname] = 'qwertyuiopasd'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["nickname.too_long"])
+      end
+
+      it 'renders an error invalid' do
+        params[:nickname] = 'qwerty@='
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["nickname.invalid"])
+      end
+
+      it 'renders an error with blank value' do
+        params[:nickname] = ''
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["nickname.too_short", "nickname.invalid"])
+      end
+    end
+
+    context 'when nickname is valid' do
+      let(:params) { { email: 'vadid.email@gmail.com', nickname: 'vadid', password: 'eeC2BiCucxWEQ' } }
+
+      it 'creates an account' do
+        do_request
+        expect_status_to_eq 201
+      end
+    end
   end
 
   describe 'POST /api/v2/identity/users with reCAPTCHA Barong::App.config.captcha' do
