@@ -21,7 +21,7 @@ class User < ApplicationRecord
   validate :referral_exists
   validates :data, data_is_json: true
   validates :email,       email: true, presence: true, uniqueness: true
-  validate  :validate_nickname!
+  validates :nickname,    length: { minimum: 4, maximum: 12 }, format: { with: /\A[a-zA-Z0-9]+\z/ }, uniqueness: true, allow_nil: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?
   validate  :validate_pass!
@@ -37,13 +37,6 @@ class User < ApplicationRecord
 
   def downcase_nickname
     nickname.downcase! unless nickname.nil?
-  end
-
-  def validate_nickname!
-    return if nickname.nil?
-    errors.add(:nickname, 'too_short') if nickname.length < 4
-    errors.add(:nickname, 'too_long') if nickname.length > 12
-    errors.add(:nickname, 'invalid') unless nickname.match(/\A[a-zA-Z0-9]+\z/)
   end
 
   def validate_pass!
@@ -224,5 +217,4 @@ end
 #
 #  index_users_on_email     (email) UNIQUE
 #  index_users_on_uid       (uid) UNIQUE
-#  index_users_on_nickname  (string) UNIQUE
 #
