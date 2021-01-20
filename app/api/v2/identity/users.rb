@@ -51,10 +51,6 @@ module API::V2
           { code: 422, message: 'Validation errors' }
         ]
         params do
-          requires :nickname,
-                   type: String,
-                   allow_blank: false,
-                   desc: 'User Nickname'
           requires :email,
                    type: String,
                    allow_blank: false,
@@ -63,6 +59,9 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'User Password'
+          optional :nickname,
+                   type: String,
+                   desc: 'User Nickname'
           optional :refid,
                    type: String,
                    desc: 'Referral uid'
