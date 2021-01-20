@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_01_112814) do
+ActiveRecord::Schema.define(version: 2021_01_20_100145) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -75,6 +75,19 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.datetime "updated_at", null: false
     t.index ["doc_number_index"], name: "index_documents_on_doc_number_index"
     t.index ["user_id"], name: "index_documents_on_user_id"
+  end
+
+  create_table "jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "reference_type", null: false
+    t.bigint "reference_id", null: false
+    t.integer "type", null: false
+    t.text "description", null: false
+    t.integer "state", null: false
+    t.datetime "start_at", null: false
+    t.datetime "finish_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reference_type", "reference_id"], name: "index_jobs_on_reference_type_and_reference_id"
   end
 
   create_table "labels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
