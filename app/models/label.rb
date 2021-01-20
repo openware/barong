@@ -78,6 +78,7 @@ class Label < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20210120084950
 #
 # Table name: labels
 #
@@ -93,5 +94,5 @@ end
 # Indexes
 #
 #  index_labels_on_user_id                    (user_id)
-#  index_labels_on_user_id_and_key_and_scope  (user_id,key,scope)
+#  index_labels_on_user_id_and_key_and_scope  (user_id,key,scope) UNIQUE
 #
