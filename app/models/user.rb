@@ -217,4 +217,5 @@ end
 #
 #  index_users_on_email     (email) UNIQUE
 #  index_users_on_uid       (uid) UNIQUE
+#  index_users_on_nickname  (nickname) UNIQUE IF NOT NULL
 #
