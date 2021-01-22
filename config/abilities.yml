@@ -19,6 +19,7 @@ admin_permissions:
       - Permission
       - Restriction
       - Job
+      - Jobbing
   admin:
     read:
       - Activity    
@@ -32,6 +33,7 @@ admin_permissions:
       - APIKey
       - Restriction
       - Job
+      - Jobbing
   technical:
     read:
       - Ability

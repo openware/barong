@@ -20,41 +20,47 @@ module API
                      desc: 'job description'
             requires :type,
                      type: String,
-                     values: { value: -> { ['maintenance'] }, message: 'admin.job.invalid_job_type'},
+                     values: { value: -> { ['maintenance'] }, message: 'admin.job.invalid_type'},
                      desc: 'job type'
             requires :start_at,
                      type: DateTime,
                      desc: 'time to run start job'
-            optional :finish_at,
+            requires :finish_at,
                      type: DateTime,
                      desc: 'time to run finish job'
             optional :whitelist_ip,
-                     type: String,
-                     desc: 'whitelist IP address'
+                     type: Array[String],
+                     desc: 'whitelist IP addresses'
           end
           post do
             admin_authorize! :create, Job
             admin_authorize! :create, Restriction
+            admin_authorize! :create, Jobbing
             
             # Create or find maintenace restriction
-            restriction = Restriction.find_or_create_by(category: params[:type], scope: 'all', value: 'all', state: 'disabled')
+            maintenance = Restriction.find_or_create_by(category: params[:type], scope: 'all', value: 'all', state: 'disabled')
 
             # Set parameters
             declared_params = declared(params, include_missing: false)
-            job_params = declared_params.merge(reference: restriction)
-                                        .except(:whitelist_ip)
+            job_params = declared_params.except(:whitelist_ip)
 
             # Create new job
             job = Job.new(job_params)
             code_error!(job.errors.details, 422) unless job.save
 
-            # Create new whitelist restriction for specific IP address if present
-            if params[:whitelist_ip].present?
-              Restriction.create!(scope: 'ip', category: 'whitelist', value: params[:whitelist_ip])
-              
-              # clear cached restrictions, so they will be freshly refetched on the next call to /auth
-              Rails.cache.delete('restrictions')
+            # Create maintenance job
+            Jobbing.create!(job: job, reference: maintenance)
+
+            # Create new whitelist jobs
+            if params[whitelist_ip].present?
+              params[whitelist_ip].each do |ip|
+                whitelist = Restriction.create!(scope: 'ip', category: 'whitelist', value: ip)
+                Jobbing.create!(job: job, reference: whitelist)
+              end
             end
+
+            # clear cached restrictions, so they will be freshly refetched on the next call to /auth
+            Rails.cache.delete('restrictions')
 
             status 200
           end
