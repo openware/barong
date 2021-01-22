@@ -20,43 +20,57 @@ module API
                      desc: 'job description'
             requires :type,
                      type: String,
-                     values: { value: -> { ['maintenance'] }, message: 'admin.job.invalid_type'},
+                     values: { value: -> { Job::TYPES }, message: 'admin.job.invalid_type'},
                      desc: 'job type'
             requires :start_at,
                      type: DateTime,
-                     desc: 'time to run start job'
+                     desc: 'date and time to run start job'
             requires :finish_at,
                      type: DateTime,
-                     desc: 'time to run finish job'
+                     desc: 'date and time to run finish job'
             optional :whitelist_ip,
                      type: Array[String],
+                     allow_blank: true,
                      desc: 'whitelist IP addresses'
           end
           post do
-            admin_authorize! :create, Job
             admin_authorize! :create, Restriction
+            admin_authorize! :create, Job
             admin_authorize! :create, Jobbing
             
-            # Create or find maintenace restriction
+            # Find or create maintenace restriction
             maintenance = Restriction.find_or_create_by(category: params[:type], scope: 'all', value: 'all', state: 'disabled')
+            error!({ errors: ['admin.job.cant_find_or_create_maintenance_restriction'] }, 422) unless maintenance.id.present?
+            
+            # check existing pending and active jobs
+            existing_jobs = maintenance.jobs.pending + maintenance.jobs.active
+            error!({ errors: ['admin.job.cant_create_new_job_for_existing_maintenance'] }, 422) unless existing_jobs.empty?
 
             # Set parameters
             declared_params = declared(params, include_missing: false)
-            job_params = declared_params.except(:whitelist_ip)
+            job_params = declared_params.merge(state: "pending").except(:whitelist_ip)
+
+            # Create restrictions list
+            restrictions = [maintenance]
+
+            # Map whitelist restrictions to job
+            if params[:whitelist_ip].present? && params[:whitelist_ip].any?
+              params[:whitelist_ip].each do |ip|
+                whitelist = Restriction.find_or_create_by(category: 'whitelist', scope: 'ip', value: ip, state: :disabled)
+                code_error!(whitelist.errors.details, 422) unless whitelist.save
+
+                restrictions << whitelist
+              end
+            end
 
             # Create new job
             job = Job.new(job_params)
             code_error!(job.errors.details, 422) unless job.save
 
-            # Create maintenance job
-            Jobbing.create!(job: job, reference: maintenance)
-
-            # Create new whitelist jobs
-            if params[whitelist_ip].present?
-              params[whitelist_ip].each do |ip|
-                whitelist = Restriction.create!(scope: 'ip', category: 'whitelist', value: ip)
-                Jobbing.create!(job: job, reference: whitelist)
-              end
+            # Map restrictions to job
+            restrictions.each do |restriction|
+              restriction_job = Jobbing.new(job: job, reference: restriction)
+              code_error!(restriction_job.errors.details, 422) unless restriction_job.save
             end
 
             # clear cached restrictions, so they will be freshly refetched on the next call to /auth
@@ -65,8 +79,28 @@ module API
             status 200
           end
 
-          # GET request
-          # List for existing Jobs with pagination
+          desc 'Returns list of jobs as a paginated collection',
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::Restriction
+          params do
+            optional :type,
+                     allow_blank: false,
+                     values: { value: -> { Job::TYPES }, message: 'admin.job.invalid_type'}
+            optional :state,
+                     allow_blank: false,
+                     values: { value: -> { Job::STATES }, message: 'admin.job.invalid_state'}
+            use :pagination_filters
+          end
+          get do
+            admin_authorize! :read, Job
+
+            Job.all.order(id: :desc)
+              .tap { |q| q.where!(type: params[:type]) if params[:type].present? }
+              .tap { |q| q.where!(state: params[:state]) if params[:state].present? }
+              .tap { |q| present paginate(q), with: API::V2::Entities::Job }
+          end
 
           # PUT request
           # Update of existing Job mainly it will be used to disable Job and disable reference

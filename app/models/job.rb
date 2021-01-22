@@ -44,8 +44,7 @@ class Job < ApplicationRecord
   end
 
   def validate_date_range
-    return errors.add(:finish_at, :invalid, message: 'finish_at is null') if self.finish_at.nil?
-    return errors.add(:base, :invalid, message: 'invalid date range') if start_at > finish_at
+    return errors.add(:finish_at, :invalid, message: 'invalid date range') if start_at > finish_at
   end
 end
 
