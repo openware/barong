@@ -9,7 +9,8 @@ class Restriction < ApplicationRecord
   STATES = %w[enabled disabled]
   SUBNET_REGEX = /\A([0-9]{1,3}\.){3}[0-9]{1,3}\/([0-9]|[1-2][0-9]|3[0-2])\z/
 
-  has_many :jobs, as: :reference, class_name: "Job"
+  has_many :jobbings, as: :reference
+  has_many :jobs, through: :jobbings
 
   validates :scope, :value, :category, presence: true
   validates :scope, inclusion: { in: SCOPES }

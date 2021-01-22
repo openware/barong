@@ -5,28 +5,40 @@ module Jobs
     include Sidekiq::Worker
 
     def perform(sgid)
-      Rails.logger.info "JobFinishWorker Start"
+      Rails.logger.info "JobFinishWorker: Start"
 
       # Get job object from GlobalID
       job = GlobalID::Locator.locate_signed(sgid, for: 'job_finish')
       return if job.nil?
 
-      # Get restriction object reference
-      restriction = job.reference
-      return if restriction.nil?  
+      case job.type
+      when "maintenance"
+        Rails.logger.info "JobFinishWorker: Disable maintenance"
+        disable_maintenance(job)
+      else
+        Rails.logger.warn "JobFinishWorker: Job type #{job.type} is not supported"
+      end
+
+      Rails.logger.info "JobFinishWorker: End"
+    end
+
+    private
+
+    def disable_maintenance(job)
+      # Get all restrictions by job
+      restrictions = job.restrictions
+      return if restrictions.empty?  
 
       # Deactivate job that will change job status to disabled and disabled restrictions
-      if job.active? && restriction.state == "enabled"
-        restriction.update!(state: :disabled)
+      if job.active?
+        restriction.update_all(state: :disabled)
         job.disabled!
 
         # clear cached restrictions, so they will be freshly refetched on the next call to /auth
         Rails.cache.delete('restrictions')
       else
-        Rails.logger.warn "Only active job and enabled restriction can be set to disabled"
+        Rails.logger.warn "JobFinishWorker: Only active job and enabled restriction can be set to disabled"
       end
-
-      Rails.logger.info "JobFinishWorker End"
     end
   end
 end

@@ -18,7 +18,7 @@ module API
                      type: String,
                      allow_blank: false,
                      desc: 'job description'
-            requires :job_type,
+            requires :type,
                      type: String,
                      values: { value: -> { ['maintenance'] }, message: 'admin.job.invalid_job_type'},
                      desc: 'job type'
@@ -37,7 +37,7 @@ module API
             admin_authorize! :create, Restriction
             
             # Create or find maintenace restriction
-            restriction = Restriction.find_or_create_by(category: params[:job_type], scope: 'all', value: 'all', state: 'disabled')
+            restriction = Restriction.find_or_create_by(category: params[:type], scope: 'all', value: 'all', state: 'disabled')
 
             # Set parameters
             declared_params = declared(params, include_missing: false)

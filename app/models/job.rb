@@ -1,26 +1,31 @@
 # frozen_string_literal: true
 
 class Job < ApplicationRecord
+  # disable STI to allow "type" as field name in the table
+  self.inheritance_column = :_type_disabled
+
   # Relationships
-  belongs_to :reference, polymorphic: true
+  has_many :jobbings
+  has_many :restrictions, :through => :jobbings, :source => :reference,
+           :source_type => 'Restriction'
 
   # Enum
   enum state: { pending: 0, active: 1, disabled: 2 }
-  enum job_type: { whitelist: 0, maintenance: 1, blacklist: 2, blocklogin: 3 }
+  enum type: { maintenance: 0 }
 
   # Contants
   STATES = states.keys.freeze
-  JOB_TYPES = job_types.keys.freeze
+  TYPES = types.keys.freeze
 
   # Validations
-  validates :reference_id, :reference_type, 
-            :job_type, :description, :state,
+  validates :type, :description, :state,
             :start_at, :finish_at,
             presence: true
   validates :state, inclusion: { in: STATES }
-  validates :job_type, inclusion: { in: JOB_TYPES }
+  validates :type, inclusion: { in: TYPES }
   validate :validate_date_range
 
+  # Callbacks
   after_create do
     if pending?
       enqueue_start_job
@@ -39,29 +44,22 @@ class Job < ApplicationRecord
   end
 
   def validate_date_range
-    return if finish_at > start_at
-
-    return errors.add(:base, :invalid, message: 'invalid date range')
+    return errors.add(:finish_at, :invalid, message: 'finish_at is null') if self.finish_at.nil?
+    return errors.add(:base, :invalid, message: 'invalid date range') if start_at > finish_at
   end
 end
 
 # == Schema Information
-# Schema version: 20210120100145
+# Schema version: 20210122032626
 #
 # Table name: jobs
 #
-#  id             :bigint           not null, primary key
-#  reference_type :string(255)      not null
-#  reference_id   :bigint           not null
-#  job_type       :integer          not null
-#  description    :text(65535)      not null
-#  state          :integer          not null
-#  start_at       :datetime         not null
-#  finish_at      :datetime         not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#
-# Indexes
-#
-#  index_jobs_on_reference_type_and_reference_id  (reference_type,reference_id)
+#  id          :bigint           not null, primary key
+#  type        :integer          not null
+#  description :text(65535)      not null
+#  state       :integer          not null
+#  start_at    :datetime         not null
+#  finish_at   :datetime         not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
