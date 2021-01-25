@@ -30,7 +30,7 @@ class User < ApplicationRecord
   scope :with_pending_or_replaced_docs, -> { self.joins(:labels).where(labels:
                                            { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
-  before_validation :assign_uid
+  before_validation :assign_uid, :downcase_nickname
   before_save :downcase_nickname
   after_update :disable_api_keys
   after_update :disable_service_accounts

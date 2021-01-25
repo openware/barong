@@ -164,6 +164,20 @@ describe API::V2::Identity::Users do
         expect_status_to_eq 422
         expect_body.to eq(errors: ["nickname.too_short", "nickname.invalid"])
       end
+
+      it 'works only unique nickname' do
+        params[:nickname] = 'NICK'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:nickname] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "nickname.taken"
+      end
     end
 
     context 'when nickname is valid' do
