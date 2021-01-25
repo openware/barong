@@ -6,7 +6,7 @@ module API
       # User information containing profile, labels and documents
       class UserWithFullInfo < API::V2::Entities::Base
         expose :email, documentation: { type: 'String' }
-        expose :nickname, documentation: { type: 'String', desc: 'User nickname' }
+        expose :username, documentation: { type: 'String', desc: 'User username' }
         expose :uid, documentation: { type: 'String' }
         expose :role, documentation: { type: 'String' }
         expose :level, documentation: { type: 'Integer' }

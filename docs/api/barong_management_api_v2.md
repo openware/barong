@@ -500,7 +500,7 @@ Returns array of users as collection
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -516,7 +516,7 @@ Imports a profile for user
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -551,7 +551,7 @@ Get users and profile information
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -640,7 +640,7 @@ Get specific service_account information
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |

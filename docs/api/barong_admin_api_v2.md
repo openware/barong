@@ -974,7 +974,7 @@ Get all roles and admin_permissions of barong cancan.
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -1038,7 +1038,7 @@ Get all roles and admin_permissions of barong cancan.
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -1091,7 +1091,7 @@ Get all roles and admin_permissions of barong cancan.
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |

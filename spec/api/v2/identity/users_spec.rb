@@ -133,85 +133,85 @@ describe API::V2::Identity::Users do
       end
     end
 
-    context 'when nickname is invalid' do
+    context 'when username is invalid' do
       let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
       it 'renders an error too_short' do
-        params[:nickname] = 'qwe'
+        params[:username] = 'qwe'
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["nickname.too_short"])
+        expect_body.to eq(errors: ["username.too_short"])
       end
 
   
       it 'renders an error too_long' do
-        params[:nickname] = 'qwertyuiopasd'
+        params[:username] = 'qwertyuiopasd'
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["nickname.too_long"])
+        expect_body.to eq(errors: ["username.too_long"])
       end
 
       it 'renders an error invalid' do
-        params[:nickname] = 'qwerty@='
+        params[:username] = 'qwerty@='
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["nickname.invalid"])
+        expect_body.to eq(errors: ["username.invalid"])
       end
 
       it 'renders an error with blank value' do
-        params[:nickname] = ''
+        params[:username] = ''
         do_request
         expect_status_to_eq 422
-        expect_body.to eq(errors: ["nickname.too_short", "nickname.invalid"])
+        expect_body.to eq(errors: ["username.too_short", "username.invalid"])
       end
 
-      it 'should be unique for UPPER or lower nickname' do
-        params[:nickname] = 'NICK'
+      it 'should be unique for UPPER or lower username' do
+        params[:username] = 'NICK'
         expect {
           post '/api/v2/identity/users', params: params
         }.to change { User.count }.by(1)
         expect(response.status).to eq(201)
 
-        params[:nickname] = 'nick'
+        params[:username] = 'nick'
         post '/api/v2/identity/users', params: params
 
         expect(response.status).to eq(422)
-        expect(json_body[:errors]).to include "nickname.taken"
+        expect(json_body[:errors]).to include "username.taken"
       end
 
-      it 'should be unique for nickname' do
-        params[:nickname] = 'nick'
+      it 'should be unique for username' do
+        params[:username] = 'nick'
         expect {
           post '/api/v2/identity/users', params: params
         }.to change { User.count }.by(1)
         expect(response.status).to eq(201)
 
-        params[:nickname] = 'nick'
+        params[:username] = 'nick'
         post '/api/v2/identity/users', params: params
 
         expect(response.status).to eq(422)
-        expect(json_body[:errors]).to include "nickname.taken"
+        expect(json_body[:errors]).to include "username.taken"
       end
     end
 
-    context 'when nickname is valid' do
-      let(:params) { { email: 'vadid.email@gmail.com', nickname: 'vadid', password: 'eeC2BiCucxWEQ' } }
+    context 'when username is valid' do
+      let(:params) { { email: 'vadid.email@gmail.com', username: 'vadid', password: 'eeC2BiCucxWEQ' } }
 
       it 'creates an account' do
         do_request
         expect_status_to_eq 201
       end
 
-      it 'create an account with nil nickname' do
+      it 'create an account with nil username' do
         params[:email] = 'vadid1.email@gmail.com'
-        params[:nickname] = nil
+        params[:username] = nil
         expect {
           post '/api/v2/identity/users', params: params
         }.to change { User.count }.by(1)
         expect(response.status).to eq(201)
 
         params[:email] = 'vadid2.email@gmail.com'
-        params[:nickname] = nil
+        params[:username] = nil
         expect {
           post '/api/v2/identity/users', params: params
         }.to change { User.count }.by(1)

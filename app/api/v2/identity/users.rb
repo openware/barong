@@ -59,9 +59,9 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'User Password'
-          optional :nickname,
+          optional :username,
                    type: String,
-                   desc: 'User Nickname'
+                   desc: 'User Username'
           optional :refid,
                    type: String,
                    desc: 'Referral uid'
@@ -76,7 +76,7 @@ module API::V2
           verify_captcha!(response: params['captcha_response'], endpoint: 'user_create')
 
           declared_params = declared(params, include_missing: false)
-          user_params = declared_params.slice('email', 'password', 'data', 'nickname')
+          user_params = declared_params.slice('email', 'password', 'data', 'username')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 

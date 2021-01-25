@@ -128,7 +128,7 @@ Creates new user
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
-| nickname | formData | User Nickname | No | string |
+| username | formData | User Username | No | string |
 | refid | formData | Referral uid | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 | data | formData | Any additional key: value pairs in json string format | No | string |
@@ -1305,7 +1305,7 @@ KYC callback
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -1319,7 +1319,7 @@ KYC callback
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -1336,7 +1336,7 @@ KYC callback
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -1409,7 +1409,7 @@ KYC callback
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
-| nickname | string | User nickname | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |

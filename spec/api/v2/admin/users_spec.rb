@@ -29,13 +29,13 @@ describe API::V2::Admin::Users do
       let(:do_search_request) { get '/api/v2/admin/users', headers: auth_header, params: params }
 
       def validate_fields(user)
-        user.attributes.slice('email', 'nickname', 'role', 'level', 'otp', 'state', 'uid', 'data').symbolize_keys
+        user.attributes.slice('email', 'username', 'role', 'level', 'otp', 'state', 'uid', 'data').symbolize_keys
       end
 
       it 'returns list of users' do
         do_request
 
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
@@ -54,7 +54,7 @@ describe API::V2::Admin::Users do
         params[:order_by] = 'id'
         do_search_request
 
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.first.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.second.except(:referral_uid)
@@ -67,7 +67,7 @@ describe API::V2::Admin::Users do
         params[:order_by] = 'id'
         do_search_request
 
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(User.count).to eq json_body.count
         expect(validate_fields(User.first)).to eq json_body.fifth.except(:referral_uid)
         expect(validate_fields(User.second)).to eq json_body.fourth.except(:referral_uid)
@@ -100,7 +100,7 @@ describe API::V2::Admin::Users do
         do_search_request
 
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body).not_to include(test_user)
       end
 
@@ -108,7 +108,7 @@ describe API::V2::Admin::Users do
         params[:level] = 2
         do_search_request
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(level: 2).count
       end
 
@@ -116,7 +116,7 @@ describe API::V2::Admin::Users do
         params[:state] = 'active'
         do_search_request
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(state: 'active').count
       end
 
@@ -125,7 +125,7 @@ describe API::V2::Admin::Users do
         params[:state] = 'active'
         do_search_request
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.where(level: 2, state: 'active').count
       end
 
@@ -140,7 +140,7 @@ describe API::V2::Admin::Users do
 
         do_search_request
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body.count).to eq User.count
       end
 
@@ -148,7 +148,7 @@ describe API::V2::Admin::Users do
         params[:first_name] = 'peatio'
         do_search_request
         expect(response.status).to eq 200
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
       end
 
       it 'returns filtered list of users when several params given (profile attribute) : first_name and country' do
@@ -173,7 +173,7 @@ describe API::V2::Admin::Users do
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
           expect(response.headers.fetch('Per-Page')).to eq '100'
-          expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state data profiles referral_uid created_at updated_at]
+          expect(json_body.first.keys).to match_array %i[email username uid role level otp state data profiles referral_uid created_at updated_at]
           expect(json_body.last[:profiles][0][:first_name]).to eq user.profiles.first.first_name
           expect(json_body.last[:profiles][0][:last_name]).to eq user.profiles.first.last_name
           expect(json_body.last[:profiles][0][:address]).to eq user.profiles.first.address
@@ -186,7 +186,7 @@ describe API::V2::Admin::Users do
         do_search_request
 
         expect(json_body.count).to eq 1
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         expect(json_body[0][:email]).to eq 'testa@gmail.com'
       end
 
@@ -198,7 +198,7 @@ describe API::V2::Admin::Users do
         expect(json_body.count).to eq User.all.count
 
         expect_status.to eq(200)
-        expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+        expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
       end
 
       context 'pagination test' do
@@ -212,7 +212,7 @@ describe API::V2::Admin::Users do
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '1'
           expect(response.headers.fetch('Per-Page')).to eq '2'
-          expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+          expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         end
 
         it 'returns 2nd page, limit 2 users per page' do
@@ -225,7 +225,7 @@ describe API::V2::Admin::Users do
           expect(response.headers.fetch('Total')).to eq User.all.count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
-          expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+          expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
         end
       end
     end
@@ -433,7 +433,7 @@ describe API::V2::Admin::Users do
 
         expect(response.status).to eq 200
 
-        expect(json_body.keys).to match_array %i[email nickname uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
+        expect(json_body.keys).to match_array %i[email username uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
         expect(json_body[:uid]).to eq experimental_user.uid
         expect(json_body[:role]).to eq experimental_user.role
         expect(json_body[:email]).to eq experimental_user.email
@@ -778,7 +778,7 @@ describe API::V2::Admin::Users do
 
           expect(json_body.count).to eq 2
 
-          expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+          expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
           expect(User.first.email).to eq json_body.first[:email]
           expect(User.second.email).to eq json_body.second[:email]
 
@@ -797,7 +797,7 @@ describe API::V2::Admin::Users do
 
           expect(User.third.email).to eq json_body.first[:email]
 
-          expect(json_body.first.keys).to match_array %i[email nickname uid role level otp state referral_uid data]
+          expect(json_body.first.keys).to match_array %i[email username uid role level otp state referral_uid data]
           expect(response.headers.fetch('Total')).to eq document_pending_count.to_s
           expect(response.headers.fetch('Page')).to eq '2'
           expect(response.headers.fetch('Per-Page')).to eq '2'
@@ -1096,7 +1096,7 @@ describe API::V2::Admin::Users do
         it 'saves author_uid' do
           do_request
 
-          expect(json_body.keys).to match_array %i[email nickname uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
+          expect(json_body.keys).to match_array %i[email username uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
           expect(Comment.last.author_uid).to eq test_user.uid
           expect(json_body[:comments][0][:author_uid]).to eq test_user.uid
           expect(json_body[:profiles][0][:first_name]).to eq experimental_user.profiles[0].first_name

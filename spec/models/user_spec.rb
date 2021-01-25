@@ -50,15 +50,15 @@ RSpec.describe User, type: :model do
       expect(payload['email']).to eq(usr.email)
     end
 
-    describe '#nickname' do
-      it 'create user with unique nickname' do
-        create(:user, nickname: 'nick')
-        expect { create(:user, nickname: 'nick') }.to raise_error ActiveRecord::RecordInvalid
+    describe '#username' do
+      it 'create user with unique username' do
+        create(:user, username: 'nick')
+        expect { create(:user, username: 'nick') }.to raise_error ActiveRecord::RecordInvalid
       end
 
-      it 'create user with nil nickname' do
-        create(:user, nickname: nil)
-        expect(create(:user, nickname: nil)).to be_valid
+      it 'create user with nil username' do
+        create(:user, username: nil)
+        expect(create(:user, username: nil)).to be_valid
       end
     end
 
