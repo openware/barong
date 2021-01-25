@@ -165,8 +165,22 @@ describe API::V2::Identity::Users do
         expect_body.to eq(errors: ["nickname.too_short", "nickname.invalid"])
       end
 
-      it 'works only unique nickname' do
+      it 'should be unique for UPPER or lower nickname' do
         params[:nickname] = 'NICK'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:nickname] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "nickname.taken"
+      end
+
+      it 'should be unique for nickname' do
+        params[:nickname] = 'nick'
         expect {
           post '/api/v2/identity/users', params: params
         }.to change { User.count }.by(1)
@@ -186,6 +200,22 @@ describe API::V2::Identity::Users do
       it 'creates an account' do
         do_request
         expect_status_to_eq 201
+      end
+
+      it 'create an account with nil nickname' do
+        params[:email] = 'vadid1.email@gmail.com'
+        params[:nickname] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:email] = 'vadid2.email@gmail.com'
+        params[:nickname] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
       end
     end
   end
