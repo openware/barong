@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(version: 2021_01_22_032626) do
     t.text "description", null: false
     t.integer "state", null: false
     t.datetime "start_at", null: false
-    t.datetime "finish_at", null: false
+    t.datetime "finish_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

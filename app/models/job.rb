@@ -18,15 +18,14 @@ class Job < ApplicationRecord
   TYPES = types.keys.freeze
 
   # Validations
-  validates :type, :description, :state,
-            :start_at, :finish_at,
+  validates :type, :description, :state, :start_at,
             presence: true
   validates :state, inclusion: { in: STATES }
   validates :type, inclusion: { in: TYPES }
   validate :validate_date_range
 
   # Callbacks
-  after_create do
+  after_commit do
     if pending?
       enqueue_start_job
       enqueue_finish_job
@@ -36,15 +35,19 @@ class Job < ApplicationRecord
   private
 
   def enqueue_start_job
-    Jobs::JobStartWorker.perform_at(start_at, to_sgid(for: 'job_start'))
+    Jobs::JobStartWorker.perform_at(start_at, to_sgid(for: 'job_start')) if start_at.present?
   end
 
   def enqueue_finish_job
-    Jobs::JobFinishWorker.perform_at(finish_at, to_sgid(for: 'job_finish'))
+    Jobs::JobFinishWorker.perform_at(finish_at, to_sgid(for: 'job_finish')) if finish_at.present?
   end
 
   def validate_date_range
-    return errors.add(:finish_at, :invalid, message: 'invalid date range') if start_at > finish_at
+    errors.add(:start_at, :invalid, message: 'invalid date') if start_at.nil? || (start_at.present? && start_at < Time.now)
+    errors.add(:finish_at, :invalid, message: 'invalid date') if finish_at.present? && finish_at < Time.now
+    errors.add(:base, :invalid, message: 'invalid date range') if start_at.present? && finish_at.present? && start_at > finish_at
+
+    return errors
   end
 end
 
@@ -58,7 +61,7 @@ end
 #  description :text(65535)      not null
 #  state       :integer          not null
 #  start_at    :datetime         not null
-#  finish_at   :datetime         not null
+#  finish_at   :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #

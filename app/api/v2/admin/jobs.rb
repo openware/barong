@@ -25,7 +25,7 @@ module API
             requires :start_at,
                      type: DateTime,
                      desc: 'date and time to run start job'
-            requires :finish_at,
+            optional :finish_at,
                      type: DateTime,
                      desc: 'date and time to run finish job'
             optional :whitelist_ip,
@@ -102,9 +102,42 @@ module API
               .tap { |q| present paginate(q), with: API::V2::Entities::Job }
           end
 
-          # PUT request
-          # Update of existing Job mainly it will be used to disable Job and disable reference
-          # Also, we can add here the ability to change starts_at and finish_at (Bonus Task)
+          desc 'Update job',
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Job was updated' }
+          params do
+            requires :id,
+                     type: Integer,
+                     allow_blank: false,
+                     desc: 'Job id'
+            requires :state,
+                     allow_blank: false,
+                     values: { value: -> { Job::STATES }, message: 'admin.job.invalid_state' }
+            optional :start_at,
+                     type: DateTime,
+                     desc: 'date and time to run start job'
+            optional :finish_at,
+                     type: DateTime,
+                     desc: 'date and time to run finish job'
+          end
+          put do
+            admin_authorize! :update, Job
+
+            target_job = Job.find_by(id: params[:id])
+
+            error!({ errors: ['admin.job.doesnt_exist'] }, 404) if target_job.nil?
+
+            unless target_job.update(declared(params, include_missing: false))
+              code_error!(target_job.errors.details, 422)
+            end
+
+            # clear cached restrictions, so they will be freshly refetched on the next call to /auth
+            Rails.cache.delete('restrictions')
+            
+            status 200
+          end
         end
       end
     end
