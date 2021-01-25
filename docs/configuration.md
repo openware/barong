@@ -182,3 +182,14 @@ document_types:
   - Residental
   - Institutional
 ```
+## Barong integration with Auth0
+Barong provide the endpoints support to create the barong session with auth0 `id_token`
+
+### Credentials configuration
+##### This document provides description and defaults for all environment variables that take a part in app configuration
+| Env name | Default value | Description |
+| ---------- | ------ | ---------------------------------- |
+| `barong_auth0_tenant_address` | | Auth0 application domain |
+| `barong_auth0_client_id` | | Auth0 application client ID |
+| `barong_auth0_client_secret` | | Auth0 application secret |
+| `barong_auth0_audience` | | Unique identifier for the API. This value will be used as the `audience` parameter on authorization calls |
