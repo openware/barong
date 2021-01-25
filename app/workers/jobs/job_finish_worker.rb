@@ -4,12 +4,15 @@ module Jobs
   class JobFinishWorker
     include Sidekiq::Worker
 
-    def perform(sgid)
+    def perform(sgid, finish_at)
       Rails.logger.info "JobFinishWorker: Start"
 
       # Get job object from GlobalID
       job = GlobalID::Locator.locate_signed(sgid, for: 'job_finish')
       return if job.nil?
+
+      # Check for match time if job was rescheduled
+      return if job.finish_at != finish_at 
 
       case job.type
       when "maintenance"

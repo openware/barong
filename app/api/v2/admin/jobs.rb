@@ -38,7 +38,7 @@ module API
             admin_authorize! :create, Job
             admin_authorize! :create, Jobbing
             
-            # Find or create maintenace restriction
+            # Find or create maintenance restriction
             maintenance = Restriction.find_or_create_by(category: params[:type], scope: 'all', value: 'all', state: 'disabled')
             error!({ errors: ['admin.job.cant_find_or_create_maintenance_restriction'] }, 422) unless maintenance.id.present?
             
@@ -135,7 +135,7 @@ module API
 
             # clear cached restrictions, so they will be freshly refetched on the next call to /auth
             Rails.cache.delete('restrictions')
-            
+
             status 200
           end
         end

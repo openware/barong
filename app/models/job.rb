@@ -25,21 +25,18 @@ class Job < ApplicationRecord
   validate :validate_date_range
 
   # Callbacks
-  after_commit do
-    if pending?
-      enqueue_start_job
-      enqueue_finish_job
-    end
-  end
+  after_create :enqueue_start_job, :enqueue_finish_job, if: -> (j) { j.pending? }
+  before_update :enqueue_start_job, if: -> (j) { j.pending? && j.start_at_changed? } # Reschedule start job
+  before_update :enqueue_finish_job, if: -> (j) { (j.pending? || j.active?) && j.finish_at_changed? } # Reschedule finish job
 
   private
 
   def enqueue_start_job
-    Jobs::JobStartWorker.perform_at(start_at, to_sgid(for: 'job_start')) if start_at.present?
+    Jobs::JobStartWorker.perform_at(start_at, to_sgid(for: 'job_start'), start_at) if start_at.present?
   end
 
   def enqueue_finish_job
-    Jobs::JobFinishWorker.perform_at(finish_at, to_sgid(for: 'job_finish')) if finish_at.present?
+    Jobs::JobFinishWorker.perform_at(finish_at, to_sgid(for: 'job_finish'), finish_at) if finish_at.present?
   end
 
   def validate_date_range
