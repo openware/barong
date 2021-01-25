@@ -113,8 +113,13 @@ module API
                      allow_blank: false,
                      desc: 'Job id'
             requires :state,
+                     type: String,
                      allow_blank: false,
                      values: { value: -> { Job::STATES }, message: 'admin.job.invalid_state' }
+            optional :description,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'job description'
             optional :start_at,
                      type: DateTime,
                      desc: 'date and time to run start job'
@@ -122,7 +127,7 @@ module API
                      type: DateTime,
                      desc: 'date and time to run finish job'
           end
-          put do
+          put '/:id' do
             admin_authorize! :update, Job
 
             target_job = Job.find_by(id: params[:id])

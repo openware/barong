@@ -6,8 +6,8 @@ class Job < ApplicationRecord
 
   # Relationships
   has_many :jobbings
-  has_many :restrictions, :through => :jobbings, :source => :reference,
-           :source_type => 'Restriction'
+  has_many :restrictions, through: :jobbings, source: :reference,
+                          source_type: 'Restriction'
 
   # Enum
   enum state: { pending: 0, active: 1, disabled: 2 }
@@ -25,9 +25,9 @@ class Job < ApplicationRecord
   validate :validate_date_range
 
   # Callbacks
-  after_create :enqueue_start_job, :enqueue_finish_job, if: -> (j) { j.pending? }
-  before_update :enqueue_start_job, if: -> (j) { j.pending? && j.start_at_changed? } # Reschedule start job
-  before_update :enqueue_finish_job, if: -> (j) { (j.pending? || j.active?) && j.finish_at_changed? } # Reschedule finish job
+  after_create :enqueue_start_job, :enqueue_finish_job, if: ->(j) { j.pending? }
+  before_update :enqueue_start_job, if: ->(j) { j.pending? && j.start_at_changed? } # Reschedule start job (only pending job can change start_at)
+  before_update :enqueue_finish_job, if: ->(j) { (j.pending? || j.active?) && j.finish_at_changed? } # Reschedule finish job (only pending and active job can change finish_at)
 
   private
 
@@ -40,11 +40,15 @@ class Job < ApplicationRecord
   end
 
   def validate_date_range
-    errors.add(:start_at, :invalid, message: 'invalid date') if start_at.nil? || (start_at.present? && start_at < Time.now)
+    if start_at.nil? || (start_at.present? && start_at < Time.now)
+      errors.add(:start_at, :invalid, message: 'invalid date')
+    end
     errors.add(:finish_at, :invalid, message: 'invalid date') if finish_at.present? && finish_at < Time.now
-    errors.add(:base, :invalid, message: 'invalid date range') if start_at.present? && finish_at.present? && start_at > finish_at
+    if start_at.present? && finish_at.present? && start_at > finish_at
+      errors.add(:base, :invalid_date_range, message: 'invalid date range')
+    end
 
-    return errors
+    errors
   end
 end
 
