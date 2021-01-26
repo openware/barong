@@ -21,6 +21,7 @@ class User < ApplicationRecord
   validate :referral_exists
   validates :data, data_is_json: true
   validates :email,       email: true, presence: true, uniqueness: true
+  validates :username,    length: { minimum: 4, maximum: 12 }, format: { with: /\A[a-zA-Z0-9]+\z/ }, uniqueness: true, allow_nil: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?
   validate  :validate_pass!
@@ -153,6 +154,7 @@ class User < ApplicationRecord
   def as_json_for_event_api
     {
       uid: uid,
+      username: username,
       email: email,
       role: role,
       level: level,
@@ -165,7 +167,7 @@ class User < ApplicationRecord
   end
 
   def as_payload
-    as_json(only: %i[uid email referral_id role level state])
+    as_json(only: %i[uid username email referral_id role level state])
   end
 
   def language
@@ -200,6 +202,7 @@ end
 #
 #  id              :bigint           not null, primary key
 #  uid             :string(255)      not null
+#  username        :string(255)
 #  email           :string(255)      not null
 #  password_digest :string(255)      not null
 #  role            :string(255)      default("member"), not null
@@ -213,6 +216,7 @@ end
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE
-#  index_users_on_uid    (uid) UNIQUE
+#  index_users_on_email     (email) UNIQUE
+#  index_users_on_uid       (uid) UNIQUE
+#  index_users_on_username  (username) UNIQUE IF NOT NULL
 #

@@ -172,8 +172,10 @@ ActiveRecord::Schema.define(version: 2021_02_18_135634) do
     t.bigint "referral_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
 end
