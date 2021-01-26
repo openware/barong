@@ -22,13 +22,15 @@ describe 'Labels API.' do
   context 'Happy paths for the current user.' do
     let(:test_user) { create(:user, role: "admin") }
     let!(:label) { create :label, user: test_user }
+    let!(:label2) { create :label, user: test_user }
+    let!(:label3) { create :label, user: test_user }
 
     it 'Return lables for current user' do
       get '/api/v2/resource/labels', headers: auth_header
 
       expect(response.status).to eq(200)
-      expect(json_body.size).to eq(1)
-      expect(json_body.first[:key]).to eq(label.key)
+      expect(json_body.size).to eq(3)
+      expect(json_body.last[:key]).to eq(label3.key)
     end
 
     it 'Return a label by key' do
