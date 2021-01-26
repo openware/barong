@@ -11,8 +11,16 @@ module API
                failure: [
                  { code: 401, message: 'Invalid bearer token' }
                ]
+          params do
+            optional :order_by,
+                     type: String,
+                     values: { value: %w(asc desc) },
+                     default: 'desc',
+                     desc: 'If set, returned labels  sorted in specific order, default to "desc".'
+          end
           get do
-            present current_user.labels, with: Entities::Label
+            labels = current_user.labels.order(created_at: params[:order_by])
+            present labels, with: Entities::Label
           end
 
           desc 'Return a label by key.',
