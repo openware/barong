@@ -15,8 +15,8 @@ module API
             optional :ordering,
                      type: String,
                      values: { value: %w(asc desc) },
-                     default: 'desc',
-                     desc: 'If set, returned labels sorted in specific order, default to "desc".'
+                     default: 'asc',
+                     desc: 'If set, returned labels sorted in specific order, default to "asc".'
           end
           get do
             labels = current_user.labels.order(created_at: params[:ordering])
