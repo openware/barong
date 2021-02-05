@@ -95,6 +95,13 @@ More details in [twilio configuration](#twilio-configuration)
 ### Sentry configuration
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
 
+### Auth0 configuration
+
+| Env name | Default value | Possible values | Description |
+| ---------- | :------: |:------: |---------------------------------- |
+|`auth0_domain`| - | any string value | auth0 Domain name (without https://) |
+|`auth0_client_id`| - | any string value | the client_id of your auth0 application |
+
 ### SMTP configuration
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
@@ -182,14 +189,3 @@ document_types:
   - Residental
   - Institutional
 ```
-## Barong integration with Auth0
-Barong provide the endpoints support to create the barong session with auth0 `id_token`
-
-### Credentials configuration
-##### This document provides description and defaults for all environment variables that take a part in app configuration
-| Env name | Default value | Description |
-| ---------- | ------ | ---------------------------------- |
-| `barong_auth0_tenant_address` | | Auth0 application domain |
-| `barong_auth0_client_id` | | Auth0 application client ID |
-| `barong_auth0_client_secret` | | Auth0 application secret |
-| `barong_auth0_audience` | | Unique identifier for the API. This value will be used as the `audience` parameter on authorization calls |

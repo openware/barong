@@ -45,7 +45,7 @@ module EventAPI
         tokens << partial_event_name.to_s
         full_event_name = tokens.join('.')
 
-        EventAPI.notify(full_event_name, event_payload)
+        ::EventAPI.notify(full_event_name, event_payload)
       end
 
       def notify_record_created
