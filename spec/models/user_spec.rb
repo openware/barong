@@ -18,7 +18,6 @@ RSpec.describe User, type: :model do
 
     ## Test of validations
     it { should validate_presence_of(:email) }
-    it { should validate_presence_of(:password) }
     it { should have_many(:documents).dependent(:destroy) }
 
     ## Test of relationships

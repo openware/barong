@@ -51,6 +51,14 @@ module API::V2
         }.compact
       end
 
+      desc 'Get auth0 configuration'
+      get '/configs/auth0' do
+        {
+          auth0_domain: Barong::App.config.auth0_domain,
+          auth0_client_id: Barong::App.config.auth0_client_id
+        }.compact
+      end
+
       resource :health do
         desc 'Get application liveness status'
         get "/alive" do

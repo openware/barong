@@ -31,11 +31,16 @@ class User < ApplicationRecord
                                            { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
   before_validation :assign_uid, :downcase_username
+  before_validation :generate_password, on: :create
   after_update :disable_api_keys
   after_update :disable_service_accounts
 
   def downcase_username
     username.downcase! unless username.nil?
+  end
+
+  def generate_password
+    self.password = SecureRandom.base64(30) unless password
   end
 
   def validate_pass!

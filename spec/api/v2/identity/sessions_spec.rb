@@ -287,4 +287,147 @@ describe API::V2::Identity::Sessions do
       end
     end
   end
+
+  describe 'POST /api/v2/indentity/sessions/auth0' do
+    let(:uri) { '/api/v2/identity/sessions/auth0' }
+
+    context 'user doesnt exist' do
+      context 'email verified' do
+        let(:payload) do
+          [
+            {
+            'email': 'example@barong.io',
+            'email_verified': true,
+            'iss': 'https://domain.name/',
+            'sub': 'google-oauth2|100484476630231723',
+            'aud': 'test audience',
+            'iat': Time.now.to_i,
+            'exp': (Time.now + 5.minutes).to_i
+            }.with_indifferent_access,
+            {
+              'alg': 'RS256',
+              'typ': 'JWT',
+              'kid': 'ptd2123vE-G12GoDvJ8MQ'
+            }
+          ]
+        end
+
+        before do
+          allow(Barong::Auth0::JWT).to receive(:verify).and_return(payload)
+        end
+
+        it 'create user and label' do
+          expect(User.find_by(email: 'example@barong.io')).to eq nil
+          post uri, params: { id_token: 'TestToken' }
+
+          expect(response.status).to eq(201)
+          result = JSON.parse(response.body)
+          user = User.find_by(email: result['email'])
+          expect(user).not_to be nil
+          expect(user.username).to eq nil
+          expect(user.level).to eq 1
+          expect(user.state).to eq 'active'
+          expect(user.labels.count).to eq 1
+          expect(user.labels.find_by(key: 'email').value).to eq 'verified'
+        end
+      end
+    end
+
+    context 'user exists' do
+      let(:payload) do
+        [
+          {
+            'email': 'example@barong.io',
+            'email_verified': true,
+            'iss': 'https://domain.name/',
+            'sub': 'google-oauth2|100484476630231723',
+            'aud': 'test audience',
+            'iat': Time.now.to_i,
+            'exp': (Time.now + 5.minutes).to_i
+          }.with_indifferent_access,
+          {
+            'alg': 'RS256',
+            'typ': 'JWT',
+            'kid': 'ptd2123vE-G12GoDvJ8MQ'
+          }
+        ]
+      end
+
+      before do
+        allow(Barong::Auth0::JWT).to receive(:verify).and_return(payload)
+      end
+
+      let!(:user) { create(:user, email: 'example@barong.io')}
+
+      it 'returns existing user with session' do
+        expect(User.find_by(email: 'example@barong.io')).not_to eq nil
+        post uri, params: { id_token: 'TestToken' }
+
+        expect(response.status).to eq(201)
+        result = JSON.parse(response.body)
+        expect(result['email']).to eq user.email
+        expect(result.keys).to match_array(['email','username','uid','role','level','otp','state','referral_uid','csrf_token','data','labels','phones','profiles','data_storages', 'created_at', 'updated_at'])
+      end
+    end
+
+    context 'invalid params' do
+      it 'without params' do
+        post uri
+        expect_body.to eq(errors: ['identity.session.missing_id_token', 'identity.session.empty_id_token'])
+        expect(response.status).to eq(422)
+      end
+
+      it 'with empty param' do
+        post uri, params: { id_token: '' }
+        expect_body.to eq(errors: ['identity.session.empty_id_token'])
+        expect(response.status).to eq(422)
+      end
+
+      context 'jwt expired' do
+        before do
+          allow(Barong::Auth0::JWT).to receive(:verify).and_raise(JWT::ExpiredSignature)
+        end
+
+        it 'raise an error' do
+          post uri, params: { id_token: 'TestToken' }
+          expect_body.to eq(errors: ['identity.session.auth0.invalid_params'])
+          expect(response.status).to eq(422)
+        end
+      end
+
+      context 'email is not verified' do
+        let(:payload) do
+          [
+            {
+            'email': 'example@barong.io',
+            'email_verified': false,
+            'iss': 'https://domain.name/',
+            'sub': 'google-oauth2|100484476630231723',
+            'aud': 'test audience',
+            'iat': Time.now.to_i,
+            'exp': (Time.now + 5.minutes).to_i
+            }.with_indifferent_access,
+            {
+              'alg': 'RS256',
+              'typ': 'JWT',
+              'kid': 'ptd2123vE-G12GoDvJ8MQ'
+            }
+          ]
+        end
+
+        before do
+          allow(Barong::Auth0::JWT).to receive(:verify).and_return(payload)
+        end
+
+        it 'doesnt create user and label' do
+          expect(User.find_by(email: 'example@barong.io')).to eq nil
+          post uri, params: { id_token: 'TestToken' }
+
+          expect(User.find_by(email: 'example@barong.io')).to eq nil
+          expect_body.to eq(errors: ['identity.session.auth0.invalid_params'])
+          expect(response.status).to eq(401)
+        end
+      end
+    end
+  end
 end

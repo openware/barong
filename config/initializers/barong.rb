@@ -114,10 +114,8 @@ Barong::App.define do |config|
   config.set(:kycaid_api_endpoint, 'https://api.kycaid.com/')
 
   # Auth0 configuration -----------------------------------------------
-  config.set(:auth0_tenant_address, '')
+  config.set(:auth0_domain, '')
   config.set(:auth0_client_id, '')
-  config.set(:auth0_client_secret, '')
-  config.set(:auth0_audience, '')
 end
 
 # KYCAID configuring
