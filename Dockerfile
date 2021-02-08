@@ -28,8 +28,12 @@ ENV TZ=UTC
 
 # Create group "app" and user "app".
 RUN groupadd -r --gid ${GID} app \
- && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
+  && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
       --gid ${GID} --uid ${UID} app
+
+# Install Kaigara
+RUN curl -Lo /usr/bin/kaigara https://github.com/openware/kaigara/releases/download/${KAIGARA_VERSION}/kaigara \
+  && chmod +x /usr/bin/kaigara
 
 WORKDIR $APP_HOME
 USER app
