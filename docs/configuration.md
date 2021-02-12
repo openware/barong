@@ -95,6 +95,13 @@ More details in [twilio configuration](#twilio-configuration)
 ### Sentry configuration
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
 
+### Auth0 configuration
+
+| Env name | Default value | Possible values | Description |
+| ---------- | :------: |:------: |---------------------------------- |
+|`auth0_domain`| - | any string value | auth0 Domain name (without https://) |
+|`auth0_client_id`| - | any string value | the client_id of your auth0 application |
+
 ### SMTP configuration
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |

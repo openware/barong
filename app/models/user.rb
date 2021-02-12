@@ -30,8 +30,13 @@ class User < ApplicationRecord
                                            { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
   before_validation :assign_uid
+  before_validation :generate_password, on: :create
   after_update :disable_api_keys
   after_update :disable_service_accounts
+
+  def generate_password
+    self.password = SecureRandom.base64(30) unless password
+  end
 
   def validate_pass!
     return unless (new_record? && password.present?) || password.present?

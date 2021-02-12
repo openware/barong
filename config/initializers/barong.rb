@@ -113,6 +113,10 @@ Barong::App.define do |config|
   config.set(:kycaid_authorization_token, '')
   config.set(:kycaid_sandbox_mode, 'true', type: :bool)
   config.set(:kycaid_api_endpoint, 'https://api.kycaid.com/')
+
+  # Auth0 configuration -----------------------------------------------
+  config.set(:auth0_domain, '')
+  config.set(:auth0_client_id, '')
 end
 
 # KYCAID configuring
