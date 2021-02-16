@@ -60,7 +60,7 @@ module Barong
 
     def seed_users
       logger.info "Seeding users"
-      seeds["users"].each do |seed|
+      seeds["users"]&.each do |seed|
         logger.info "---"
 
         raise ConfigError.new("Email missing in users seed") if seed["email"].to_s.empty?

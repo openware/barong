@@ -35,10 +35,35 @@ require_dependency 'barong/jwt'
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 RSpec.configure do |config|
+  # If you're not using ActiveRecord, or you'd prefer not to run each of your
+  # examples within a transaction, remove the following line or assign false
+  # instead of true.
+  config.use_transactional_fixtures = false
+
+  # See https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example
+  config.before(:suite) do
+    FileUtils.rm_rf(File.join(__dir__, 'tmp', 'cache'))
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, clean_database_with_truncation: true) do
+    FileUtils.rm_rf(File.join(__dir__, 'tmp', 'cache'))
+    DatabaseCleaner.clean_with :truncation
+  end
+
+  config.append_after(:each) do
+    DatabaseCleaner.clean
+  end
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
   config.before(:each) do
+    DatabaseCleaner.start
     allow(Ability).to receive(:abilities).and_return(
       'roles' => %w[admin manager accountant superadmin technical compliance support],
       'admin_permissions' => {
@@ -53,6 +78,10 @@ RSpec.configure do |config|
     %w[email phone identity document].each_with_index do |key, index|
       FactoryBot.create(:level, id: index + 1, key: key, value: 'verified')
     end
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 
   config.expect_with :rspec do |expectations|

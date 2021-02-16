@@ -6,9 +6,16 @@ include ActiveSupport::Testing::TimeHelpers
 describe API::V2::Identity::Users do
   include_context 'geoip mock'
 
+  before do
+    allow(Barong::App.config).to receive_messages(first_registration_superadmin: false)
+  end
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member',
+           verb: 'all'
+    create :permission,
+           role: 'superadmin',
            verb: 'all'
     create :permission,
            role: 'member',
@@ -125,11 +132,33 @@ describe API::V2::Identity::Users do
     end
 
     context 'when email is valid' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+      let(:params) { { email: 'valid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
       it 'creates an account' do
         do_request
         expect_status_to_eq 201
+      end
+
+      context 'first user registration' do
+        before do
+          allow(Barong::App.config).to receive_messages(first_registration_superadmin: true)
+        end
+
+        it 'creates superadmin user' do
+          post '/api/v2/identity/users', params: params
+
+          expect(response.status).to eq(201)
+
+          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages]
+          expect(json_body[:email]).to eq 'valid.email@gmail.com'
+          expect(json_body[:level]).to eq 1
+          expect(json_body[:role]).to eq 'superadmin'
+          expect(json_body[:state]).to eq 'active'
+          expect(json_body[:labels].count).to eq 1
+          expect(json_body[:labels][0][:key]).to eq 'email'
+          expect(json_body[:labels][0][:value]).to eq 'verified'
+          expect(json_body[:labels][0][:scope]).to eq 'private'
+        end
       end
     end
   end

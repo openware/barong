@@ -78,12 +78,18 @@ module API::V2
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 
           user = User.new(user_params)
-
           code_error!(user.errors.details, 422) unless user.save
 
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
-          publish_confirmation(user, Barong::App.config.domain)
+          # Creates superadmin user in first platform registration
+          if Barong::App.config.first_registration_superadmin && User.count == 1
+            user.update(role: 'superadmin', state: 'active')
+            user.labels.create(key: 'email', value: 'verified', scope: 'private')
+          else
+            publish_confirmation(user, Barong::App.config.domain)
+          end
+
           csrf_token = open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
