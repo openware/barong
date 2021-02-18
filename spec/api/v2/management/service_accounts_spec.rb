@@ -179,7 +179,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         it 'renders an error' do
           do_request
           expect_status_to_eq 422
-          expect_body.to eq(error: 'owner_uid is missing, owner_uid is empty, service_account_role is missing, service_account_role is empty')
+          expect_body.to eq(error: 'service_account_role is missing, service_account_role is empty')
         end
       end
 
@@ -210,6 +210,78 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           expect { do_request }.to_not change { ServiceAccount.count }
           expect_status_to_eq 422
           expect(json_body[:error].first).to include 'Email or uid not_uniq'
+        end
+      end
+    end
+  end
+
+  describe 'Update a service account' do
+    let(:signers) { %i[alex jeff] }
+    let(:data) { params.merge(scope: :write_service_accounts) }
+
+    let(:do_request) do
+      post_json '/api/v2/management/service_accounts/update',
+                multisig_jwt_management_api_v2({ data: data }, *signers)
+    end
+
+    context 'when params are blank' do
+      let(:params) { {} }
+
+      it 'renders an error' do
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'uid is missing, uid is empty')
+      end
+    end
+
+    context 'when service account doesnt exists' do
+      let(:params) do
+        {
+          uid: 'example'
+        }
+      end
+
+      it 'renders an error' do
+        do_request
+        binding.pry
+        expect_status_to_eq 422
+        expect_body.to eq(error: 'Service account doesnt exist')
+      end
+    end
+
+    context 'update service account' do
+      context do
+        let(:params) do
+          {
+            uid: service_account.uid
+          }
+        end
+
+        it 'shouldnt modify service account' do
+          owner_id = service_account.user.id
+          do_request
+          expect_status_to_eq 200
+
+          res = JSON.parse(response.body)
+          expect(res[:user][:id]).to eq owner_id
+        end
+      end
+
+      context do
+        let!(:user) { create(:user) }
+        let(:params) do
+          {
+            uid: service_account.uid,
+            owner_uid: user.uid
+          }
+        end
+
+        it 'should modify service account' do
+          do_request
+          expect_status_to_eq 200
+
+          res = JSON.parse(response.body)
+          expect(res[:user][:id]).to eq user.id
         end
       end
     end

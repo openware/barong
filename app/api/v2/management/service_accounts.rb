@@ -50,8 +50,8 @@ module API::V2
           success API::V2::Entities::ServiceAccounts
         end
         params do
-          requires :owner_uid, type: String, allow_blank: false, desc: 'owner uid'
           requires :service_account_role, type: String, allow_blank: false, desc: 'service_account role'
+          optional :owner_uid, type: String, allow_blank: false, desc: 'owner uid'
           optional :service_account_uid, type: String, allow_blank: false, desc: 'service_account uid'
           optional :service_account_email, type: String, allow_blank: false, desc: 'service_account email'
         end
@@ -65,6 +65,27 @@ module API::V2
 
           present service_acc, with: API::V2::Entities::ServiceAccounts
           status 201
+        end
+
+        desc 'Update service_account' do
+          @settings[:scope] = :write_service_accounts
+          success API::V2::Entities::ServiceAccounts
+        end
+        params do
+          requires :uid, type: String, allow_blank: false, desc: 'service_account uid'
+          optional :owner_uid, type: String, allow_blank: false, desc: 'service_account owner uid'
+        end
+        post '/update' do
+          service_acc = ServiceAccount.find_by(uid: params[:uid])
+          error!('Service account doesnt exist', 422) unless service_acc
+
+          params = { owner_id: User.find_by(params[:owner_uid]) }.compact
+
+          unless service_acc.update(params)
+            code_error!(service_acc.errors.details, 422)
+          end
+
+          present service_acc, with: API::V2::Entities::ServiceAccounts
         end
 
         desc 'Delete specific service_account' do

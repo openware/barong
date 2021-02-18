@@ -7,8 +7,8 @@ class ServiceAccount < ApplicationRecord
 
   validate :role_exists
   validate :email_n_uid_uniqueness
-  validates :email,       email: true, presence: true, uniqueness: true
-  validates :uid,         presence: true, uniqueness: true
+  validates :email, email: true, presence: true, uniqueness: true
+  validates :uid, presence: true, uniqueness: true
 
   scope :active, -> { where(state: 'active') }
 
@@ -69,12 +69,13 @@ class ServiceAccount < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20210218135634
 #
 # Table name: service_accounts
 #
 #  id         :bigint           not null, primary key
 #  uid        :string(255)      not null
-#  owner_id   :bigint           unsigned, not null
+#  owner_id   :bigint           unsigned
 #  email      :string(255)      not null
 #  role       :string(255)      default("service_account"), not null
 #  level      :integer          default(0), not null
