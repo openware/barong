@@ -36,7 +36,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
     end
 
     let(:expected_attributes) do
-      [:email, :uid, :role, :level, :state, :user, :created_at, :updated_at]
+      %i[email uid role level state user created_at updated_at]
     end
     let(:signers) { %i[alex jeff] }
 
@@ -73,7 +73,6 @@ describe API::V2::Management::ServiceAccounts, type: :request do
       expect(response.status).to eq 404
     end
   end
-
 
   describe 'Returns array of service accounts as collection' do
     let(:data) do
@@ -243,7 +242,6 @@ describe API::V2::Management::ServiceAccounts, type: :request do
 
       it 'renders an error' do
         do_request
-        binding.pry
         expect_status_to_eq 422
         expect_body.to eq(error: 'Service account doesnt exist')
       end
@@ -258,12 +256,12 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         end
 
         it 'shouldnt modify service account' do
-          owner_id = service_account.user.id
+          owner_uid = service_account.user.uid
           do_request
           expect_status_to_eq 200
 
           res = JSON.parse(response.body)
-          expect(res[:user][:id]).to eq owner_id
+          expect(res['user']['uid']).to eq owner_uid
         end
       end
 
@@ -281,7 +279,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           expect_status_to_eq 200
 
           res = JSON.parse(response.body)
-          expect(res[:user][:id]).to eq user.id
+          expect(res['user']['uid']).to eq user.uid
         end
       end
     end
@@ -297,7 +295,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
     end
 
     context do
-      let(:params) { {uid: service_account.uid} }
+      let(:params) { { uid: service_account.uid } }
 
       it do
         do_request
@@ -307,7 +305,6 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         expect(service_account['state']).to eq 'disabled'
       end
     end
-
 
     context 'when params are blank' do
       let(:params) { {} }

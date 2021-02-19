@@ -55,6 +55,7 @@ module API::V2
           optional :service_account_uid, type: String, allow_blank: false, desc: 'service_account uid'
           optional :service_account_email, type: String, allow_blank: false, desc: 'service_account email'
         end
+
         post '/create' do
           owner = User.find_by(uid: params[:owner_uid])
           error!('User doesnt exist', 422) unless owner
@@ -76,16 +77,16 @@ module API::V2
           optional :owner_uid, type: String, allow_blank: false, desc: 'service_account owner uid'
         end
         post '/update' do
-          service_acc = ServiceAccount.find_by(uid: params[:uid])
+          service_acc = ServiceAccount.find_by(uid: @params[:uid])
           error!('Service account doesnt exist', 422) unless service_acc
 
-          params = { owner_id: User.find_by(params[:owner_uid]) }.compact
-
-          unless service_acc.update(params)
-            code_error!(service_acc.errors.details, 422)
+          if @params[:owner_uid]
+            @params = { owner_id: User.find_by(uid: @params[:owner_uid]).id }.compact
+            code_error!(service_acc.errors.details, 422) unless service_acc.update(@params)
           end
 
           present service_acc, with: API::V2::Entities::ServiceAccounts
+          status 200
         end
 
         desc 'Delete specific service_account' do

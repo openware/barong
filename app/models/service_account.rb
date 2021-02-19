@@ -2,7 +2,7 @@
 
 # ServiceAccount model
 class ServiceAccount < ApplicationRecord
-  belongs_to :user, foreign_key: "owner_id"
+  belongs_to :user, foreign_key: "owner_id", optional: true
   has_many :api_keys, as: :key_holder_account, dependent: :destroy, class_name: 'APIKey'
 
   validate :role_exists
@@ -60,11 +60,11 @@ class ServiceAccount < ApplicationRecord
   end
 
   def assign_state
-    self.state = user.state
+    self.state = user.state unless user.nil?
   end
 
   def assign_level
-    self.level = user.level
+    self.level = user.level unless user.nil?
   end
 end
 
