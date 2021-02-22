@@ -194,6 +194,7 @@ class User < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20210218135634
 #
 # Table name: users
 #

@@ -2,19 +2,21 @@
 
 # ServiceAccount model
 class ServiceAccount < ApplicationRecord
-  belongs_to :user, foreign_key: "owner_id"
+  belongs_to :user, foreign_key: "owner_id", optional: true
   has_many :api_keys, as: :key_holder_account, dependent: :destroy, class_name: 'APIKey'
 
   validate :role_exists
   validate :email_n_uid_uniqueness
-  validates :email,       email: true, presence: true, uniqueness: true
-  validates :uid,         presence: true, uniqueness: true
+  validates :email, email: true, presence: true, uniqueness: true
+  validates :uid, presence: true, uniqueness: true
 
   scope :active, -> { where(state: 'active') }
 
   after_update :disable_api_keys
-  before_create :assign_state
-  before_validation :assign_level
+  before_create :assign_state, if: -> { user.present? }
+  # System will assign user state only if there is no changes of state during update
+  before_update :assign_state, if: -> { user.present? && !state_changed? }
+  before_validation :assign_level, if: -> { user.present? }
   before_validation :assign_uid
   before_validation :assign_email
 
@@ -63,18 +65,23 @@ class ServiceAccount < ApplicationRecord
     self.state = user.state
   end
 
+  def update_state
+    !state_changed?
+  end
+
   def assign_level
     self.level = user.level
   end
 end
 
 # == Schema Information
+# Schema version: 20210218135634
 #
 # Table name: service_accounts
 #
 #  id         :bigint           not null, primary key
 #  uid        :string(255)      not null
-#  owner_id   :bigint           unsigned, not null
+#  owner_id   :bigint           unsigned
 #  email      :string(255)      not null
 #  role       :string(255)      default("service_account"), not null
 #  level      :integer          default(0), not null

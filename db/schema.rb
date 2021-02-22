@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_01_112814) do
+ActiveRecord::Schema.define(version: 2021_02_18_135634) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "service_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
-    t.bigint "owner_id", null: false, unsigned: true
+    t.bigint "owner_id", unsigned: true
     t.string "email", null: false
     t.string "role", default: "service_account", null: false
     t.integer "level", default: 0, null: false
