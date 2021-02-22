@@ -13,8 +13,10 @@ class ServiceAccount < ApplicationRecord
   scope :active, -> { where(state: 'active') }
 
   after_update :disable_api_keys
-  before_create :assign_state
-  before_validation :assign_level
+  before_create :assign_state, if: -> { user.present? }
+  # System will assign user state only if there is no changes of state during update
+  before_update :assign_state, if: -> { user.present? && !state_changed? }
+  before_validation :assign_level, if: -> { user.present? }
   before_validation :assign_uid
   before_validation :assign_email
 
@@ -60,11 +62,15 @@ class ServiceAccount < ApplicationRecord
   end
 
   def assign_state
-    self.state = user.state unless user.nil?
+    self.state = user.state
+  end
+
+  def update_state
+    !state_changed?
   end
 
   def assign_level
-    self.level = user.level unless user.nil?
+    self.level = user.level
   end
 end
 

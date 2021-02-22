@@ -217,6 +217,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
   describe 'Update a service account' do
     let(:signers) { %i[alex jeff] }
     let(:data) { params.merge(scope: :write_service_accounts) }
+    let!(:service_account) { create(:service_account, :without_user) }
 
     let(:do_request) do
       post_json '/api/v2/management/service_accounts/update',
@@ -255,31 +256,84 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           }
         end
 
-        it 'shouldnt modify service account' do
-          owner_uid = service_account.user.uid
-          do_request
-          expect_status_to_eq 200
+        context 'service account without user' do
+          it 'shouldnt modify service account' do
+            do_request
+            expect_status_to_eq 201
 
-          res = JSON.parse(response.body)
-          expect(res['user']['uid']).to eq owner_uid
+            res = JSON.parse(response.body)
+            expect(res['state']).to eq 'pending'
+            expect(res['level']).to eq 0
+            expect(res['user']).to eq nil
+          end
+        end
+
+        context 'service account with user' do
+          let!(:service_account) { create(:service_account) }
+
+          it 'shouldnt modify service account' do
+            owner = service_account.user
+            do_request
+            expect_status_to_eq 201
+
+            res = JSON.parse(response.body)
+            expect(res['state']).to eq owner.state
+            expect(res['level']).to eq owner.level
+            expect(res['user']['uid']).to eq owner.uid
+          end
         end
       end
 
       context do
-        let!(:user) { create(:user) }
-        let(:params) do
-          {
-            uid: service_account.uid,
-            owner_uid: user.uid
-          }
+        context 'service account without user' do
+          let!(:user_with_phone) { create(:user, :with_phone) }
+          let(:params) do
+            {
+              uid: service_account.uid,
+              owner_uid: user_with_phone.uid
+            }
+          end
+
+          it 'should modify service account' do
+            expect(service_account.level).to eq 0
+            expect(service_account.state).to eq 'pending'
+            expect(service_account.user).to eq nil
+
+            do_request
+            expect_status_to_eq 201
+
+            res = JSON.parse(response.body)
+            expect(res['user']['uid']).to eq user_with_phone.uid
+            expect(res['level']).to eq user_with_phone.level
+            expect(res['state']).to eq user_with_phone.state
+          end
         end
 
-        it 'should modify service account' do
-          do_request
-          expect_status_to_eq 200
+        context 'service account with user' do
+          let!(:user_with_phone) { create(:user, :with_phone) }
+          let!(:user_with_profile) { create(:user, :with_profile) }
+          let!(:service_account) { create(:service_account, user: user_with_phone)}
 
-          res = JSON.parse(response.body)
-          expect(res['user']['uid']).to eq user.uid
+          let(:params) do
+            {
+              uid: service_account.uid,
+              owner_uid: user_with_profile.uid
+            }
+          end
+
+          it 'should modify service account' do
+            expect(service_account.level).to eq user_with_phone.level
+            expect(service_account.state).to eq user_with_phone.state
+            expect(service_account.user.uid).to eq user_with_phone.uid
+
+            do_request
+            expect_status_to_eq 201
+
+            res = JSON.parse(response.body)
+            expect(res['user']['uid']).to eq user_with_profile.uid
+            expect(res['level']).to eq user_with_profile.level
+            expect(res['state']).to eq user_with_profile.state
+          end
         end
       end
     end
