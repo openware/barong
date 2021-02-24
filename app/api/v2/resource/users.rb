@@ -148,6 +148,7 @@ module API::V2
                             user: current_user.as_json_for_event_api,
                             domain: Barong::App.config.domain
                           })
+          request.session.destroy
           status 201
         end
       end
