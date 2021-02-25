@@ -58,6 +58,8 @@ Barong::App.define do |config|
   config.set(:crc32_salt, '')
   config.set(:api_data_masking_enabled, 'true', type: :bool)
   config.set(:first_registration_superadmin, 'true', type: :bool)
+  config.set(:mgn_api_keys_user, 'false', type: :bool)
+  config.set(:mgn_api_keys_sa, 'false', type: :bool)
 
   # Password configuration  -----------------------------------------------
   # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration

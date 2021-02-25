@@ -2,6 +2,8 @@
 
 # ServiceAccount model
 class ServiceAccount < ApplicationRecord
+  UID_PREFIX = 'SI'
+
   belongs_to :user, foreign_key: "owner_id", optional: true
   has_many :api_keys, as: :key_holder_account, dependent: :destroy, class_name: 'APIKey'
 
@@ -58,7 +60,7 @@ class ServiceAccount < ApplicationRecord
   def assign_uid
     return unless uid.blank?
 
-    self.uid = UIDGenerator.generate("SI")
+    self.uid = UIDGenerator.generate(UID_PREFIX)
   end
 
   def assign_state
