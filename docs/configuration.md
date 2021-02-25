@@ -19,6 +19,8 @@
 | `crc32_salt` | - | any string value | salt for crc32 algorithm which used to searching in encrypted fields |
 | `api_data_masking_enabled` | true | `true`, `false` | when turned on (`true`) user API will be with ecnrypted user data |
 |`first_registration_superadmin`| true | `true`, `false` | when turned on (`true`) first registered user on a platform will be superadmin without any email confirmation |
+|`mgn_api_keys_user`| false | `true`, `false` | when turned on (`true`) management API to create/update api keys will be provided for user entity|
+|`mgn_api_keys_sa`| false | `true`, `false` | when turned on (`true`) management API to create/update api keys will be provided for service account entity |
 
 ### Password configuration
 | Env name | Default value | Possible values | Description |
