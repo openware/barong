@@ -70,13 +70,17 @@ In the process of verification Barong assign different levels to accounts
 
 [Troubleshooting](https://www.openware.com/sdk/docs/barong/troubleshooting.html)
 
-[REST API documentation](https://www.openware.com/sdk/docs/barong/rest-api.html)
+[REST Admin API documentation](https://www.openware.com/sdk/docs/barong/api/barong-admin-api-v2.html)
+
+[REST Management API documentation](https://www.openware.com/sdk/docs/barong/api/barong-management-api-v2.html)
+
+[REST User API documentation](https://www.openware.com/sdk/docs/barong/api/barong-user-api-v2.html)
 
 [API Keys creation and usage](https://www.openware.com/sdk/docs/barong/general/api-keys.html)
 
 [Captcha policy overview and configuration](https://www.openware.com/sdk/docs/barong/general/captcha.html)
 
-[Setting up 2FA](https://www.openware.com/sdk/docs/barong/2fa.html)
+[Setting up 2FA](https://www.openware.com/sdk/docs/barong/general/2fa.html)
 
 [Barong password hashing](https://www.openware.com/sdk/docs/barong/general/password-hashing.html)
 
