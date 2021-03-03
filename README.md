@@ -2,7 +2,7 @@
 
 <h3 align="center">
 <a href="https://www.openware.com/sdk">Guide</a> <span>&vert;</span>
-<a href="https://www.openware.com/sdk/api/barong/rest-api.html">API Docs</a> <span>&vert;</span>
+<a href="https://www.openware.com/sdk/api/barong/barong-user-api-v2.html">API Docs</a> <span>&vert;</span>
 <a href="https://www.openware.com/">Consulting</a> <span>&vert;</span>
 <a href="https://t.me/peatio">Community</a>
 </h3>
