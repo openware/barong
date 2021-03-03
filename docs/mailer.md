@@ -10,7 +10,7 @@ It is usually used by following components:
 - [Peatio](https://www.openware.com/sdk/docs.html#peatio)
 
 Read more about [Peatio Event API](https://www.openware.com/sdk/docs/peatio/api/event-api.html).
-Read more about [Barong Event API](https://www.openware.com/sdk/docs/barong/event-api.html).
+Read more about [Barong Event API](https://www.openware.com/sdk/docs/barong/general/event-api.html).
 
 ## Concepts
 
