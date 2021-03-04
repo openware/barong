@@ -212,6 +212,47 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         end
       end
     end
+
+    context 'when uid doesnt exist' do
+      let(:params) do
+        {
+          service_account_email: 'valid_email@example.com',
+          service_account_uid: 'Fai5aesoLEcx',
+          service_account_role: 'admin',
+        }
+      end
+
+      it 'creates a service account' do
+        expect { do_request }.to change { ServiceAccount.count }.by(1)
+
+        expect_status_to_eq 201
+        result = JSON.parse(response.body)
+        expect(result.keys).to match_array %w[email uid role level state user created_at updated_at]
+        expect(result['user']).to eq nil
+        expect(result['state']).to eq 'pending'
+      end
+    end
+
+    context 'when owner_uid doesnt exist' do
+      let(:params) do
+        {
+          service_account_email: 'valid_email@example.com',
+          service_account_uid: 'Fai5aesoLEcx',
+          service_account_role: 'admin',
+          service_account_state: 'active'
+        }
+      end
+
+      it 'creates a service account' do
+        expect { do_request }.to change { ServiceAccount.count }.by(1)
+
+        expect_status_to_eq 201
+        result = JSON.parse(response.body)
+        expect(result.keys).to match_array %w[email uid role level state user created_at updated_at]
+        expect(result['user']).to eq nil
+        expect(result['state']).to eq 'active'
+      end
+    end
   end
 
   describe 'Update a service account' do
