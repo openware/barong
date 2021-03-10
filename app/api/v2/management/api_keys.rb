@@ -38,7 +38,7 @@ module API::V2
           end
 
           declared_params = declared(params, include_missing: false)
-                              .except(:uid, :sa_uid, :scopes)
+                              .except(:uid, :scopes)
                               .merge(scope: params[:scopes]&.split(','))
                               .merge(secret: SecureRandom.hex(16))
 

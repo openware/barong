@@ -51,17 +51,23 @@ module API::V2
         end
         params do
           requires :service_account_role, type: String, allow_blank: false, desc: 'service_account role'
-          optional :owner_uid, type: String, allow_blank: false, desc: 'owner uid'
+          optional :owner_uid, type: String, desc: 'owner uid'
           optional :service_account_uid, type: String, allow_blank: false, desc: 'service_account uid'
           optional :service_account_email, type: String, allow_blank: false, desc: 'service_account email'
+          optional :service_account_state, type: String, desc: 'service_account state'
         end
 
         post '/create' do
           owner = User.find_by(uid: params[:owner_uid])
-          error!('User doesnt exist', 422) unless owner
 
-          s_params = { email: params[:service_account_email], uid: params[:service_account_uid], role: params[:service_account_role] }.compact
-          service_acc = ServiceAccount.new(s_params.merge(user: owner))
+          s_params = {
+                      email: params[:service_account_email],
+                      uid: params[:service_account_uid],
+                      role: params[:service_account_role],
+                      state: params[:service_account_state],
+                      user: owner
+                    }.compact
+          service_acc = ServiceAccount.new(s_params)
           error!(service_acc.errors.full_messages, 422) unless service_acc.save
 
           present service_acc, with: API::V2::Entities::ServiceAccounts
