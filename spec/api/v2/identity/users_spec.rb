@@ -149,7 +149,7 @@ describe API::V2::Identity::Users do
 
           expect(response.status).to eq(201)
 
-          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages]
+          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages username]
           expect(json_body[:email]).to eq 'valid.email@gmail.com'
           expect(json_body[:level]).to eq 1
           expect(json_body[:role]).to eq 'superadmin'
@@ -172,7 +172,7 @@ describe API::V2::Identity::Users do
         expect_body.to eq(errors: ["username.too_short"])
       end
 
-  
+
       it 'renders an error too_long' do
         params[:username] = 'qwertyuiopasd'
         do_request

@@ -365,7 +365,7 @@ describe API::V2::Identity::Sessions do
         expect(response.status).to eq(201)
         result = JSON.parse(response.body)
         expect(result['email']).to eq user.email
-        expect(result.keys).to match_array(['email','uid','role','level','otp','state','referral_uid','csrf_token','data','labels','phones','profiles','data_storages', 'created_at', 'updated_at'])
+        expect(result.keys).to match_array(['email','uid','role','level','otp','state','referral_uid','csrf_token','data','labels','phones','profiles','data_storages', 'created_at', 'updated_at', 'username'])
       end
     end
 
