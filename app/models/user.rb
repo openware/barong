@@ -200,12 +200,13 @@ class User < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20210218135634
+# Schema version: 20210316083841
 #
 # Table name: users
 #
 #  id              :bigint           not null, primary key
 #  uid             :string(255)      not null
+#  username        :string(255)
 #  email           :string(255)      not null
 #  password_digest :string(255)      not null
 #  role            :string(255)      default("member"), not null
@@ -216,7 +217,6 @@ end
 #  referral_id     :bigint
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  username        :string(255)
 #
 # Indexes
 #
