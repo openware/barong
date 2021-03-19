@@ -44,9 +44,10 @@ RSpec.describe User, type: :model do
     end
 
     it do
-      usr = create(:user)
+      usr = create(:user, :with_platform)
       payload = usr.as_payload
       expect(payload['email']).to eq(usr.email)
+      expect(payload.keys).to match_array %w[uid email role level state referral_id platform_id platform_hostname]
     end
 
     describe '#referral' do
@@ -63,6 +64,19 @@ RSpec.describe User, type: :model do
 
       it 'return refferal uid' do
         expect(user2.referral_uid).to eq user1.uid
+      end
+    end
+
+    context 'email uniqueness' do
+      it 'creates dublicated user without platform id' do
+        create(:user, email: 'admin@barong.io')
+        expect { create(:user, email: 'admin@barong.io') }.to raise_error ActiveRecord::RecordInvalid
+      end
+
+      it 'creates dublicated user with same platform_id' do
+        platform = create(:platform)
+        create(:user, platform_id: platform.id, email: 'test_admin@barong.io')
+        expect { create(:user, platform: platform, email: 'test_admin@barong.io') }.to raise_error ActiveRecord::RecordInvalid
       end
     end
   end

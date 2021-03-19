@@ -32,5 +32,9 @@ FactoryBot.define do
         create(:document, user: user)
       end
     end
+
+    trait :with_platform do
+      platform { create(:platform) }
+    end
   end
 end

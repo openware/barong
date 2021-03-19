@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_18_135634) do
+ActiveRecord::Schema.define(version: 2021_03_15_090451) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -121,6 +121,13 @@ ActiveRecord::Schema.define(version: 2021_02_18_135634) do
     t.index ["user_id"], name: "index_phones_on_user_id"
   end
 
+  create_table "platforms", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "platform_id", null: false
+    t.string "hostname", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "profiles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.string "author"
@@ -170,9 +177,9 @@ ActiveRecord::Schema.define(version: 2021_02_18_135634) do
     t.boolean "otp", default: false
     t.string "state", default: "pending", null: false
     t.bigint "referral_id"
+    t.integer "platform_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 

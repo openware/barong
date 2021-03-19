@@ -72,7 +72,8 @@ module API::V2
         post do
           verify_captcha!(response: params['captcha_response'], endpoint: 'user_create')
 
-          declared_params = declared(params, include_missing: false)
+          platform = Platform.platform_by_host(request.env['HTTP_HOST'])
+          declared_params = declared(params, include_missing: false).merge(platform)
           user_params = declared_params.slice('email', 'password', 'data')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
