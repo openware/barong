@@ -18,9 +18,10 @@ admin_permissions:
       - APIKey
       - Permission
       - Restriction
+      - Document
   admin:
     read:
-      - Activity
+      - Activity    
       - Permission
     manage:
       - Ability
@@ -30,6 +31,7 @@ admin_permissions:
       - Profile
       - APIKey
       - Restriction
+      - Document
   technical:
     read:
       - Ability
@@ -52,7 +54,7 @@ admin_permissions:
   compliance:
     read:
       - Ability
-      - Activity
+      - Document
     manage:
       - User
       - Level
