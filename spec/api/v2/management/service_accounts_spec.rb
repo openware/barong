@@ -219,6 +219,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           service_account_email: 'valid_email@example.com',
           service_account_uid: 'Fai5aesoLEcx',
           service_account_role: 'admin',
+          service_account_level: 2
         }
       end
 
@@ -230,6 +231,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         expect(result.keys).to match_array %w[email uid role level state user created_at updated_at]
         expect(result['user']).to eq nil
         expect(result['state']).to eq 'pending'
+        expect(result['level']).to eq 2
       end
     end
 
@@ -239,7 +241,8 @@ describe API::V2::Management::ServiceAccounts, type: :request do
           service_account_email: 'valid_email@example.com',
           service_account_uid: 'Fai5aesoLEcx',
           service_account_role: 'admin',
-          service_account_state: 'active'
+          service_account_state: 'active',
+          service_account_level: 3
         }
       end
 
@@ -251,6 +254,7 @@ describe API::V2::Management::ServiceAccounts, type: :request do
         expect(result.keys).to match_array %w[email uid role level state user created_at updated_at]
         expect(result['user']).to eq nil
         expect(result['state']).to eq 'active'
+        expect(result['level']).to eq 3
       end
     end
   end

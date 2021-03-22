@@ -52,9 +52,10 @@ module API::V2
         params do
           requires :service_account_role, type: String, allow_blank: false, desc: 'service_account role'
           optional :owner_uid, type: String, desc: 'owner uid'
-          optional :service_account_uid, type: String, allow_blank: false, desc: 'service_account uid'
-          optional :service_account_email, type: String, allow_blank: false, desc: 'service_account email'
+          optional :service_account_uid, type: String, desc: 'service_account uid'
+          optional :service_account_email, type: String, desc: 'service_account email'
           optional :service_account_state, type: String, desc: 'service_account state'
+          optional :service_account_level, type: Integer, desc: 'service_account level'
         end
 
         post '/create' do
@@ -65,6 +66,7 @@ module API::V2
                       uid: params[:service_account_uid],
                       role: params[:service_account_role],
                       state: params[:service_account_state],
+                      level: params[:service_account_level],
                       user: owner
                     }.compact
           service_acc = ServiceAccount.new(s_params)

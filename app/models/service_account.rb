@@ -18,7 +18,7 @@ class ServiceAccount < ApplicationRecord
   before_create :assign_state, if: -> { user.present? }
   # System will assign user state only if there is no changes of state during update
   before_update :assign_state, if: -> { user.present? && !state_changed? }
-  before_validation :assign_level, if: -> { user.present? }
+  before_validation :assign_level, if: -> { user.present? && !level_changed? }
   before_validation :assign_uid
   before_validation :assign_email
 
