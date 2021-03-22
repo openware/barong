@@ -12,7 +12,7 @@ private_key_path = ENV['JWT_PRIVATE_KEY_PATH']
 
 if !private_key_path.nil?
   pkey = Barong::KeyStore.open!(private_key_path)
-  Rails.logger.error('Loading private key from: ' + private_key_path)
+  Rails.logger.warn('Loading private key from: ' + private_key_path)
 
 elsif Rails.application.credentials.has?(:private_key)
   pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
