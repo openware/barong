@@ -498,10 +498,11 @@ Returns array of users as collection
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string | User Email | No |
-| uid | string | User UID | No |
-| role | string | User role | No |
-| level | integer | User level | No |
+| email | string |  | No |
+| username | string | User username | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string | User state: active, pending, inactive | No |
 | referral_uid | string | UID of referrer | No |
@@ -513,10 +514,11 @@ Imports a profile for user
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string | User Email | No |
-| uid | string | User UID | No |
-| role | string | User role | No |
-| level | integer | User level | No |
+| email | string |  | No |
+| username | string | User username | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
 | state | string | User state: active, pending, inactive | No |
 | referral_uid | string | UID of referrer | No |
@@ -547,14 +549,14 @@ Get users and profile information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string | User Email | No |
-| uid | string | User UID | No |
-| role | string | User role | No |
-| level | integer | User level | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string | User state: active, pending, inactive | No |
-| referral_uid | string | UID of referrer | No |
-| data | string | Additional phone and profile info | No |
+| email | string |  | No |
+| username | string | User username | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean |  | No |
+| state | string |  | No |
+| data | string | additional phone and profile info | No |
 | profiles | [API_V2_Management_Entities_Profile](#api_v2_management_entities_profile) |  | No |
 | labels | [API_V2_Entities_AdminLabelView](#api_v2_entities_adminlabelview) |  | No |
 | phones | [API_V2_Management_Entities_Phone](#api_v2_management_entities_phone) |  | No |
@@ -637,12 +639,13 @@ Get specific service_account information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string | User Email | No |
-| uid | string | User UID | No |
-| role | string | User role | No |
-| level | integer | User level | No |
-| otp | boolean | is 2FA enabled for account | No |
-| state | string | User state: active, pending, inactive | No |
+| email | string |  | No |
+| username | string | User username | No |
+| uid | string |  | No |
+| role | string |  | No |
+| level | integer |  | No |
+| otp | boolean |  | No |
+| state | string |  | No |
 | referral_uid | string | UID of referrer | No |
 | data | string | Additional phone and profile info | No |
 | csrf_token | string | Сsrf protection token | No |

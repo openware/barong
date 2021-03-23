@@ -149,7 +149,7 @@ describe API::V2::Identity::Users do
 
           expect(response.status).to eq(201)
 
-          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages]
+          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages username]
           expect(json_body[:email]).to eq 'valid.email@gmail.com'
           expect(json_body[:level]).to eq 1
           expect(json_body[:role]).to eq 'superadmin'
@@ -159,6 +159,92 @@ describe API::V2::Identity::Users do
           expect(json_body[:labels][0][:value]).to eq 'verified'
           expect(json_body[:labels][0][:scope]).to eq 'private'
         end
+      end
+    end
+
+    context 'when username is invalid' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+
+      it 'renders an error too_short' do
+        params[:username] = 'qwe'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_short"])
+      end
+
+
+      it 'renders an error too_long' do
+        params[:username] = 'qwertyuiopasd'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_long"])
+      end
+
+      it 'renders an error invalid' do
+        params[:username] = 'qwerty@='
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.invalid"])
+      end
+
+      it 'renders an error with blank value' do
+        params[:username] = ''
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_short", "username.invalid"])
+      end
+
+      it 'should be unique for UPPER or lower username' do
+        params[:username] = 'NICK'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:username] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "username.taken"
+      end
+
+      it 'should be unique for username' do
+        params[:username] = 'nick'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:username] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "username.taken"
+      end
+    end
+
+    context 'when username is valid' do
+      let(:params) { { email: 'vadid.email@gmail.com', username: 'vadid', password: 'eeC2BiCucxWEQ' } }
+
+      it 'creates an account' do
+        do_request
+        expect_status_to_eq 201
+      end
+
+      it 'create an account with nil username' do
+        params[:email] = 'vadid1.email@gmail.com'
+        params[:username] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:email] = 'vadid2.email@gmail.com'
+        params[:username] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
       end
     end
   end

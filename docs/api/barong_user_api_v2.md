@@ -119,6 +119,7 @@ Creates new user
 | ---- | ---------- | ----------- | -------- | ---- |
 | email | formData | User Email | Yes | string |
 | password | formData | User Password | Yes | string |
+| username | formData | User Username | No | string |
 | refid | formData | Referral uid | No | string |
 | captcha_response | formData | Response from captcha widget | No | string |
 | data | formData | Any additional key: value pairs in json string format | No | string |

@@ -53,6 +53,12 @@ module API::V2
               desc: 'Additional phone and profile info'
              }
 
+      expose :username, 
+              documentation: { 
+               type: 'String', 
+               desc: 'User username' 
+              }
+
       expose :profiles, using: Entities::Profile
 
       with_options(format_with: :iso_timestamp) do

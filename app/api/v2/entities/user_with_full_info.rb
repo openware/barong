@@ -64,6 +64,12 @@ module API
                 options[:csrf_token]
                end
 
+       expose :username, 
+              documentation: { 
+               type: 'String', 
+               desc: 'User username' 
+              }
+
         expose :labels, using: Entities::Label
         expose :phones, using: Entities::Phone
         expose :profiles, using: Entities::Profile
