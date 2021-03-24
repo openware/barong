@@ -109,30 +109,23 @@ module API::V2
                    desc: 'ID Token'
         end
         post '/auth0' do
-          begin
-            # Decode ID token to get user info
-            claims = Barong::Auth0::JWT.verify(params[:id_token]).first
-            error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
-            user = User.find_by(email: claims['email'])
+          # Decode ID token to get user info
+          claims = Barong::Auth0::JWT.verify(params[:id_token]).first
+          error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email') && claims['email_verified']
 
-            # If there is no user in platform and user email verified from id_token
-            # system will create user
-            if user.blank? && claims['email_verified']
-              user = User.create!(email: claims['email'], state: 'active')
-              user.labels.create!(scope: 'private', key: 'email', value: 'verified')
-            elsif claims['email_verified'] == false
-              error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless user
-            end
+          # If there is no user in platform and user email verified from id_token
+          # system will create user
+          user = User.find_or_create_by(email: claims['email'])
+          user.labels.create!(scope: 'private', key: 'email', value: 'verified') unless user.labels_include? 'email' => 'verified'
 
-            activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            csrf_token = open_session(user)
-            publish_session_create(user)
+          activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+          csrf_token = open_session(user)
+          publish_session_create(user)
 
-            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-          rescue StandardError => e
-            report_exception(e)
-            error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
-          end
+          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+        rescue StandardError => e
+          report_exception(e)
+          error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
         end
       end
     end
