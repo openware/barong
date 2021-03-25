@@ -9,6 +9,13 @@ module API::V2::Admin
               desc: 'User IP'
              }
 
+      expose :user_ip_country,
+             documentation: {
+               type: 'String'
+             } do |activity|
+               Barong::GeoIP.info(ip: activity.user_ip, key: :country)
+             end
+
       expose :user_agent,
              documentation: {
               type: 'String',
