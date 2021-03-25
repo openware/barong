@@ -68,6 +68,8 @@ class KycService
       else
         user_document_label.update(value: :pending) # re-submitted document
       end
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error "#{e.message}\n#{e.backtrace[0..5].join("\n")}"
     end
   end
 end
