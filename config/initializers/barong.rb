@@ -8,15 +8,20 @@
 require 'barong/app'
 require 'barong/keystore'
 
+private_key_env = ENV['JWT_PRIVATE_KEY']
 private_key_path = ENV['JWT_PRIVATE_KEY_PATH']
 
-if !private_key_path.nil?
-  pkey = Barong::KeyStore.open!(private_key_path)
+if !private_key_env.nil?
+  Rails.logger.info('Loading private key from JWT_PRIVATE_KEY ENV')
+  pkey = Barong::KeyStore.read!(Base64.urlsafe_decode64(private_key_env))
+
+elsif !private_key_path.nil?
   Rails.logger.info('Loading private key from: ' + private_key_path)
+  pkey = Barong::KeyStore.open!(private_key_path)
 
 elsif Rails.application.credentials.has?(:private_key)
-  pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
   Rails.logger.info('Loading private key from credentials.yml.enc')
+  pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
 
 elsif !Rails.env.production?
   # Generates private key
