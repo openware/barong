@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require File.expand_path('../../config/environment', __FILE__)
+require 'erb'
 
 class Mailer
   extend GLI::App
@@ -19,7 +20,9 @@ class Mailer
   command :run do |c|
     c.desc 'Run processing email events'
     c.action do |global_options, _options, _args|
-      config = YAML.load_file(global_options[:config]).deep_symbolize_keys
+      raw_file = File.read(global_options[:config])
+      config = YAML.safe_load(ERB.new(raw_file).result).deep_symbolize_keys
+
       EventMailer.call(config[:events], config[:exchanges], config[:keychain])
     end
   end

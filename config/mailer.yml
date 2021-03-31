@@ -1,10 +1,13 @@
 keychain:
   barong:
     algorithm: RS256
-    value: "changeme"
+    value: "<%= ENV['JWT_PUBLIC_KEY'] %>"
   peatio:
     algorithm: RS256
-    value: "changeme"
+    value: "<%= ENV['PEATIO_JWT_PUBLIC_KEY'] %>"
+# custom:
+#   algorithm: RS256
+#   value: <%= ENV['CUSTOM_JWT_PUBLIC_KEY'] %>
 
 exchanges:
   barong_system:
