@@ -30,7 +30,7 @@ module Barong
 
       def read!(private_key)
         key = OpenSSL::PKey.read(private_key)
-        raise ArgumentError, 'JWT_PRIVATE_KEY was set to public key, however it should be private.' if key.public?
+        raise ArgumentError, 'JWT_PRIVATE_KEY was set to public key, however it should be private.' unless key.private?
         key.to_pem
       rescue => e
         raise Barong::KeyStore::Fatal, e.message
