@@ -12,13 +12,17 @@ module API::V2
 
       def open_session(user)
         csrf_token = SecureRandom.hex(10)
+        expire_time = Time.now.to_i + Barong::App.config.session_expire_time
         session.merge!(
           "uid": user.uid,
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
-          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time,
+          "expire_time": expire_time,
           "csrf_token": csrf_token
         )
+
+        # Add current session key info in additional redis list
+        Barong::RedisSession.add(user.uid, session.id.public_id, expire_time)
 
         csrf_token
       end

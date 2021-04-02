@@ -202,6 +202,7 @@ module API::V2
                               domain: Barong::App.config.domain,
                               token: token
                             })
+
             status 201
           end
 
@@ -265,6 +266,10 @@ module API::V2
                               user: current_user.as_json_for_event_api,
                               domain: Barong::App.config.domain
                             })
+
+            # Invalidate all old user session
+            Barong::RedisSession.invalidate_all(current_user.uid)
+
             status 201
           end
         end

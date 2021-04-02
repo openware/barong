@@ -60,6 +60,9 @@ module API::V2
 
           current_user.labels.create(key: :otp, value: :enabled, scope: :private) unless current_user.labels.find_by(key: :otp, scope: :private)
           activity_record(user: current_user.id, action: 'enable 2FA', result: 'succeed', topic: 'otp')
+
+          # Invalidate all user session except current
+          Barong::RedisSession.invalidate_all(current_user.uid, request.session.id.public_id)
           200
         end
 
