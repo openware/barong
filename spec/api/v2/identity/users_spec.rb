@@ -590,15 +590,29 @@ describe API::V2::Identity::Users do
     end
 
     context 'when Reset Password Token and Password are valid ' do
-      let!(:user) { create(:user) }
+      let!(:initial_password) { 'ZahSh8ei' }
+      let!(:user) { create(:user, password: initial_password, password_confirmation: initial_password) }
       let(:reset_password_token) { codec.encode(sub: 'reset', email: user.email, uid: user.uid) }
       let(:password) { 'ZahSh8ei' }
       let(:confirm_password) { 'ZahSh8ei' }
       let(:log_in) { post '/api/v2/identity/sessions', params: { email: user.email, password: password } }
+      before { clear_redis }
 
       it 'resets a password' do
+        post '/api/v2/identity/sessions', params: { email: user.email, password: initial_password }
+        expect_status_to_eq 200
+        key = Barong::RedisSession.key_name(user.uid, request.session.id)
+        value = Rails.cache.read(key)
+        # There are values in redis with user session
+        expect(value).not_to eq nil
+        expect(Rails.cache.read(value)).not_to eq nil
+
         do_request
         expect_status_to_eq 201
+        # There are no values in redis with user session after confirming new password
+        expect(Rails.cache.read(key)).to eq nil
+        expect(Rails.cache.read(value)).to eq nil
+
         log_in
         expect_status_to_eq 200
       end
