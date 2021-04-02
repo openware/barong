@@ -84,7 +84,9 @@ module API::V2
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 
+          Barong::RedisSession.delete(user.uid, session.id)
           session.destroy
+
           status(200)
         end
       end
