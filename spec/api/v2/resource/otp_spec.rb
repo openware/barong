@@ -13,6 +13,8 @@ describe 'Api::V2::Resource::Otp' do
     before do
       allow(TOTPService).to receive(:validate?)
       .with(test_user.uid, otp_code) { true }
+
+      allow_any_instance_of(ActionDispatch::Request::Session).to receive(:id).and_return(OpenStruct.new(public_id: "234234234234234234"))
     end
 
     it 'user enables 2fa successfully' do
