@@ -42,6 +42,13 @@ ActiveRecord::Schema.define(version: 2021_10_19_200925) do
     t.index ["kid"], name: "index_apikeys_on_kid", unique: true
   end
 
+  create_table "attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id", unsigned: true
+    t.string "upload", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false, unsigned: true
     t.string "author_uid", limit: 16, null: false
