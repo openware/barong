@@ -6,7 +6,7 @@ module Barong
     class << self
       attr_accessor :lang
 
-      # Usage: city = Barong::GeoIP.get(ip: ip, key: :city)
+      # Usage: city = Barong::GeoIP.info(ip: ip, key: :city)
       def info(ip:, key:)
         record = reader.get(ip)
         return unless record
