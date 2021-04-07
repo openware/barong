@@ -15,6 +15,12 @@ module API::V2
               desc: 'User IP'
              }
 
+      expose :user_ip_country,
+             documentation: {
+              type: 'String',
+              desc: 'User IP country'
+             }
+
       expose :user_agent,
              documentation: {
               type: 'String',
