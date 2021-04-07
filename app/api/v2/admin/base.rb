@@ -29,6 +29,7 @@ module API::V2
       mount Admin::Profiles
       mount Admin::Levels
       mount Admin::Abilities
+      mount Admin::Attachments
 
       add_swagger_documentation base_path: File.join(API::Base::PREFIX, API::V2::Base::API_VERSION, 'barong', PREFIX),
                                 add_base_path: true,
