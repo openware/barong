@@ -24,6 +24,7 @@ module API::V2
       mount API::V2::Management::Documents
       mount API::V2::Management::ServiceAccounts
       mount API::V2::Management::APIKeys
+      mount API::V2::Management::Attachments
 
       add_swagger_documentation base_path: File.join(API::Base::PREFIX, API::V2::Base::API_VERSION, 'barong', PREFIX),
                                 info: {
