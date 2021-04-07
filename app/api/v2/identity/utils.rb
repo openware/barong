@@ -77,14 +77,15 @@ module API::V2
 
       def activity_record(options = {})
         params = {
-          category:   'user',
-          user_id:    options[:user],
-          user_ip:    remote_ip,
-          user_agent: request.env['HTTP_USER_AGENT'],
-          topic:      options[:topic],
-          action:     options[:action],
-          result:     options[:result],
-          data:       options[:data]
+          category:        'user',
+          user_id:         options[:user],
+          user_ip:         remote_ip,
+          user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
+          user_agent:      request.env['HTTP_USER_AGENT'],
+          topic:           options[:topic],
+          action:          options[:action],
+          result:          options[:result],
+          data:            options[:data]
         }
         Activity.create(params)
       end

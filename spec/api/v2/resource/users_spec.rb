@@ -2,6 +2,8 @@
 
 describe 'Api::V1::Profiles' do
   include_context 'bearer authentication'
+  include_context 'geoip mock'
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
