@@ -30,20 +30,22 @@ class Activity < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20210407094208
 #
 # Table name: activities
 #
-#  id         :bigint           not null, primary key
-#  user_id    :bigint           not null
-#  target_uid :string(255)
-#  category   :string(255)
-#  user_ip    :string(255)      not null
-#  user_agent :string(255)      not null
-#  topic      :string(255)      not null
-#  action     :string(255)      not null
-#  result     :string(255)      not null
-#  data       :text(65535)
-#  created_at :datetime
+#  id              :bigint           not null, primary key
+#  user_id         :bigint           not null
+#  target_uid      :string(255)
+#  category        :string(255)
+#  user_ip         :string(255)      not null
+#  user_ip_country :string(255)
+#  user_agent      :string(255)      not null
+#  topic           :string(255)      not null
+#  action          :string(255)      not null
+#  result          :string(255)      not null
+#  data            :text(65535)
+#  created_at      :datetime
 #
 # Indexes
 #

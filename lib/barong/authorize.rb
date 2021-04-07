@@ -152,6 +152,7 @@ module Barong
         result: result,
         user_agent: @request.env['HTTP_USER_AGENT'],
         user_ip: remote_ip,
+        user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
         path: @path,
         topic: topic,
         verb: @request.env['REQUEST_METHOD'],
