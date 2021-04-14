@@ -5,7 +5,7 @@
 require 'csv'
 
 desc 'Make user level 3 and give him "bank_account" label, If user level is < 3 and he already has labels "email" and "phone"'
-task :create_label, [:config_load_path] => :environment do |_, args|
+task :create_label, %i[config_load_path key value scope description] => :environment do |_, args|
   csv_file = File.read(Rails.root.join(args[:config_load_path]))
   import_user_level_create_log = File.open('./log/import_user_level_create.log', 'w')
   count = 0
@@ -16,7 +16,7 @@ task :create_label, [:config_load_path] => :environment do |_, args|
     next unless user
 
     if user.level < 3 && (user.labels.map(&:key) & %w[email phone]) == %w[email phone]
-      user.labels.create(key: 'bank_account', value: 'verified', scope: 'private')
+      user.labels.create(key: args[:key], value: args[:value], scope: args[:scope], description: args[:description])
       user.update!(level: 3, state: 'active')
       count += 1
     end
