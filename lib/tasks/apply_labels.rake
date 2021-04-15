@@ -5,7 +5,7 @@ require 'csv'
 desc 'Apply a label to a list of users'
 task :apply_labels, %i[users_csv_file key value scope description] => :environment do |_, args|
   csv_file = File.read(Rails.root.join(args[:users_csv_file]))
-  log = File.open('./log/import_user_level_create.log', 'w')
+  log = File.open('./log/apply_labels.log', 'w')
   count = 0
   errors_count = 0
   CSV.parse(csv_file, :headers => true).map do |row|
