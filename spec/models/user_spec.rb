@@ -344,6 +344,7 @@ RSpec.describe User, type: :model do
             "email" => "verified"
           },
           "state_triggers" => {
+            "banned" => ['ban'],
             "locked" => ['trade', 'withdraw']
           }
         }
@@ -356,6 +357,13 @@ RSpec.describe User, type: :model do
 
             user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
             expect(user.state).to eq('locked')
+          end
+
+          it 'changes state only with full match' do
+            expect(user.state).to eq('pending')
+
+            user.labels.create(key: 'bank_account', value: 'verified', scope: 'private')
+            expect(user.state).to eq('pending')
           end
         end
 
