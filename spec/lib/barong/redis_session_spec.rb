@@ -11,7 +11,7 @@ describe Barong::RedisSession do
   let!(:hash_sid) { Barong::RedisSession.hexdigest_session(session_id) }
   let!(:encrypted_value) { Barong::RedisSession.encrypted_session(session_id) }
 
-  after(:all) { clear_redis }
+  after(:each) { clear_redis }
 
   context 'add' do
     before(:each) { clear_redis }
