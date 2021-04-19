@@ -32,7 +32,7 @@ RUN groupadd -r --gid ${GID} app \
     --gid ${GID} --uid ${UID} app
 
 # Install Kaigara
-ARG KAIGARA_VERSION=0.1.23
+ARG KAIGARA_VERSION=0.1.24
 RUN curl -Lo /usr/bin/kaigara https://github.com/openware/kaigara/releases/download/${KAIGARA_VERSION}/kaigara \
     && chmod +x /usr/bin/kaigara
 
