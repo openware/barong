@@ -67,6 +67,7 @@ Barong::App.define do |config|
   config.set(:mgn_api_keys_user, 'false', type: :bool)
   config.set(:mgn_api_keys_sa, 'false', type: :bool)
   config.set(:auth_methods, 'password', type: :array)
+  config.set(:tls_enabled, 'true', type: :bool)
 
   # Password configuration  -----------------------------------------------
   # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration
