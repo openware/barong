@@ -153,7 +153,7 @@ GEM
       railties (>= 3.0.0)
     faker (2.13.0)
       i18n (>= 1.6, < 2)
-    faraday (0.17.3)
+    faraday (0.17.4)
       multipart-post (>= 1.2, < 3)
     ffi (1.13.1)
     fog-aliyun (0.3.18)
@@ -235,7 +235,7 @@ GEM
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     ipaddress (0.8.3)
-    json (2.3.1)
+    json (2.5.1)
     jwt (2.2.2)
     jwt-multisig (1.0.4)
       activesupport (>= 4.0)
@@ -252,7 +252,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
-    kycaid (1.0.0)
+    kycaid (1.0.2)
       faraday
       json
     libv8 (8.4.255.0)

@@ -48,10 +48,7 @@ describe Barong::RedisSession do
       Barong::RedisSession.add(user.uid, session_id, 10)
       expect(Rails.cache.read(key)).to eq encrypted_value
 
-      Barong::RedisSession.update(user.uid, session_id, 1)
-      expect(Rails.cache.read(key)).to eq encrypted_value
-      sleep(1)
-
+      Barong::RedisSession.update(user.uid, session_id, 0.00000001)
       expect(Rails.cache.read(key)).to eq nil
     end
   end
