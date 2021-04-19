@@ -1,5 +1,12 @@
-# For import users: -> bundle exec rake user_level_create['file_name.csv']
+# Pass csv file with list of users csv as args: bundle exec rake apply_labels\[users.csv,"phone","verified","private","description"\]
 # To run this rake task uid must be present in the csv file.
+
+# CSV example
+#
+# uid
+# ID872B23C35E,
+# ID90CB56514D
+
 require 'csv'
 
 desc 'Apply a label to a list of users'
