@@ -14,10 +14,11 @@ More about available options read here: [Barong storage configuration](https://w
 `barong_kycaid_authorization_token` - for auth secret token, 
 `barong_kycaid_sandbox_mode` - for switching between test mode and prod mode (`true` by default),
 `barong_kycaid_form_id` - the form unique identificator. Used for inheritance of form configuration like ACR and email templates
-3) Be sure to check if `barong_domain` ENV has a correct value including `https:` at the beginning. This ENV configures the `callback` url, so its improtant.
-4) Be sure to check `BARONG_REQUIRED_DOCS_EXPIRE` ENV value to be `false` if you want to include `address` verification in your KYC process. You can set it to `true` if only document check needed.
-5) Check if in the `authz_rules.yml` file you have permitted path `- api/v2/barong/public` in the `pass` module. This allows platform to receive `callback`, as it is in the public module
-6) Check if in the `barong.yml` file you have correct list of `document_types`. Be sure, that you have at least this values inside:
+3) Be sure to check if `barong_domain` ENV has a correct value, without `http/https` specified. This ENV configures the `callback` url, so its improtant.
+4) Be sure to check if `barong_tls_enabled` ENV value to be `true` if you want the request schema be `https`; otherwise the request schema will be `http`.
+5) Be sure to check `BARONG_REQUIRED_DOCS_EXPIRE` ENV value to be `false` if you want to include `address` verification in your KYC process. You can set it to `true` if only document check needed.
+6) Check if in the `authz_rules.yml` file you have permitted path `- api/v2/barong/public` in the `pass` module. This allows platform to receive `callback`, as it is in the public module
+7) Check if in the `barong.yml` file you have correct list of `document_types`. Be sure, that you have at least this values inside:
   - Passport
   - Identity card
   - Driver license
