@@ -24,6 +24,7 @@
 |`mgn_api_keys_sa`| false | `true`, `false` | when turned on (`true`) management API to create/update api keys will be provided for service account entity |
 |`barong_tls_enabled`| true | `true`, `false` | when turned on (`true`) the KYCAid request schema will be `https`; otherwise request schema will be `http` |
 |`auth_methods` | `password` | `password`, `auth0`, `signature`| array of available authentication methods |
+|`barong_tls_enabled`| true | `true`, `false` | when turned on (`true`) the KYCAid request schema will be `https`; otherwise request schema will be `http` |
 
 ### Password configuration
 | Env name | Default value | Possible values | Description |
