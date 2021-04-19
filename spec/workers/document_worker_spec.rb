@@ -40,6 +40,36 @@ describe 'KYC::Kycaid::DocumentWorker' do
         KYC::Kycaid::DocumentWorker.new.perform(document.user.id, '84e51f8a06')
         expect(document.reload.metadata).not_to eq(nil)
       end
+
+      context 'update document' do
+        let(:successful_docs_response) { OpenStruct.new(document_id: '91e51f8a0677a646fd185fc741717ad9a8b3') }
+        let(:successful_verification_response) { OpenStruct.new(verification_id: '91e51f8a0677a646fd185fc741717ad9a8b3') }
+
+        before { allow(KYCAID::Document).to receive(:update).and_return(successful_docs_response) }
+        before { allow(KYCAID::Document).to receive(:create).and_return(successful_docs_response) }
+        before { allow(KYCAID::Verification).to receive(:create).and_return(successful_verification_response) }
+
+        before do
+          user.documents.each do |doc|
+            doc.update(metadata: { document_id: '11112222' }.to_json)
+          end
+        end
+
+        let!(:document_third) { create(:document, identificator: '91e51f8', doc_type: 'Passport', doc_category: 'front_side', user_id: user.id) }
+        let!(:document_fourth) { create(:document, identificator: '91e51f8', doc_type: 'Passport', doc_category: 'selfie', user_id: user.id) }
+
+        it 'updates a verification request' do
+          expect(user.documents[0].metadata).not_to eq(nil)
+          expect(user.documents[1].metadata).not_to eq(nil)
+          expect(document_third.metadata).to eq(nil)
+          expect(document_fourth.metadata).to eq(nil)
+
+          KYC::Kycaid::DocumentWorker.new.perform(document.user.id, '91e51f8')
+          expect(document_third.reload.metadata).not_to eq(nil)
+          expect(document_fourth.reload.metadata).not_to eq(nil)
+          expect(user.labels.find_by(key: 'document').value).to eq 'pending'
+        end
+      end
     end
   end
 
