@@ -136,6 +136,87 @@ module API::V2
             error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
           end
         end
+
+        namespace :switch do
+          desc 'Switch user session',
+               success: { code: 200, message: 'Session was switched' },
+               failure: [
+                 { code: 404, message: 'Record is not found' }
+               ]
+          params do
+            optional :oid,
+                     type: String,
+                     desc: 'Organization OID'
+          end
+          post do
+            user = User.find_by(uid: session[:uid])
+            error!({ errors: ['identity.session.not_found'] }, 404) unless user
+
+            aid = params[:oid]
+            unless aid.nil?
+              # Check account in the organization that user belong to
+              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+                                  .where(user_id: user.id)
+                                  .select('memberships.*,organizations.name, organizations.organization_id')
+                                  .pluck(:organization_id, :'organizations.name', :'organizations.organization_id')
+                                  .map { |id, name, pid| { id: id, name: name, pid: pid } }
+              error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
+
+              # Check user is barong organization admin or not
+              if members.first[:id].zero?
+                # User is barong organization admin
+                oids = Organization.all.pluck(:id)
+              else
+                # User is organizationn admin/account
+                oids = Organization.where(id: members.pluck(:id)).pluck(:id)
+                members.select { |m| m[:pid].nil? }.each do |m|
+                  oids.concat(Organization.where(organization_id: m[:id]).pluck(:id))
+                end
+              end
+
+              org = Organization.find_by_oid(aid)
+              error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
+              error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
+
+              # Set oid as aid for default case of switched as organization admin
+              oid = aid
+
+              unless org.organization_id.nil?
+                organization = Organization.find(org.organization_id)
+                error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
+
+                # Set oid to be root organization in case of switched as organization account
+                oid = organization.oid
+              end
+
+              account = Membership.where(user_id: user.id, organization_id: org.id)
+              account = Membership.where(user_id: user.id) if account.length.zero?
+              account = account.first
+
+              switch = {
+                oid: oid,
+                aid: aid,
+                account_role: account.role
+              }
+            end
+
+            activity_record(user: user.id, action: (aid.nil? ? 'switch::user' : 'switch::orgnization'),
+                            result: 'succeed', topic: 'session')
+            Barong::RedisSession.delete(user.uid, session.id)
+            session.destroy
+
+            if switch.nil?
+              csrf_token = open_session(user)
+              publish_session_create(user)
+            else
+              csrf_token = open_session_switch(user, switch)
+              publish_session_switch(user, switch)
+            end
+
+            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+            status(200)
+          end
+        end
       end
     end
   end

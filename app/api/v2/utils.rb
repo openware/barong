@@ -14,7 +14,7 @@ module API::V2
       end
 
       Rails.logger.debug "User login IP address: #{ip}"
-      return ip
+      ip
     end
 
     def code_error!(errors, code)
@@ -33,6 +33,30 @@ module API::V2
       AdminAbility.new(current_user).authorize!(*args)
     rescue CanCan::AccessDenied
       error!({ errors: ['admin.ability.not_permitted'] }, 401)
+    end
+
+    def admin_organization_authorize!(*_args)
+      error!({ errors: ['identity.member.not_found'] }, 404) unless admin_organization?
+    rescue CanCan::AccessDenied
+      error!({ errors: ['organization.ability.not_permitted'] }, 401)
+    end
+
+    def organization_authorize!(*_args)
+      error!({ errors: ['organization.ability.not_permitted'] }, 401) if current_organization.nil?
+
+      members = Membership.where(user_id: current_user.id, organization_id: current_organization.id)
+
+      # User is not organization admin
+      error!({ errors: ['organization.ability.not_permitted'] }, 401) if members.nil? || members.length.zero?
+    rescue CanCan::AccessDenied
+      error!({ errors: ['organization.ability.not_permitted'] }, 401)
+    end
+
+    def admin_organization?
+      # Check user is barong organization admin or not
+      members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+                          .where(user_id: current_user.id, organization_id: 0)
+      !members.nil? && !members.length.zero?
     end
   end
 end

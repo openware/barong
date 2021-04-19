@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_07_094208) do
+ActiveRecord::Schema.define(version: 2021_05_14_034514) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -96,6 +96,34 @@ ActiveRecord::Schema.define(version: 2021_04_07_094208) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "memberships", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "organization_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_memberships_on_organization_id"
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
+  create_table "organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "oid", null: false
+    t.bigint "organization_id"
+    t.string "name", null: false
+    t.string "group"
+    t.string "email"
+    t.string "country"
+    t.string "city"
+    t.string "phone"
+    t.string "address"
+    t.string "postcode"
+    t.string "status", default: "active", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["oid"], name: "index_organizations_on_oid", unique: true
+    t.index ["organization_id"], name: "index_organizations_on_organization_id"
   end
 
   create_table "permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

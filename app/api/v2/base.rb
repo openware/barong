@@ -65,6 +65,7 @@ module API::V2
 
     mount Management::Base => '/management'
     mount Admin::Base      => '/admin'
+    mount Commercial::Base => '/commercial'
 
     route :any, '*path' do
       error! 'Route is not found', 404

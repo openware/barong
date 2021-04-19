@@ -126,6 +126,9 @@ Barong::App.define do |config|
   # Auth0 configuration -----------------------------------------------
   config.set(:auth0_domain, '')
   config.set(:auth0_client_id, '')
+
+  # Organization configuration ----------------------------------------
+  config.set(:oid_prefix, 'OID', regex: /^[A-z]{2,6}$/)
 end
 
 # KYCAID configuring

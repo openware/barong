@@ -27,6 +27,26 @@ module API::V2
         csrf_token
       end
 
+      def open_session_switch(user, switch)
+        csrf_token = SecureRandom.hex(10)
+        expire_time = Time.now.to_i + Barong::App.config.session_expire_time
+        session.merge!(
+          "uid": user.uid,
+          "oid": switch[:oid],
+          "aid": switch[:aid],
+          "account_role": switch[:account_role],
+          "user_ip": remote_ip,
+          "user_agent": request.env['HTTP_USER_AGENT'],
+          "expire_time": expire_time,
+          "csrf_token": csrf_token
+        )
+
+        # Add current session key info in additional redis list
+        Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)
+
+        csrf_token
+      end
+
       def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])
         # by default we protect user_create session_create password_reset email_confirmation endpoints
         return unless BarongConfig.list['captcha_protected_endpoints']&.include?(endpoint)
@@ -115,6 +135,16 @@ module API::V2
         EventAPI.notify('system.session.create',
                         record: {
                           user: user.as_json_for_event_api,
+                          user_ip: remote_ip,
+                          user_agent: request.env['HTTP_USER_AGENT']
+                        })
+      end
+
+      def publish_session_switch(user, switch)
+        payload = user.as_json_for_event_api.merge(switch)
+        EventAPI.notify('system.session.create',
+                        record: {
+                          user: payload,
                           user_ip: remote_ip,
                           user_agent: request.env['HTTP_USER_AGENT']
                         })

@@ -426,4 +426,50 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'include organization' do
+    include_context 'organization memberships'
+
+    context 'is single-user' do
+      let(:user) { User.find(1) }
+      it 'return nil for organization' do
+        expect(user.organization).to eq nil
+      end
+    end
+
+    context 'is barong organization admin' do
+      let(:user) { User.find(1) }
+      let!(:create_memberships) do
+        # Assign user as barong organization admin
+        create(:membership, id: 1, user_id: 1, organization_id: 0)
+      end
+      it 'return nil for organization' do
+        expect(user.organization).to eq nil
+      end
+    end
+
+    context 'is organization admin' do
+      let(:user) { User.find(1) }
+      let!(:create_memberships) do
+        # Assign user as organization admin
+        create(:membership, id: 1, user_id: 1, organization_id: 1)
+      end
+      it 'return organization' do
+        expect(user.organization).not_to eq nil
+        expect(user.organization.name).to eq 'Company A'
+      end
+    end
+
+    context 'is organization member' do
+      let(:user) { User.find(1) }
+      let!(:create_memberships) do
+        # Assign user as organization member
+        create(:membership, id: 1, user_id: 1, organization_id: 3)
+      end
+      it 'return organization' do
+        expect(user.organization).not_to eq nil
+        expect(user.organization.name).to eq 'Company A'
+      end
+    end
+  end
 end
