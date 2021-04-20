@@ -99,13 +99,12 @@ module API::V2
         Rails.cache.write(jti, 'utilized', expires_in: Barong::App.config.jwt_expire_time.seconds)
       end
 
-      def publish_confirmation(user, domain, url)
+      def publish_confirmation(user, url)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
           'system.user.email.confirmation.token',
           record: {
             user: user.as_json_for_event_api,
-            domain: domain,
             url: url,
             token: token
           }
