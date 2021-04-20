@@ -148,7 +148,6 @@ module API::V2
           EventAPI.notify('system.user.password.change',
                           record: {
                             user: current_user.as_json_for_event_api,
-                            domain: Barong::App.config.domain,
                             url: Barong::App.url
                           })
           status 201

@@ -90,7 +90,7 @@ module API::V2
             user.update(role: 'superadmin', state: 'active')
             user.labels.create(key: 'email', value: 'verified', scope: 'private')
           else
-            publish_confirmation(user, Barong::App.config.domain, Barong::App.url)
+            publish_confirmation(user, Barong::App.url)
           end
 
           csrf_token = open_session(user)
@@ -128,7 +128,7 @@ module API::V2
               return status 201
             end
 
-            publish_confirmation(current_user, Barong::App.config.domain, Barong::App.url)
+            publish_confirmation(current_user, Barong::App.url)
             status 201
           end
 
@@ -163,7 +163,6 @@ module API::V2
             EventAPI.notify('system.user.email.confirmed',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              domain: Barong::App.config.domain,
                               url: Barong::App.url
                             })
 
@@ -207,7 +206,6 @@ module API::V2
             EventAPI.notify('system.user.password.reset.token',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              domain: Barong::App.config.domain,
                               url: Barong::App.url,
                               token: token
                             })
@@ -273,7 +271,6 @@ module API::V2
             EventAPI.notify('system.user.password.reset',
                             record: {
                               user: current_user.as_json_for_event_api,
-                              domain: Barong::App.config.domain,
                               url: Barong::App.url
                             })
 

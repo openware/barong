@@ -14,7 +14,7 @@ RSpec.describe Postmaster, type: :mailer do
 
   describe '#process_payload' do
     let!(:user) { create(:user, email: 'test1@gmail.com') }
-    let(:record) { OpenStruct.new(domain: 'barong.com', token: 'blah-blah' ) }
+    let(:record) { OpenStruct.new(url: 'barong.com', token: 'blah-blah' ) }
     let(:payload) do
       {
         user: user,
