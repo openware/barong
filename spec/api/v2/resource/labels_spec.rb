@@ -30,7 +30,7 @@ describe 'Labels API.' do
 
       expect(response.status).to eq(200)
       expect(json_body.size).to eq(3)
-      expect(json_body.last[:key]).to eq(label3.key)
+      expect(json_body.pluck(:key)).to match_array([label.key, label2.key, label3.key])
     end
 
     it 'Return a label by key' do
