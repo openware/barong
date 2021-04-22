@@ -114,6 +114,32 @@ module API::V2
                           user_agent: request.env['HTTP_USER_AGENT']
                         })
       end
+
+      def management_api_request(method, url, payload)
+        uri = URI(url)
+        case method
+        when "post"
+          req = Net::HTTP::Post.new(uri)
+        when "put"
+          req = Net::HTTP::Put.new(uri)
+        end
+        req.body = generate_jwt_management(payload)
+        req["Content-Type"] = "application/json"
+
+        res = Net::HTTP.start(uri.hostname, uri.port) {|http|
+          http.request(req)
+        }
+      end
+
+      def publish_confirmation_code(user, type, event_name)
+        res = management_api_request("post", "http://applogic:3000/api/management/users/verify/get", { type: type, email: user.email })
+
+        if res.code.to_i != 200
+          management_api_request("post", "http://applogic:3000/api/management/users/verify", { type: type, email: user.email, event_name: event_name })
+        else
+          management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: type, email: user.email, reissue: true, event_name: event_name })
+        end
+      end
     end
   end
 end

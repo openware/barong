@@ -83,7 +83,7 @@ module API::V2
 
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
-          publish_confirmation(user, Barong::App.config.domain)
+          publish_confirmation_code(user, "register", 'system.user.email.confirmation.code')
           csrf_token = open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
@@ -120,7 +120,7 @@ module API::V2
               return status 201
             end
 
-            publish_confirmation(current_user, Barong::App.config.domain)
+            publish_confirmation_code(current_user, "register", 'system.user.email.confirmation.code')
             status 201
           end
 
@@ -131,24 +131,37 @@ module API::V2
             { code: 422, message: 'Validation errors' }
           ]
           params do
-            requires :token,
+            requires :email,
                      type: String,
                      allow_blank: false,
-                     desc: 'Token from email'
+                     desc: 'Account email'
+            requires :code,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Code from email'
           end
           post '/confirm_code' do
-            payload = codec.decode_and_verify(
-              params[:token],
-              pub_key: Barong::App.config.keystore.public_key,
-              sub: 'confirmation'
-            )
-            current_user = User.find_by_email(payload[:email])
+            current_user = User.find_by_email(params[:email])
+            response = management_api_request("post", "http://applogic:3000/api/management/users/verify/get", { type: "register", email: current_user.email })
+
+            error!({ errors: ['identity.user.code_doesnt_exist'] }, 422) unless response.code.to_i == 200
+            applogic_code = JSON.parse(response.body.to_s)
+
+            error!({ errors: ['identity.user.out_of_attempts'] }, 422) if applogic_code["attempts"] >= 3
+
+            unless applogic_code["confirmation_code"] == params[:code]
+              management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "register", email: current_user.email, attempts: applogic_code["attempts"] + 1 })
+
+              error!({ errors: ['identity.user.code_incorrect'] }, 422)
+            end
+
+            management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "register", email: current_user.email, validated: true })
 
             if current_user.nil? || current_user.active?
               error!({ errors: ['identity.user.active_or_doesnt_exist'] }, 422)
             end
 
-            current_user.labels.create!(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
+            current_user.labels.create!(key: 'email', value: 'verified', scope: 'private')
 
             csrf_token = open_session(current_user)
 
@@ -189,19 +202,9 @@ module API::V2
 
             return status 201 if current_user.nil?
 
-            reset_token = SecureRandom.hex(10)
-            token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid, reset_token: reset_token)
-            # save reset_password_id in cache to validate as latest requested
-            Rails.cache.write("reset_password_#{params[:email]}", reset_token, expires_in: Barong::App.config.jwt_expire_time.seconds)
-
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
-            EventAPI.notify('system.user.password.reset.token',
-                            record: {
-                              user: current_user.as_json_for_event_api,
-                              domain: Barong::App.config.domain,
-                              token: token
-                            })
+            publish_confirmation_code(current_user, "reset_password", 'system.user.password.reset.code')
             status 201
           end
 
@@ -212,21 +215,28 @@ module API::V2
             { code: 422, message: 'Validation errors' }
           ]
           params do
-            requires :token,
+            requires :email,
                      type: String,
-                     message: 'identity.user.missing_pass_token',
                      allow_blank: false,
-                     desc: 'Token from email'
+                     desc: 'Account email'
+            requires :code,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Code from email'
           end
           post '/check_code' do
-            payload = codec.decode_and_verify(
-              params[:token],
-              pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
-            )
+            current_user = User.find_by_email(params[:email])
+            response = management_api_request("post", "http://applogic:3000/api/management/users/verify/get", { type: "reset_password", email: current_user.email })
 
-            # check if reset_password token is latest requested and was not used before
-            if Rails.cache.read(payload[:jti]) == 'utilized'
-              error!({ errors: ['identity.user.utilized_token'] }, 422)
+            error!({ errors: ['identity.user.code_doesnt_exist'] }, 422) unless response.code.to_i == 200
+            applogic_code = JSON.parse(response.body.to_s)
+
+            error!({ errors: ['identity.user.out_of_attempts'] }, 422) if applogic_code["attempts"] >= 3
+
+            unless applogic_code["confirmation_code"] == params[:code]
+              management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "reset_password", email: current_user.email, attempts: applogic_code["attempts"] + 1 })
+
+              error!({ errors: ['identity.user.code_incorrect'] }, 422)
             end
 
             status 201
@@ -240,7 +250,11 @@ module API::V2
             { code: 422, message: 'Validation errors' }
           ]
           params do
-            requires :reset_password_token,
+            requires :email,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Account email'
+            requires :code,
                      type: String,
                      message: 'identity.user.missing_pass_token',
                      allow_blank: false,
@@ -261,17 +275,21 @@ module API::V2
               error!({ errors: ['identity.user.passwords_doesnt_match'] }, 422)
             end
 
-            payload = codec.decode_and_verify(
-              params[:reset_password_token],
-              pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
-            )
+            current_user = User.find_by_email(params[:email])
+            response = management_api_request("post", "http://applogic:3000/api/management/users/verify/get", { type: "reset_password", email: current_user.email })
 
-            # check if reset_password token is latest requested and was not used before
-            if Rails.cache.read("reset_password_#{payload[:email]}") != payload[:reset_token] || Rails.cache.read(payload[:jti]) == 'utilized'
-              error!({ errors: ['identity.user.utilized_token'] }, 422)
+            error!({ errors: ['identity.user.code_doesnt_exist'] }, 422) unless response.code.to_i == 200
+            applogic_code = JSON.parse(response.body.to_s)
+
+            error!({ errors: ['identity.user.out_of_attempts'] }, 422) if applogic_code["attempts"] >= 3
+
+            unless applogic_code["confirmation_code"] == params[:code]
+              management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "reset_password", email: current_user.email, attempts: applogic_code["attempts"] + 1 })
+
+              error!({ errors: ['identity.user.code_incorrect'] }, 422)
             end
 
-            current_user = User.find_by_email(payload[:email])
+            management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "reset_password", email: current_user.email, validated: true })
 
             unless current_user.update(password: params[:password])
               error_note = { reason: current_user.errors.full_messages.to_sentence }.to_json
@@ -279,11 +297,6 @@ module API::V2
                               result: 'failed', topic: 'password', data: error_note)
               code_error!(current_user.errors.details, 422)
             end
-
-            # remove latest token id cache record
-            Rails.cache.delete("reset_password_#{params[:email]}")
-            # invalidate token used
-            Rails.cache.write(payload[:jti], 'utilized', expires_in: Barong::App.config.jwt_expire_time.seconds)
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 
