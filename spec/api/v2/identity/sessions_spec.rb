@@ -64,6 +64,30 @@ describe API::V2::Identity::Sessions do
           expect_status_to_eq 400
           expect_body.to eq(errors: ["identity.captcha.required"])
         end
+
+        it 'requires captcha if endpoint is in the protection list even when user provides otp code with 2fa disabled' do
+          allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create", "session_create"]})
+          params['otp_code'] = otp_code
+
+          do_request
+          expect_status_to_eq 400
+
+          expect_body.to eq(errors: ["identity.captcha.required"])
+        end
+
+        let (:otp_code) { '111111' }
+        it 'doesnt require captcha if endpoint is in the protection list, but user provides otp code with 2fa enabled' do
+          allow(BarongConfig).to receive(:list).and_return({"captcha_protected_endpoints"=>["user_create", "session_create"]})
+          user.update(otp: true)
+          allow(TOTPService).to receive(:validate?).with(user.uid, otp_code) { true }
+          params['otp_code'] = otp_code
+
+          do_request
+          expect_status_to_eq 200
+
+          user.update(otp: false)
+          params.delete('otp_code')
+        end
       end
 
       it 'Check current credentials and returns session' do
