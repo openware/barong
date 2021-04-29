@@ -131,10 +131,16 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         post do
-          verify_captcha!(response: params['captcha_response'], endpoint: 'session_create')
+          # Verify captcha only when otp_code is not provided
+          verify_captcha!(response: params['captcha_response'], endpoint: 'session_create') if params[:otp_code].nil?
 
           declared_params = declared(params, include_missing: false)
           user = get_user(declared_params[:email])
+
+          # Verify captcha if user has disabled otp, but otp_code is provided
+          if user.otp == false && declared_params[:otp_code].present?
+            verify_captcha!(response: params['captcha_response'], endpoint: 'session_create')
+          end
 
           unless user.authenticate(declared_params[:password])
             login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
