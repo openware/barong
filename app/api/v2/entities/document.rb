@@ -9,7 +9,11 @@ module API
                documentation: {
                 type: 'String',
                 desc: 'File url'
-               }
+               } do |document|
+          {
+            url: document.verification_url
+          }
+        end
 
         expose :doc_type,
                documentation: {

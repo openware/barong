@@ -48,6 +48,10 @@ class Document < ApplicationRecord
     doc_number.sub(/(?<=\A.{2})(.*)(?=.{2}\z)/) { |match| '*' * match.length } if doc_number
   end
 
+  def verification_url
+    "/api/v2/barong/admin/documents/#{id}"
+  end
+
   private
 
   def start_document_kyc_verification
