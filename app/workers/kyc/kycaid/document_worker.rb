@@ -123,7 +123,7 @@ module KYC
           applicant_id: @applicant_id,
           types: ['DOCUMENT', 'FACIAL'],
           form_id: Barong::App.config.kycaid_form_id,
-          callback_url: "#{Barong::App.config.domain}/api/v2/barong/public/kyc"
+          callback_url: "#{Barong::App.url}/api/v2/barong/public/kyc"
         }.delete_if { |key, value| value.blank? }
       end
     end

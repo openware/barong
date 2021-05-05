@@ -120,4 +120,24 @@ describe 'KYC::Kycaid::DocumentWorker' do
       end
     end
   end
+
+  describe 'domain schema' do
+    context 'BARONG_TLS_ENABLED is false' do
+      before { allow(Barong::App.config).to receive(:tls_enabled).and_return(false) }
+
+      it 'use http' do
+        params = KYC::Kycaid::AddressWorker.new.verification_params
+        expect(params.fetch(:callback_url)).to eq('http://openware.com/api/v2/barong/public/kyc')
+      end
+    end
+
+    context 'BARONG_TLS_ENABLED is true' do
+      before { allow(Barong::App.config).to receive(:tls_enabled).and_return(true) }
+
+      it 'use https' do
+        params = KYC::Kycaid::AddressWorker.new.verification_params
+        expect(params.fetch(:callback_url)).to eq('https://openware.com/api/v2/barong/public/kyc')
+      end
+    end
+  end
 end
