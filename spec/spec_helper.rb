@@ -67,7 +67,7 @@ RSpec.configure do |config|
     allow(Ability).to receive(:abilities).and_return(
       'roles' => %w[admin manager accountant superadmin technical compliance support reporter],
       'admin_permissions' => {
-        'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level] },
+        'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level Document] },
         'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label] },
         'compliance' => { 'read' => %w[User Activity Level], 'manage' => %w[Label], 'update' => %w[Profile] },
         'support' => { 'read' => %w[User Activity APIKey Profile Label Level] },
