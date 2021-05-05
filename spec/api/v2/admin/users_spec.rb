@@ -445,6 +445,7 @@ describe API::V2::Admin::Users do
         expect(json_body[:profiles][0][:address]).to eq experimental_user.profiles[0].address
         expect(json_body[:profiles][0][:dob]).to eq experimental_user.profiles[0].dob.to_s
         expect(json_body[:documents][0][:doc_number]).to eq experimental_user.documents[0].doc_number
+        expect(json_body[:documents][0][:upload][:url]).to eq experimental_user.documents[0].verification_url
         expect(json_body[:phones][0][:number]).to eq experimental_user.phones[0].number
       end
     end

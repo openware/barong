@@ -21,6 +21,7 @@ module API::V2
       do_not_route_options!
 
       mount Admin::Users
+      mount Admin::Documents
       mount Admin::APIKeys
       mount Admin::Permissions
       mount Admin::Activities
