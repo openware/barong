@@ -11,6 +11,7 @@ rules:
     - api/v2/applogic/public
     - api/v2/arke/public
     - api/v2/finex/public
+    - api/v2/peatio/swagger
   block:
     - api/v2/barong/management
     - api/v2/peatio/management
