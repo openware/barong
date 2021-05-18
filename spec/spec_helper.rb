@@ -65,12 +65,13 @@ RSpec.configure do |config|
   config.before(:each) do
     DatabaseCleaner.start
     allow(Ability).to receive(:abilities).and_return(
-      'roles' => %w[admin manager accountant superadmin technical compliance support],
+      'roles' => %w[admin manager accountant superadmin technical compliance support reporter],
       'admin_permissions' => {
         'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level Document] },
         'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label] },
         'compliance' => { 'read' => %w[User Activity Level Document], 'manage' => %w[Label], 'update' => %w[Profile] },
-        'support' => { 'read' => %w[User Activity APIKey Profile Label Level] }
+        'support' => { 'read' => %w[User Activity APIKey Profile Label Level] },
+        'reporter' => { 'read' => %w[Ability User Level Label Profile Activity] }
       }
     )
     allow_any_instance_of(Barong::Authorize).to receive(:validate_csrf!).and_return(true)
