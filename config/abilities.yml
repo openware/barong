@@ -5,6 +5,7 @@ roles:
   - accountant
   - compliance
   - support
+  - reporter
 
 admin_permissions:
   superadmin:
@@ -21,7 +22,7 @@ admin_permissions:
       - Document
   admin:
     read:
-      - Activity    
+      - Activity
       - Permission
     manage:
       - Ability
@@ -69,3 +70,11 @@ admin_permissions:
       - Activity
     manage:
       - User
+  reporter:
+    read:
+      - Ability
+      - User
+      - Level
+      - Label
+      - Profile
+      - Activity

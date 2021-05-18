@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :permission do
-    role { %w[member trader broker admin accountant support technical compliance superadmin] }
+    role { %w[member reporter trader broker admin accountant support technical compliance superadmin] }
     path { 'api/v2' }
     action { 'ACCEPT' }
     verb { %w[get post put delete head patch all] }
