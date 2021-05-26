@@ -68,7 +68,7 @@ RSpec.configure do |config|
       'roles' => %w[admin manager accountant superadmin technical compliance support],
       'admin_permissions' => {
         'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level] },
-        'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label] },
+        'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label Organization] },
         'compliance' => { 'read' => %w[User Activity Level], 'manage' => %w[Label], 'update' => %w[Profile] },
         'support' => { 'read' => %w[User Activity APIKey Profile Label Level] }
       }

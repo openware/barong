@@ -29,10 +29,9 @@ module API
                                 .select('memberships.*,organizations.name, organizations.parent_id')
                                 .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
                                 .map { |id, name, pid| { id: id, name: name, pid: pid } }
-            error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
             # Check user is barong organization admin or not
-            if members.first[:id].zero?
+            if admin_organization? :read, Organization
               # User is barong organization admin
               oids = Organization.all.pluck(:id)
             else
@@ -42,6 +41,7 @@ module API
                 oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
               end
             end
+            error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
 
             # Get all accounts for organization admin even if no membership belong to
             accounts = API::V2::Queries::AccountFilter

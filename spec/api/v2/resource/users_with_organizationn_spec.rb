@@ -27,9 +27,6 @@ describe 'Api::V1::Profiles' do
       let(:test_user) { User.find(1) }
 
       it 'return nil for barong admin organization' do
-        # Assign user as barong admin organization
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         get '/api/v2/resource/users/me', headers: auth_header
 
         expect(response.status).to eq(200)

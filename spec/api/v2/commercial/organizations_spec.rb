@@ -15,10 +15,6 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
 
     context 'user is barong organization admin' do
-      let!(:create_memberships) do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-      end
       let(:test_user) { User.find(1) }
 
       it 'get all organizations and accounts' do
@@ -69,26 +65,27 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
 
     context 'when params is valid' do
-      let(:test_user) { User.find(1) }
+      context 'user is normal user' do
+        let(:test_user) { User.find(7) }
+        it 'deny to create organization for normal user' do
+          post '/api/v2/commercial/organizations',
+               params: { name: 'Company Test', group: 'vip-1' },
+               headers: auth_header
 
-      it 'deny to create organization for normal user' do
-        post '/api/v2/commercial/organizations',
-             params: { name: 'Company Test', group: 'vip-1' },
-             headers: auth_header
-
-        expect(response.status).to eq(404)
+          expect(response.status).to eq(404)
+        end
       end
 
-      it 'create organization for barong organization admin' do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
+      context 'user is barong organization admin' do
+        let(:test_user) { User.find(1) }
+        it 'create organization for barong organization admin' do
+          post '/api/v2/commercial/organizations',
+               params: { name: 'Company Test', group: 'vip-1' },
+               headers: auth_header
 
-        post '/api/v2/commercial/organizations',
-             params: { name: 'Company Test', group: 'vip-1' },
-             headers: auth_header
-
-        expect(response.status).to eq(201)
-        expect(Organization.last.name).to eq('Company Test')
+          expect(response.status).to eq(201)
+          expect(Organization.last.name).to eq('Company Test')
+        end
       end
     end
   end

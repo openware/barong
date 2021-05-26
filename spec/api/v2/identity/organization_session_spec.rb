@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Sessions do
+  include_context 'bearer authentication'
   include_context 'organization memberships'
   include_context 'geoip mock'
 
   include ActiveSupport::Testing::TimeHelpers
   let!(:create_member_permission) do
-    create :permission,
-           role: 'member',
-           verb: 'all'
+    create(:permission, role: 'admin', verb: 'all')
+    create(:permission, role: 'member', verb: 'all')
   end
   before do
     Rails.cache.delete('permissions')
@@ -20,12 +20,6 @@ describe API::V2::Identity::Sessions do
     let(:session_expire_time) do
       Barong::App.config.session_expire_time
     end
-    let(:sign_session) do
-      post '/api/v2/identity/sessions', params: {
-        email: 'admin@barong.io',
-        password: 'testPassword111'
-      }
-    end
 
     let(:params) { {} }
     let(:switch_session) { post '/api/v2/identity/sessions/switch', params: params }
@@ -34,8 +28,6 @@ describe API::V2::Identity::Sessions do
       allow(Barong::App.config).to receive_messages(captcha: 'none')
       allow(Barong::App.config).to receive_messages(captcha: 'recaptcha')
       allow(BarongConfig).to receive(:list).and_return({ 'captcha_protected_endpoints' => ['user_create'] })
-
-      sign_session
     end
 
     it 'can perform switch session endpoint' do
@@ -45,6 +37,8 @@ describe API::V2::Identity::Sessions do
     end
 
     context 'User does not belong to any organization' do
+      let(:test_user) { User.find(7) }
+
       it 'cannot switch to organization admin of Company A' do
         params[:oid] = 'OID001'
         switch_session
@@ -89,11 +83,18 @@ describe API::V2::Identity::Sessions do
     end
 
     context 'User belong to the organization' do
+      let!(:create_memberships) do
+        # Assign users with organizations
+        create(:membership, id: 2, user_id: 2, organization_id: 1)
+        create(:membership, id: 3, user_id: 3, organization_id: 3)
+        create(:membership, id: 4, user_id: 4, organization_id: 3)
+        create(:membership, id: 5, user_id: 5, organization_id: 5)
+        create(:membership, id: 6, user_id: 6, organization_id: 3)
+        create(:membership, id: 7, user_id: 6, organization_id: 4)
+      end
+
       context 'User is barong admin organization' do
-        let!(:create_memberships) do
-          # Assign user as organization admin
-          create(:membership, id: 1, user_id: 1, organization_id: 0)
-        end
+        let(:test_user) { User.find(1) }
 
         it 'can switch to organization admin of Company A' do
           params[:oid] = 'OID001'

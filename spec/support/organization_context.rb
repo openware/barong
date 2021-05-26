@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 shared_context 'organization memberships' do
-  let!(:create_member_permission) do
-    create :permission,
-           role: 'member'
+  let!(:create_permissions) do
+    create(:permission, role: 'admin')
+    create(:permission, role: 'member')
   end
 
   let!(:mock_users) do
     create(:user, id: 1, uid: 'IDFE09F81060', email: 'admin@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'member')
+                  password_confirmation: 'testPassword111', role: 'admin')
     create(:user, id: 2, uid: 'IDFE10A90000', email: 'adminA@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'member')
     create(:user, id: 3, uid: 'IDFE10A90001', email: 'memberA1@barong.io', password: 'testPassword111',

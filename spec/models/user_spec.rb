@@ -439,10 +439,7 @@ RSpec.describe User, type: :model do
 
     context 'is barong organization admin' do
       let(:user) { User.find(1) }
-      let!(:create_memberships) do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-      end
+
       it 'return nil for organization' do
         expect(user.organization).to eq nil
       end

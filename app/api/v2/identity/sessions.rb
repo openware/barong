@@ -155,15 +155,14 @@ module API::V2
             aid = params[:oid]
             unless aid.nil?
               # Check account in the organization that user belong to
-              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.parent_id')
+              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
                                   .where(user_id: user.id)
                                   .select('memberships.*,organizations.name, organizations.parent_id')
                                   .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
                                   .map { |id, name, pid| { id: id, name: name, pid: pid } }
-              error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
               # Check user is barong organization admin or not
-              if members.first[:id].zero?
+              if admin_organization? :read, Organization
                 # User is barong organization admin
                 oids = Organization.all.pluck(:id)
               else
@@ -173,6 +172,7 @@ module API::V2
                   oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
                 end
               end
+              error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
 
               org = Organization.find_by_oid(aid)
               error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?

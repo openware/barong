@@ -15,7 +15,7 @@ module API
             use :pagination_filters
           end
           get do
-            admin_organization_authorize!
+            admin_organization_authorize! :read, Organization
 
             organizations = Organization.where(parent_id: nil)
             present paginate(organizations), with: API::V2::Commercial::Entities::Organization
@@ -38,7 +38,7 @@ module API
                      desc: 'organization fee group'
           end
           post do
-            admin_organization_authorize!
+            admin_organization_authorize! :create, Organization
 
             declared_params = declared(params, include_missing: false)
             org_params = declared_params.slice('name', 'group')
@@ -66,7 +66,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            if admin_organization?
+            if admin_organization? :read, Organization
               # User is barong admin organization, oid is required
               error!({ errors: ['required.params.missing'] }, 400) if params[:oid].nil?
 
@@ -132,7 +132,7 @@ module API
             organization = Organization.find(params[:organization_id])
             error!({ errors: ['commercial.organization.doesnt_exist'] }, 404) if organization.nil?
 
-            unless admin_organization?
+            unless admin_organization? :update, Organization
               organization_authorize!
 
               # Organization admin cannot change organization details
@@ -183,7 +183,7 @@ module API
             organization = Organization.find(params[:organization_id])
             error!({ errors: ['commercial.organization.doesnt_exist'] }, 404) if organization.nil?
 
-            unless admin_organization?
+            unless admin_organization? :update, Organization
               organization_authorize!
 
               # Organization admin cannot change organization setting
@@ -228,7 +228,7 @@ module API
                        desc: 'organization oid'
             end
             get do
-              if admin_organization?
+              if admin_organization? :read, Organization
                 # User is barong admin organization, oid is required
                 error!({ errors: ['required.params.missing'] }, 400) if params[:oid].nil?
 
@@ -284,7 +284,7 @@ module API
                 error!({ errors: ['commercial.membership.already_exist'] }, 401)
               end
 
-              unless admin_organization?
+              unless admin_organization? :create, Organization
                 organization_authorize!
 
                 org = Organization.find(params[:organization_id])
@@ -320,11 +320,7 @@ module API
                        desc: 'membership id'
             end
             delete do
-              # You cannot remove barong admin organizations
-              member = Membership.where.not(organization_id: 0).find(params[:membership_id])
-              error!({ errors: ['commercial.membership.doesnt_exist'] }, 404) if member.nil?
-
-              unless admin_organization?
+              unless admin_organization? :destroy, Organization
                 organization_authorize!
 
                 org = member.organization
@@ -357,7 +353,7 @@ module API
                        desc: 'organization oid'
             end
             get do
-              if admin_organization?
+              if admin_organization? :read, Organization
                 # User is barong admin organization, oid is required
                 error!({ errors: ['required.params.missing'] }, 400) if params[:oid].nil?
 
@@ -403,7 +399,7 @@ module API
             end
             post do
               id = params[:organization_id]
-              unless admin_organization?
+              unless admin_organization? :create, Organization
                 organization_authorize!
 
                 # You need to be belong to the parent organization
@@ -449,7 +445,7 @@ module API
               organization = Organization.where.not(parent_id: nil).find(params[:organization_id])
               error!({ errors: ['commercial.membership.doesnt_exist'] }, 404) if organization.nil?
 
-              unless admin_organization?
+              unless admin_organization? :destroy, Organization
                 organization_authorize!
 
                 if organization.parent_id != current_organization.id

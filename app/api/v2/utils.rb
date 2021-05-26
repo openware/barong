@@ -35,8 +35,8 @@ module API::V2
       error!({ errors: ['admin.ability.not_permitted'] }, 401)
     end
 
-    def admin_organization_authorize!(*_args)
-      error!({ errors: ['identity.member.not_found'] }, 404) unless admin_organization?
+    def admin_organization_authorize!(*args)
+      error!({ errors: ['identity.member.not_found'] }, 404) unless admin_organization?(*args)
     rescue CanCan::AccessDenied
       error!({ errors: ['organization.ability.not_permitted'] }, 401)
     end
@@ -52,11 +52,11 @@ module API::V2
       error!({ errors: ['organization.ability.not_permitted'] }, 401)
     end
 
-    def admin_organization?
+    def admin_organization?(*args)
       # Check user is barong organization admin or not
-      members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
-                          .where(user_id: current_user.id, organization_id: 0)
-      !members.nil? && !members.length.zero?
+      AdminAbility.new(current_user).authorize!(*args)
+    rescue CanCan::AccessDenied
+      false
     end
   end
 end

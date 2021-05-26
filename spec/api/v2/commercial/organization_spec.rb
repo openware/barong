@@ -30,16 +30,7 @@ describe API::V2::Commercial::Organizations, type: :request do
       let(:params) { { oid: 'OID001' } }
       let(:test_user) { User.find(1) }
 
-      it 'deny request from normal user' do
-        do_request
-
-        expect(response.status).to eq(401)
-      end
-
       it 'return organization details for barong organization admin' do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         do_request
         result = JSON.parse(response.body)
 
@@ -121,7 +112,7 @@ describe API::V2::Commercial::Organizations, type: :request do
              headers: auth_header,
              params: { organization_id: 1 }
       end
-      let(:test_user) { User.find(1) }
+      let(:test_user) { User.find(7) }
 
       it 'deny request from normal user' do
         do_request
@@ -140,9 +131,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       let(:test_user) { User.find(1) }
 
       it 'can update organization details' do
-        # Assign user as barong admin organization
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         params[:name] = 'Company Test'
         do_request
 
@@ -151,9 +139,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       end
 
       it 'error when data not change' do
-        # Assign user as barong admin organization
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         params[:name] = 'Company A'
         do_request
 
@@ -216,7 +201,7 @@ describe API::V2::Commercial::Organizations, type: :request do
              headers: auth_header,
              params: { organization_id: 1 }
       end
-      let(:test_user) { User.find(1) }
+      let(:test_user) { User.find(7) }
 
       it 'deny request from normal user' do
         do_request
@@ -235,9 +220,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       let(:test_user) { User.find(1) }
 
       it 'update organization status' do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         params[:status] = 'banned'
         do_request
 
@@ -246,9 +228,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       end
 
       it 'update organization group' do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         params[:group] = 'vip-1'
         do_request
 
@@ -257,9 +236,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       end
 
       it 'error when data not change' do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-
         params[:status] = 'active'
         do_request
 

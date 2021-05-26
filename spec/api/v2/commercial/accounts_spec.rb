@@ -13,10 +13,6 @@ describe API::V2::Commercial::Accounts, type: :request do
 
     context 'user is barong organization admin' do
       let(:test_user) { User.find(1) }
-      let!(:create_memberships) do
-        # Assign user as barong organization admin
-        create(:membership, id: 1, user_id: 1, organization_id: 0)
-      end
 
       it 'get all organizations and accounts' do
         get '/api/v2/commercial/accounts', headers: auth_header

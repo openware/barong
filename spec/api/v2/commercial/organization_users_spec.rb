@@ -17,9 +17,6 @@ describe API::V2::Commercial::Organizations, type: :request do
     let(:do_request) { get '/api/v2/commercial/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
-      # Assign user as barong admin organization
-      create(:membership, id: 1, user_id: 1, organization_id: 0)
-
       # Assign users with organizations
       create(:membership, id: 2, user_id: 2, organization_id: 1)
       create(:membership, id: 3, user_id: 3, organization_id: 3)
@@ -134,9 +131,6 @@ describe API::V2::Commercial::Organizations, type: :request do
     let(:do_request) { post '/api/v2/commercial/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
-      # Assign user as barong admin organization
-      create(:membership, id: 1, user_id: 1, organization_id: 0)
-
       # Assign users with organizations
       create(:membership, id: 2, user_id: 2, organization_id: 1)
       create(:membership, id: 3, user_id: 5, organization_id: 5)
@@ -252,9 +246,6 @@ describe API::V2::Commercial::Organizations, type: :request do
     let(:do_request) { delete '/api/v2/commercial/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
-      # Assign user as barong admin organization
-      create(:membership, id: 1, user_id: 1, organization_id: 0)
-
       # Assign users with organizations
       create(:membership, id: 2, user_id: 2, organization_id: 1)
       create(:membership, id: 3, user_id: 3, organization_id: 3)
