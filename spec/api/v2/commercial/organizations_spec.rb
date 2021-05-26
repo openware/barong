@@ -88,6 +88,7 @@ describe API::V2::Commercial::Organizations, type: :request do
              headers: auth_header
 
         expect(response.status).to eq(201)
+        expect(Organization.last.name).to eq('Company Test')
       end
     end
   end

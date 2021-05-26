@@ -41,25 +41,31 @@ describe API::V2::Commercial::Organizations, type: :request do
         create(:membership, id: 1, user_id: 1, organization_id: 0)
 
         do_request
+        result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
+        expect(result['oid']).to eq('OID001')
       end
     end
 
     context 'user is organization admin' do
       let(:test_user) { User.find(2) }
 
-      it 'return organization admin details of default user\'s organization' do
+      it 'return organization details of default user\'s organization' do
         do_request
+        result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
+        expect(result['oid']).to eq('OID001')
       end
 
-      it 'return organization admin details' do
+      it 'return organization details' do
         params[:oid] = 'OID001'
         do_request
+        result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
+        expect(result['name']).to eq('Company A')
       end
 
       it 'cannot get organization account details of other organization' do
@@ -73,8 +79,10 @@ describe API::V2::Commercial::Organizations, type: :request do
         params[:oid] = 'OID001AID001'
 
         do_request
+        result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
+        expect(result['name']).to eq('Group A1')
       end
 
       it 'cannot get organization admin details of other organization' do
@@ -139,6 +147,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
+        expect(Organization.find(1).name).to eq('Company Test')
       end
 
       it 'error when data not change' do
@@ -179,6 +188,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
+        expect(Organization.find(3).name).to eq('Company Test')
       end
 
       it 'cannot update organization account details of other organization' do
@@ -232,6 +242,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
+        expect(Organization.find(1).status).to eq('banned')
       end
 
       it 'update organization group' do
@@ -242,6 +253,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
+        expect(Organization.find(1).group).to eq('vip-1')
       end
 
       it 'error when data not change' do
@@ -282,6 +294,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
+        expect(Organization.find(3).status).to eq('banned')
       end
 
       it 'cannot update organization account details of other organization' do

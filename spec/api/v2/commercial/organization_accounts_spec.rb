@@ -162,8 +162,11 @@ describe API::V2::Commercial::Organizations, type: :request do
         params[:status] = 'active'
 
         do_request
+        org = Organization.last
 
         expect(response).to be_successful
+        expect(org.parent_id).to eq(1)
+        expect(org.name).to eq('Group A3')
       end
 
       it 'can add organization among parent organizations' do
@@ -172,8 +175,11 @@ describe API::V2::Commercial::Organizations, type: :request do
         params[:status] = 'active'
 
         do_request
+        org = Organization.last
 
         expect(response).to be_successful
+        expect(org.parent_id).to eq(2)
+        expect(org.name).to eq('Group B3')
       end
 
       it 'cannot add organization into sub-organization' do
@@ -206,8 +212,11 @@ describe API::V2::Commercial::Organizations, type: :request do
         params[:status] = 'active'
 
         do_request
+        org = Organization.last
 
         expect(response).to be_successful
+        expect(org.parent_id).to eq(1)
+        expect(org.name).to eq('Group A3')
       end
     end
 
@@ -273,6 +282,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
+        expect(Organization.where(id: 3).length).to eq(0)
       end
     end
 
@@ -291,6 +301,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
+        expect(Organization.where(id: 3).length).to eq(0)
       end
 
       it 'cannot delete organization account in other organization' do
