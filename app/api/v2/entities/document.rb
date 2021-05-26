@@ -11,7 +11,8 @@ module API
                 desc: 'File url'
                } do |document|
           {
-            url: document.verification_url
+            url: document.verification_url,
+            type: document.upload.file.extension
           }
         end
 
