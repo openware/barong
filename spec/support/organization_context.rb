@@ -17,11 +17,11 @@ shared_context 'organization memberships' do
   end
 
   let!(:create_organizations) do
-    create(:organization, id: 1, oid: 'OID001', organization_id: nil, name: 'Company A')
-    create(:organization, id: 2, oid: 'OID002', organization_id: nil, name: 'Company B')
-    create(:organization, id: 3, oid: 'OID001AID001', organization_id: 1, name: 'Group A1')
-    create(:organization, id: 4, oid: 'OID001AID002', organization_id: 1, name: 'Group A2')
-    create(:organization, id: 5, oid: 'OID002AID001', organization_id: 2, name: 'Group B1')
-    create(:organization, id: 6, oid: 'OID002AID002', organization_id: 2, name: 'Group B2')
+    create(:organization, id: 1, oid: 'OID001', parent_id: nil, name: 'Company A')
+    create(:organization, id: 2, oid: 'OID002', parent_id: nil, name: 'Company B')
+    create(:organization, id: 3, oid: 'OID001AID001', parent_id: 1, name: 'Group A1')
+    create(:organization, id: 4, oid: 'OID001AID002', parent_id: 1, name: 'Group A2')
+    create(:organization, id: 5, oid: 'OID002AID001', parent_id: 2, name: 'Group B1')
+    create(:organization, id: 6, oid: 'OID002AID002', parent_id: 2, name: 'Group B2')
   end
 end

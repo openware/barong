@@ -155,10 +155,10 @@ module API::V2
             aid = params[:oid]
             unless aid.nil?
               # Check account in the organization that user belong to
-              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.parent_id')
                                   .where(user_id: user.id)
-                                  .select('memberships.*,organizations.name, organizations.organization_id')
-                                  .pluck(:organization_id, :'organizations.name', :'organizations.organization_id')
+                                  .select('memberships.*,organizations.name, organizations.parent_id')
+                                  .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
                                   .map { |id, name, pid| { id: id, name: name, pid: pid } }
               error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
@@ -170,7 +170,7 @@ module API::V2
                 # User is organizationn admin/account
                 oids = Organization.where(id: members.pluck(:id)).pluck(:id)
                 members.select { |m| m[:pid].nil? }.each do |m|
-                  oids.concat(Organization.where(organization_id: m[:id]).pluck(:id))
+                  oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
                 end
               end
 
@@ -181,15 +181,15 @@ module API::V2
               # Set oid as aid for default case of switched as organization admin
               oid = aid
 
-              unless org.organization_id.nil?
-                organization = Organization.find(org.organization_id)
+              unless org.parent_id.nil?
+                organization = Organization.find(org.parent_id)
                 error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
 
                 # Set oid to be root organization in case of switched as organization account
                 oid = organization.oid
               end
 
-              account = Membership.where(user_id: user.id, organization_id: org.id)
+              account = Membership.where(user_id: user.id, parent_id: org.id)
               account = Membership.where(user_id: user.id) if account.length.zero?
               account = account.first
 

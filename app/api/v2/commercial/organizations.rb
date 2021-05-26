@@ -17,7 +17,7 @@ module API
           get do
             admin_organization_authorize!
 
-            organizations = Organization.where(organization_id: nil)
+            organizations = Organization.where(parent_id: nil)
             present paginate(organizations), with: API::V2::Commercial::Entities::Organization
           end
 
@@ -84,9 +84,9 @@ module API
               error!({ errors: ['commercial.organization.doesnt_exist'] }, 404) if org.nil?
 
               # Check the oid need to be organization/subunit which user belong to
-              if org.organization_id.nil?
+              if org.parent_id.nil?
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) if org.id != current_organization.id
-              elsif org.organization_id != current_organization.id
+              elsif org.parent_id != current_organization.id
                 error!({ errors: ['organization.ability.not_permitted'] }, 401)
               end
             end
@@ -136,10 +136,10 @@ module API
               organization_authorize!
 
               # Organization admin cannot change organization details
-              error!({ errors: ['organization.ability.not_permitted'] }, 401) if organization.organization_id.nil?
+              error!({ errors: ['organization.ability.not_permitted'] }, 401) if organization.parent_id.nil?
 
               # You need to be in the organization
-              if organization.organization_id != current_organization.id
+              if organization.parent_id != current_organization.id
                 error!({ errors: ['organization.ability.not_permitted'] }, 401)
               end
             end
@@ -187,10 +187,10 @@ module API
               organization_authorize!
 
               # Organization admin cannot change organization setting
-              error!({ errors: ['organization.ability.not_permitted'] }, 401) if organization.organization_id.nil?
+              error!({ errors: ['organization.ability.not_permitted'] }, 401) if organization.parent_id.nil?
 
               # You need to be in the organization
-              if organization.organization_id != current_organization.id
+              if organization.parent_id != current_organization.id
                 error!({ errors: ['organization.ability.not_permitted'] }, 401)
               end
             end
@@ -246,15 +246,15 @@ module API
                 error!({ errors: ['commercial.organization.doesnt_exist'] }, 404) if org.nil?
 
                 # Check the oid need to be organization/subunit which user belong to
-                if org.organization_id.nil?
+                if org.parent_id.nil?
                   error!({ errors: ['organization.ability.not_permitted'] }, 401) if org.id != current_organization.id
-                elsif org.organization_id != current_organization.id
+                elsif org.parent_id != current_organization.id
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
                 end
               end
 
               oids = [org.id]
-              oids.concat(Organization.where(organization_id: org.id).pluck(:id)) if org.organization_id.nil?
+              oids.concat(Organization.where(parent_id: org.id).pluck(:id)) if org.parent_id.nil?
               members = Membership.where(organization_id: oids)
 
               present members, with: API::V2::Commercial::Entities::Membership
@@ -288,10 +288,10 @@ module API
                 organization_authorize!
 
                 org = Organization.find(params[:organization_id])
-                if org.organization_id.nil?
+                if org.parent_id.nil?
                   # You cannot add user as organization admin, only admin organization can do this!
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
-                elsif org.organization_id != current_organization.id
+                elsif org.parent_id != current_organization.id
                   # To add membership user need to be admin of that organization
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
                 end
@@ -328,10 +328,10 @@ module API
                 organization_authorize!
 
                 org = member.organization
-                if org.organization_id.nil?
+                if org.parent_id.nil?
                   # You cannot remove organization admin, only admin organization can do this!
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
-                elsif org.organization_id != current_organization.id
+                elsif org.parent_id != current_organization.id
                   # To delete membership user need to be admin of that organization
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
                 end
@@ -370,13 +370,13 @@ module API
                 org = current_organization
               end
 
-              if org.nil? || !org.organization_id.nil?
+              if org.nil? || !org.parent_id.nil?
                 # Don't need to get accounts for account of organization
                 error!({ errors: ['commercial.organization.doesnt_exist'] },
                        404)
               end
 
-              present Organization.where(organization_id: org.id),
+              present Organization.where(parent_id: org.id),
                       with: API::V2::Commercial::Entities::OrganizationAccount
             end
 
@@ -412,17 +412,17 @@ module API
                 id = current_organization.id
               end
               # Validate the organization need to be parent organization
-              parent = Organization.where(organization_id: nil, id: id)
+              parent = Organization.where(parent_id: nil, id: id)
               error!({ errors: ['organization.ability.not_permitted'] }, 401) if parent.nil? || parent.length.zero?
 
               # You cannot add organization with the same name into parent organization
-              organizations = Organization.where(name: params[:name], organization_id: id)
+              organizations = Organization.where(name: params[:name], parent_id: id)
               if !organizations.nil? && organizations.length.positive?
                 error!({ errors: ['commercial.organization.already_exist'] }, 401)
               end
 
               org = Organization.new({
-                                       organization_id: id,
+                                       parent_id: id,
                                        name: params[:name],
                                        status: params[:status]
                                      })
@@ -446,13 +446,13 @@ module API
             end
             delete do
               # You cannot remove parent organizations
-              organization = Organization.where.not(organization_id: nil).find(params[:organization_id])
+              organization = Organization.where.not(parent_id: nil).find(params[:organization_id])
               error!({ errors: ['commercial.membership.doesnt_exist'] }, 404) if organization.nil?
 
               unless admin_organization?
                 organization_authorize!
 
-                if organization.organization_id != current_organization.id
+                if organization.parent_id != current_organization.id
                   # To delete organization account you need to be admin of that organization
                   error!({ errors: ['organization.ability.not_permitted'] }, 401)
                 end

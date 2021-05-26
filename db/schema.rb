@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 2021_05_14_034514) do
 
   create_table "organizations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "oid", null: false
-    t.bigint "organization_id"
+    t.bigint "parent_id"
     t.string "name", null: false
     t.string "group"
     t.string "email"
@@ -123,7 +123,6 @@ ActiveRecord::Schema.define(version: 2021_05_14_034514) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["oid"], name: "index_organizations_on_oid", unique: true
-    t.index ["organization_id"], name: "index_organizations_on_organization_id"
   end
 
   create_table "permissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -22,10 +22,10 @@ module API::V2
 
           # Find root organization
           org = memberships.first.organization
-          if org.organization_id.nil?
+          if org.parent_id.nil?
             org
           else
-            Organization.find(org.organization_id)
+            Organization.find(org.parent_id)
           end
         end
       end

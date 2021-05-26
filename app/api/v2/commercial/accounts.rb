@@ -26,8 +26,8 @@ module API
             # Check account in the organization that user belong to
             members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
                                 .where(user_id: current_user.id)
-                                .select('memberships.*,organizations.name, organizations.organization_id')
-                                .pluck(:organization_id, :'organizations.name', :'organizations.organization_id')
+                                .select('memberships.*,organizations.name, organizations.parent_id')
+                                .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
                                 .map { |id, name, pid| { id: id, name: name, pid: pid } }
             error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
@@ -39,7 +39,7 @@ module API
               # User is organizationn admin/account
               oids = Organization.where(id: members.pluck(:id)).pluck(:id)
               members.select { |m| m[:pid].nil? }.each do |m|
-                oids.concat(Organization.where(organization_id: m[:id]).pluck(:id))
+                oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
               end
             end
 

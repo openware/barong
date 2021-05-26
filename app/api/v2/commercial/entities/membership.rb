@@ -22,7 +22,7 @@ module API::V2::Commercial
       end
 
       expose :subunit do |member|
-        if member.organization.organization_id.nil?
+        if member.organization.parent_id.nil?
           # return subunit as null for parent organization
           nil
         else

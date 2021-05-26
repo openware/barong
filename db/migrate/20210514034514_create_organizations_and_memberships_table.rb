@@ -2,7 +2,7 @@ class CreateOrganizationsAndMembershipsTable < ActiveRecord::Migration[5.2]
   def change
     create_table :organizations do |t|
       t.string     :oid,          null: false
-      t.belongs_to :organization, null: true
+      t.bigint     :parent_id,    null: true
       t.string     :name,         null: false
       t.string     :group,        null: true
       t.string     :email,        null: true

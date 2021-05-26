@@ -202,7 +202,7 @@ class User < ApplicationRecord
     account = memberships.first.organization
     return nil if account.nil?
 
-    account = Organization.find(account.organization_id) unless account.organization_id.nil?
+    account = Organization.find(account.parent_id) unless account.parent_id.nil?
     account
   end
 
