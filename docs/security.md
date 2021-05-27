@@ -53,3 +53,13 @@ For further information check the links down below:
 * https://www.owasp.org/index.php/Main_Page
 * https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#javascript-guidance-for-auto-inclusion-of-csrf-tokens-as-an-ajax-request-header
 * https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project
+
+### Sign in brute force protection
+
+To protect those users who don't have OTP enabled from brute-force login attacks we use `rack-attack` gem.
+
+By default Barong have protection of `identity/sessions` endpoint, which throttle POST requests to this endpoint by both IP address and email. Limit of requests per 60 seconds can be configured by changing of `barong_rack_attack_limit` env (default value is 5). If limit exceeded then user will receive `429` repsonse and will be able to successfully retry when 60 seconds will have passed from the first attempt.
+
+In `test` or `development` environment rack-attack protection is disabled unless `BARONG_ENABLE_RACK_ATTACK` env is set to `true`.
+
+Additional settings can be configured in the `config/initializers/rack-attack.rb` file. To get more information about possible settings check [Rack-Attack official documentation](https://github.com/rack/rack-attack#usage)
