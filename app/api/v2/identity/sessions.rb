@@ -81,11 +81,11 @@ module API::V2
         end
 
         desc 'Destroy current session',
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' }
-          ],
-          success: { code: 200, message: 'Session was destroyed' }
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 404, message: 'Record is not found' }
+             ],
+             success: { code: 200, message: 'Session was destroyed' }
         delete do
           user = User.find_by(uid: session[:uid])
           error!({ errors: ['identity.session.not_found'] }, 404) unless user
@@ -111,30 +111,28 @@ module API::V2
                    desc: 'ID Token'
         end
         post '/auth0' do
-          begin
-            # Decode ID token to get user info
-            claims = Barong::Auth0::JWT.verify(params[:id_token]).first
-            error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
-            user = User.find_by(email: claims['email'])
+          # Decode ID token to get user info
+          claims = Barong::Auth0::JWT.verify(params[:id_token]).first
+          error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
+          user = User.find_by(email: claims['email'])
 
-            # If there is no user in platform and user email verified from id_token
-            # system will create user
-            if user.blank? && claims['email_verified']
-              user = User.create!(email: claims['email'], state: 'active')
-              user.labels.create!(scope: 'private', key: 'email', value: 'verified')
-            elsif claims['email_verified'] == false
-              error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless user
-            end
-
-            activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            csrf_token = open_session(user)
-            publish_session_create(user)
-
-            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-          rescue StandardError => e
-            report_exception(e)
-            error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
+          # If there is no user in platform and user email verified from id_token
+          # system will create user
+          if user.blank? && claims['email_verified']
+            user = User.create!(email: claims['email'], state: 'active')
+            user.labels.create!(scope: 'private', key: 'email', value: 'verified')
+          elsif claims['email_verified'] == false
+            error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless user
           end
+
+          activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+          csrf_token = open_session(user)
+          publish_session_create(user)
+
+          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+        rescue StandardError => e
+          report_exception(e)
+          error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
         end
 
         namespace :switch do
@@ -147,26 +145,36 @@ module API::V2
             optional :oid,
                      type: String,
                      desc: 'Organization OID'
+            optional :uid,
+                     type: String,
+                     desc: 'User UID'
           end
           post do
-            user = User.find_by(uid: session[:uid])
+            user = User.find_by_uid(session[:uid])
             error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
             aid = params[:oid]
             unless aid.nil?
-              # Check account in the organization that user belong to
-              members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
-                                  .where(user_id: user.id)
-                                  .select('memberships.*,organizations.name, organizations.parent_id')
-                                  .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
-                                  .map { |id, name, pid| { id: id, name: name, pid: pid } }
-
               # Check user is barong organization admin or not
               if admin_organization? :read, Organization
+                # User is barong admin organization, uid is required
+                error!({ errors: ['required.params.missing'] }, 400) if params[:uid].nil?
+
+                org_user = User.find_by_uid(params[:uid])
+                error!({ errors: ['identity.session.not_found'] }, 404) unless org_user
+
                 # User is barong organization admin
                 oids = Organization.all.pluck(:id)
               else
                 # User is organizationn admin/account
+                # Check account in the organization that user belong to
+                members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+                                    .where(user_id: user.id)
+                                    .select('memberships.*,organizations.name, organizations.parent_id')
+                                    .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
+                                    .map { |id, name, pid| { id: id, name: name, pid: pid } }
+                error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
+
                 oids = Organization.where(id: members.pluck(:id)).pluck(:id)
                 members.select { |m| m[:pid].nil? }.each do |m|
                   oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
@@ -189,14 +197,9 @@ module API::V2
                 oid = organization.oid
               end
 
-              account = Membership.where(user_id: user.id, parent_id: org.id)
-              account = Membership.where(user_id: user.id) if account.length.zero?
-              account = account.first
-
               switch = {
                 oid: oid,
-                aid: aid,
-                account_role: account.role
+                aid: aid
               }
             end
 

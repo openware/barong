@@ -257,11 +257,19 @@ describe API::V2::Commercial::Organizations, type: :request do
 
     context 'user is not belong to any organization' do
       let(:test_user) { User.find(7) }
-      it 'error when user try to delete organization user' do
+
+      it 'error when no specific memberhsip' do
         params[:membership_id] = 1
         do_request
 
-        expect(response.status).not_to eq 200
+        expect(response.status).to eq(404)
+      end
+
+      it 'error when user try to delete organization user' do
+        params[:membership_id] = 2
+        do_request
+
+        expect(response.status).to eq(401)
       end
     end
 
@@ -271,14 +279,7 @@ describe API::V2::Commercial::Organizations, type: :request do
       it 'need membership_id to delete user in organization' do
         do_request
 
-        expect(response.status).to eq 422
-      end
-
-      it 'cannot delete admin of all organizations' do
-        params[:membership_id] = 1
-        do_request
-
-        expect(response.status).to eq 404
+        expect(response.status).to eq(422)
       end
 
       it 'can delete organization admin in organization' do

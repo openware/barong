@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe API::V2::Identity::Sessions do
-  include_context 'bearer authentication'
   include_context 'organization memberships'
   include_context 'geoip mock'
 
@@ -10,6 +9,16 @@ describe API::V2::Identity::Sessions do
     create(:permission, role: 'admin', verb: 'all')
     create(:permission, role: 'member', verb: 'all')
   end
+  let!(:create_memberships) do
+    # Assign users with organizations
+    create(:membership, id: 2, user_id: 2, organization_id: 1)
+    create(:membership, id: 3, user_id: 3, organization_id: 3)
+    create(:membership, id: 4, user_id: 4, organization_id: 3)
+    create(:membership, id: 5, user_id: 5, organization_id: 5)
+    create(:membership, id: 6, user_id: 6, organization_id: 3)
+    create(:membership, id: 7, user_id: 6, organization_id: 4)
+  end
+
   before do
     Rails.cache.delete('permissions')
     allow(Barong::App.config).to receive_messages(captcha: 'recaptcha')
@@ -20,6 +29,10 @@ describe API::V2::Identity::Sessions do
     let(:session_expire_time) do
       Barong::App.config.session_expire_time
     end
+    let(:sign_params) { {} }
+    let(:sign_session) do
+      post '/api/v2/identity/sessions', params: sign_params
+    end
 
     let(:params) { {} }
     let(:switch_session) { post '/api/v2/identity/sessions/switch', params: params }
@@ -28,16 +41,23 @@ describe API::V2::Identity::Sessions do
       allow(Barong::App.config).to receive_messages(captcha: 'none')
       allow(Barong::App.config).to receive_messages(captcha: 'recaptcha')
       allow(BarongConfig).to receive(:list).and_return({ 'captcha_protected_endpoints' => ['user_create'] })
-    end
 
-    it 'can perform switch session endpoint' do
-      switch_session
-
-      expect_status_to_eq 200
+      sign_session
     end
 
     context 'User does not belong to any organization' do
-      let(:test_user) { User.find(7) }
+      let(:sign_params) do
+        {
+          email: 'user1@barong.io',
+          password: 'testPassword111'
+        }
+      end
+
+      it 'can perform switch session endpoint' do
+        switch_session
+
+        expect_status_to_eq 200
+      end
 
       it 'cannot switch to organization admin of Company A' do
         params[:oid] = 'OID001'
@@ -83,37 +103,35 @@ describe API::V2::Identity::Sessions do
     end
 
     context 'User belong to the organization' do
-      let!(:create_memberships) do
-        # Assign users with organizations
-        create(:membership, id: 2, user_id: 2, organization_id: 1)
-        create(:membership, id: 3, user_id: 3, organization_id: 3)
-        create(:membership, id: 4, user_id: 4, organization_id: 3)
-        create(:membership, id: 5, user_id: 5, organization_id: 5)
-        create(:membership, id: 6, user_id: 6, organization_id: 3)
-        create(:membership, id: 7, user_id: 6, organization_id: 4)
-      end
-
       context 'User is barong admin organization' do
-        let(:test_user) { User.find(1) }
+        let(:sign_params) do
+          {
+            email: 'admin@barong.io',
+            password: 'testPassword111'
+          }
+        end
 
         it 'can switch to organization admin of Company A' do
           params[:oid] = 'OID001'
+          params[:uid] = 'IDFE10A90000'
           switch_session
 
           expect_status_to_eq 200
           expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
         end
 
-        it 'can switch to organization account of Company A1' do
+        it 'can switch to organization account Group A1' do
           params[:oid] = 'OID001AID001'
+          params[:uid] = 'IDFE10A90001'
           switch_session
 
           expect_status_to_eq 200
           expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
         end
 
-        it 'can switch to organization account of Company A2' do
+        it 'can switch to organization account Group A2' do
           params[:oid] = 'OID001AID002'
+          params[:uid] = 'IDFE10A90002'
           switch_session
 
           expect_status_to_eq 200
@@ -122,22 +140,25 @@ describe API::V2::Identity::Sessions do
 
         it 'can switch to organization admin of Company B' do
           params[:oid] = 'OID002'
+          params[:uid] = 'IDFE09F81060'
           switch_session
 
           expect_status_to_eq 200
           expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
         end
 
-        it 'can switch to organization account of Company B1' do
+        it 'can switch to organization account Group B1' do
           params[:oid] = 'OID002AID001'
+          params[:uid] = 'IDFE09F81060'
           switch_session
 
           expect_status_to_eq 200
           expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
         end
 
-        it 'can switch to organization account of Company B2' do
+        it 'can switch to organization account Group B2' do
           params[:oid] = 'OID002AID002'
+          params[:uid] = 'IDFE10B90001'
           switch_session
 
           expect_status_to_eq 200
@@ -146,6 +167,7 @@ describe API::V2::Identity::Sessions do
 
         it 'can switch session back as the individual user' do
           params[:oid] = 'OID002AID002'
+          params[:uid] = 'IDFE09F81060'
           switch_session
           expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
 
@@ -156,9 +178,11 @@ describe API::V2::Identity::Sessions do
       end
 
       context 'User is organization admin' do
-        let!(:create_memberships) do
-          # Assign user as organization admin of Company A
-          create(:membership, id: 1, user_id: 1, organization_id: 1)
+        let(:sign_params) do
+          {
+            email: 'adminA@barong.io',
+            password: 'testPassword111'
+          }
         end
 
         it 'can switch to organization admin of Company A' do
@@ -208,9 +232,11 @@ describe API::V2::Identity::Sessions do
       end
 
       context 'User is organization account' do
-        let!(:create_memberships) do
-          # Assign user as organization account of Group A1
-          create(:membership, id: 1, user_id: 1, organization_id: 3)
+        let(:sign_params) do
+          {
+            email: 'memberA1@barong.io',
+            password: 'testPassword111'
+          }
         end
 
         it 'cannot switch to organization admin of Company A' do

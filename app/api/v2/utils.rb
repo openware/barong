@@ -53,8 +53,17 @@ module API::V2
     end
 
     def admin_organization?(*args)
+      if defined?(current_user)
+        user = current_user
+      else
+        session = request.session
+        error!({ errors: ['identity.session.not_found'] }, 404) if session.nil? || session[:uid].nil?
+
+        user = User.find_by_uid(session[:uid])
+        error!({ errors: ['identity.session.not_found'] }, 404) if user.nil?
+      end
       # Check user is barong organization admin or not
-      AdminAbility.new(current_user).authorize!(*args)
+      AdminAbility.new(user).authorize!(*args)
     rescue CanCan::AccessDenied
       false
     end

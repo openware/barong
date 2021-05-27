@@ -320,6 +320,9 @@ module API
                        desc: 'membership id'
             end
             delete do
+              member = Membership.find(params[:membership_id])
+              error!({ errors: ['commercial.membership.doesnt_exist'] }, 404) if member.nil?
+
               unless admin_organization? :destroy, Organization
                 organization_authorize!
 
