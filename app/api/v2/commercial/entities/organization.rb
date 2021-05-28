@@ -6,7 +6,7 @@ module API::V2::Commercial
       expose :email,
              documentation: {
                type: 'String',
-               desc: 'Organization Conntact Email'
+               desc: 'Organization Contact Email'
              }
 
       expose :country,

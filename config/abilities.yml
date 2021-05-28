@@ -19,6 +19,8 @@ admin_permissions:
       - Permission
       - Restriction
       - Document
+      - AdminSwitchSession
+      - Organization
   admin:
     read:
       - Activity    
@@ -32,7 +34,7 @@ admin_permissions:
       - APIKey
       - Restriction
       - Document
-      - Organization
+      - AdminSwitchSession
   technical:
     read:
       - Ability

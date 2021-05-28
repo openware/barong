@@ -4,11 +4,20 @@ module API::V2
   module Resource
     module Utils
       def current_user
-        if env[:current_payload].has_key?(:uid)
-          @_current_user ||= User.find_by!(uid: env[:current_payload][:uid])
+        # To identiy origin user by env[:current_payload][:rid]
+        # if exist, user comes from switched mode use env[:current_payload][:rid]; else use [:uid]
+        if env[:current_payload].key?(:rid)
+          uid = env[:current_payload][:rid]
+        elsif env[:current_payload].key?(:uid)
+          uid = env[:current_payload][:uid]
         else
           raise(Peatio::Auth::Error, 'Middleware Error')
         end
+        @_current_user ||= User.find_by!(uid: uid)
+
+        # Set role with current switched user
+        @_current_user.role = env[:current_payload][:role] if env[:current_payload].key?(:role)
+        @_current_user
       end
 
       def current_organization

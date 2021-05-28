@@ -275,6 +275,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
         expect(response).to be_successful
         expect(Organization.where(id: 3).length).to eq(0)
+        expect(Membership.where(organization_id: 3).length).to eq(0)
       end
     end
 
@@ -294,6 +295,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
         expect(response).to be_successful
         expect(Organization.where(id: 3).length).to eq(0)
+        expect(Membership.where(organization_id: 3).length).to eq(0)
       end
 
       it 'cannot delete organization account in other organization' do

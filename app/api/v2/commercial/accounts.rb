@@ -30,8 +30,8 @@ module API
                                 .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
                                 .map { |id, name, pid| { id: id, name: name, pid: pid } }
 
-            # Check user is barong organization admin or not
-            if admin_organization? :read, Organization
+            # Verify barong admin has AdminSwitchSession ability
+            if admin_organization? :read, AdminSwitchSession
               # User is barong organization admin
               oids = Organization.all.pluck(:id)
             else

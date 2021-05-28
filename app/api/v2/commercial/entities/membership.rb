@@ -18,7 +18,7 @@ module API::V2::Commercial
       end
 
       expose :permission do |member|
-        member.role
+        member.user.role
       end
 
       expose :subunit do |member|

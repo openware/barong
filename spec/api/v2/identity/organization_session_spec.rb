@@ -9,15 +9,6 @@ describe API::V2::Identity::Sessions do
     create(:permission, role: 'admin', verb: 'all')
     create(:permission, role: 'member', verb: 'all')
   end
-  let!(:create_memberships) do
-    # Assign users with organizations
-    create(:membership, id: 2, user_id: 2, organization_id: 1)
-    create(:membership, id: 3, user_id: 3, organization_id: 3)
-    create(:membership, id: 4, user_id: 4, organization_id: 3)
-    create(:membership, id: 5, user_id: 5, organization_id: 5)
-    create(:membership, id: 6, user_id: 6, organization_id: 3)
-    create(:membership, id: 7, user_id: 6, organization_id: 4)
-  end
 
   before do
     Rails.cache.delete('permissions')
@@ -36,6 +27,16 @@ describe API::V2::Identity::Sessions do
 
     let(:params) { {} }
     let(:switch_session) { post '/api/v2/identity/sessions/switch', params: params }
+
+    let!(:create_memberships) do
+      # Assign users with organizations
+      create(:membership, id: 2, user_id: 2, organization_id: 1)
+      create(:membership, id: 3, user_id: 3, organization_id: 3)
+      create(:membership, id: 4, user_id: 4, organization_id: 3)
+      create(:membership, id: 5, user_id: 5, organization_id: 5)
+      create(:membership, id: 6, user_id: 6, organization_id: 3)
+      create(:membership, id: 7, user_id: 6, organization_id: 4)
+    end
 
     before do
       allow(Barong::App.config).to receive_messages(captcha: 'none')
@@ -102,185 +103,225 @@ describe API::V2::Identity::Sessions do
       end
     end
 
-    context 'User belong to the organization' do
-      context 'User is barong admin organization' do
-        let(:sign_params) do
-          {
-            email: 'admin@barong.io',
-            password: 'testPassword111'
-          }
-        end
-
-        it 'can switch to organization admin of Company A' do
-          params[:oid] = 'OID001'
-          params[:uid] = 'IDFE10A90000'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account Group A1' do
-          params[:oid] = 'OID001AID001'
-          params[:uid] = 'IDFE10A90001'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account Group A2' do
-          params[:oid] = 'OID001AID002'
-          params[:uid] = 'IDFE10A90002'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization admin of Company B' do
-          params[:oid] = 'OID002'
-          params[:uid] = 'IDFE09F81060'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account Group B1' do
-          params[:oid] = 'OID002AID001'
-          params[:uid] = 'IDFE09F81060'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account Group B2' do
-          params[:oid] = 'OID002AID002'
-          params[:uid] = 'IDFE10B90001'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch session back as the individual user' do
-          params[:oid] = 'OID002AID002'
-          params[:uid] = 'IDFE09F81060'
-          switch_session
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-
-          post '/api/v2/identity/sessions/switch'
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(nil)
-        end
+    context 'User is admin with AdminSwitchSession ability' do
+      let(:sign_params) do
+        {
+          email: 'admin@barong.io',
+          password: 'testPassword111'
+        }
       end
 
-      context 'User is organization admin' do
-        let(:sign_params) do
-          {
-            email: 'adminA@barong.io',
-            password: 'testPassword111'
-          }
-        end
+      it 'can switch to organization admin of Company A' do
+        params[:oid] = 'OID001'
+        switch_session
 
-        it 'can switch to organization admin of Company A' do
-          params[:oid] = 'OID001'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account of Company A1' do
-          params[:oid] = 'OID001AID001'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'can switch to organization account of Company A2' do
-          params[:oid] = 'OID001AID002'
-          switch_session
-
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
-
-        it 'cannot switch to organization admin of Company B' do
-          params[:oid] = 'OID002'
-          switch_session
-
-          expect_status_to_eq 404
-        end
-
-        it 'cannot switch to organization account of Company B1' do
-          params[:oid] = 'OID002AID001'
-          switch_session
-
-          expect_status_to_eq 404
-        end
-
-        it 'cannot switch to organization account of Company B2' do
-          params[:oid] = 'OID002AID002'
-          switch_session
-
-          expect_status_to_eq 404
-        end
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
       end
 
-      context 'User is organization account' do
-        let(:sign_params) do
-          {
-            email: 'memberA1@barong.io',
-            password: 'testPassword111'
-          }
-        end
+      it 'can switch to organization account Group A1' do
+        params[:oid] = 'OID001AID001'
+        switch_session
 
-        it 'cannot switch to organization admin of Company A' do
-          params[:oid] = 'OID001'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+      end
 
-          expect_status_to_eq 404
-        end
+      it 'can switch to organization account Group A2' do
+        params[:oid] = 'OID001AID002'
+        switch_session
 
-        it 'can switch to organization account of Company A1' do
-          params[:oid] = 'OID001AID001'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID002')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+      end
 
-          expect_status_to_eq 200
-          expect(session.instance_variable_get(:@delegate)[:aid]).to eq(params[:oid])
-        end
+      it 'can switch to organization admin of Company B' do
+        params[:oid] = 'OID002'
+        switch_session
 
-        it 'cannot switch to organization account of Company A2' do
-          params[:oid] = 'OID001AID002'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+      end
 
-          expect_status_to_eq 404
-        end
+      it 'can switch to organization account Group B1' do
+        params[:oid] = 'OID002AID001'
+        switch_session
 
-        it 'cannot switch to organization admin of Company B' do
-          params[:oid] = 'OID002'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+      end
 
-          expect_status_to_eq 404
-        end
+      it 'can switch to organization account Group B2' do
+        params[:oid] = 'OID002AID002'
+        switch_session
 
-        it 'cannot switch to organization account of Company B1' do
-          params[:oid] = 'OID002AID001'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002AID002')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+      end
 
-          expect_status_to_eq 404
-        end
+      it 'can get role of reuested user when admin switch to a user' do
+        params[:oid] = 'OID001AID001'
+        params[:uid] = 'IDFE10A90003'
+        switch_session
 
-        it 'cannot switch to organization account of Company B2' do
-          params[:oid] = 'OID002AID002'
-          switch_session
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+        expect(session.instance_variable_get(:@delegate)[:role]).to eq('accountant')
+      end
 
-          expect_status_to_eq 404
-        end
+      it 'can get default role when admin switch to a organization' do
+        params[:oid] = 'OID001AID001'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+        expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
+      end
+
+      it 'can switch session back as the individual user' do
+        params[:oid] = 'OID002AID002'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002AID002')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        post '/api/v2/identity/sessions/switch'
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('IDFE09081060')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq(nil)
+        expect(session.instance_variable_get(:@delegate)[:rif]).to eq(nil)
+      end
+    end
+
+    context 'User is organization admin' do
+      let(:sign_params) do
+        {
+          email: 'adminA@barong.io',
+          password: 'testPassword111'
+        }
+      end
+
+      it 'can switch to organization admin of Company A' do
+        params[:oid] = 'OID001'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
+      end
+
+      it 'can switch to organization account of Company A1' do
+        params[:oid] = 'OID001AID001'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
+      end
+
+      it 'can switch to organization account of Company A2' do
+        params[:oid] = 'OID001AID002'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID002')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
+      end
+
+      it 'cannot switch to organization admin of Company B' do
+        params[:oid] = 'OID002'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'cannot switch to organization account of Company B1' do
+        params[:oid] = 'OID002AID001'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'cannot switch to organization account of Company B2' do
+        params[:oid] = 'OID002AID002'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+    end
+
+    context 'User is organization account' do
+      let(:sign_params) do
+        {
+          email: 'memberA1@barong.io',
+          password: 'testPassword111'
+        }
+      end
+
+      it 'cannot switch to organization admin of Company A' do
+        params[:oid] = 'OID001'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'can switch to organization account of Company A1' do
+        params[:oid] = 'OID001AID001'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90001')
+      end
+
+      it 'cannot switch to organization account of Company A2' do
+        params[:oid] = 'OID001AID002'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'cannot switch to organization admin of Company B' do
+        params[:oid] = 'OID002'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'cannot switch to organization account of Company B1' do
+        params[:oid] = 'OID002AID001'
+        switch_session
+
+        expect_status_to_eq 404
+      end
+
+      it 'cannot switch to organization account of Company B2' do
+        params[:oid] = 'OID002AID002'
+        switch_session
+
+        expect_status_to_eq 404
       end
     end
   end

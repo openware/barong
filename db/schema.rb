@@ -101,7 +101,6 @@ ActiveRecord::Schema.define(version: 2021_05_14_034514) do
   create_table "memberships", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "organization_id", null: false
-    t.string "role", default: "member", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_memberships_on_organization_id"

@@ -56,10 +56,15 @@ module API::V2
       if defined?(current_user)
         user = current_user
       else
+        # To identiy origin user by session[:rid]
+        # if exist, user comes from switched mode use [:rid]; else use [:uid]
         session = request.session
-        error!({ errors: ['identity.session.not_found'] }, 404) if session.nil? || session[:uid].nil?
+        error!({ errors: ['identity.session.not_found'] }, 404) if session.nil?
 
-        user = User.find_by_uid(session[:uid])
+        uid = session[:rid].nil? ? session[:uid] : session[:rid]
+        error!({ errors: ['identity.session.not_found'] }, 404) if uid.nil?
+
+        user = User.find_by_uid(uid)
         error!({ errors: ['identity.session.not_found'] }, 404) if user.nil?
       end
       # Check user is barong organization admin or not

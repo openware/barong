@@ -13,7 +13,6 @@ end
 #  id              :bigint           not null, primary key
 #  user_id         :bigint
 #  organization_id :bigint           not null
-#  role            :string(255)      default("member"), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

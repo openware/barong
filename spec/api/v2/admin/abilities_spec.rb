@@ -21,7 +21,7 @@ describe API::V2::Admin::Abilities, type: :request do
         expect(response).to be_successful
         expect(result).to eq(
           'read' => %w[Level APIKey Permission],
-          'manage' => %w[User Activity Profile Label Organization]
+          'manage' => %w[User Activity Profile Label Organization AdminSwitchSession]
         )
       end
     end

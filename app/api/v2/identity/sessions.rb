@@ -27,6 +27,12 @@ module API::V2
           end
           user
         end
+
+        def user_uid
+          # To identiy origin user by session[:rid]
+          # if exist, user comes from switched mode use [:rid]; else use [:uid]
+          session[:rid].nil? ? session[:uid] : session[:rid]
+        end
       end
 
       desc 'Session related routes'
@@ -87,7 +93,7 @@ module API::V2
              ],
              success: { code: 200, message: 'Session was destroyed' }
         delete do
-          user = User.find_by(uid: session[:uid])
+          user = User.find_by(uid: user_uid)
           error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
@@ -136,7 +142,7 @@ module API::V2
         end
 
         namespace :switch do
-          desc 'Switch user session',
+          desc 'Switch user session as organization user',
                success: { code: 200, message: 'Session was switched' },
                failure: [
                  { code: 404, message: 'Record is not found' }
@@ -150,23 +156,35 @@ module API::V2
                      desc: 'User UID'
           end
           post do
-            user = User.find_by_uid(session[:uid])
+            user = User.find_by_uid(user_uid)
             error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
-            aid = params[:oid]
-            unless aid.nil?
-              # Check user is barong organization admin or not
-              if admin_organization? :read, Organization
-                # User is barong admin organization, uid is required
-                error!({ errors: ['required.params.missing'] }, 400) if params[:uid].nil?
+            switch_oid = params[:oid]
+            role = user.role
+            # Check switch session mode. Switch proceed only if params[:oid] provided
+            unless switch_oid.nil?
+              # If params[:uid] provided, Need to check user exists in membership
+              unless params[:uid].nil?
+                member = Membership.joins(:user)
+                                   .joins(:organization)
+                                   .where(users: { uid: params[:uid] }, organizations: { oid: switch_oid })
+                error!({ errors: ['identity.member.not_found'] }, 404) if member.length.zero?
+              end
 
-                org_user = User.find_by_uid(params[:uid])
-                error!({ errors: ['identity.session.not_found'] }, 404) unless org_user
-
-                # User is barong organization admin
+              # Check barong admin has AdminSwitchSession ability
+              if admin_organization? :read, AdminSwitchSession
+                # User has AdminSwitchSession ability
                 oids = Organization.all.pluck(:id)
+
+                role = if params[:uid].nil?
+                         # Admin with ability AdminSwitchSession switch to organization; set role with static configuration
+                         Barong::App.config.admin_switch_session_org_role
+                       else
+                         # Admin with ability AdminSwitchSession switch to user; set role with his role
+                         member.first.user.role
+                       end
               else
-                # User is organizationn admin/account
+                # User is organization admin/account
                 # Check account in the organization that user belong to
                 members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
                                     .where(user_id: user.id)
@@ -182,36 +200,40 @@ module API::V2
               end
               error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
 
-              org = Organization.find_by_oid(aid)
+              org = Organization.find_by_oid(switch_oid)
               error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
               error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
 
-              # Set oid as aid for default case of switched as organization admin
-              oid = aid
-
-              unless org.parent_id.nil?
+              if org.parent_id.nil?
+                # User switch as organization admin
+                organization_oid = switch_oid
+              else
+                # User switch as organization subunit
                 organization = Organization.find(org.parent_id)
                 error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
 
-                # Set oid to be root organization in case of switched as organization account
-                oid = organization.oid
+                organization_oid = organization.oid
               end
 
               switch = {
-                oid: oid,
-                aid: aid
+                uid: switch_oid,
+                oid: organization_oid,
+                rid: user.uid,
+                role: role
               }
             end
 
-            activity_record(user: user.id, action: (aid.nil? ? 'switch::user' : 'switch::orgnization'),
+            activity_record(user: user.id, action: (switch_oid.nil? ? 'switch::user' : 'switch::orgnization'),
                             result: 'succeed', topic: 'session')
             Barong::RedisSession.delete(user.uid, session.id)
             session.destroy
 
             if switch.nil?
+              # Destroy switch session mode and take user back to individual session mode
               csrf_token = open_session(user)
               publish_session_create(user)
             else
+              # Switch session mode proceed
               csrf_token = open_session_switch(user, switch)
               publish_session_switch(user, switch)
             end

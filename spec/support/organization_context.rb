@@ -4,10 +4,11 @@ shared_context 'organization memberships' do
   let!(:create_permissions) do
     create(:permission, role: 'admin')
     create(:permission, role: 'member')
+    create(:permission, role: 'accountant')
   end
 
   let!(:mock_users) do
-    create(:user, id: 1, uid: 'IDFE09F81060', email: 'admin@barong.io', password: 'testPassword111',
+    create(:user, id: 1, uid: 'IDFE09081060', email: 'admin@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'admin')
     create(:user, id: 2, uid: 'IDFE10A90000', email: 'adminA@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'member')
@@ -18,8 +19,10 @@ shared_context 'organization memberships' do
     create(:user, id: 5, uid: 'IDFE10B90001', email: 'memberB1@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'member')
     create(:user, id: 6, uid: 'IDFE10A90003', email: 'memberA1A2@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'member')
+                  password_confirmation: 'testPassword111', role: 'accountant')
     create(:user, id: 7, uid: 'IDFE0908101', email: 'user1@barong.io', password: 'testPassword111',
+                  password_confirmation: 'testPassword111', role: 'member')
+    create(:user, id: 8, uid: 'IDFE0000000', email: 'superadmin@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'member')
   end
 

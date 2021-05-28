@@ -31,11 +31,12 @@ module Barong
       auth_owner = method("#{auth_type}_owner").call
 
       switchs = {}
-      if session[:oid] && session[:aid]
+      if session[:oid] && session[:rid]
         switchs = {
+          uid: session[:uid],
           oid: session[:oid],
-          aid: session[:aid],
-          account_role: session[:account_role]
+          rid: session[:rid],
+          role: session[:role]
         }
       end
       payload = auth_owner.as_payload.merge(switchs)
@@ -46,9 +47,9 @@ module Barong
     def cookie_owner
       validate_csrf!
 
-      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
+      error!({ errors: ['authz.invalid_session'] }, 401) unless user_uid
 
-      user = User.find_by!(uid: session[:uid])
+      user = User.find_by!(uid: user_uid)
       Rails.logger.debug "User #{user} authorization via cookies"
 
       validate_session!
@@ -68,7 +69,7 @@ module Barong
              find_ip.include?(remote_ip)
 
         # Delete session from additional redis list
-        Barong::RedisSession.delete(session[:uid], session.id.to_s)
+        Barong::RedisSession.delete(user_uid, session.id.to_s)
 
         session.destroy
 
@@ -82,7 +83,7 @@ module Barong
 
       # Update session key expiration date
       session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
-      Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
+      Barong::RedisSession.update(user_uid, session.id.to_s, session[:expire_time])
     end
 
     def find_ip
@@ -127,13 +128,14 @@ module Barong
     def validate_csrf!
       return unless Barong::App.config.csrf_protection && @request.env['REQUEST_METHOD'].in?(STATE_CHANGING_VERBS)
 
+      uid = user_uid
       unless headers['X-CSRF-Token']
-        Rails.logger.info("CSRF attack warning! Missing token for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        Rails.logger.info("CSRF attack warning! Missing token for uid: #{uid} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
         error!({ errors: ['authz.missing_csrf_token'] }, 401)
       end
 
       unless headers['X-CSRF-Token'] == session[:csrf_token]
-        Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{uid} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
         error!({ errors: ['authz.csrf_token_mismatch'] }, 401)
       end
     end
@@ -267,6 +269,12 @@ module Barong
 
     def session
       @request.session
+    end
+
+    def user_uid
+      # To identiy origin user by session[:rid]
+      # if exist, user comes from switched mode use [:rid]; else use [:uid]
+      session[:rid].nil? ? session[:uid] : session[:rid]
     end
   end
 end

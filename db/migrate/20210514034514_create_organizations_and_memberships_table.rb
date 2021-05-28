@@ -19,7 +19,6 @@ class CreateOrganizationsAndMembershipsTable < ActiveRecord::Migration[5.2]
     create_table :memberships do |t|
       t.belongs_to :user
       t.belongs_to :organization, null: false
-      t.string     :role,         default: 'member', null: false
       t.timestamps
     end
   end
