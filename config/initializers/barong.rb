@@ -140,7 +140,7 @@ ActionMailer::Base.smtp_settings = {
   port: Barong::App.config.smtp_port,
   user_name: Barong::App.config.smtp_user,
   password: Barong::App.config.smtp_password
-}
+}.delete_if { |k,v| v.blank? }
 
 Barong::GeoIP.lang = Barong::App.config.geoip_lang
 
