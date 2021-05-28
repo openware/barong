@@ -18,3 +18,15 @@ test:
 production:
   <<: *default
   database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
+
+bitzlato_development:
+  <<: *default
+  database: bitzlato_development
+
+bitzlato_test:
+  <<: *default
+  database: bitzlato_test
+
+bitzlato_production:
+  <<: *default
+  url: <%= ENV['BITZLATO_DATABASE_URL'] %>
