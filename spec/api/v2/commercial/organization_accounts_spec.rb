@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe API::V2::Commercial::Organizations, type: :request do
+describe API::V2::Commercial::Account, type: :request do
   include_context 'organization memberships'
 
   let(:test_user) { create(:user) }
@@ -13,8 +13,8 @@ describe API::V2::Commercial::Organizations, type: :request do
   end
   let(:auth_header) { { 'Authorization' => "Bearer #{jwt_token}" } }
 
-  describe 'GET /api/v2/commercial/organization/accounts' do
-    let(:do_request) { get '/api/v2/commercial/organization/accounts', headers: auth_header, params: params }
+  describe 'GET /api/v2/organization/account' do
+    let(:do_request) { get '/api/v2/organization/account', headers: auth_header, params: params }
 
     let!(:create_memberships) do
 
@@ -100,8 +100,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organization/accounts' do
-    let(:do_request) { post '/api/v2/commercial/organization/accounts', headers: auth_header, params: params }
+  describe 'POST /api/v2/organization/account' do
+    let(:do_request) { post '/api/v2/organization/account', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -138,7 +138,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
         do_request
 
-        expect(response.status).to eq 401
+        expect(response.status).to eq 404
       end
 
       it 'cannot add the same organization name in the same parent' do
@@ -160,7 +160,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         org = Organization.last
 
         expect(response).to be_successful
-        expect(org.parent_id).to eq(1)
+        expect(org.parent_organization).to eq(1)
         expect(org.name).to eq('Group A3')
       end
 
@@ -173,7 +173,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         org = Organization.last
 
         expect(response).to be_successful
-        expect(org.parent_id).to eq(2)
+        expect(org.parent_organization).to eq(2)
         expect(org.name).to eq('Group B3')
       end
 
@@ -184,7 +184,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
         do_request
 
-        expect(response.status).to eq 401
+        expect(response.status).to eq 404
       end
     end
 
@@ -202,7 +202,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       end
 
       it 'can add organization in parent organization' do
-        params[:organization_id] = 1
         params[:name] = 'Group A3'
         params[:status] = 'active'
 
@@ -210,7 +209,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         org = Organization.last
 
         expect(response).to be_successful
-        expect(org.parent_id).to eq(1)
+        expect(org.parent_organization).to eq(1)
         expect(org.name).to eq('Group A3')
       end
     end
@@ -219,7 +218,6 @@ describe API::V2::Commercial::Organizations, type: :request do
       let(:test_user) { User.find(5) }
 
       it 'cannot add organization in parent organization' do
-        params[:organization_id] = 2
         params[:name] = 'Group B3'
         params[:status] = 'active'
 
@@ -230,8 +228,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'DELETE /api/v2/commercial/organization/accounts' do
-    let(:do_request) { delete '/api/v2/commercial/organization/accounts', headers: auth_header, params: params }
+  describe 'DELETE /api/v2/organization/account' do
+    let(:do_request) { delete '/api/v2/organization/account', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations

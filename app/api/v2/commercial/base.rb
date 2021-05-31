@@ -22,6 +22,8 @@ module API::V2
 
       mount Commercial::Accounts
       mount Commercial::Organizations
+      mount Commercial::Account
+      mount Commercial::Users
     end
   end
 end

@@ -172,7 +172,7 @@ module API::V2
               end
 
               # Check barong admin has AdminSwitchSession ability
-              if admin_organization? :read, AdminSwitchSession
+              if admin_organization? :read, ::AdminSwitchSession
                 # User has AdminSwitchSession ability
                 oids = Organization.all.pluck(:id)
 
@@ -188,14 +188,14 @@ module API::V2
                 # Check account in the organization that user belong to
                 members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
                                     .where(user_id: user.id)
-                                    .select('memberships.*,organizations.name, organizations.parent_id')
-                                    .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
+                                    .select('memberships.*,organizations.name, organizations.parent_organization')
+                                    .pluck(:organization_id, :'organizations.name', :'organizations.parent_organization')
                                     .map { |id, name, pid| { id: id, name: name, pid: pid } }
                 error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
                 oids = Organization.where(id: members.pluck(:id)).pluck(:id)
                 members.select { |m| m[:pid].nil? }.each do |m|
-                  oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
+                  oids.concat(Organization.where(parent_organization: m[:id]).pluck(:id))
                 end
               end
               error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
@@ -204,12 +204,12 @@ module API::V2
               error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
               error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
 
-              if org.parent_id.nil?
+              if org.parent_organization.nil?
                 # User switch as organization admin
                 organization_oid = switch_oid
               else
                 # User switch as organization subunit
-                organization = Organization.find(org.parent_id)
+                organization = Organization.find(org.parent_organization)
                 error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
 
                 organization_oid = organization.oid

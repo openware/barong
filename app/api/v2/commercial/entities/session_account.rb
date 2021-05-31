@@ -22,7 +22,7 @@ module API::V2::Commercial
              }
     end
 
-    class Account < AccountBase
+    class SessionAccount < AccountBase
       expose :uids do |member|
         member.memberships.map { |m| m.user.uid }
       end

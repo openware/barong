@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe API::V2::Commercial::Organizations, type: :request do
+describe API::V2::Commercial::Users, type: :request do
   include_context 'organization memberships'
 
   let(:test_user) { create(:user) }
@@ -13,8 +13,8 @@ describe API::V2::Commercial::Organizations, type: :request do
   end
   let(:auth_header) { { 'Authorization' => "Bearer #{jwt_token}" } }
 
-  describe 'GET /api/v2/commercial/organization/users' do
-    let(:do_request) { get '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'GET /api/v2/organization/users' do
+    let(:do_request) { get '/api/v2/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -127,8 +127,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organization/users' do
-    let(:do_request) { post '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'POST /api/v2/organization/users' do
+    let(:do_request) { post '/api/v2/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -242,8 +242,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'DELETE /api/v2/commercial/organization/users' do
-    let(:do_request) { delete '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'DELETE /api/v2/organization/users' do
+    let(:do_request) { delete '/api/v2/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :organization do
     id {}
     oid {}
-    parent_id {}
+    parent_organization {}
     name {}
     status { 'active' }
   end

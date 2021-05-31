@@ -34,7 +34,7 @@ admin_permissions:
       - APIKey
       - Restriction
       - Document
-      - AdminSwitchSession
+      - Organization
   technical:
     read:
       - Ability

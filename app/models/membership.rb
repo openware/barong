@@ -3,6 +3,12 @@
 class Membership < ApplicationRecord
   belongs_to :organization
   belongs_to :user
+
+  scope :with_all_organizations, lambda {
+                                   joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+                                 }
+  scope :with_organizations, ->(id) { where(organization_id: id) }
+  scope :with_users, ->(id) { where(user_id: id) }
 end
 
 # == Schema Information
