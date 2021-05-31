@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API::V2::Commercial
+module API::V2::Organization
   module Entities
     class AccountBase < API::V2::Entities::Base
       expose :id,
@@ -22,7 +22,7 @@ module API::V2::Commercial
              }
     end
 
-    class Account < AccountBase
+    class SessionAccount < AccountBase
       expose :uids do |member|
         member.memberships.map { |m| m.user.uid }
       end

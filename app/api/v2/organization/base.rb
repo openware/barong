@@ -3,9 +3,9 @@
 require_dependency 'barong/middleware/jwt_authenticator'
 
 module API::V2
-  module Commercial
+  module Organization
     class Base < Grape::API
-      PREFIX = '/commercial'
+      PREFIX = '/organization'
 
       use Barong::Middleware::JWTAuthenticator, \
           pubkey: Rails.configuration.x.keystore.public_key
@@ -20,8 +20,10 @@ module API::V2
 
       do_not_route_options!
 
-      mount Commercial::Accounts
-      mount Commercial::Organizations
+      mount API::V2::Organization::Accounts
+      mount API::V2::Organization::Organizations
+      mount API::V2::Organization::Account
+      mount API::V2::Organization::Users
     end
   end
 end

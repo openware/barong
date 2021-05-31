@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe API::V2::Commercial::Organizations, type: :request do
+describe API::V2::Organization::Users, type: :request do
   include_context 'organization memberships'
 
   let(:test_user) { create(:user) }
@@ -13,8 +13,8 @@ describe API::V2::Commercial::Organizations, type: :request do
   end
   let(:auth_header) { { 'Authorization' => "Bearer #{jwt_token}" } }
 
-  describe 'GET /api/v2/commercial/organization/users' do
-    let(:do_request) { get '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'GET /api/v2/organization/users' do
+    let(:do_request) { get '/api/v2/organization/users', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -127,8 +127,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organization/users' do
-    let(:do_request) { post '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'POST /api/v2/organization/user' do
+    let(:do_request) { post '/api/v2/organization/user', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -182,7 +182,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(user_id: 7, organization_id: 2).length).to eq(1)
+        expect(::Membership.where(user_id: 7, organization_id: 2).length).to eq(1)
       end
 
       it 'can add organization account in organization' do
@@ -192,7 +192,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(user_id: 3, organization_id: 3).length).to eq(1)
+        expect(::Membership.where(user_id: 3, organization_id: 3).length).to eq(1)
       end
     end
 
@@ -224,7 +224,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(user_id: 7, organization_id: 3).length).to eq(1)
+        expect(::Membership.where(user_id: 7, organization_id: 3).length).to eq(1)
       end
     end
 
@@ -242,8 +242,8 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'DELETE /api/v2/commercial/organization/users' do
-    let(:do_request) { delete '/api/v2/commercial/organization/users', headers: auth_header, params: params }
+  describe 'DELETE /api/v2/organization/user' do
+    let(:do_request) { delete '/api/v2/organization/user', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -287,7 +287,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(id: 2).length).to eq(0)
+        expect(::Membership.where(id: 2).length).to eq(0)
       end
 
       it 'can delete organization user in organization' do
@@ -295,7 +295,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(id: 3).length).to eq(0)
+        expect(::Membership.where(id: 3).length).to eq(0)
       end
     end
 
@@ -314,7 +314,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response).to be_successful
-        expect(Membership.where(id: 3).length).to eq(0)
+        expect(::Membership.where(id: 3).length).to eq(0)
       end
 
       it 'cannot delete organization user in other organization' do

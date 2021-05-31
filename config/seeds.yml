@@ -11,6 +11,133 @@
 #     state: "active"
 #     level: 1
 
+users:
+  - email: "admin@barong.io"
+    uid: "IDFE09081060"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "admin"
+    state: "active"
+    level: 1
+  - email: "adminA@barong.io"
+    uid: "IDFE10A90000"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-admin"
+    state: "active"
+    level: 1
+  - email: "memberA1@barong.io"
+    uid: "IDFE10A90001"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-member"
+    state: "active"
+    level: 1
+  - email: "memberA2@barong.io"
+    uid: "IDFE10A90002"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-member"
+    state: "active"
+    level: 1
+  - email: "memberB1@barong.io"
+    uid: "IDFE10B90001"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-member"
+    state: "active"
+    level: 1
+  - email: "memberA1A2@barong.io"
+    uid: "IDFE10A90003"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-member"
+    state: "active"
+    level: 1
+  - email: "user1@barong.io"
+    uid: "IDFE0908101"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "member"
+    state: "active"
+    level: 1
+  - email: "superadmin@barong.io"
+    uid: "IDFE0000000"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "superadmin"
+    state: "active"
+    level: 1
+
+profiles:
+  - user_id: 1
+    first_name: "Admin"
+    last_name: "God"
+  - user_id: 2
+    first_name: "Admin"
+    last_name: "A"
+  - user_id: 3
+    first_name: "Member"
+    last_name: "A1"
+  - user_id: 4
+    first_name: "Member"
+    last_name: "A2"
+  - user_id: 5
+    first_name: "Member"
+    last_name: "B1"
+  - user_id: 6
+    first_name: "Member"
+    last_name: "A1A2"
+  - user_id: 7
+    first_name: "User"
+    last_name: "One"
+
+organizations:
+  - oid: "OID001"
+    name: "Company A"
+    email: "company.a@barong.io"
+    country: "France"
+    city: "Paris"
+    group: "vip-0"
+    phone: "+380446784849"
+    address: "France"
+    postcode: "83819"
+    status: "active"
+  - oid: "OID002"
+    name: "Company B"
+    email: "company.b@barong.io"
+    country: "Ukraine"
+    city: "Kiev"
+    group: "vip-0"
+    phone: "+380446784850"
+    address: "Ukraine"
+    postcode: "93819"
+    status: "active"
+  - oid: "OID001AID001"
+    parent_organization: 1
+    name: "Group A1"
+    status: "active"
+  - oid: "OID001AID002"
+    parent_organization: 1
+    name: "Group A2"
+    status: "active"
+  - oid: "OID002AID002"
+    parent_organization: 2
+    name: "Group B1"
+    status: "active"
+
+memberships:
+  - user_id: 2
+    organization_id: 1
+    role: admin
+  - user_id: 3
+    organization_id: 3
+    role: member
+  - user_id: 4
+    organization_id: 4
+    role: member
+  - user_id: 5
+    organization_id: 5
+    role: member
+  - user_id: 6
+    organization_id: 3
+    role: accountant
+  - user_id: 6
+    organization_id: 4
+    role: member
+
 levels:
   - key: email
     value: verified
@@ -259,6 +386,8 @@ permissions:
  - { role: broker, verb: all, path: api/v2/applogic, action: accept }
 
  # MEMBER
+ - { role: member, verb: all, path: api/v2, action: accept }
+ - { role: member, verb: all, path: barong, action: accept }
  - { role: member, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: member, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: member, verb: all, path: api/v2/finex/market, action: accept }
@@ -306,3 +435,42 @@ permissions:
  - { role: sa_maker, verb: get, path: api/v2/ranger, action: accept }
  # applogic access
  - { role: sa_maker, verb: all, path: api/v2/applogic, action: accept }
+
+ # ORG-ADMIN
+ - { role: org-admin, verb: all, path: api/v2, action: accept }
+ - { role: org-admin, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: org-admin, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: org-admin, verb: all, path: api/v2/finex/market, action: accept }
+ - { role: org-admin, verb: all, path: api/v2/barong/resource, action: accept }
+ # ranger access
+ - { role: org-admin, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: org-admin, verb: get, path: api/v2/open_finance, action: accept }
+ # applogic access
+ - { role: org-admin, verb: all, path: api/v2/applogic, action: accept }
+
+  # ORG-MEMBER
+ - { role: org-member, verb: all, path: api/v2, action: accept }
+ - { role: org-member, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: org-member, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: org-member, verb: all, path: api/v2/finex/market, action: accept }
+ - { role: org-member, verb: all, path: api/v2/barong/resource, action: accept }
+ # ranger access
+ - { role: org-member, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: org-member, verb: get, path: api/v2/open_finance, action: accept }
+ # applogic access
+ - { role: org-member, verb: all, path: api/v2/applogic, action: accept }
+
+   # ORG-ACCOUNTANT
+ - { role: org-accountant, verb: all, path: api/v2, action: accept }
+ - { role: org-accountant, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: org-accountant, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: org-accountant, verb: all, path: api/v2/finex/market, action: accept }
+ - { role: org-accountant, verb: all, path: api/v2/barong/resource, action: accept }
+ # ranger access
+ - { role: org-accountant, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: org-accountant, verb: get, path: api/v2/open_finance, action: accept }
+ # applogic access
+ - { role: org-accountant, verb: all, path: api/v2/applogic, action: accept }

@@ -129,7 +129,6 @@ Barong::App.define do |config|
 
   # Organization configuration ----------------------------------------
   config.set(:oid_prefix, 'OID', regex: /^[A-z]{2,6}$/)
-  config.set(:admin_switch_session_org_role, 'member')
 end
 
 # KYCAID configuring

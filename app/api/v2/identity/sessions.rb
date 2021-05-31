@@ -160,66 +160,85 @@ module API::V2
             error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
             switch_oid = params[:oid]
-            role = user.role
+            uid = switch_oid
             # Check switch session mode. Switch proceed only if params[:oid] provided
             unless switch_oid.nil?
-              # If params[:uid] provided, Need to check user exists in membership
-              unless params[:uid].nil?
-                member = Membership.joins(:user)
-                                   .joins(:organization)
-                                   .where(users: { uid: params[:uid] }, organizations: { oid: switch_oid })
-                error!({ errors: ['identity.member.not_found'] }, 404) if member.length.zero?
+              # Check user has AdminSwitchSession/SwitchSession ability
+              is_admin_switch_session = organization_ability? :read, ::AdminSwitchSession
+              is_switch_session = organization_ability? :read, ::SwitchSession
+              if !is_admin_switch_session && !is_switch_session
+                error!({ errors: ['organization.ability.not_permitted'] }, 401)
               end
 
-              # Check barong admin has AdminSwitchSession ability
-              if admin_organization? :read, AdminSwitchSession
-                # User has AdminSwitchSession ability
-                oids = Organization.all.pluck(:id)
+              # set default role with user's role
+              role = user.role
 
-                role = if params[:uid].nil?
-                         # Admin with ability AdminSwitchSession switch to organization; set role with static configuration
-                         Barong::App.config.admin_switch_session_org_role
-                       else
-                         # Admin with ability AdminSwitchSession switch to user; set role with his role
-                         member.first.user.role
-                       end
+              org = ::Organization.find_by_oid(switch_oid)
+              error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
+
+              if is_admin_switch_session
+                # User has AdminSwitchSession ability; Ignore checking the ::Membership table
+                oids = ::Organization.all.pluck(:id)
+
+                if params[:uid].nil?
+                  # Admin with ability AdminSwitchSession switch to organization
+                  role = org.parent_organization.nil? ? 'org-admin' : 'org-member'
+                else
+                  # Need to check user exists in membership
+                  member = ::Membership.joins(:user)
+                                     .joins(:organization)
+                                     .where(users: { uid: params[:uid] }, organizations: { oid: switch_oid })
+                  error!({ errors: ['identity.member.not_found'] }, 404) if member.length.zero?
+
+                  # Admin with ability AdminSwitchSession switch to user; set role with his role
+                  uid = member.first.user.uid
+                  role = member.first.user.role
+                end
               else
                 # User is organization admin/account
                 # Check account in the organization that user belong to
-                members = Membership.joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
-                                    .where(user_id: user.id)
-                                    .select('memberships.*,organizations.name, organizations.parent_id')
-                                    .pluck(:organization_id, :'organizations.name', :'organizations.parent_id')
+                members = ::Membership.with_all_organizations
+                                    .with_users(user.id)
+                                    .select('memberships.*,organizations.name, organizations.parent_organization')
+                                    .pluck(:organization_id, :'organizations.name', :'organizations.parent_organization')
                                     .map { |id, name, pid| { id: id, name: name, pid: pid } }
                 error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
 
-                oids = Organization.where(id: members.pluck(:id)).pluck(:id)
+                oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
                 members.select { |m| m[:pid].nil? }.each do |m|
-                  oids.concat(Organization.where(parent_id: m[:id]).pluck(:id))
+                  oids.concat(::Organization.with_parents(m[:id]).pluck(:id))
                 end
+
+                member = ::Membership.with_users(user.id)
+                                   .joins(:organization)
+                                   .where(organizations: { oid: switch_oid })
+                role = if member.length.zero?
+                         org.parent_organization.nil? ? 'org-admin' : 'org-member'
+                       else
+                         # Set role as organization role
+                         role = member.first.role
+                       end
               end
               error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
-
-              org = Organization.find_by_oid(switch_oid)
-              error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
               error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
 
-              if org.parent_id.nil?
+              if org.parent_organization.nil?
                 # User switch as organization admin
                 organization_oid = switch_oid
               else
                 # User switch as organization subunit
-                organization = Organization.find(org.parent_id)
+                organization = ::Organization.find(org.parent_organization)
                 error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
 
                 organization_oid = organization.oid
               end
 
               switch = {
-                uid: switch_oid,
+                uid: uid,
                 oid: organization_oid,
                 rid: user.uid,
-                role: role
+                role: role,
+                user_role: user.role
               }
             end
 

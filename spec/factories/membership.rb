@@ -5,5 +5,6 @@ FactoryBot.define do
     id {}
     user_id {}
     organization_id {}
+    role { 'member' }
   end
 end

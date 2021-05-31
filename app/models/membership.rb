@@ -3,6 +3,12 @@
 class Membership < ApplicationRecord
   belongs_to :organization
   belongs_to :user
+
+  scope :with_all_organizations, lambda {
+                                   joins('LEFT JOIN organizations ON organizations.id = memberships.organization_id')
+                                 }
+  scope :with_organizations, ->(id) { where(organization_id: id) }
+  scope :with_users, ->(id) { where(user_id: id) }
 end
 
 # == Schema Information
@@ -13,6 +19,7 @@ end
 #  id              :bigint           not null, primary key
 #  user_id         :bigint
 #  organization_id :bigint           not null
+#  role            :string(255)      default("member"), not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

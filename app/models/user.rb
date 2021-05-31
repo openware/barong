@@ -196,14 +196,12 @@ class User < ApplicationRecord
   def organization
     return @current_organization unless @current_organization.nil?
 
-    return nil if memberships.empty?
-    return nil if memberships.first.organization_id.nil?
+    return nil if memberships.empty? || memberships.first.organization_id.nil?
 
-    account = memberships.first.organization
-    return nil if account.nil?
+    org = memberships.first.organization
+    return org if org.parent_organization.nil?
 
-    account = Organization.find(account.parent_id) unless account.parent_id.nil?
-    account
+    ::Organization.find(org.parent_organization)
   end
 
   private

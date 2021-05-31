@@ -23,7 +23,7 @@ module API::V2
       def current_organization
         if env[:current_payload].key?(:oid)
           # Determine organization from session first
-          Organization.find_by!(oid: env[:current_payload][:oid])
+          ::Organization.find_by!(oid: env[:current_payload][:oid])
         else
           # User logged in as individual mode. Find user in organization
           memberships = current_user.memberships
@@ -31,10 +31,10 @@ module API::V2
 
           # Find root organization
           org = memberships.first.organization
-          if org.parent_id.nil?
+          if org.parent_organization.nil?
             org
           else
-            Organization.find(org.parent_id)
+            ::Organization.find(org.parent_organization)
           end
         end
       end

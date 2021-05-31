@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-describe API::V2::Commercial::Organizations, type: :request do
+describe API::V2::Organization::Organizations, type: :request do
   include_context 'bearer authentication'
   include_context 'organization memberships'
 
-  describe 'GET /api/v2/commercial/organizations' do
-    let(:do_request) { get '/api/v2/commercial/organizations', headers: auth_header }
+  describe 'GET /api/v2/organization/all' do
+    let(:do_request) { get '/api/v2/organization/all', headers: auth_header }
 
     it 'error when account not found' do
       do_request
@@ -55,10 +55,10 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organizations' do
+  describe 'POST /api/v2/organization' do
     context 'when params is missing' do
       it 'renders an error' do
-        post '/api/v2/commercial/organizations',
+        post '/api/v2/organization',
              headers: auth_header
         expect_status_to_eq 422
       end
@@ -68,7 +68,7 @@ describe API::V2::Commercial::Organizations, type: :request do
       context 'user is normal user' do
         let(:test_user) { User.find(7) }
         it 'deny to create organization for normal user' do
-          post '/api/v2/commercial/organizations',
+          post '/api/v2/organization',
                params: { name: 'Company Test', group: 'vip-1' },
                headers: auth_header
 
@@ -79,12 +79,12 @@ describe API::V2::Commercial::Organizations, type: :request do
       context 'user is barong organization admin' do
         let(:test_user) { User.find(1) }
         it 'create organization for barong organization admin' do
-          post '/api/v2/commercial/organizations',
+          post '/api/v2/organization',
                params: { name: 'Company Test', group: 'vip-1' },
                headers: auth_header
 
           expect(response.status).to eq(201)
-          expect(Organization.last.name).to eq('Company Test')
+          expect(::Organization.last.name).to eq('Company Test')
         end
       end
     end

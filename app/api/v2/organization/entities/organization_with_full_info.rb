@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module API::V2::Commercial
+module API::V2::Organization
   module Entities
     class OrganizationWithFullInfo < API::V2::Entities::Organization
       expose :email,

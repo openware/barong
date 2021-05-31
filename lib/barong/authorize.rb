@@ -36,7 +36,8 @@ module Barong
           uid: session[:uid],
           oid: session[:oid],
           rid: session[:rid],
-          role: session[:role]
+          role: session[:role],
+          user_role: session[:user_role]
         }
       end
       payload = auth_owner.as_payload.merge(switchs)

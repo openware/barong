@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-describe API::V2::Commercial::Organizations, type: :request do
+describe API::V2::Organization::Organizations, type: :request do
   include_context 'bearer authentication'
   include_context 'organization memberships'
 
-  describe 'GET /api/v2/commercial/organization' do
+  describe 'GET /api/v2/organization' do
     let(:params) { {} }
-    let(:do_request) { get '/api/v2/commercial/organization', headers: auth_header, params: params }
+    let(:do_request) { get '/api/v2/organization', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -20,7 +20,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
     context 'when params is missing' do
       it 'renders an error' do
-        get '/api/v2/commercial/organization', headers: auth_header
+        get '/api/v2/organization', headers: auth_header
 
         expect(response.status).not_to eq(200)
       end
@@ -97,10 +97,10 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organization/update' do
+  describe 'PUT /api/v2/organization/update' do
     context 'when params is missing' do
       it 'renders an error' do
-        post '/api/v2/commercial/organization/update', headers: auth_header
+        put '/api/v2/organization/update', headers: auth_header
 
         expect_status_to_eq 422
       end
@@ -108,7 +108,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
     context 'user is normal user' do
       let(:do_request) do
-        post '/api/v2/commercial/organization/update',
+        put '/api/v2/organization/update',
              headers: auth_header,
              params: { organization_id: 1 }
       end
@@ -124,7 +124,7 @@ describe API::V2::Commercial::Organizations, type: :request do
     context 'user is barong admin organization user' do
       let(:params) { { organization_id: 1 } }
       let(:do_request) do
-        post '/api/v2/commercial/organization/update',
+        put '/api/v2/organization/update',
              headers: auth_header,
              params: params
       end
@@ -135,7 +135,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
-        expect(Organization.find(1).name).to eq('Company Test')
+        expect(::Organization.find(1).name).to eq('Company Test')
       end
 
       it 'error when data not change' do
@@ -149,7 +149,7 @@ describe API::V2::Commercial::Organizations, type: :request do
     context 'user is organization admin' do
       let(:params) { {} }
       let(:do_request) do
-        post '/api/v2/commercial/organization/update',
+        put '/api/v2/organization/update',
              headers: auth_header,
              params: params
       end
@@ -173,7 +173,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
-        expect(Organization.find(3).name).to eq('Company Test')
+        expect(::Organization.find(3).name).to eq('Company Test')
       end
 
       it 'cannot update organization account details of other organization' do
@@ -186,10 +186,10 @@ describe API::V2::Commercial::Organizations, type: :request do
     end
   end
 
-  describe 'POST /api/v2/commercial/organization/setting' do
+  describe 'PUT /api/v2/organization/settings' do
     context 'when params is missing' do
       it 'renders an error' do
-        post '/api/v2/commercial/organization/setting', headers: auth_header
+        put '/api/v2/organization/settings', headers: auth_header
 
         expect_status_to_eq 422
       end
@@ -197,7 +197,7 @@ describe API::V2::Commercial::Organizations, type: :request do
 
     context 'user is normal user' do
       let(:do_request) do
-        post '/api/v2/commercial/organization/setting',
+        put '/api/v2/organization/settings',
              headers: auth_header,
              params: { organization_id: 1 }
       end
@@ -213,7 +213,7 @@ describe API::V2::Commercial::Organizations, type: :request do
     context 'user is barong admin organization user' do
       let(:params) { { organization_id: 1 } }
       let(:do_request) do
-        post '/api/v2/commercial/organization/setting',
+        put '/api/v2/organization/settings',
              headers: auth_header,
              params: params
       end
@@ -224,7 +224,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
-        expect(Organization.find(1).status).to eq('banned')
+        expect(::Organization.find(1).status).to eq('banned')
       end
 
       it 'update organization group' do
@@ -232,7 +232,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
-        expect(Organization.find(1).group).to eq('vip-1')
+        expect(::Organization.find(1).group).to eq('vip-1')
       end
 
       it 'error when data not change' do
@@ -246,7 +246,7 @@ describe API::V2::Commercial::Organizations, type: :request do
     context 'user is organization admin' do
       let(:params) { {} }
       let(:do_request) do
-        post '/api/v2/commercial/organization/setting',
+        put '/api/v2/organization/settings',
              headers: auth_header,
              params: params
       end
@@ -270,7 +270,7 @@ describe API::V2::Commercial::Organizations, type: :request do
         do_request
 
         expect(response.status).to eq(200)
-        expect(Organization.find(3).status).to eq('banned')
+        expect(::Organization.find(3).status).to eq('banned')
       end
 
       it 'cannot update organization account details of other organization' do

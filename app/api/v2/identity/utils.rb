@@ -35,6 +35,7 @@ module API::V2
           "oid": switch[:oid],
           "rid": switch[:rid],
           "role": switch[:role],
+          "user_role": switch[:user_role],
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
           "expire_time": expire_time,

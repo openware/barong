@@ -121,5 +121,35 @@ module Barong
         end
       end
     end
+
+    def seed_profiles
+      logger.info 'Seeding profiles'
+      seeds['profiles']&.each do |seed|
+        logger.info '---'
+
+        profile = Profile.new(seed)
+        profile.save
+      end
+    end
+
+    def seed_organizations
+      logger.info 'Seeding organizations'
+      seeds['organizations']&.each do |seed|
+        logger.info '---'
+
+        org = ::Organization.new(seed)
+        org.save
+      end
+    end
+
+    def seed_memberships
+      logger.info 'Seeding memberships'
+      seeds['memberships']&.each do |seed|
+        logger.info '---'
+
+        member = ::Membership.new(seed)
+        member.save
+      end
+    end
   end
 end
