@@ -14,7 +14,8 @@ class User < ApplicationRecord
   has_many  :labels,              dependent: :destroy
   has_many  :activities,          dependent: :destroy
   has_many  :service_accounts,    dependent: :destroy, foreign_key: "owner_id"
-  has_many  :api_keys,             dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
+  has_many  :api_keys,            dependent: :destroy, as: :key_holder_account, class_name: 'APIKey'
+  has_many  :memberships
 
   validates_length_of :data, maximum: 1024
   validate :role_exists
@@ -188,6 +189,19 @@ class User < ApplicationRecord
 
   def drafted_profile
     self.profiles&.find_by(state: 'drafted')
+  end
+
+  attr_writer :current_organization
+
+  def organization
+    return @current_organization unless @current_organization.nil?
+
+    return nil if memberships.empty? || memberships.first.organization_id.nil?
+
+    org = memberships.first.organization
+    return org if org.parent_organization.nil?
+
+    Organization.find(org.parent_organization)
   end
 
   private

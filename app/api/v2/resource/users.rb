@@ -29,7 +29,8 @@ module API::V2
         desc 'Returns current user',
           success: API::V2::Entities::UserWithFullInfo
         get '/me' do
-          present current_user, with: API::V2::Entities::UserWithFullInfo
+          current_user.current_organization = current_organization
+          present current_user, with: API::V2::Entities::UserWithOrganization
         end
 
         desc 'Updates current user data field',
