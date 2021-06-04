@@ -53,17 +53,14 @@ set :assets_roles, []
 
 set :init_system, :systemd
 
-set :systemd_sidekiq_role, :app
-set :systemd_sidekiq_instances, -> { %i[cron_job] }
-
-set :systemd_amqp_daemon_role, :app
-set :systemd_amqp_daemon_instances, -> { %i[withdraw_coin deposit_intention matching order_processor trade_executor influx_writer] }
+# set :systemd_sidekiq_role, :app
+# set :systemd_sidekiq_instances, -> { %i[cron_job] }
 
 before 'deploy:starting', 'sentry:validate_config'
 after 'deploy:published', 'sentry:notice_deployment'
 
 after 'deploy:publishing', 'systemd:puma:reload-or-restart'
-after 'deploy:publishing', 'systemd:sidekiq:reload-or-restart'
+# after 'deploy:publishing', 'systemd:sidekiq:reload-or-restart'
 
 if defined? Slackistrano
   Rake::Task['deploy:starting'].prerequisites.delete('slack:deploy:starting')
@@ -80,7 +77,7 @@ end
 # Removed rake, bundle, gem
 # Added rails.
 # rake has its own dotenv requirement in Rakefile
-set :dotenv_hook_commands, %w{rails ruby}
+set :dotenv_hook_commands, %w{rails rake ruby}
 
 Capistrano::DSL.stages.each do |stage|
   after stage, 'dotenv:hook'
