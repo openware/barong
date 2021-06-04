@@ -3,5 +3,6 @@
 
 require_relative 'config/application'
 require 'bump/tasks'
+require 'dotenv/tasks'
 
 Rails.application.load_tasks
