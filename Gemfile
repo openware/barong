@@ -30,8 +30,11 @@ gem 'hiredis', '~> 0.6.1'
 gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
 # Use Puma as the app server
 gem 'puma', '>= 3.12.6'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+
+# We don't need it now
+#
+# gem 'mini_racer'
+# gem 'uglifier', '>= 1.3.0'
 
 gem 'maxmind-db', '~> 1.0'
 

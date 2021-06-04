@@ -49,7 +49,7 @@ bundle exec rails server
 # Deploy with capistrano
 
 ```
-bundle exec cap production systemd:puma:setup puma:config
+bundle exec cap production deploy:check puma:config systemd:puma:setup
 ```
 
 # Barong Levels
