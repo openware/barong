@@ -12,10 +12,11 @@ module Barong
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    dsn =  ENV["BARONG_SENTRY_DSN_BACKEND"] ||  ENV["SENTRY_DSN_BACKEND"]
     # Configure Sentry as early as possible.
-    if ENV["BARONG_SENTRY_DSN_BACKEND"].present?
+    if dsn.present?
       require "sentry-raven"
-      Raven.configure { |config| config.dsn = ENV["BARONG_SENTRY_DSN_BACKEND"] }
+      Raven.configure { |config| config.dsn = dsn }
     end
 
     # Adding Grape API

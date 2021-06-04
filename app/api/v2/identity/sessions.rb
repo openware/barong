@@ -123,7 +123,7 @@ module API::V2
               user = User.create!(email: claims['email'], state: 'active')
               user.labels.create!(scope: 'private', key: 'email', value: 'verified')
             elsif claims['email_verified'] == false
-              error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless user
+              error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
             end
 
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
