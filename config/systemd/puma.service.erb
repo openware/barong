@@ -1,0 +1,40 @@
+[Unit]
+Description = <%= fetch(:application) %> (<%= fetch(:stage) %>) application server
+After=syslog.target network.target
+
+[Service]
+WatchdogSec=10
+Type=notify
+Environment=RACK_ENV=<%= fetch(:rails_env) %>
+Environment=RAILS_ENV=<%= fetch(:rails_env) %>
+Environment=PWD=<%= current_path %>
+EnvironmentFile=<%= current_path %>/.env
+# Helpful for debugging socket activation, etc.
+WorkingDirectory=<%= current_path %>
+ExecStart=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec puma -C <%= shared_path %>/puma.rb -e <%= fetch(:rails_env) %>
+
+# Может быть имеет смысл перезагружать так:
+# pumactl -S /home/master/polina/shared/tmp/pids/puma.state -F /home/master/polina/shared/puma.rb phased-restart
+#
+# USR1 restart workers in phases, a rolling restart. This will not reload configuration file.
+# ExecReload=/bin/kill -USR1 $MAINPID
+ExecReload=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec pumactl -S <%= shared_path %>/tmp/pids/puma.state -F <%= shared_path %>/puma.rb restart
+ExecStop=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec pumactl -S <%= shared_path %>/tmp/pids/puma.state stop
+
+# Если запускается от пользователя, то нужно убрать
+# https://stackoverflow.com/questions/48065475/systemctl-failed-at-step-group-spawning
+# User = <%= fetch(:user) %>
+# Group = <%= fetch(:user) %>
+KillMode=mixed
+Restart=always
+RestartSec=1
+SyslogIdentifier=puma
+
+#StandardOutput=append:<%= fetch(:puma_access_log) %>
+#StandardError=append:<%= fetch(:puma_error_log) %>
+
+[Install]
+# Use default.target to autoboot user service
+# https://superuser.com/questions/1025091/start-a-systemd-user-service-at-boot
+# WantedBy = multi-user.target
+WantedBy=default.target

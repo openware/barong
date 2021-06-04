@@ -1,10 +1,32 @@
 GIT
+  remote: https://github.com/brandymint/capistrano-tasks.git
+  revision: ed94c975c36a7ba41a173bddf6dba46034ca41e2
+  specs:
+    capistrano-tasks (0.0.1)
+
+GIT
+  remote: https://github.com/groovenauts/capistrano-systemd-multiservice.git
+  revision: 955b99cc7588521ddc26ccd523ebba306e16fa0a
+  specs:
+    capistrano-systemd-multiservice (0.1.0.beta12)
+      capistrano (>= 3.7.0, < 3.17.0)
+
+GIT
   remote: https://github.com/rubykube/vault-rails
   revision: b5e6570d1268fe0153b72200bbc58c5254d6c848
   specs:
     vault-rails (0.6.0)
       rails (>= 4.1)
       vault (~> 0.14)
+
+GIT
+  remote: https://github.com/seuros/capistrano-puma.git
+  revision: 285b45f51d0662e760cc5e75f15614589a2be170
+  specs:
+    capistrano3-puma (5.0.4)
+      capistrano (~> 3.7)
+      capistrano-bundler
+      puma (>= 4.0, < 6.0)
 
 GEM
   remote: https://rubygems.org/
@@ -52,6 +74,8 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    airbrussh (1.4.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     aliyun-sdk (0.7.3)
       nokogiri (~> 1.6)
       rest-client (~> 2.0)
@@ -78,6 +102,34 @@ GEM
       amq-protocol (~> 2.3, >= 2.3.1)
     byebug (11.1.3)
     cancancan (2.3.0)
+    capistrano (3.16.0)
+      airbrussh (>= 1.0.0)
+      i18n
+      rake (>= 10.0.0)
+      sshkit (>= 1.9.0)
+    capistrano-bundler (2.0.1)
+      capistrano (~> 3.1)
+    capistrano-db-tasks (0.6)
+      capistrano (>= 3.0.0)
+    capistrano-dotenv (0.0.5)
+      capistrano (>= 3.5.0, < 4.0.0)
+    capistrano-dotenv-tasks (0.1.5)
+      capistrano (~> 3.0)
+    capistrano-git-with-submodules (2.0.4)
+      capistrano (~> 3.7)
+    capistrano-rails (1.6.1)
+      capistrano (~> 3.1)
+      capistrano-bundler (>= 1.1, < 3)
+    capistrano-rails-console (2.3.0)
+      capistrano (>= 3.5.0, < 4.0.0)
+      sshkit-interactive (~> 0.3.0)
+    capistrano-rbenv (2.2.0)
+      capistrano (~> 3.1)
+      sshkit (~> 1.3)
+    capistrano-sentry (0.4.2)
+      capistrano (~> 3.1)
+    capistrano-shell (0.2.0)
+      capistrano (~> 3.1)
     capybara (3.33.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -113,6 +165,7 @@ GEM
     diff-lcs (1.4.4)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.7.6)
     dry-configurable (0.11.6)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -255,7 +308,6 @@ GEM
     kycaid (1.0.2)
       faraday
       json
-    libv8 (8.4.255.0)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -279,8 +331,6 @@ GEM
     mini_magick (4.10.1)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    mini_racer (0.3.1)
-      libv8 (~> 8.4.255)
     minitest (5.14.2)
     msgpack (1.3.3)
     multi_json (1.15.0)
@@ -290,8 +340,11 @@ GEM
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
     mysql2 (0.5.3)
+    net-scp (3.0.0)
+      net-ssh (>= 2.6.5, < 7.0.0)
+    net-ssh (6.1.0)
     netrc (0.11.0)
-    nio4r (2.5.3)
+    nio4r (2.5.7)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     os (1.1.1)
@@ -314,7 +367,8 @@ GEM
     pry-rails (0.3.9)
       pry (>= 0.10.4)
     public_suffix (4.0.5)
-    puma (3.12.6)
+    puma (5.3.2)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -389,6 +443,8 @@ GEM
       ffi (~> 1.9)
     ruby2_keywords (0.0.2)
     ruby_dep (1.5.0)
+    sd_notify (0.1.1)
+    semver2 (3.4.2)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     shoulda-matchers (4.0.1)
@@ -403,6 +459,8 @@ GEM
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
     sixarm_ruby_unaccent (1.2.0)
+    slackistrano (4.0.1)
+      capistrano (>= 3.8.1)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -410,6 +468,11 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sshkit (1.21.2)
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
+    sshkit-interactive (0.3.0)
+      sshkit (~> 1.12)
     strong_password (0.0.9)
     thor (1.0.1)
     thread_safe (0.3.6)
@@ -453,10 +516,25 @@ DEPENDENCIES
   bump
   bunny
   cancancan (~> 2.3.0)
+  capistrano
+  capistrano-bundler
+  capistrano-db-tasks
+  capistrano-dotenv
+  capistrano-dotenv-tasks
+  capistrano-git-with-submodules
+  capistrano-rails
+  capistrano-rails-console
+  capistrano-rbenv
+  capistrano-sentry
+  capistrano-shell
+  capistrano-systemd-multiservice!
+  capistrano-tasks!
+  capistrano3-puma!
   capybara (>= 3.29.0)
   carrierwave (~> 2.1, >= 2.1.0)
   countries
   database_cleaner (~> 2.0.1)
+  dotenv
   email_validator (= 1.6.0)
   env-tweaks (~> 1.0.0)
   factory_bot_rails (~> 4.11, >= 4.11.1)
@@ -480,23 +558,24 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.2)
   maxmind-db (~> 1.0)
   memoist (~> 0.16)
-  mini_racer
-  mysql2 (>= 0.4.4, < 0.6.0)
   peatio (~> 0.4.4)
   pg (~> 1.2)
   phonelib (~> 0.6.45)
   pry-byebug
   pry-rails
-  puma (~> 3.12, >= 3.12.6)
+  puma (>= 3.12.6)
   rack-cors (~> 1.0.2)
   rails (~> 5.2.4, >= 5.2.4.4)
   rails-controller-testing (>= 1.0.5)
   recaptcha (>= 5.2.1)
   redis (~> 4.0)
   rspec-rails (~> 3.9, >= 3.9.1)
+  sd_notify (~> 0.1.1)
+  semver2 (~> 3.4)
   sentry-raven (~> 2.9.0)
   shoulda-matchers (~> 4.0.1.0)
   sidekiq (>= 6.0.7)
+  slackistrano
   strong_password (~> 0.0.8)
   twilio-ruby (~> 5.25.4)
   uglifier (>= 1.3.0)
@@ -504,8 +583,5 @@ DEPENDENCIES
   vault-rails!
   web-console (>= 3.7.0)
 
-RUBY VERSION
-   ruby 2.6.5p114
-
 BUNDLED WITH
-   2.1.4
+   2.2.17

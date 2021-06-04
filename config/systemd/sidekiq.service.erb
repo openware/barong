@@ -1,0 +1,17 @@
+[Unit]
+Description=Sidekiq for <%= fetch(:application) %> (<%= fetch(:stage) %> / <%= fetch(:rails_env) %>) (instance %i)
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment=RAILS_ENV=<%= fetch(:rails_env) %>
+EnvironmentFile=<%= current_path %>/.env
+WorkingDirectory=<%= current_path %>
+ExecStart=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec sidekiq -e <%= fetch(:stage) %> -C <%= current_path %>/config/sidekiq-<%= fetch(:stage) %>-%i.yml
+ExecStop=/bin/kill -TERM $MAINPID
+RestartSec=5
+Restart=on-failure
+SyslogIdentifier=sidekiq
+
+[Install]
+WantedBy=default.target
