@@ -172,15 +172,11 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
       end
 
-      it 'can switch to a user' do
-        params[:oid] = 'OID001AID001'
+      it 'cannot switch to a user inn organization' do
         params[:uid] = 'IDFE10A90003'
         switch_session
 
-        expect_status_to_eq 200
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('IDFE10A90003')
-        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
-        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+        expect_status_to_eq 401
       end
 
       it 'can get org-admin role when admin switch to a organization' do
@@ -205,16 +201,15 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:role]).to eq('org-member')
       end
 
-      it 'can get role of user when admin switch to a user' do
-        params[:oid] = 'OID001AID001'
-        params[:uid] = 'IDFE10A90003'
+      it 'can switch to the individual user' do
+        params[:uid] = 'IDFE0908101'
         switch_session
 
         expect_status_to_eq 200
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('IDFE10A90003')
-        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('IDFE0908101')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq(nil)
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
-        expect(session.instance_variable_get(:@delegate)[:role]).to eq('org-member')
+        expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
       end
 
       it 'can switch session back as the individual user' do

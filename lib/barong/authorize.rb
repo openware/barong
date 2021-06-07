@@ -31,7 +31,7 @@ module Barong
       auth_owner = method("#{auth_type}_owner").call
 
       switchs = {}
-      if session[:oid] && session[:rid]
+      if session[:rid]
         switchs = {
           uid: session[:uid],
           oid: session[:oid],

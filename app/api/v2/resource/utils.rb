@@ -21,7 +21,7 @@ module API::V2
       end
 
       def current_organization
-        if env[:current_payload].key?(:oid)
+        if env[:current_payload].key?(:oid) && !env[:current_payload][:oid].nil?
           # Determine organization from session first
           ::Organization.find_by!(oid: env[:current_payload][:oid])
         else
