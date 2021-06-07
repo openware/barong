@@ -60,6 +60,7 @@ before 'deploy:starting', 'sentry:validate_config'
 after 'deploy:published', 'sentry:notice_deployment'
 
 after 'deploy:publishing', 'systemd:puma:reload-or-restart'
+after 'deploy:publishing', 'systemd:mailer:reload-or-restart'
 # after 'deploy:publishing', 'systemd:sidekiq:reload-or-restart'
 
 if defined? Slackistrano
