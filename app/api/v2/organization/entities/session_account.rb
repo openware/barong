@@ -2,35 +2,17 @@
 
 module API::V2::Organization
   module Entities
-    class AccountBase < API::V2::Entities::Base
-      expose :id,
-             documentation: {
-               type: 'Integer',
-               desc: 'Organization ID'
-             }
-
-      expose :oid,
-             documentation: {
-               type: 'String',
-               desc: 'Organization OID'
-             }
-
-      expose :name,
-             documentation: {
-               type: 'String',
-               desc: 'Organization Account Name'
-             }
-    end
-
-    class SessionAccount < AccountBase
-      expose :uids do |member|
-        member.memberships.map { |m| m.user.uid }
+    class SessionAccount < API::V2::Entities::Base
+      expose :name do |member|
+        member[:name]
       end
-    end
 
-    class OrganizationAccount < AccountBase
-      expose :users do |member|
-        member.memberships.length
+      expose :oid do |member|
+        member[:oid]
+      end
+
+      expose :uid do |member|
+        member[:uid]
       end
     end
   end

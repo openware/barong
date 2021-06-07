@@ -7,6 +7,7 @@ shared_context 'organization memberships' do
     create(:permission, role: 'member')
     create(:permission, role: 'org-admin')
     create(:permission, role: 'org-member')
+    create(:permission, role: 'org-accountant')
   end
 
   let!(:mock_users) do
@@ -26,6 +27,8 @@ shared_context 'organization memberships' do
                   password_confirmation: 'testPassword111', role: 'member')
     create(:user, id: 8, uid: 'IDFE0000000', email: 'superadmin@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'superadmin')
+    create(:user, id: 9, uid: 'IDFE10AA000', email: 'org.accountant@barong.io', password: 'testPassword111',
+                  password_confirmation: 'testPassword111', role: 'org-accountant')
   end
 
   let!(:mock_organizations) do

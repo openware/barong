@@ -83,6 +83,9 @@ profiles:
   - user_id: 7
     first_name: "User"
     last_name: "One"
+  - user_id: 8
+    first_name: "Super"
+    last_name: "Admin"
 
 organizations:
   - oid: "OID001"
@@ -161,6 +164,7 @@ permissions:
  # SUPER ADMIN has an access to the whole system without any limits
  # so we can just grant him access to /api/v2/*
  - { role: superadmin, verb: all, path: api/v2, action: accept }
+ - { role: superadmin, verb: all, path: barong, action: accept }
  # Rango(ranger) access
  - { role: superadmin, verb: get, path: api/v2/ranger, action: accept }
  # we are watching after you 0_0
@@ -171,6 +175,7 @@ permissions:
 # ADMIN
 # admin has nearly full access to barong and peatio api, except managing permissions
  - { role: admin, verb: all, path: api/v2, action: accept }
+ - { role: admin, verb: all, path: barong, action: accept }
 
  # ranger access
  - { role: admin, verb: get, path: api/v2/ranger, action: accept }
@@ -438,6 +443,7 @@ permissions:
 
  # ORG-ADMIN
  - { role: org-admin, verb: all, path: api/v2, action: accept }
+ - { role: org-admin, verb: all, path: barong, action: accept }
  - { role: org-admin, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: org-admin, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: org-admin, verb: all, path: api/v2/finex/market, action: accept }
@@ -451,6 +457,7 @@ permissions:
 
   # ORG-MEMBER
  - { role: org-member, verb: all, path: api/v2, action: accept }
+ - { role: org-member, verb: all, path: barong, action: accept }
  - { role: org-member, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: org-member, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: org-member, verb: all, path: api/v2/finex/market, action: accept }
@@ -462,8 +469,9 @@ permissions:
  # applogic access
  - { role: org-member, verb: all, path: api/v2/applogic, action: accept }
 
-   # ORG-ACCOUNTANT
+  # ORG-ACCOUNTANT
  - { role: org-accountant, verb: all, path: api/v2, action: accept }
+ - { role: org-accountant, verb: all, path: barong, action: accept }
  - { role: org-accountant, verb: all, path: api/v2/peatio/account, action: accept }
  - { role: org-accountant, verb: all, path: api/v2/peatio/market, action: accept }
  - { role: org-accountant, verb: all, path: api/v2/finex/market, action: accept }

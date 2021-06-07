@@ -4,6 +4,16 @@ describe API::V2::Organization::Accounts, type: :request do
   include_context 'bearer authentication'
   include_context 'organization memberships'
 
+  let!(:create_memberships) do
+    # Assign users with organizations
+    create(:membership, id: 2, user_id: 2, organization_id: 1, role: 'admin')
+    create(:membership, id: 3, user_id: 3, organization_id: 3, role: 'member')
+    create(:membership, id: 4, user_id: 4, organization_id: 3, role: 'member')
+    create(:membership, id: 5, user_id: 5, organization_id: 5, role: 'member')
+    create(:membership, id: 6, user_id: 6, organization_id: 3, role: 'accountant')
+    create(:membership, id: 7, user_id: 6, organization_id: 4, role: 'member')
+  end
+
   describe 'GET /api/v2/organization/accounts' do
     let(:url) { '/api/v2/organization/accounts' }
 
@@ -13,23 +23,21 @@ describe API::V2::Organization::Accounts, type: :request do
       expect(response.status).to eq 401
     end
 
-    context 'user is barong organization admin' do
-      let(:test_user) { User.find(1) }
+    context 'user with AdminSwitchSession ability' do
+      let(:test_user) { User.find(9) }
 
-      it 'get all organizations and accounts' do
+      it 'get all individual users' do
         get url, headers: auth_header
         result = JSON.parse(response.body)
         expect(response).to be_successful
-        expect(result.length).to eq 6
+        expect(result.length).to eq 10
+        expect(result.select { |m| m['uid'].nil? }.length).to eq 6
+        expect(result.select { |m| m['oid'].nil? }.length).to eq 4
       end
     end
 
-    context 'user is organization admin' do
+    context 'user is org-admin with SwitchSession ability' do
       let(:test_user) { User.find(2) }
-      let!(:create_memberships) do
-        # Assign user as organization admin
-        create(:membership, id: 1, user_id: 2, organization_id: 1)
-      end
 
       it 'get all accounts in the organization' do
         get url, headers: auth_header
@@ -65,16 +73,12 @@ describe API::V2::Organization::Accounts, type: :request do
         result = JSON.parse(response.body)
         expect(response).to be_successful
         expect(result.length).to eq 1
-        expect(result[0]['uids']).to eq ['IDFE10A90000']
+        expect(result[0]['oid']).to eq 'OID001'
       end
     end
 
-    context 'user is organization member' do
+    context 'user is org-member with SwitchSession ability' do
       let(:test_user) { User.find(3) }
-      let!(:create_memberships) do
-        # Assign user as organization member
-        create(:membership, id: 1, user_id: 3, organization_id: 3)
-      end
 
       it 'get account of the organization' do
         get url, headers: auth_header
@@ -83,20 +87,7 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(result.length).to eq 1
       end
 
-      it 'get multiple accounts of the organization' do
-        # Assign user as organization member
-        create(:membership, id: 2, user_id: 3, organization_id: 4)
-
-        get url, headers: auth_header
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 2
-      end
-
       it 'return list of accounts filtered account by organization account name' do
-        # Assign user as organization member
-        create(:membership, id: 2, user_id: 3, organization_id: 4)
-
         get url,
             headers: auth_header,
             params: { keyword: 'Group A1' }
@@ -104,6 +95,37 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(response).to be_successful
         expect(result.length).to eq 1
         expect(result[0]['name']).to eq 'Group A1'
+      end
+    end
+
+    context 'user is org-member with multiple accounts and SwitchSession ability' do
+      let(:test_user) { User.find(6) }
+
+      it 'get multiple accounts of the organization' do
+        get url, headers: auth_header
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 2
+      end
+
+      it 'return list of accounts filtered account by organization account named Group A1' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'Group A1' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['name']).to eq 'Group A1'
+      end
+
+      it 'return list of accounts filtered account by organization account named Group A2' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'Group A2' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['name']).to eq 'Group A2'
       end
     end
   end
