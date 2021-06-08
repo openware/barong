@@ -192,7 +192,6 @@ class User < ApplicationRecord
   end
 
   attr_writer :current_organization
-
   def organization
     return @current_organization unless @current_organization.nil?
 
@@ -202,6 +201,11 @@ class User < ApplicationRecord
     return org if org.parent_organization.nil?
 
     ::Organization.find(org.parent_organization)
+  end
+
+  attr_writer :current_oid
+  def oid
+    return @current_oid unless @current_oid.nil?
   end
 
   private

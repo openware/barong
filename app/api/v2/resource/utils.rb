@@ -5,9 +5,16 @@ module API::V2
     module Utils
       def current_user
         # To identiy origin user by env[:current_payload][:rid]
-        # if exist, user comes from switched mode use env[:current_payload][:rid]; else use [:uid]
-        if env[:current_payload].key?(:rid)
-          uid = env[:current_payload][:rid]
+        oid = nil
+        if env[:current_payload].key?(:oid)
+          uid = if env[:current_payload][:oid].nil?
+                  # switch as user
+                  env[:current_payload][:uid]
+                else
+                  # switch as organization
+                  oid = env[:current_payload][:uid]
+                  env[:current_payload][:rid]
+                end
         elsif env[:current_payload].key?(:uid)
           uid = env[:current_payload][:uid]
         else
@@ -17,6 +24,7 @@ module API::V2
 
         # Set role with current switched user
         @_current_user.role = env[:current_payload][:role] if env[:current_payload].key?(:role)
+        @_current_user.current_oid = oid
         @_current_user
       end
 
@@ -59,15 +67,15 @@ module API::V2
 
       def activity_record(options = {})
         params = {
-          category:        'user',
-          user_id:         options[:user],
-          user_ip:         remote_ip,
+          category: 'user',
+          user_id: options[:user],
+          user_ip: remote_ip,
           user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
-          user_agent:      request.env['HTTP_USER_AGENT'],
-          topic:           options[:topic],
-          action:          options[:action],
-          result:          options[:result],
-          data:            options[:data]
+          user_agent: request.env['HTTP_USER_AGENT'],
+          topic: options[:topic],
+          action: options[:action],
+          result: options[:result],
+          data: options[:data]
         }
         Activity.create(params)
       end

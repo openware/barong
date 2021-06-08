@@ -250,13 +250,24 @@ module API::V2
               # Destroy switch session mode and take user back to individual session mode
               csrf_token = open_session(user)
               publish_session_create(user)
+              current_user = user
             else
               # Switch session mode proceed
               csrf_token = open_session_switch(user, switch)
               publish_session_switch(user, switch)
+              switch_uid = if switch[:oid].nil?
+                             # switch as user
+                             switch[:uid]
+                           else
+                             # switch as organization
+                             switch[:rid]
+                           end
+              current_user = ::User.find_by_uid(switch_uid)
+              current_user.current_oid = switch_oid
+              current_user.role = role
             end
 
-            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+            present current_user, with: API::V2::Entities::UserWithOrganization, csrf_token: csrf_token
             status(200)
           end
         end

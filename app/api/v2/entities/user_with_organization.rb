@@ -75,6 +75,7 @@ module API
         expose :profiles, using: Entities::Profile
         expose :data_storages, using: Entities::DataStorage
         expose :organization, using: Entities::Organization
+        expose :oid
         # activities, as sensitive and potentialy too big data should be queried separately
 
         with_options(format_with: :iso_timestamp) do

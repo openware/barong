@@ -23,7 +23,7 @@ describe 'Api::V1::Profiles' do
       end
     end
 
-    context 'User belong to the organization' do
+    context 'User has AdminSwithSession ability' do
       let(:test_user) { User.find(1) }
 
       it 'return nil for barong admin organization' do
@@ -68,14 +68,16 @@ describe 'Api::V1::Profiles' do
     context 'User switch to be the organization account' do
       it 'return Company A when user switch to Company A' do
         switchs[:oid] = 'OID001'
+        switchs[:rid] = 'IDFE09081060'
         get '/api/v2/resource/users/me', headers: auth_header
 
         expect(response.status).to eq(200)
         expect(json_body[:organization][:name]).to eq('Company A')
       end
 
-      it 'return Company B when user switch to Company A' do
+      it 'return Company B when user switch to Company B' do
         switchs[:oid] = 'OID002'
+        switchs[:rid] = 'IDFE09081060'
         get '/api/v2/resource/users/me', headers: auth_header
 
         expect(response.status).to eq(200)
