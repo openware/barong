@@ -183,6 +183,26 @@ steps:
     branch:
       - "*-stable"
 
+# FIXME: delete when organization feature finished
+- name: Docker build and push for Organization feature
+  image: plugins/docker
+  environment:
+    MAXMIND_LICENSE_KEY:
+      from_secret: maxmind_license_key
+  settings:
+    username:
+      from_secret: quay_username
+    password:
+      from_secret: quay_password
+    repo: quay.io/openware/barong
+    registry: quay.io
+    tags: organization
+    build_args_from_env:
+      - MAXMIND_LICENSE_KEY
+  when:
+    branch:
+      - feature/organization
+
 trigger:
   event:
     - push
