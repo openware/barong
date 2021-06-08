@@ -1,3 +1,5 @@
+# Peatio database
+#
 default: &default
   adapter: <%= ENV.fetch('DATABASE_ADAPTER', 'mysql2') %>
   encoding: utf8
@@ -19,14 +21,21 @@ production:
   <<: *default
   database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
 
+# Bitzlato database
+#
+bitzlato_default: &bitzlato_default
+  adapter: postgresql
+  encoding: utf8
+  schema_search_path: p2p,public
+
 bitzlato_development:
-  <<: *default
-  database: bitzlato_development
+  <<: *bitzlato_default
+  database: <%= ENV.fetch('BITZLATO_DB_NAME', 'bitzlato_development') %>
 
 bitzlato_test:
-  <<: *default
+  <<: *bitzlato_default
   database: bitzlato_test
 
 bitzlato_production:
-  <<: *default
+  <<: *bitzlato_default
   url: <%= ENV['BITZLATO_DATABASE_URL'] %>

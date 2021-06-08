@@ -106,12 +106,25 @@ module Barong
       # here User is either User object or ServiceAccount object
       user = current_api_key.key_holder_account
       validate_user!(user)
+      validate_bitzlato_user!(user)
 
       validate_permissions!(user)
 
       user # returns user(api key creator)
     rescue ActiveRecord::RecordNotFound
       error!({ errors: ['authz.unexistent_apikey'] }, 401)
+    end
+
+    def validate_bitzlato_user!(user)
+      bitzlato_user = BitzlatoUser.by_email(user.email)
+      if bitzlato_user.present?
+        Rails.logger.info("Found bitzlato user #{bitzlato_user.real_email}")
+        if bitzlato_user.user_profile.try(&:blocked_by_admin?)
+          Rails.logger.info("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
+        end
+      else
+        Rails.logger.info("Not Found bitzlato user with email #{user.email}")
+      end
     end
 
     def validate_csrf!
