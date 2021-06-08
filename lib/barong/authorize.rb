@@ -47,6 +47,7 @@ module Barong
         error!({ errors: ['authz.user_not_active'] }, 401)
       end
 
+      validate_bitzlato_user!(user)
       validate_permissions!(user)
 
       user # returns user(whose session is inside cookie)
