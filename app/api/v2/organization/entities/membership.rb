@@ -17,7 +17,7 @@ module API::V2::Organization
         member.user.profiles
       end
 
-      expose :permission do |member|
+      expose :role do |member|
         member.user.role
       end
 

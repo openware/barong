@@ -124,22 +124,22 @@ organizations:
 memberships:
   - user_id: 2
     organization_id: 1
-    role: admin
+    role: org-admin
   - user_id: 3
     organization_id: 3
-    role: member
+    role: org-member
   - user_id: 4
     organization_id: 4
-    role: member
+    role: org-member
   - user_id: 5
     organization_id: 5
-    role: member
+    role: org-member
   - user_id: 6
     organization_id: 3
-    role: accountant
+    role: org-accountant
   - user_id: 6
     organization_id: 4
-    role: member
+    role: org-member
 
 levels:
   - key: email
