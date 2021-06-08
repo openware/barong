@@ -100,6 +100,7 @@ group :development do
   gem 'web-console', '>= 3.7.0'
   gem 'listen',       '>= 3.0.5', '< 3.2'
   gem 'annotate', '~> 2.7', '>= 2.7.5'
+  gem 'rspec'
   gem 'guard'
   gem 'guard-rspec', github: 'caspark/guard-rspec' # Use from github to remove rspec < 4.0 dependencies
 end
