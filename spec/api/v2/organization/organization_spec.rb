@@ -26,21 +26,9 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
 
-    context 'user is barong organization admin' do
+    context 'user has Organization ability' do
       let(:params) { { oid: 'OID001' } }
       let(:test_user) { User.find(1) }
-
-      it 'return organization details for barong organization admin' do
-        do_request
-        result = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(result['oid']).to eq('OID001')
-      end
-    end
-
-    context 'user is organization admin' do
-      let(:test_user) { User.find(2) }
 
       it 'return organization details of default user\'s organization' do
         do_request
@@ -59,13 +47,6 @@ describe API::V2::Organization::Organizations, type: :request do
         expect(result['name']).to eq('Company A')
       end
 
-      it 'cannot get organization account details of other organization' do
-        params[:oid] = 'OID002'
-        do_request
-
-        expect(response.status).to eq(401)
-      end
-
       it 'return organization account details' do
         params[:oid] = 'OID001AID001'
 
@@ -74,25 +55,6 @@ describe API::V2::Organization::Organizations, type: :request do
 
         expect(response.status).to eq(200)
         expect(result['name']).to eq('Group A1')
-      end
-
-      it 'cannot get organization admin details of other organization' do
-        params[:oid] = 'OID002AID002'
-        do_request
-
-        expect(response.status).to eq(401)
-      end
-    end
-
-    context 'user is organization account' do
-      let(:test_user) { User.find(3) }
-
-      it 'cannot get organization account details' do
-        params[:oid] = 'OID001AID001'
-
-        do_request
-
-        expect(response.status).to eq(401)
       end
     end
   end
@@ -121,7 +83,7 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
 
-    context 'user is barong admin organization user' do
+    context 'user has Organization ability' do
       let(:params) { { organization_id: 1 } }
       let(:do_request) do
         put '/api/v2/organization/update',
@@ -136,52 +98,6 @@ describe API::V2::Organization::Organizations, type: :request do
 
         expect(response.status).to eq(200)
         expect(::Organization.find(1).name).to eq('Company Test')
-      end
-
-      it 'error when data not change' do
-        params[:name] = 'Company A'
-        do_request
-
-        expect(response.status).to eq(422)
-      end
-    end
-
-    context 'user is organization admin' do
-      let(:params) { {} }
-      let(:do_request) do
-        put '/api/v2/organization/update',
-             headers: auth_header,
-             params: params
-      end
-      let!(:create_memberships) do
-        # Assign users with organizations
-        create(:membership, id: 2, user_id: 2, organization_id: 1)
-      end
-      let(:test_user) { User.find(2) }
-
-      it 'cannot update organization details' do
-        params[:organization_id] = 1
-        params[:name] = 'Company Test'
-        do_request
-
-        expect(response.status).to eq(401)
-      end
-
-      it 'can update organization account details' do
-        params[:organization_id] = 3
-        params[:name] = 'Company Test'
-        do_request
-
-        expect(response.status).to eq(200)
-        expect(::Organization.find(3).name).to eq('Company Test')
-      end
-
-      it 'cannot update organization account details of other organization' do
-        params[:organization_id] = 5
-        params[:name] = 'Company Test'
-        do_request
-
-        expect(response.status).to eq(401)
       end
     end
   end
@@ -210,7 +126,7 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
 
-    context 'user is barong admin organization user' do
+    context 'user has Organization ability' do
       let(:params) { { organization_id: 1 } }
       let(:do_request) do
         put '/api/v2/organization/settings',
@@ -233,52 +149,6 @@ describe API::V2::Organization::Organizations, type: :request do
 
         expect(response.status).to eq(200)
         expect(::Organization.find(1).group).to eq('vip-1')
-      end
-
-      it 'error when data not change' do
-        params[:status] = 'active'
-        do_request
-
-        expect(response.status).to eq(422)
-      end
-    end
-
-    context 'user is organization admin' do
-      let(:params) { {} }
-      let(:do_request) do
-        put '/api/v2/organization/settings',
-             headers: auth_header,
-             params: params
-      end
-      let!(:create_memberships) do
-        # Assign users with organizations
-        create(:membership, id: 2, user_id: 2, organization_id: 1)
-      end
-      let(:test_user) { User.find(2) }
-
-      it 'cannot update organization details' do
-        params[:organization_id] = 1
-        params[:status] = 'banned'
-        do_request
-
-        expect(response.status).to eq(401)
-      end
-
-      it 'can update organization account details' do
-        params[:organization_id] = 3
-        params[:status] = 'banned'
-        do_request
-
-        expect(response.status).to eq(200)
-        expect(::Organization.find(3).status).to eq('banned')
-      end
-
-      it 'cannot update organization account details of other organization' do
-        params[:organization_id] = 5
-        params[:status] = 'banned'
-        do_request
-
-        expect(response.status).to eq(401)
       end
     end
   end
