@@ -28,7 +28,7 @@ ExecStop=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec pumactl -S 
 KillMode=mixed
 Restart=always
 RestartSec=1
-SyslogIdentifier=puma
+SyslogIdentifier=<%= fetch(:application) %>-puma
 
 #StandardOutput=append:<%= fetch(:puma_access_log) %>
 #StandardError=append:<%= fetch(:puma_error_log) %>

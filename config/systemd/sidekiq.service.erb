@@ -11,7 +11,7 @@ ExecStart=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec sidekiq -e
 ExecStop=/bin/kill -TERM $MAINPID
 RestartSec=5
 Restart=on-failure
-SyslogIdentifier=sidekiq
+SyslogIdentifier=<%= fetch(:application) %>-sidekiq
 
 [Install]
 WantedBy=default.target
