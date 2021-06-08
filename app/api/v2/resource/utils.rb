@@ -19,14 +19,13 @@ module API::V2
       end
 
       def twilio_dictionary_error(code)
-        user_error = 'resource.phone.' + {
+        'resource.phone.' + {
           21_612 => 'num_not_reachable',
           21_614 => 'num_not_valid',
           21_618 => 'sms_content_invalid',
-          21_610 => 'unsubscribed_recipient'
-        }[code]
-
-        user_error || 'resource.phone.twilio_unexpected'
+          21_610 => 'unsubscribed_recipient',
+          21_606 => 'num_not_valid'
+        }.fetch(code, 'resource.phone.twilio_unexpected')
       end
 
       def activity_record(options = {})
