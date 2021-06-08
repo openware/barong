@@ -116,7 +116,7 @@ module Barong
     end
 
     def validate_bitzlato_user!(user)
-      bitzlato_user = BitzlatoUser.by_email(user.email)
+      bitzlato_user = BitzlatoUser.by_email(user.email).take
       if bitzlato_user.present?
         Rails.logger.info("Found bitzlato user #{bitzlato_user.real_email}")
         if bitzlato_user.user_profile.try(&:blocked_by_admin?)
