@@ -117,13 +117,10 @@ module Barong
 
     def validate_bitzlato_user!(user)
       bitzlato_user = BitzlatoUser.find_by_email(user.email)
-      if bitzlato_user.present?
-        if bitzlato_user.user_profile.try(&:blocked_by_admin?)
-          Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
-          error!({ errors: ['authz.blocked_account'] }, 401)
-        end
-      else
-        Rails.logger.info("Not Found Bitzlato user with email #{user.email}")
+      return if bitzlato_user.nil?
+      if bitzlato_user.user_profile.try(&:blocked_by_admin?)
+        Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
+        error!({ errors: ['authz.blocked_account'] }, 401)
       end
     end
 
