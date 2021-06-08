@@ -27,22 +27,13 @@ describe API::V2::Organization::Account, type: :request do
       create(:membership, id: 7, user_id: 6, organization_id: 4)
     end
 
-    context 'user is not belong to any organization' do
-      let(:test_user) { User.find(7) }
-      it 'error when user try to get organization users' do
-        do_request
-
-        expect(response.status).to eq 401
-      end
-    end
-
-    context 'user is barong admin organization' do
+    context 'user has Organization ability' do
       let(:test_user) { User.find(1) }
 
       it 'error when oid not provided' do
         do_request
 
-        expect(response.status).to eq 400
+        expect(response.status).to eq 422
       end
 
       it 'error when oid is not valid' do
@@ -77,27 +68,6 @@ describe API::V2::Organization::Account, type: :request do
         expect(result.length).to eq 2
       end
     end
-
-    context 'user is organization admin' do
-      let(:test_user) { User.find(2) }
-
-      it 'return account of Company A' do
-        do_request
-
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 2
-      end
-
-      it 'ignore oid params and return account of Company A' do
-        params[:oid] = 'OID002AID002'
-        do_request
-
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 2
-      end
-    end
   end
 
   describe 'POST /api/v2/organization/account' do
@@ -109,20 +79,7 @@ describe API::V2::Organization::Account, type: :request do
       create(:membership, id: 3, user_id: 5, organization_id: 5)
     end
 
-    context 'user is not belong to any organization' do
-      let(:test_user) { User.find(7) }
-      it 'error when user try to add organization user' do
-        params[:organization_id] = 7
-        params[:name] = 'Group Test'
-        params[:status] = 'active'
-
-        do_request
-
-        expect(response.status).not_to eq 200
-      end
-    end
-
-    context 'user is barong admin organization' do
+    context 'user has Organization ability' do
       let(:test_user) { User.find(1) }
 
       it 'return error if missing organization_id, name, status' do
@@ -187,45 +144,6 @@ describe API::V2::Organization::Account, type: :request do
         expect(response.status).to eq 404
       end
     end
-
-    context 'user is organization admin' do
-      let(:test_user) { User.find(2) }
-
-      it 'cannot add organization in other parent organization which user does not belong to' do
-        params[:organization_id] = 2
-        params[:name] = 'Group B3'
-        params[:status] = 'active'
-
-        do_request
-
-        expect(response.status).to eq 401
-      end
-
-      it 'can add organization in parent organization' do
-        params[:name] = 'Group A3'
-        params[:status] = 'active'
-
-        do_request
-        org = ::Organization.last
-
-        expect(response).to be_successful
-        expect(org.parent_organization).to eq(1)
-        expect(org.name).to eq('Group A3')
-      end
-    end
-
-    context 'user is organization account' do
-      let(:test_user) { User.find(5) }
-
-      it 'cannot add organization in parent organization' do
-        params[:name] = 'Group B3'
-        params[:status] = 'active'
-
-        do_request
-
-        expect(response.status).to eq 401
-      end
-    end
   end
 
   describe 'DELETE /api/v2/organization/account' do
@@ -241,17 +159,7 @@ describe API::V2::Organization::Account, type: :request do
       create(:membership, id: 7, user_id: 6, organization_id: 4)
     end
 
-    context 'user is not belong to any organization' do
-      let(:test_user) { User.find(7) }
-      it 'error when user try to delete organization account' do
-        params[:organization_id] = 3
-        do_request
-
-        expect(response.status).not_to eq 200
-      end
-    end
-
-    context 'user is barong admin organization' do
+    context 'user has Organization ability' do
       let(:test_user) { User.find(1) }
 
       it 'need organization_id to delete account in organization' do
@@ -274,45 +182,6 @@ describe API::V2::Organization::Account, type: :request do
         expect(response).to be_successful
         expect(::Organization.where(id: 3).length).to eq(0)
         expect(::Membership.where(organization_id: 3).length).to eq(0)
-      end
-    end
-
-    context 'user is organization admin' do
-      let(:test_user) { User.find(2) }
-
-      it 'cannot delete parent organization' do
-        params[:organization_id] = 1
-        do_request
-
-        expect(response.status).to eq 404
-      end
-
-      it 'can delete organization account' do
-        params[:organization_id] = 3
-        do_request
-
-        expect(response).to be_successful
-        expect(::Organization.where(id: 3).length).to eq(0)
-        expect(::Membership.where(organization_id: 3).length).to eq(0)
-      end
-
-      it 'cannot delete organization account in other organization' do
-        params[:organization_id] = 5
-        do_request
-
-        expect(response.status).to eq 401
-      end
-    end
-
-    context 'user is organization account' do
-      let(:test_user) { User.find(5) }
-
-      it 'cannot delete organization account in organization' do
-        params[:organization_id] = 5
-
-        do_request
-
-        expect(response.status).to eq 401
       end
     end
   end
