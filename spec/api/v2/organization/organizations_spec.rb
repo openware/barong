@@ -11,7 +11,7 @@ describe API::V2::Organization::Organizations, type: :request do
     it 'error when account not found' do
       do_request
 
-      expect(response.status).to eq 404
+      expect(response.status).to eq 401
     end
 
     context 'user is barong organization admin' do
@@ -36,7 +36,7 @@ describe API::V2::Organization::Organizations, type: :request do
       it 'got error for organization admin' do
         do_request
 
-        expect(response.status).to eq 404
+        expect(response.status).to eq 401
       end
     end
 
@@ -50,7 +50,7 @@ describe API::V2::Organization::Organizations, type: :request do
       it 'got error for organization admin' do
         do_request
 
-        expect(response.status).to eq 404
+        expect(response.status).to eq 401
       end
     end
   end
@@ -72,13 +72,13 @@ describe API::V2::Organization::Organizations, type: :request do
                params: { name: 'Company Test', group: 'vip-1' },
                headers: auth_header
 
-          expect(response.status).to eq(404)
+          expect(response.status).to eq(401)
         end
       end
 
-      context 'user is barong organization admin' do
+      context 'user has Organization ability' do
         let(:test_user) { User.find(1) }
-        it 'create organization for barong organization admin' do
+        it 'create organization' do
           post '/api/v2/organization',
                params: { name: 'Company Test', group: 'vip-1' },
                headers: auth_header

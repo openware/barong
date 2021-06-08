@@ -21,9 +21,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            unless organization_ability? :read, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :read, ::Organization
 
             org = ::Organization.find_by_oid(params[:oid])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if org.nil?
@@ -59,9 +57,7 @@ module API
                      desc: 'organization user role'
           end
           post do
-            unless organization_ability? :create, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :create, ::Organization
 
             user = ::User.find_by_uid(params[:uid])
             org = ::Organization.find_by_oid(params[:oid])
@@ -101,9 +97,7 @@ module API
                      desc: 'membership id'
           end
           delete do
-            unless organization_ability? :destroy, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :destroy, ::Organization
 
             member = ::Membership.find(params[:membership_id])
             error!({ errors: ['organization.membership.doesnt_exist'] }, 404) if member.nil?

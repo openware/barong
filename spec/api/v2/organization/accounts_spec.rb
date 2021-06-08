@@ -24,7 +24,7 @@ describe API::V2::Organization::Accounts, type: :request do
     end
 
     context 'user with AdminSwitchSession ability' do
-      let(:test_user) { User.find(9) }
+      let(:test_user) { User.find(1) }
 
       it 'get all individual users' do
         get url, headers: auth_header

@@ -152,4 +152,44 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
   end
+
+  describe 'GET /api/v2/organization/abilities' do
+    let(:do_request) { get '/api/v2/organization/abilities', headers: auth_header }
+
+    context 'user has AdminSwitchSession ability' do
+      let(:test_user) { User.find(1) }
+
+      it 'return AdminSwitchSession abilities' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result['manage']).to eq(['AdminSwitchSession'])
+      end
+    end
+
+    context 'user has SwitchSession ability' do
+      let(:test_user) { User.find(2) }
+
+      it 'return SwitchSession abilities' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result['manage']).to eq(['SwitchSession'])
+      end
+    end
+
+    context 'user has no AdminSwitchSession/SwitchSession ability' do
+      let(:test_user) { User.find(7) }
+
+      it 'return SwitchSession abilities' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq({})
+      end
+    end
+  end
 end

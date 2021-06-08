@@ -20,7 +20,6 @@ admin_permissions:
       - Restriction
       - Document
       - Organization
-      - AdminSwitchSession
   admin:
     read:
       - Activity    
@@ -35,7 +34,6 @@ admin_permissions:
       - Restriction
       - Document
       - Organization
-      - AdminSwitchSession
   technical:
     read:
       - Ability
@@ -73,9 +71,20 @@ admin_permissions:
       - Activity
     manage:
       - User
+
+organization_permissions:
+  superadmin:
+    manage:
+      - AdminSwitchSession
+  admin:
+    manage:
+      - AdminSwitchSession
   org-admin:
     manage:
       - SwitchSession
   org-member:
+    manage:
+      - SwitchSession
+  org-accountant:
     manage:
       - SwitchSession

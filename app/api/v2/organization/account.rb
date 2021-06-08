@@ -21,9 +21,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            unless organization_ability? :read, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :read, ::Organization
 
             org = ::Organization.find_by_oid(params[:oid])
             if org.nil? || !org.parent_organization.nil?
@@ -58,9 +56,7 @@ module API
                      desc: 'account status'
           end
           post do
-            unless organization_ability? :create, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :create, ::Organization
 
             id = params[:organization_id]
             # Validate the organization need to be parent organization
@@ -100,9 +96,7 @@ module API
                      desc: 'organization account id'
           end
           delete do
-            unless organization_ability? :destroy, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :destroy, ::Organization
 
             # You cannot remove parent organizations
             organization = ::Organization.where.not(parent_organization: nil).find(params[:organization_id])

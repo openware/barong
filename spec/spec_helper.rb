@@ -68,12 +68,15 @@ RSpec.configure do |config|
       'roles' => %w[admin manager accountant superadmin technical compliance support],
       'admin_permissions' => {
         'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level] },
-        'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label Organization AdminSwitchSession] },
+        'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label Organization] },
         'compliance' => { 'read' => %w[User Activity Level], 'manage' => %w[Label], 'update' => %w[Profile] },
-        'support' => { 'read' => %w[User Activity APIKey Profile Label Level] },
+        'support' => { 'read' => %w[User Activity APIKey Profile Label Level] }
+      },
+      'organization_permissions' => {
+        'superadmin' => { 'manage' => %w[AdminSwitchSession] },
+        'admin' => { 'manage' => %w[AdminSwitchSession] },
         'org-admin' => { 'manage' => %w[SwitchSession] },
-        'org-member' => { 'read' => %w[SwitchSession] },
-        'org-accountant' => { 'read' => %w[AdminSwitchSession] }
+        'org-member' => { 'read' => %w[SwitchSession] }
       }
     )
     allow_any_instance_of(Barong::Authorize).to receive(:validate_csrf!).and_return(true)

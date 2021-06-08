@@ -14,7 +14,7 @@ module API
             use :pagination_filters
           end
           get '/all' do
-            admin_organization_authorize! :read, ::Organization
+            organization_authorize! :read, ::Organization
 
             organizations = ::Organization.with_parents
             present paginate(organizations), with: API::V2::Organization::Entities::Organization
@@ -37,7 +37,7 @@ module API
                      desc: 'organization fee group'
           end
           post do
-            admin_organization_authorize! :create, ::Organization
+            organization_authorize! :create, ::Organization
 
             declared_params = declared(params, include_missing: false)
             organization = ::Organization.new(declared_params)
@@ -58,9 +58,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            unless organization_ability? :read, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :read, ::Organization
 
             org = ::Organization.find_by_oid(params[:oid])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if org.nil?
@@ -103,9 +101,7 @@ module API
                      desc: 'organization postcode'
           end
           put '/update' do
-            unless organization_ability? :update, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :update, ::Organization
 
             organization = ::Organization.find(params[:organization_id])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if organization.nil?
@@ -134,9 +130,7 @@ module API
                      desc: 'organization group'
           end
           put '/settings' do
-            unless organization_ability? :update, ::Organization
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
-            end
+            organization_authorize! :update, ::Organization
 
             organization = ::Organization.find(params[:organization_id])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if organization.nil?
@@ -144,6 +138,11 @@ module API
             code_error!(organization.errors.details, 422) unless organization.update(params.except(:organization_id))
 
             status 200
+          end
+
+          desc 'Returns abilities in organization'
+          get '/abilities' do
+            Ability.organization_permissions[current_user.role] || {}
           end
         end
       end

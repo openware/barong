@@ -35,19 +35,8 @@ module API::V2
       error!({ errors: ['admin.ability.not_permitted'] }, 401)
     end
 
-    def admin_organization_authorize!(*args)
-      error!({ errors: ['identity.member.not_found'] }, 404) unless organization_ability?(*args)
-    rescue CanCan::AccessDenied
-      error!({ errors: ['organization.ability.not_permitted'] }, 401)
-    end
-
-    def organization_authorize!(*_args)
-      error!({ errors: ['organization.ability.not_permitted'] }, 401) if current_organization.nil?
-
-      members = ::Membership.where(user_id: current_user.id, organization_id: current_organization.id)
-
-      # User is not organization admin
-      error!({ errors: ['organization.ability.not_permitted'] }, 401) if members.nil? || members.length.zero?
+    def organization_authorize!(*args)
+      AdminAbility.new(current_user).authorize!(*args)
     rescue CanCan::AccessDenied
       error!({ errors: ['organization.ability.not_permitted'] }, 401)
     end
@@ -69,7 +58,7 @@ module API::V2
         error!({ errors: ['identity.session.not_found'] }, 404) if user.nil?
       end
       user.role = session[:user_role] if !request.session.nil? && !session[:user_role].nil?
-      AdminAbility.new(user).authorize!(*args)
+      OrganizationAbility.new(user).authorize!(*args)
     rescue CanCan::AccessDenied
       false
     end
