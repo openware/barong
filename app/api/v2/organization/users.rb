@@ -37,6 +37,26 @@ module API
         resource :user do
           helpers ::API::V2::NamedParams
 
+          desc 'Returns organizations of user',
+               failure: [],
+               success: API::V2::Organization::Entities::UserOrganization
+          params do
+            requires :uid,
+                     type: String,
+                     allow_blank: false,
+                     desc: 'user uid'
+            use :pagination_filters
+          end
+          get '/:uid' do
+            organization_authorize! :read, ::Organization
+
+            user = ::User.find_by_uid(params[:uid])
+            error!({ errors: ['organization.user.doesnt_exist'] }, 404) if user.nil?
+
+            members = ::Membership.with_users(user.id)
+            present paginate(members), with: API::V2::Organization::Entities::UserOrganization
+          end
+
           desc 'Add user into organization',
                failure: [
                  { code: 400, message: 'Required params are missing' },

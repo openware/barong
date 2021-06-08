@@ -153,4 +153,60 @@ describe API::V2::Organization::Users, type: :request do
       end
     end
   end
+
+  describe 'GET /api/v2/organization/user/:uid' do
+    let(:url) { '/api/v2/organization/user' }
+
+    let!(:create_memberships) do
+      # Assign users with organizations
+      create(:membership, id: 2, user_id: 2, organization_id: 1, role: 'org-admin')
+      create(:membership, id: 3, user_id: 6, organization_id: 3, role: 'org-member')
+      create(:membership, id: 4, user_id: 6, organization_id: 4, role: 'org-accountant')
+    end
+
+    context 'user has Organization ability' do
+      let(:test_user) { User.find(1) }
+
+      it 'error when uid not provided' do
+        get "#{url}/", headers: auth_header
+
+        expect(response.status).to eq 404
+      end
+
+      it 'return empty of non-organization user' do
+        get "#{url}/IDFE0908101", headers: auth_header
+
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 0
+      end
+
+      it 'return organizations of adminA@barong.io' do
+        get "#{url}/IDFE10A90000", headers: auth_header
+
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['parent_oid']).to eq('OID001')
+        expect(result[0]['oid']).to eq(nil)
+        expect(result[0]['role']).to eq('org-admin')
+      end
+
+      it 'return organizations of memberA1A2@barong.io' do
+        get "#{url}/IDFE10A90003", headers: auth_header
+
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 2
+
+        expect(result[0]['parent_oid']).to eq('OID001')
+        expect(result[0]['oid']).to eq('OID001AID001')
+        expect(result[0]['role']).to eq('org-member')
+
+        expect(result[1]['parent_oid']).to eq('OID001')
+        expect(result[1]['oid']).to eq('OID001AID002')
+        expect(result[1]['role']).to eq('org-accountant')
+      end
+    end
+  end
 end
