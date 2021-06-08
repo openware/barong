@@ -107,7 +107,6 @@ module Barong
       user = current_api_key.key_holder_account
       validate_user!(user)
       validate_bitzlato_user!(user)
-
       validate_permissions!(user)
 
       user # returns user(api key creator)
@@ -116,14 +115,14 @@ module Barong
     end
 
     def validate_bitzlato_user!(user)
-      bitzlato_user = BitzlatoUser.by_email(user.email).take
+      bitzlato_user = BitzlatoUser.find_by_email(user.email)
       if bitzlato_user.present?
-        Rails.logger.info("Found bitzlato user #{bitzlato_user.real_email}")
         if bitzlato_user.user_profile.try(&:blocked_by_admin?)
-          Rails.logger.info("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
+          Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
+          error!({ errors: ['authz.blocked_account'] }, 401)
         end
       else
-        Rails.logger.info("Not Found bitzlato user with email #{user.email}")
+        Rails.logger.info("Not Found Bitzlato user with email #{user.email}")
       end
     end
 
