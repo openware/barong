@@ -16,7 +16,12 @@ class Ability
     end
 
     def roles
-      abilities['roles']
+      roles = abilities['roles']
+      roles.concat(organization_roles)
+    end
+
+    def organization_roles
+      abilities['organization_roles'] || []
     end
   end
 end

@@ -6,6 +6,11 @@ roles:
   - compliance
   - support
 
+organization_roles:
+  - org-admin
+  - org-member
+  - org-accountant
+
 admin_permissions:
   superadmin:
     manage:

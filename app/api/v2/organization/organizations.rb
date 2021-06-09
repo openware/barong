@@ -144,6 +144,11 @@ module API
           get '/abilities' do
             Ability.organization_permissions[current_user.role] || {}
           end
+
+          desc 'Returns roles of organization'
+          get '/roles' do
+            Ability.organization_roles || []
+          end
         end
       end
     end
