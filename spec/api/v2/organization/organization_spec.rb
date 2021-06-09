@@ -6,7 +6,7 @@ describe API::V2::Organization::Organizations, type: :request do
 
   describe 'GET /api/v2/organization' do
     let(:params) { {} }
-    let(:do_request) { get '/api/v2/organization', headers: auth_header, params: params }
+    let(:url) { get '/api/v2/organization', headers: auth_header, params: params }
 
     let!(:create_memberships) do
       # Assign users with organizations
@@ -20,27 +20,18 @@ describe API::V2::Organization::Organizations, type: :request do
 
     context 'when params is missing' do
       it 'renders an error' do
-        get '/api/v2/organization', headers: auth_header
+        get '/api/v2/organization/info', headers: auth_header
 
         expect(response.status).not_to eq(200)
       end
     end
 
     context 'user has Organization ability' do
-      let(:params) { { oid: 'OID001' } }
+      let(:url) { '/api/v2/organization/info' }
       let(:test_user) { User.find(1) }
 
-      it 'return organization details of default user\'s organization' do
-        do_request
-        result = JSON.parse(response.body)
-
-        expect(response.status).to eq(200)
-        expect(result['oid']).to eq('OID001')
-      end
-
       it 'return organization details' do
-        params[:oid] = 'OID001'
-        do_request
+        get "#{url}/OID001", headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
@@ -48,9 +39,7 @@ describe API::V2::Organization::Organizations, type: :request do
       end
 
       it 'return organization account details' do
-        params[:oid] = 'OID001AID001'
-
-        do_request
+        get "#{url}/OID001AID001", headers: auth_header
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)

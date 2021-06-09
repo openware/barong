@@ -12,19 +12,18 @@ module API::V2::Queries
 
     # returns query with with all applied filters
     def call(params)
-      (filter_by_name(@initial_scope, params[:keyword])).or(filter_by_uid(@initial_scope, params[:keyword]))
+      filter_by_oid(@initial_scope, params[:keyword])
+        .or(filter_by_name(@initial_scope, params[:keyword]))
     end
 
     private
 
-    # adds where(organization.name starts with name) to query
-    def filter_by_name(scoped, name = nil)
-      name ? scoped.where("name LIKE '#{name}%'") : scoped
+    def filter_by_oid(scoped, oid = nil)
+      oid ? scoped.where("oid LIKE '%#{oid}%'") : scoped
     end
 
-    # adds where(user.uid starts with uid) to query
-    def filter_by_uid(scoped, uid = nil)
-      uid ? scoped.where("memberships.user_id IN (SELECT id FROM users WHERE uid LIKE '#{uid}%')") : scoped
+    def filter_by_name(scoped, name = nil)
+      name ? scoped.where("name LIKE '%#{name}%'") : scoped
     end
   end
 end

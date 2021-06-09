@@ -23,7 +23,10 @@ module API::V2
         @_current_user ||= User.find_by!(uid: uid)
 
         # Set role with current switched user
-        @_current_user.role = env[:current_payload][:role] if env[:current_payload].key?(:role)
+        role = env[:current_payload].key?(:role) ? env[:current_payload][:role] : @_current_user.role
+        user_role = env[:current_payload].key?(:user_role) ? env[:current_payload][:user_role] : @_current_user.role
+        @_current_user.role = role
+        @_current_user.current_user_role = user_role
         @_current_user.current_oid = oid
         @_current_user
       end

@@ -45,7 +45,7 @@ module API
               users = if params[:keyword].nil?
                         ::User.all
                       else
-                        ::User.where("uid LIKE '#{params[:keyword]}%'")
+                        ::User.where("uid LIKE '%#{params[:keyword]}%' OR email LIKE '%#{params[:keyword]}%'")
                       end
             else
               # User has SwitchSession ability
@@ -59,7 +59,7 @@ module API
             # Get all accounts for organization admin even if no membership belong to
             orgs = API::V2::Queries::AccountFilter
                    .new(::Organization.with_all_memberships
-                                          .where(id: oids))
+                                      .where(id: oids))
                    .call(permitted_search_params(params))
                    .distinct
             accounts = orgs.map do |m|
@@ -76,7 +76,7 @@ module API
               # Get only user which NOT belong to organization
               individual_users = users.reject { |u| uids.include? u.uid }
               accounts.concat(individual_users.map do |m|
-                                name = ''
+                                name = m.email
                                 if m.profiles.length.positive?
                                   profile = m.profiles[0]
                                   name = "#{profile.first_name} #{profile.last_name}"

@@ -208,6 +208,11 @@ class User < ApplicationRecord
     return @current_oid unless @current_oid.nil?
   end
 
+  attr_writer :current_user_role
+  def user_role
+    return @current_user_role unless @current_user_role.nil?
+  end
+
   private
 
   def assign_uid

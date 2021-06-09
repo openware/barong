@@ -81,7 +81,6 @@ module Barong
         error!({ errors: ['authz.client_session_mismatch'] }, 401)
       end
 
-
       # Update session key expiration date
       session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
       Barong::RedisSession.update(user_uid, session.id.to_s, session[:expire_time])
@@ -275,7 +274,7 @@ module Barong
     def user_uid
       # To identiy origin user by session[:rid]
       # if exist, user comes from switched mode use [:rid]; else use [:uid]
-      session[:rid].nil? ? session[:uid] : session[:rid]
+      session[:rid].present? ? session[:rid] : session[:uid]
     end
   end
 end

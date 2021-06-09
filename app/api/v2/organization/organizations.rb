@@ -46,25 +46,14 @@ module API
             present organization, with: API::V2::Organization::Entities::Organization
           end
 
-          desc 'Return organizations details',
-               failure: [
-                 { code: 400, message: 'Required params are missing' },
-                 { code: 422, message: 'Validation errors' }
-               ],
-               success: API::V2::Organization::Entities::Organization
-          params do
-            requires :oid,
-                     type: String,
-                     desc: 'organization oid'
+          desc 'Returns abilities in organization'
+          get '/abilities' do
+            Ability.organization_permissions[current_user.user_role] || {}
           end
-          get do
-            admin_authorize! :read, ::Organization
 
-            org = ::Organization.find_by_oid(params[:oid])
-            error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if org.nil?
-
-            present org,
-                    with: API::V2::Organization::Entities::OrganizationWithFullInfo
+          desc 'Returns roles of organization'
+          get '/roles' do
+            Ability.organization_roles || []
           end
 
           desc 'Update organization',
@@ -139,15 +128,28 @@ module API
 
             status 200
           end
+        end
 
-          desc 'Returns abilities in organization'
-          get '/abilities' do
-            Ability.organization_permissions[current_user.role] || {}
+        resource :info do
+          desc 'Return organizations details',
+               failure: [
+                 { code: 400, message: 'Required params are missing' },
+                 { code: 422, message: 'Validation errors' }
+               ],
+               success: API::V2::Organization::Entities::Organization
+          params do
+            requires :oid,
+                     type: String,
+                     desc: 'organization oid'
           end
+          get '/:oid' do
+            admin_authorize! :read, ::Organization
 
-          desc 'Returns roles of organization'
-          get '/roles' do
-            Ability.organization_roles || []
+            org = ::Organization.find_by_oid(params[:oid])
+            error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if org.nil?
+
+            present org,
+                    with: API::V2::Organization::Entities::OrganizationWithFullInfo
           end
         end
       end

@@ -34,6 +34,26 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(result.select { |m| m['uid'].nil? }.length).to eq 6
         expect(result.select { |m| m['oid'].nil? }.length).to eq 4
       end
+
+      it 'return list of accounts filtered account by email' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'user1@barong.io' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['uid']).to eq 'IDFE0908101'
+      end
+
+      it 'return list of accounts filtered account by uid' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'IDFE10A90000' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['uid']).to eq 'IDFE10A90000'
+      end
     end
 
     context 'user is org-admin with SwitchSession ability' do
@@ -64,16 +84,6 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(response).to be_successful
         expect(result.length).to eq 1
         expect(result[0]['name']).to eq 'Group A1'
-      end
-
-      it 'return list of accounts filtered account by uid' do
-        get url,
-            headers: auth_header,
-            params: { keyword: 'IDFE10A90000' }
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 1
-        expect(result[0]['oid']).to eq 'OID001'
       end
     end
 

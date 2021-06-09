@@ -31,7 +31,7 @@ module API::V2
         def user_uid
           # To identiy origin user by session[:rid]
           # if exist, user comes from switched mode use [:rid]; else use [:uid]
-          session[:rid].nil? ? session[:uid] : session[:rid]
+          session[:rid].present? ? session[:rid] : session[:uid]
         end
       end
 
@@ -266,6 +266,7 @@ module API::V2
               current_user.current_oid = switch_oid
               current_user.current_organization = ::Organization.find_by_oid(organization_oid)
               current_user.role = role
+              current_user.current_user_role = user.role
             end
 
             present current_user, with: API::V2::Entities::UserWithOrganization, csrf_token: csrf_token
