@@ -64,6 +64,12 @@ module API::V2
           end
 
           unless user.otp
+            # Destroy switch session first
+            if session.present?
+              Barong::RedisSession.delete(user_uid, session.id)
+              session.destroy
+            end
+
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
             csrf_token = open_session(user)
             publish_session_create(user)
@@ -76,6 +82,12 @@ module API::V2
           unless TOTPService.validate?(user.uid, declared_params[:otp_code])
             login_error!(reason: 'OTP code is invalid', error_code: 403,
                          user: user.id, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
+          end
+
+          # Destroy switch session first
+          if session.present?
+            Barong::RedisSession.delete(user_uid, session.id)
+            session.destroy
           end
 
           activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
