@@ -181,4 +181,78 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
   end
+
+  describe 'GET /api/v2/organization/switch_session_ability' do
+    let(:do_request) { get '/api/v2/organization/switch_session_ability', headers: auth_header }
+
+    let!(:create_memberships) do
+      # Assign users with organizations
+      create(:membership, id: 2, user_id: 2, organization_id: 1)
+      create(:membership, id: 3, user_id: 3, organization_id: 3)
+      create(:membership, id: 4, user_id: 4, organization_id: 3)
+      create(:membership, id: 5, user_id: 5, organization_id: 5)
+      create(:membership, id: 6, user_id: 6, organization_id: 3)
+      create(:membership, id: 7, user_id: 6, organization_id: 4)
+    end
+
+    context 'user has AdminSwitchSession ability' do
+      let(:test_user) { User.find(1) }
+
+      it 'return true' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq(true)
+      end
+    end
+
+    context 'user has no AdminSwitchSession/SwitchSession ability' do
+      let(:test_user) { User.find(7) }
+
+      it 'return false' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq(false)
+      end
+    end
+
+    context 'user is Organization Admin' do
+      let(:test_user) { User.find(2) }
+
+      it 'return true' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq(true)
+      end
+    end
+
+    context 'user is Organization Member with only 1 organization account' do
+      let(:test_user) { User.find(3) }
+
+      it 'return false' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq(false)
+      end
+    end
+
+    context 'user is Organization Member with 2 organization accounts' do
+      let(:test_user) { User.find(6) }
+
+      it 'return true' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result).to eq(true)
+      end
+    end
+  end
 end

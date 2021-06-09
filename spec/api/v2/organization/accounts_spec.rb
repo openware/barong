@@ -54,6 +54,26 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(result.length).to eq 1
         expect(result[0]['uid']).to eq 'IDFE10A90000'
       end
+
+      it 'return list of accounts filtered account by first_name' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'Vee' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['uid']).to eq 'IDFE09081060'
+      end
+
+      it 'return list of accounts filtered account by last_name' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'Jirapong' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+        expect(result[0]['uid']).to eq 'IDFE09081060'
+      end
     end
 
     context 'user is org-admin with SwitchSession ability' do

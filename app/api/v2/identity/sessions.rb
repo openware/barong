@@ -33,6 +33,78 @@ module API::V2
           # if exist, user comes from switched mode use [:rid]; else use [:uid]
           session[:rid].present? ? session[:rid] : session[:uid]
         end
+
+        def switch_session(user, switch, switch_oid, organization_oid, role)
+          csrf_token = open_session_switch(user, switch)
+          publish_session_switch(user, switch)
+          uid = if switch[:oid].nil?
+                  # switch as user
+                  switch[:uid]
+                else
+                  # switch as organization
+                  switch[:rid]
+                end
+          current_user = ::User.find_by_uid(uid)
+          current_user.current_oid = switch_oid
+          current_user.current_organization = ::Organization.find_by_oid(organization_oid)
+          current_user.role = role
+          current_user.current_user_role = user.role
+
+          {
+            token: csrf_token,
+            user: current_user
+          }
+        end
+
+        def get_switch_session(user, switch_oid, is_switch_session)
+          org = ::Organization.find_by_oid(switch_oid)
+          error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
+
+          role = org.parent_organization.nil? ? 'org-admin' : 'org-member'
+          if is_switch_session
+            # User is organization admin/account
+            # Check account in the organization that user belong to
+            members = ::Membership.with_all_organizations
+                                  .with_users(user.id)
+                                  .select('memberships.*,organizations.name, organizations.parent_organization')
+                                  .pluck(:organization_id, :'organizations.name', :'organizations.parent_organization')
+                                  .map { |id, name, pid| { id: id, name: name, pid: pid } }
+            error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
+
+            oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
+            members.select { |m| m[:pid].nil? }.each do |m|
+              oids.concat(::Organization.with_parents(m[:id]).pluck(:id))
+            end
+
+            member = ::Membership.with_users(user.id)
+                                 .joins(:organization)
+                                 .where(organizations: { oid: switch_oid })
+            # Set role as organization role
+            role = member.first.role if member.length.positive?
+
+            error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
+            error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
+          end
+
+          if org.parent_organization.nil?
+            # User switch as organization admin
+            organization_oid = switch_oid
+          else
+            # User switch as organization subunit
+            organization = ::Organization.find(org.parent_organization)
+            error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
+
+            organization_oid = organization.oid
+          end
+
+          {
+            uid: switch_oid,
+            oid: organization_oid,
+            rid: user.uid,
+            role: role,
+            user_role: user.role
+          }
+        end
       end
 
       desc 'Session related routes'
@@ -63,25 +135,13 @@ module API::V2
                          action: 'login', result: 'failed', error_text: 'invalid_params')
           end
 
-          unless user.otp
-            # Destroy switch session first
-            if session.present?
-              Barong::RedisSession.delete(user_uid, session.id)
-              session.destroy
+          action = user.otp ? 'login::2fa' : 'login'
+          if user.otp
+            error!({ errors: ['identity.session.missing_otp'] }, 401) if declared_params[:otp_code].blank?
+            unless TOTPService.validate?(user.uid, declared_params[:otp_code])
+              login_error!(reason: 'OTP code is invalid', error_code: 403,
+                           user: user.id, action: action, result: 'failed', error_text: 'invalid_otp')
             end
-
-            activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            csrf_token = open_session(user)
-            publish_session_create(user)
-
-            present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-            return status 200
-          end
-
-          error!({ errors: ['identity.session.missing_otp'] }, 401) if declared_params[:otp_code].blank?
-          unless TOTPService.validate?(user.uid, declared_params[:otp_code])
-            login_error!(reason: 'OTP code is invalid', error_code: 403,
-                         user: user.id, action: 'login::2fa', result: 'failed', error_text: 'invalid_otp')
           end
 
           # Destroy switch session first
@@ -90,11 +150,26 @@ module API::V2
             session.destroy
           end
 
-          activity_record(user: user.id, action: 'login::2fa', result: 'succeed', topic: 'session')
-          csrf_token = open_session(user)
-          publish_session_create(user)
+          members = ::Membership.where(user_id: user.id)
+          if members.length.zero?
+            # Normal session mode proceed
+            activity_record(user: user.id, action: action, result: 'succeed', topic: 'session')
+            csrf_token = open_session(user)
+            publish_session_create(user)
+            current_user = user
+          else
+            switch_oid = members.first.organization.oid
+            switch = get_switch_session(user, switch_oid, true)
+            organization_oid = switch[:oid]
+            role = switch[:role]
 
-          present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
+            # Switch session mode proceed
+            org_session = switch_session(user, switch, switch_oid, organization_oid, role)
+            csrf_token = org_session[:token]
+            current_user = org_session[:user]
+          end
+
+          present current_user, with: API::V2::Entities::UserWithOrganization, csrf_token: csrf_token
           status(200)
         end
 
@@ -172,7 +247,8 @@ module API::V2
             error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
             switch_oid = params[:oid]
-            if !params[:oid].nil? || !params[:uid].nil?
+            switch_uid = params[:uid]
+            if !params[:oid].nil? || !switch_uid.nil?
               # Check user has AdminSwitchSession/SwitchSession ability
               is_admin_switch_session = organization_ability? :read, ::AdminSwitchSession
               is_switch_session = organization_ability? :read, ::SwitchSession
@@ -184,10 +260,10 @@ module API::V2
 
               if params[:oid].nil?
                 # Switch to individual user
-                error!({ errors: ['required.params.missing'] }, 400) if params[:uid].nil?
+                error!({ errors: ['required.params.missing'] }, 400) if switch_uid.nil?
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) unless is_admin_switch_session
 
-                switch_user = User.find_by_uid(params[:uid])
+                switch_user = User.find_by_uid(switch_uid)
                 error!({ errors: ['identity.member.not_found'] }, 404) if switch_user.nil?
 
                 # User cannot belong to any organization
@@ -195,62 +271,21 @@ module API::V2
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) if members.length.positive?
 
                 # Admin with ability AdminSwitchSession switch to user; set role with his role
-                organization_oid = nil
-                uid = switch_user.uid
-                role = switch_user.role
+                switch = {
+                  uid: switch_user.uid,
+                  oid: nil,
+                  rid: user.uid,
+                  role: switch_user.role,
+                  user_role: user.role
+                }
               else
                 # Switch to organization/subunit
-                error!({ errors: ['organization.ability.not_permitted'] }, 401) unless params[:uid].nil?
+                error!({ errors: ['organization.ability.not_permitted'] }, 401) unless switch_uid.nil?
 
-                org = ::Organization.find_by_oid(switch_oid)
-                error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
-
-                uid = switch_oid
-                role = org.parent_organization.nil? ? 'org-admin' : 'org-member'
-                if is_switch_session
-                  # User is organization admin/account
-                  # Check account in the organization that user belong to
-                  members = ::Membership.with_all_organizations
-                                        .with_users(user.id)
-                                        .select('memberships.*,organizations.name, organizations.parent_organization')
-                                        .pluck(:organization_id, :'organizations.name', :'organizations.parent_organization')
-                                        .map { |id, name, pid| { id: id, name: name, pid: pid } }
-                  error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
-
-                  oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
-                  members.select { |m| m[:pid].nil? }.each do |m|
-                    oids.concat(::Organization.with_parents(m[:id]).pluck(:id))
-                  end
-
-                  member = ::Membership.with_users(user.id)
-                                       .joins(:organization)
-                                       .where(organizations: { oid: switch_oid })
-                  # Set role as organization role
-                  role = member.first.role if member.length.positive?
-
-                  error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
-                  error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
-                end
-
-                if org.parent_organization.nil?
-                  # User switch as organization admin
-                  organization_oid = switch_oid
-                else
-                  # User switch as organization subunit
-                  organization = ::Organization.find(org.parent_organization)
-                  error!({ errors: ['identity.organization.not_found'] }, 404) unless organization
-
-                  organization_oid = organization.oid
-                end
+                switch = get_switch_session(user, switch_oid, is_switch_session)
+                organization_oid = switch[:oid]
+                role = switch[:role]
               end
-
-              switch = {
-                uid: uid,
-                oid: organization_oid,
-                rid: user.uid,
-                role: role,
-                user_role: user.role
-              }
             end
 
             activity_record(user: user.id, action: (switch_oid.nil? ? 'switch::user' : 'switch::orgnization'),
@@ -265,20 +300,9 @@ module API::V2
               current_user = user
             else
               # Switch session mode proceed
-              csrf_token = open_session_switch(user, switch)
-              publish_session_switch(user, switch)
-              switch_uid = if switch[:oid].nil?
-                             # switch as user
-                             switch[:uid]
-                           else
-                             # switch as organization
-                             switch[:rid]
-                           end
-              current_user = ::User.find_by_uid(switch_uid)
-              current_user.current_oid = switch_oid
-              current_user.current_organization = ::Organization.find_by_oid(organization_oid)
-              current_user.role = role
-              current_user.current_user_role = user.role
+              org_session = switch_session(user, switch, switch_oid, organization_oid, role)
+              csrf_token = org_session[:token]
+              current_user = org_session[:user]
             end
 
             present current_user, with: API::V2::Entities::UserWithOrganization, csrf_token: csrf_token

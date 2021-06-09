@@ -39,4 +39,8 @@ shared_context 'organization memberships' do
     create(:organization, id: 5, oid: 'OID002AID001', parent_organization: 2, name: 'Group B1')
     create(:organization, id: 6, oid: 'OID002AID002', parent_organization: 2, name: 'Group B2')
   end
+
+  let!(:mock_profiles) do
+    create(:profile, user_id: 1, first_name: 'Vee', last_name: 'Jirapong')
+  end
 end

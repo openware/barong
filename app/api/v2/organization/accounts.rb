@@ -42,11 +42,20 @@ module API
               oids = ::Organization.all.pluck(:id)
 
               # Take users
-              users = if params[:keyword].nil?
-                        ::User.all
-                      else
-                        ::User.where("uid LIKE '%#{params[:keyword]}%' OR email LIKE '%#{params[:keyword]}%'")
-                      end
+              keyword = params[:keyword]
+              if keyword.nil?
+                users = ::User.all
+              else
+                users = ::User.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a
+                filtered = ::User.all.select do |m|
+                  (m.profiles.map(&:first_name).any? do |s|
+                     s.include?(keyword)
+                   end) || (m.profiles.map(&:last_name).any? do |s|
+                              s.include?(keyword)
+                            end)
+                end
+                users.concat(filtered)
+              end
             else
               # User has SwitchSession ability
               oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
@@ -77,7 +86,7 @@ module API
               individual_users = users.reject { |u| uids.include? u.uid }
               accounts.concat(individual_users.map do |m|
                                 name = m.email
-                                if m.profiles.length.positive?
+                                if m.profiles.length.positive? && m.active?
                                   profile = m.profiles[0]
                                   name = "#{profile.first_name} #{profile.last_name}"
                                 end

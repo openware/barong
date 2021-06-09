@@ -76,7 +76,8 @@ RSpec.configure do |config|
         'superadmin' => { 'manage' => %w[AdminSwitchSession] },
         'admin' => { 'manage' => %w[AdminSwitchSession] },
         'org-admin' => { 'manage' => %w[SwitchSession] },
-        'org-member' => { 'read' => %w[SwitchSession] }
+        'org-member' => { 'read' => %w[SwitchSession] },
+        'org-accountant' => { 'read' => %w[SwitchSession] }
       }
     )
     allow_any_instance_of(Barong::Authorize).to receive(:validate_csrf!).and_return(true)

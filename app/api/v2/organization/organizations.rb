@@ -51,6 +51,30 @@ module API
             Ability.organization_permissions[current_user.user_role] || {}
           end
 
+          desc 'Returns switch_session_ability in organization'
+          get '/switch_session_ability' do
+            permissions = Ability.organization_permissions[current_user.user_role] || {}
+            abilities = permissions['manage'] || permissions['read']
+            return false if abilities.nil?
+
+            return true if abilities.include?('AdminSwitchSession')
+
+            if abilities.include?('SwitchSession')
+              members = ::Membership.with_users(current_user.id)
+
+              result = if members.first.organization.parent_organization.nil?
+                         # User is organization admin
+                         true
+                       else
+                         # User is organization member with multiple accounts
+                         members.length > 1
+                       end
+              return result
+            end
+
+            return false
+          end
+
           desc 'Returns roles of organization'
           get '/roles' do
             Ability.organization_roles || []
