@@ -60,6 +60,12 @@ users:
     role: "superadmin"
     state: "active"
     level: 1
+  - email: "adminAB@barong.io"
+    uid: "IDFEAB00000"
+    password: "eyJhbGciOiJSUzI1NiJ9"
+    role: "org-admin"
+    state: "active"
+    level: 1
 
 profiles:
   - user_id: 1
@@ -85,6 +91,9 @@ profiles:
     last_name: "One"
   - user_id: 8
     first_name: "Super"
+    last_name: "Admin"
+  - user_id: 9
+    first_name: "AB"
     last_name: "Admin"
 
 organizations:
@@ -140,6 +149,12 @@ memberships:
   - user_id: 6
     organization_id: 4
     role: org-member
+  - user_id: 9
+    organization_id: 1
+    role: org-admin
+  - user_id: 9
+    organization_id: 2
+    role: org-admin
 
 levels:
   - key: email

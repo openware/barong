@@ -48,7 +48,7 @@ module API
                         ::User.where("uid LIKE '#{params[:keyword]}%'")
                       end
             else
-              # User has AdminSwitchSession ability
+              # User has SwitchSession ability
               oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
               members.select { |m| m[:pid].nil? }.each do |m|
                 oids.concat(::Organization.with_parents(m[:id]).pluck(:id))
