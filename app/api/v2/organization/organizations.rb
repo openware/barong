@@ -14,7 +14,7 @@ module API
             use :pagination_filters
           end
           get '/all' do
-            organization_authorize! :read, ::Organization
+            admin_authorize! :read, ::Organization
 
             organizations = ::Organization.with_parents
             present paginate(organizations), with: API::V2::Organization::Entities::Organization
@@ -37,7 +37,7 @@ module API
                      desc: 'organization fee group'
           end
           post do
-            organization_authorize! :create, ::Organization
+            admin_authorize! :create, ::Organization
 
             declared_params = declared(params, include_missing: false)
             organization = ::Organization.new(declared_params)
@@ -58,7 +58,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            organization_authorize! :read, ::Organization
+            admin_authorize! :read, ::Organization
 
             org = ::Organization.find_by_oid(params[:oid])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if org.nil?
@@ -101,7 +101,7 @@ module API
                      desc: 'organization postcode'
           end
           put '/update' do
-            organization_authorize! :update, ::Organization
+            admin_authorize! :update, ::Organization
 
             organization = ::Organization.find(params[:organization_id])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if organization.nil?
@@ -130,7 +130,7 @@ module API
                      desc: 'organization group'
           end
           put '/settings' do
-            organization_authorize! :update, ::Organization
+            admin_authorize! :update, ::Organization
 
             organization = ::Organization.find(params[:organization_id])
             error!({ errors: ['organization.organization.doesnt_exist'] }, 404) if organization.nil?

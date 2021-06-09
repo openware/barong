@@ -35,12 +35,6 @@ module API::V2
       error!({ errors: ['admin.ability.not_permitted'] }, 401)
     end
 
-    def organization_authorize!(*args)
-      AdminAbility.new(current_user).authorize!(*args)
-    rescue CanCan::AccessDenied
-      error!({ errors: ['organization.ability.not_permitted'] }, 401)
-    end
-
     def organization_ability?(*args)
       session = request.session
 

@@ -37,7 +37,7 @@ module API
                                   .map { |id, name, pid| { id: id, name: name, pid: pid } }
 
             # Verify barong admin has AdminSwitchSession ability
-            if organization_ability? :read, ::AdminSwitchSession
+            if is_admin_switch_session
               # User has AdminSwitchSession ability
               oids = ::Organization.all.pluck(:id)
 

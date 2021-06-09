@@ -21,7 +21,7 @@ module API
                      desc: 'organization oid'
           end
           get do
-            organization_authorize! :read, ::Organization
+            admin_authorize! :read, ::Organization
 
             org = ::Organization.find_by_oid(params[:oid])
             if org.nil? || !org.parent_organization.nil?
@@ -56,7 +56,7 @@ module API
                      desc: 'account status'
           end
           post do
-            organization_authorize! :create, ::Organization
+            admin_authorize! :create, ::Organization
 
             id = params[:organization_id]
             # Validate the organization need to be parent organization
@@ -96,7 +96,7 @@ module API
                      desc: 'organization account id'
           end
           delete do
-            organization_authorize! :destroy, ::Organization
+            admin_authorize! :destroy, ::Organization
 
             # You cannot remove parent organizations
             organization = ::Organization.where.not(parent_organization: nil).find(params[:organization_id])
