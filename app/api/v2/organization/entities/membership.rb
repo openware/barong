@@ -18,7 +18,7 @@ module API::V2::Organization
       end
 
       expose :role do |member|
-        member.user.role
+        member.role
       end
 
       expose :subunit do |member|
