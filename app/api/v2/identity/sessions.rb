@@ -248,7 +248,7 @@ module API::V2
 
             switch_oid = params[:oid]
             switch_uid = params[:uid]
-            if !params[:oid].nil? || !switch_uid.nil?
+            if !switch_oid.nil? || !switch_uid.nil?
               # Check user has AdminSwitchSession/SwitchSession ability
               is_admin_switch_session = organization_ability? :read, ::AdminSwitchSession
               is_switch_session = organization_ability? :read, ::SwitchSession
@@ -258,7 +258,7 @@ module API::V2
                        401)
               end
 
-              if params[:oid].nil?
+              if switch_oid.nil?
                 # Switch to individual user
                 error!({ errors: ['required.params.missing'] }, 400) if switch_uid.nil?
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) unless is_admin_switch_session
@@ -278,6 +278,7 @@ module API::V2
                   role: switch_user.role,
                   user_role: user.role
                 }
+                role = switch_user.role
               else
                 # Switch to organization/subunit
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) unless switch_uid.nil?
