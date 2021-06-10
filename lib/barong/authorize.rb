@@ -37,6 +37,11 @@ module Barong
           oid: session[:oid],
           rid: session[:rid],
           role: session[:role],
+          username: session[:username],
+          email: session[:email],
+          level: session[:level],
+          state: session[:state],
+          referral_id: session[:referral_id],
           user_role: session[:user_role]
         }
       end

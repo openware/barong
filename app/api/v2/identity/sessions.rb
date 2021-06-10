@@ -102,6 +102,12 @@ module API::V2
             oid: organization_oid,
             rid: user.uid,
             role: role,
+            username: user.username,
+            email: user.email,
+            level: user.level,
+            otp: user.otp,
+            state: user.state,
+            referral_uid: user.referral_uid,
             user_role: user.role
           }
         end
@@ -272,12 +278,20 @@ module API::V2
                 members = Membership.where(user_id: switch_user.id)
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) if members.length.positive?
 
-                # Admin with ability AdminSwitchSession switch to user; set role with his role
+                # Admin with ability AdminSwitchSession switch to user; set role, email with his role
                 switch = {
                   uid: switch_user.uid,
+                  username: switch_user.username,
+                  email: switch_user.email,
+                  role: switch_user.role,
+                  level: switch_user.level,
+                  otp: switch_user.otp,
+                  state: switch_user.state,
+                  referral_uid: switch_user.referral_uid,
+                  created_at: switch_user.created_at,
+                  updated_at: switch_user.updated_at,
                   oid: nil,
                   rid: user.uid,
-                  role: switch_user.role,
                   user_role: user.role
                 }
                 role = switch_user.role
