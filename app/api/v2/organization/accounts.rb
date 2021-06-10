@@ -81,12 +81,12 @@ module API
 
             unless users.nil?
               # Get user uid in organizations
-              uids = (orgs.map(&:memberships).flatten.map { |m| m.user.uid }).uniq
+              uids = (::Organization.with_all_memberships.map(&:memberships).flatten.map { |m| m.user.uid }).uniq
               # Get only user which NOT belong to organization
-              individual_users = users.reject { |u| uids.include? u.uid }
+              individual_users = users.select { |u| u.state == 'active' }.reject { |u| uids.include? u.uid }
               accounts.concat(individual_users.map do |m|
                                 name = m.email
-                                if m.profiles.length.positive? && m.active?
+                                if m.profiles.length.positive? && m.state == 'verified'
                                   profile = m.profiles[0]
                                   name = "#{profile.first_name} #{profile.last_name}"
                                 end

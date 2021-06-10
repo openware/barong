@@ -12,23 +12,25 @@ shared_context 'organization memberships' do
 
   let!(:mock_users) do
     create(:user, id: 1, uid: 'IDFE09081060', email: 'admin@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'admin')
+                  password_confirmation: 'testPassword111', role: 'admin', state: 'active')
     create(:user, id: 2, uid: 'IDFE10A90000', email: 'adminA@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-admin')
+                  password_confirmation: 'testPassword111', role: 'org-admin', state: 'active')
     create(:user, id: 3, uid: 'IDFE10A90001', email: 'memberA1@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-member')
+                  password_confirmation: 'testPassword111', role: 'org-member', state: 'active')
     create(:user, id: 4, uid: 'IDFE10A90002', email: 'memberA2@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-member')
+                  password_confirmation: 'testPassword111', role: 'org-member', state: 'active')
     create(:user, id: 5, uid: 'IDFE10B90001', email: 'memberB1@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-member')
+                  password_confirmation: 'testPassword111', role: 'org-member', state: 'active')
     create(:user, id: 6, uid: 'IDFE10A90003', email: 'memberA1A2@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-member')
+                  password_confirmation: 'testPassword111', role: 'org-member', state: 'active')
     create(:user, id: 7, uid: 'IDFE0908101', email: 'user1@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'member')
+                  password_confirmation: 'testPassword111', role: 'member', state: 'active')
     create(:user, id: 8, uid: 'IDFE0000000', email: 'superadmin@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'superadmin')
+                  password_confirmation: 'testPassword111', role: 'superadmin', state: 'active')
     create(:user, id: 9, uid: 'IDFE10AA000', email: 'org.accountant@barong.io', password: 'testPassword111',
-                  password_confirmation: 'testPassword111', role: 'org-accountant')
+                  password_confirmation: 'testPassword111', role: 'org-accountant', state: 'active')
+    create(:user, id: 10, uid: 'IDFE10UNATV', email: 'unactivate@barong.io', password: 'testPassword111',
+                  password_confirmation: 'testPassword111', role: 'org-accountant', state: 'pending')
   end
 
   let!(:mock_organizations) do
@@ -42,5 +44,6 @@ shared_context 'organization memberships' do
 
   let!(:mock_profiles) do
     create(:profile, user_id: 1, first_name: 'Vee', last_name: 'Jirapong')
+    create(:label, user_id: 1, key: 'email', value: 'verified', scope: 'private')
   end
 end

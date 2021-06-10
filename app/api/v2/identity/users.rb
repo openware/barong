@@ -93,7 +93,8 @@ module API::V2
             publish_confirmation(user, Barong::App.config.domain)
           end
 
-          csrf_token = open_session(user)
+          csrf_token = SecureRandom.hex(10)
+          open_session(user, csrf_token)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
         end
@@ -158,7 +159,8 @@ module API::V2
 
             current_user.labels.create!(key: 'email', value: 'verified', scope: 'private') if token_uniq?(payload[:jti])
 
-            csrf_token = open_session(current_user)
+            csrf_token = SecureRandom.hex(10)
+            open_session(current_user, csrf_token)
 
             EventAPI.notify('system.user.email.confirmed',
                             record: {

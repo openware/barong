@@ -10,8 +10,7 @@ module API::V2
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
       end
 
-      def open_session(user)
-        csrf_token = SecureRandom.hex(10)
+      def open_session(user, csrf_token)
         expire_time = Time.now.to_i + Barong::App.config.session_expire_time
         session.merge!(
           "uid": user.uid,
@@ -23,12 +22,9 @@ module API::V2
 
         # Add current session key info in additional redis list
         Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)
-
-        csrf_token
       end
 
-      def open_session_switch(user, switch)
-        csrf_token = SecureRandom.hex(10)
+      def open_session_switch(user, switch, csrf_token)
         expire_time = Time.now.to_i + Barong::App.config.session_expire_time
         session.merge!(
           "uid": switch[:uid],
@@ -44,8 +40,6 @@ module API::V2
 
         # Add current session key info in additional redis list
         Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)
-
-        csrf_token
       end
 
       def verify_captcha!(response:, endpoint:, error_statuses: [400, 422])

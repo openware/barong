@@ -34,8 +34,8 @@ module API::V2
           session[:rid].present? ? session[:rid] : session[:uid]
         end
 
-        def switch_session(user, switch, switch_oid, organization_oid, role)
-          csrf_token = open_session_switch(user, switch)
+        def switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
+          open_session_switch(user, switch, csrf_token)
           publish_session_switch(user, switch)
           uid = if switch[:oid].nil?
                   # switch as user
@@ -151,10 +151,11 @@ module API::V2
           end
 
           members = ::Membership.where(user_id: user.id)
+          csrf_token = SecureRandom.hex(10)
           if members.length.zero?
             # Normal session mode proceed
             activity_record(user: user.id, action: action, result: 'succeed', topic: 'session')
-            csrf_token = open_session(user)
+            open_session(user, csrf_token)
             publish_session_create(user)
             current_user = user
           else
@@ -164,7 +165,7 @@ module API::V2
             role = switch[:role]
 
             # Switch session mode proceed
-            org_session = switch_session(user, switch, switch_oid, organization_oid, role)
+            org_session = switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
             csrf_token = org_session[:token]
             current_user = org_session[:user]
           end
@@ -219,7 +220,8 @@ module API::V2
           end
 
           activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-          csrf_token = open_session(user)
+          csrf_token = SecureRandom.hex(10)
+          open_session(user, csrf_token)
           publish_session_create(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
@@ -289,6 +291,11 @@ module API::V2
               end
             end
 
+            csrf_token = if session.present? && session[:csrf_token].present?
+                           session[:csrf_token]
+                         else
+                           SecureRandom.hex(10)
+                         end
             activity_record(user: user.id, action: (switch_oid.nil? ? 'switch::user' : 'switch::orgnization'),
                             result: 'succeed', topic: 'session')
             Barong::RedisSession.delete(user.uid, session.id)
@@ -296,12 +303,12 @@ module API::V2
 
             if switch.nil?
               # Destroy switch session mode and take user back to individual session mode
-              csrf_token = open_session(user)
+              open_session(user, csrf_token)
               publish_session_create(user)
               current_user = user
             else
               # Switch session mode proceed
-              org_session = switch_session(user, switch, switch_oid, organization_oid, role)
+              org_session = switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
               csrf_token = org_session[:token]
               current_user = org_session[:user]
             end

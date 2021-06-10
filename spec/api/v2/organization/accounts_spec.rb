@@ -48,11 +48,11 @@ describe API::V2::Organization::Accounts, type: :request do
       it 'return list of accounts filtered account by uid' do
         get url,
             headers: auth_header,
-            params: { keyword: 'IDFE10A90000' }
+            params: { keyword: 'IDFE0908101' }
         result = JSON.parse(response.body)
         expect(response).to be_successful
         expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE10A90000'
+        expect(result[0]['uid']).to eq 'IDFE0908101'
       end
 
       it 'return list of accounts filtered account by first_name' do
@@ -73,6 +73,24 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(response).to be_successful
         expect(result.length).to eq 1
         expect(result[0]['uid']).to eq 'IDFE09081060'
+      end
+
+      it 'not return organization user' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'IDFE10A90000' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 0
+      end
+
+      it 'not return unactivate user' do
+        get url,
+            headers: auth_header,
+            params: { keyword: 'IDFE10UNATV' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 0
       end
     end
 
