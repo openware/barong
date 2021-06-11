@@ -3,7 +3,7 @@
 require 'vault/rails'
 
 Vault::Rails.configure do |config|
-  config.enabled = Rails.env.production?
+  config.enabled = ENV.true?('VAULT_ENABLED') || Rails.env.production?
   config.address = Barong::App.config.vault_address
   config.token = Barong::App.config.vault_token
   config.ssl_verify = false
