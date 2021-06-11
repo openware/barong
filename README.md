@@ -39,6 +39,7 @@ bin/init_config
 3. Create database and run migrations
 ```
 bundle exec rake db:create db:migrate
+DB=bitzlato bundle exec rake db:create db:migrate
 ```
 
 4. Start local server
