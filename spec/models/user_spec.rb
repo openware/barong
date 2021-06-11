@@ -465,7 +465,7 @@ RSpec.describe User, type: :model do
       end
       it 'return organization' do
         expect(user.organization).not_to eq nil
-        expect(user.organization.name).to eq 'Company A'
+        expect(user.organization.name).to eq 'Group A1'
       end
     end
   end
