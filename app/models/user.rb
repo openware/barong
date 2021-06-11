@@ -197,10 +197,7 @@ class User < ApplicationRecord
 
     return nil if memberships.empty? || memberships.first.organization_id.nil?
 
-    org = memberships.first.organization
-    return org if org.parent_organization.nil?
-
-    ::Organization.find(org.parent_organization)
+    memberships.first.organization
   end
 
   attr_writer :current_oid

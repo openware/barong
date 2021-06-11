@@ -46,7 +46,7 @@ module API::V2
                 end
           current_user = ::User.find_by_uid(uid)
           current_user.current_oid = switch_oid
-          current_user.current_organization = ::Organization.find_by_oid(organization_oid)
+          current_user.current_organization = ::Organization.find_by_oid(switch_oid)
           current_user.role = role
           current_user.current_user_role = user.role
 

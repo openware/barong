@@ -120,6 +120,10 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
         expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('admin')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['name']).to eq 'Company A'
+        expect(result['organization']['subunit']).to eq nil
       end
 
       it 'can switch to organization account Group A1' do
@@ -130,6 +134,9 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID001')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['subunit']['name']).to eq 'Group A1'
       end
 
       it 'can switch to organization account Group A2' do
@@ -140,6 +147,9 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID001AID002')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['subunit']['name']).to eq 'Group A2'
       end
 
       it 'can switch to organization admin of Company B' do
@@ -150,6 +160,10 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['name']).to eq 'Company B'
+        expect(result['organization']['subunit']).to eq nil
       end
 
       it 'can switch to organization account Group B1' do
@@ -160,6 +174,9 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002AID001')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['subunit']['name']).to eq 'Group B1'
       end
 
       it 'can switch to organization account Group B2' do
@@ -170,9 +187,12 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID002AID002')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID002')
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['subunit']['name']).to eq 'Group B2'
       end
 
-      it 'cannot switch to a user inn organization' do
+      it 'cannot switch to a user in organization' do
         params[:uid] = 'IDFE10A90003'
         switch_session
 
@@ -210,6 +230,9 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq(nil)
         expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
         expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']).to eq nil
       end
 
       it 'can switch session back as the individual user' do
@@ -226,6 +249,9 @@ describe API::V2::Identity::Sessions do
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq('IDFE09081060')
         expect(session.instance_variable_get(:@delegate)[:oid]).to eq(nil)
         expect(session.instance_variable_get(:@delegate)[:rif]).to eq(nil)
+
+        result = JSON.parse(response.body)
+        expect(result['organization']).to eq nil
       end
     end
 
@@ -246,6 +272,10 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('admin')
           expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('org-admin')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['name']).to eq 'Company A'
+          expect(result['organization']['subunit']).to eq nil
         end
 
         it 'can switch to organization admin of Company A' do
@@ -258,9 +288,13 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('admin')
           expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('org-admin')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['name']).to eq 'Company A'
+          expect(result['organization']['subunit']).to eq nil
         end
 
-        it 'can switch to organization account of Company A1' do
+        it 'can switch to organization account of Group A1' do
           params[:oid] = 'OID001AID001'
           switch_session
 
@@ -269,9 +303,12 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('org-member')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['subunit']['name']).to eq 'Group A1'
         end
 
-        it 'can switch to organization account of Company A2' do
+        it 'can switch to organization account of Group A2' do
           params[:oid] = 'OID001AID002'
           switch_session
 
@@ -280,6 +317,9 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90000')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('org-member')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['subunit']['name']).to eq 'Group A2'
         end
 
         it 'cannot switch to organization admin of Company B' do
@@ -327,6 +367,9 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90001')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
           expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('org-member')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['subunit']['name']).to eq 'Group A1'
         end
 
         it 'can switch to organization account of Group A1' do
@@ -339,6 +382,9 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90001')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
           expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('org-member')
+
+          result = JSON.parse(response.body)
+         expect(result['organization']['subunit']['name']).to eq 'Group A1'
         end
 
         it 'cannot switch to organization account of Group A2' do
@@ -387,6 +433,9 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90003')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('accountant')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['subunit']['name']).to eq 'Group A1'
         end
 
         it 'can switch to organization account of Group A2' do
@@ -398,6 +447,9 @@ describe API::V2::Identity::Sessions do
           expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID001')
           expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE10A90003')
           expect(session.instance_variable_get(:@delegate)[:role]).to eq('member')
+
+          result = JSON.parse(response.body)
+          expect(result['organization']['subunit']['name']).to eq 'Group A2'
         end
       end
     end
