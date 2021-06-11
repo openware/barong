@@ -67,21 +67,47 @@ describe 'Api::V1::Profiles' do
 
     context 'User switch to be the organization account' do
       it 'return Company A when user switch to Company A' do
+        switchs[:uid] = 'OID001'
         switchs[:oid] = 'OID001'
         switchs[:rid] = 'IDFE09081060'
         get '/api/v2/resource/users/me', headers: auth_header
 
         expect(response.status).to eq(200)
         expect(json_body[:organization][:name]).to eq('Company A')
+        expect(json_body[:organization][:subunit]).to eq(nil)
       end
 
       it 'return Company B when user switch to Company B' do
+        switchs[:uid] = 'OID002'
         switchs[:oid] = 'OID002'
         switchs[:rid] = 'IDFE09081060'
         get '/api/v2/resource/users/me', headers: auth_header
 
         expect(response.status).to eq(200)
         expect(json_body[:organization][:name]).to eq('Company B')
+        expect(json_body[:organization][:subunit]).to eq(nil)
+      end
+
+      it 'return Group A1 when user switch to Group A1' do
+        switchs[:uid] = 'OID001AID001'
+        switchs[:oid] = 'OID001'
+        switchs[:rid] = 'IDFE09081060'
+        get '/api/v2/resource/users/me', headers: auth_header
+
+        expect(response.status).to eq(200)
+        expect(json_body[:organization][:name]).to eq('Company A')
+        expect(json_body[:organization][:subunit][:name]).to eq('Group A1')
+      end
+
+      it 'return Group B1 when user switch to Group B1' do
+        switchs[:uid] = 'OID002AID001'
+        switchs[:oid] = 'OID002'
+        switchs[:rid] = 'IDFE09081060'
+        get '/api/v2/resource/users/me', headers: auth_header
+
+        expect(response.status).to eq(200)
+        expect(json_body[:organization][:name]).to eq('Company B')
+        expect(json_body[:organization][:subunit][:name]).to eq('Group B1')
       end
     end
   end

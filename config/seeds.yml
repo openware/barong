@@ -125,7 +125,7 @@ organizations:
     parent_organization: 1
     name: "Group A2"
     status: "active"
-  - oid: "OID002AID002"
+  - oid: "OID002AID001"
     parent_organization: 2
     name: "Group B1"
     status: "active"
