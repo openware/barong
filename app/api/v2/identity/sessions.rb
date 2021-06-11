@@ -34,7 +34,7 @@ module API::V2
           session[:rid].present? ? session[:rid] : session[:uid]
         end
 
-        def switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
+        def switch_session(user, switch, switch_oid, role, csrf_token)
           open_session_switch(user, switch, csrf_token)
           publish_session_switch(user, switch)
           uid = if switch[:oid].nil?
@@ -173,11 +173,10 @@ module API::V2
           else
             switch_oid = members.first.organization.oid
             switch = get_switch_session(user, switch_oid, true)
-            organization_oid = switch[:oid]
             role = switch[:role]
 
             # Switch session mode proceed
-            org_session = switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
+            org_session = switch_session(user, switch, switch_oid, role, csrf_token)
             csrf_token = org_session[:token]
             current_user = org_session[:user]
           end
@@ -306,7 +305,6 @@ module API::V2
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) unless switch_uid.nil?
 
                 switch = get_switch_session(user, switch_oid, is_switch_session)
-                organization_oid = switch[:oid]
                 role = switch[:role]
               end
             end
@@ -328,7 +326,7 @@ module API::V2
               current_user = user
             else
               # Switch session mode proceed
-              org_session = switch_session(user, switch, switch_oid, organization_oid, role, csrf_token)
+              org_session = switch_session(user, switch, switch_oid, role, csrf_token)
               csrf_token = org_session[:token]
               current_user = org_session[:user]
             end

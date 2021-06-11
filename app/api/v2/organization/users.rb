@@ -79,25 +79,38 @@ module API
           post do
             admin_authorize! :create, ::Organization
 
+            role = params[:role]
+            unless Ability.organization_roles.include? role
+              error!({ errors: ['organization.membership.role_not_permitted'] },
+                     401)
+            end
+
             user = ::User.find_by_uid(params[:uid])
             org = ::Organization.find_by_oid(params[:oid])
             error!({ errors: ['organization.membership.doesnt_exist'] }, 404) if user.nil? || org.nil?
 
             members = ::Membership.with_users(user.id)
+            found = false
+            # FIXME: Change to active record scope
             if !members.nil? && members.length.positive?
               user_org = members.first.organization
               if user_org.parent_organization.nil?
                 # User already be org admin; cannot add duplication.
-                error!({ errors: ['organization.membership.already_exist'] }, 401)
+                error!({ errors: ['organization.membership.already_exist'] }, 404)
               end
               # User already have subunit; Try to add in another subunit
               if (members.select { |m| m.organization.id == org.id }).length.positive?
-                # Found duplication; return error
-                error!({ errors: ['organization.membership.already_exist'] }, 401)
+                # Found duplication
+                found = true
               end
             end
 
-            member = ::Membership.new({ user_id: user.id, organization_id: org.id, role: params[:role] })
+            if found
+              member = ::Membership.find_by({ user_id: user.id, organization_id: org.id })
+              member.role = role
+            else
+              member = ::Membership.new({ user_id: user.id, organization_id: org.id, role: role })
+            end
             code_error!(member.errors.details, 422) unless member.save
 
             present member, with: API::V2::Organization::Entities::Membership

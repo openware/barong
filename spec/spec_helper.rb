@@ -66,6 +66,7 @@ RSpec.configure do |config|
     DatabaseCleaner.start
     allow(Ability).to receive(:abilities).and_return(
       'roles' => %w[admin manager accountant superadmin technical compliance support],
+      'organization_roles' => %w[org-admin org-member org-accountant],
       'admin_permissions' => {
         'superadmin' => { 'manage' => %w[User Activity Ability APIKey Profile Permission Label Restriction Level] },
         'admin' => { 'read' => %w[Level APIKey Permission], 'manage' => %w[User Activity Profile Label Organization] },

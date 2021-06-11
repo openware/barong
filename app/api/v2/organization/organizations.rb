@@ -102,7 +102,7 @@ module API
                  { code: 400, message: 'Required params are missing' },
                  { code: 422, message: 'Validation errors' }
                ],
-               success: { code: 200, message: 'Organization attributes was updated' }
+               success: API::V2::Organization::Entities::Organization
           params do
             requires :organization_id,
                      type: Integer,
@@ -138,7 +138,7 @@ module API
 
             code_error!(organization.errors.details, 422) unless organization.update(params.except(:organization_id))
 
-            status 200
+            present organization, with: API::V2::Organization::Entities::Organization
           end
 
           desc 'Update organization setting',
@@ -146,7 +146,7 @@ module API
                  { code: 400, message: 'Required params are missing' },
                  { code: 422, message: 'Validation errors' }
                ],
-               success: { code: 200, message: 'Organization setting was updated' }
+               success: API::V2::Organization::Entities::Organization
           params do
             requires :organization_id,
                      type: Integer,
@@ -167,7 +167,7 @@ module API
 
             code_error!(organization.errors.details, 422) unless organization.update(params.except(:organization_id))
 
-            status 200
+            present organization, with: API::V2::Organization::Entities::Organization
           end
         end
 

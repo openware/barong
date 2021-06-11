@@ -87,7 +87,7 @@ describe API::V2::Organization::Users, type: :request do
 
         do_request
 
-        expect(response.status).to eq 401
+        expect(response.status).to eq 404
       end
 
       it 'can add organization admin in organization' do
