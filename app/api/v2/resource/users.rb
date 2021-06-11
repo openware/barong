@@ -29,7 +29,7 @@ module API::V2
         desc 'Returns current user',
           success: API::V2::Entities::UserWithFullInfo
         get '/me' do
-          current_user.current_organization = current_organization
+          current_user.current_organization = ::Organization.find_by_oid(current_user.oid) if current_user.oid.present?
           present current_user, with: API::V2::Entities::UserWithOrganization
         end
 
