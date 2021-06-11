@@ -55,24 +55,41 @@ module API
           get '/switch_session_ability' do
             permissions = Ability.organization_permissions[current_user.user_role] || {}
             abilities = permissions['manage'] || permissions['read']
-            return false if abilities.nil?
+            if abilities.nil?
+              return {
+                ability: false,
+                switch: false
+              }
+            end
 
-            return true if abilities.include?('AdminSwitchSession')
+            if abilities.include?('AdminSwitchSession')
+              return {
+                ability: true,
+                switch: true
+              }
+            end
 
+            ability = false
+            switch = false
             if abilities.include?('SwitchSession')
               members = ::Membership.with_users(current_user.id)
 
-              result = if members.first.organization.parent_organization.nil?
-                         # User is organization admin
-                         true
-                       else
-                         # User is organization member with multiple accounts
-                         members.length > 1
-                       end
-              return result
+              if members.length.positive?
+                ability = true
+                switch = if members.first.organization.parent_organization.nil?
+                           # User is organization admin
+                           true
+                         else
+                           # User is organization member with multiple accounts
+                           members.length > 1
+                         end
+              end
             end
 
-            return false
+            {
+              ability: ability,
+              switch: switch
+            }
           end
 
           desc 'Returns roles of organization'

@@ -189,8 +189,6 @@ describe API::V2::Organization::Organizations, type: :request do
       # Assign users with organizations
       create(:membership, id: 2, user_id: 2, organization_id: 1)
       create(:membership, id: 3, user_id: 3, organization_id: 3)
-      create(:membership, id: 4, user_id: 4, organization_id: 3)
-      create(:membership, id: 5, user_id: 5, organization_id: 5)
       create(:membership, id: 6, user_id: 6, organization_id: 3)
       create(:membership, id: 7, user_id: 6, organization_id: 4)
     end
@@ -203,7 +201,8 @@ describe API::V2::Organization::Organizations, type: :request do
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result).to eq(true)
+        expect(result['ability']).to eq(true)
+        expect(result['switch']).to eq(true)
       end
     end
 
@@ -215,7 +214,8 @@ describe API::V2::Organization::Organizations, type: :request do
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result).to eq(false)
+        expect(result['ability']).to eq(false)
+        expect(result['switch']).to eq(false)
       end
     end
 
@@ -227,7 +227,8 @@ describe API::V2::Organization::Organizations, type: :request do
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result).to eq(true)
+        expect(result['ability']).to eq(true)
+        expect(result['switch']).to eq(true)
       end
     end
 
@@ -239,7 +240,8 @@ describe API::V2::Organization::Organizations, type: :request do
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result).to eq(false)
+        expect(result['ability']).to eq(true)
+        expect(result['switch']).to eq(false)
       end
     end
 
@@ -251,7 +253,34 @@ describe API::V2::Organization::Organizations, type: :request do
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result).to eq(true)
+        expect(result['ability']).to eq(true)
+        expect(result['switch']).to eq(true)
+      end
+    end
+
+    context 'user is Organization Admin which not belong to any organization' do
+      let(:test_user) { User.find(11) }
+
+      it 'return false' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result['ability']).to eq(false)
+        expect(result['switch']).to eq(false)
+      end
+    end
+
+    context 'user is Organization Member which not belong to any organization' do
+      let(:test_user) { User.find(4) }
+
+      it 'return false' do
+        do_request
+        result = JSON.parse(response.body)
+
+        expect(response.status).to eq(200)
+        expect(result['ability']).to eq(false)
+        expect(result['switch']).to eq(false)
       end
     end
   end

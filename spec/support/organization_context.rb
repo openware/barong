@@ -31,6 +31,8 @@ shared_context 'organization memberships' do
                   password_confirmation: 'testPassword111', role: 'org-accountant', state: 'active')
     create(:user, id: 10, uid: 'IDFE10UNATV', email: 'unactivate@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'org-accountant', state: 'pending')
+    create(:user, id: 11, uid: 'IDADMINUNOG', email: 'unorgadmin@barong.io', password: 'testPassword111',
+                  password_confirmation: 'testPassword111', role: 'org-admin', state: 'active')
   end
 
   let!(:mock_organizations) do

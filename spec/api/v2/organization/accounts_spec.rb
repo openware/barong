@@ -30,9 +30,9 @@ describe API::V2::Organization::Accounts, type: :request do
         get url, headers: auth_header
         result = JSON.parse(response.body)
         expect(response).to be_successful
-        expect(result.length).to eq 10
+        expect(result.length).to eq 11
         expect(result.select { |m| m['uid'].nil? }.length).to eq 6
-        expect(result.select { |m| m['oid'].nil? }.length).to eq 4
+        expect(result.select { |m| m['oid'].nil? }.length).to eq 5
       end
 
       it 'return list of accounts filtered account by email' do
