@@ -69,6 +69,7 @@ module API
             # Get all accounts for organization admin even if no membership belong to
             orgs = API::V2::Queries::AccountFilter
                    .new(::Organization.with_all_memberships
+                                      .with_actives
                                       .where(id: oids))
                    .call(permitted_search_params(params))
                    .distinct
@@ -82,7 +83,7 @@ module API
 
             unless users.nil?
               # Get user uid in organizations
-              uids = (::Organization.with_all_memberships.map(&:memberships).flatten.map { |m| m.user.uid }).uniq
+              uids = (::Organization.with_all_memberships.with_actives.map(&:memberships).flatten.map { |m| m.user.uid }).uniq
               # Get only user which NOT belong to organization
               individual_users = users.select { |u| u.state == 'active' }.reject { |u| uids.include? u.uid }
               accounts.concat(individual_users.map do |m|

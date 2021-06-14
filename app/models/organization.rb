@@ -11,6 +11,7 @@ class Organization < ApplicationRecord
 
   scope :with_parents, ->(id = nil) { where(parent_organization: id) }
   scope :with_all_memberships, -> { joins('LEFT JOIN memberships ON organizations.id = memberships.organization_id') }
+  scope :with_actives, -> { where(status: 'active') }
 
   private
 
