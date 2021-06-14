@@ -71,7 +71,7 @@ module API
 
             ability = false
             switch = false
-            if abilities.include?('SwitchSession')
+            if abilities.include?('SubunitSwitchSession') || abilities.include?('OrganizationSwitchSession')
               members = ::Membership.with_users(current_user.id)
 
               if members.length.positive?

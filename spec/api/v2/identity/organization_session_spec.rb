@@ -255,7 +255,7 @@ describe API::V2::Identity::Sessions do
       end
     end
 
-    context 'User has SwitchSession ability' do
+    context 'User has SubunitSwitchSession ability' do
       context 'User is organization admin' do
         let(:sign_params) do
           {

@@ -22,10 +22,11 @@ module API
           end
 
           get do
-            # Check user has AdminSwitchSession/SwitchSession ability
+            # Check user has AdminSwitchSession/SubunitSwitchSession ability
             is_admin_switch_session = organization_ability? :read, ::AdminSwitchSession
-            is_switch_session = organization_ability? :read, ::SwitchSession
-            if !is_admin_switch_session && !is_switch_session
+            is_organization_switch_session = organization_ability? :read, ::OrganizationSwitchSession
+            is_switch_session = organization_ability? :read, ::SubunitSwitchSession
+            if !is_admin_switch_session && !is_switch_session && !is_organization_switch_session
               error!({ errors: ['organization.ability.not_permitted'] }, 401)
             end
 
@@ -57,7 +58,7 @@ module API
                 users.concat(filtered)
               end
             else
-              # User has SwitchSession ability
+              # User has SubunitSwitchSession ability
               oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
               members.select { |m| m[:pid].nil? }.each do |m|
                 oids.concat(::Organization.with_parents(m[:id]).pluck(:id))

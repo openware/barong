@@ -94,7 +94,7 @@ describe API::V2::Organization::Accounts, type: :request do
       end
     end
 
-    context 'user is org-admin with SwitchSession ability' do
+    context 'user is org-admin with SubunitSwitchSession ability' do
       let(:test_user) { User.find(2) }
 
       it 'get all accounts in the organization' do
@@ -125,7 +125,7 @@ describe API::V2::Organization::Accounts, type: :request do
       end
     end
 
-    context 'user is org-member with SwitchSession ability' do
+    context 'user is org-member with SubunitSwitchSession ability' do
       let(:test_user) { User.find(3) }
 
       it 'get account of the organization' do
@@ -146,7 +146,7 @@ describe API::V2::Organization::Accounts, type: :request do
       end
     end
 
-    context 'user is org-member with multiple accounts and SwitchSession ability' do
+    context 'user is org-member with multiple accounts and SubunitSwitchSession ability' do
       let(:test_user) { User.find(6) }
 
       it 'get multiple accounts of the organization' do

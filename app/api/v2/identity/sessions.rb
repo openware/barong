@@ -56,34 +56,34 @@ module API::V2
           }
         end
 
-        def get_switch_session(user, switch_oid, is_switch_session)
+        def get_switch_session(user, switch_oid, is_admin_switch_session, is_organization_switch_session, is_subunit_switch_session)
           org = ::Organization.find_by_oid(switch_oid)
           error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
 
-          role = org.parent_organization.nil? ? 'org-admin' : 'org-member'
-          if is_switch_session
-            # User is organization admin/account
-            # Check account in the organization that user belong to
-            members = ::Membership.with_all_organizations
-                                  .with_users(user.id)
-                                  .select('memberships.*,organizations.name, organizations.parent_organization')
-                                  .pluck(:organization_id, :'organizations.name', :'organizations.parent_organization')
-                                  .map { |id, name, pid| { id: id, name: name, pid: pid } }
-            error!({ errors: ['identity.member.not_found'] }, 404) if members.nil? || members.length.zero?
+          is_target_organization = org.parent_organization.nil?
 
-            oids = ::Organization.where(id: members.pluck(:id)).pluck(:id)
-            members.select { |m| m[:pid].nil? }.each do |m|
-              oids.concat(::Organization.with_parents(m[:id]).pluck(:id))
+          member = ::Membership.with_users(user.id)
+                               .joins(:organization)
+                               .where('organizations.oid = ? OR organization_id = ?', switch_oid, org.parent_organization)
+                               .first
+          if is_admin_switch_session
+            # With AdminSwitchSession & membership is empty
+            role = member.role if member.present?
+            if role.nil?
+              role = org.parent_organization.nil? ? 'org-admin' : 'org-member'
             end
-
-            member = ::Membership.with_users(user.id)
-                                 .joins(:organization)
-                                 .where(organizations: { oid: switch_oid })
-            # Set role as organization role
-            role = member.first.role if member.length.positive?
-
-            error!({ errors: ['identity.member.not_found'] }, 404) if oids.length.zero?
-            error!({ errors: ['identity.member.not_found'] }, 404) unless oids.include? org.id
+          elsif is_organization_switch_session
+            error!({ errors: ['identity.member.not_found'] }, 404) unless member.present?
+            is_member_organization = member.organization.parent_organization.nil?
+            role = if !is_target_organization && is_member_organization
+                     'org-member'
+                   else
+                     member.role
+                   end
+          elsif is_subunit_switch_session
+            error!({ errors: ['identity.member.not_found'] }, 404) unless member.present?
+            error!({ errors: ['identity.member.not_found'] }, 404) if is_member_organization
+            role = member.role
           end
 
           if org.parent_organization.nil?
@@ -171,8 +171,12 @@ module API::V2
             publish_session_create(user)
             current_user = user
           else
-            switch_oid = members.first.organization.oid
-            switch = get_switch_session(user, switch_oid, true)
+            member = members.joins(:organization)
+                            .order('organizations.parent_organization ASC')
+                            .first
+            is_subunit = member.organization.parent_organization.present?
+            switch_oid = member.organization.oid
+            switch = get_switch_session(user, switch_oid, false, !is_subunit, is_subunit)
             role = switch[:role]
 
             # Switch session mode proceed
@@ -261,12 +265,13 @@ module API::V2
 
             switch_oid = params[:oid]
             switch_uid = params[:uid]
-            if !switch_oid.nil? || !switch_uid.nil?
-              # Check user has AdminSwitchSession/SwitchSession ability
+            if switch_oid.present? || switch_uid.present?
+              # Check user has AdminSwitchSession/SubunitSwitchSession ability
               is_admin_switch_session = organization_ability? :read, ::AdminSwitchSession
-              is_switch_session = organization_ability? :read, ::SwitchSession
+              is_organization_switch_session = organization_ability? :read, ::OrganizationSwitchSession
+              is_subunit_switch_session = organization_ability? :read, ::SubunitSwitchSession
 
-              if !is_admin_switch_session && !is_switch_session
+              if !is_admin_switch_session && !is_subunit_switch_session && !is_organization_switch_session
                 error!({ errors: ['organization.ability.not_permitted'] },
                        401)
               end
@@ -304,7 +309,8 @@ module API::V2
                 # Switch to organization/subunit
                 error!({ errors: ['organization.ability.not_permitted'] }, 401) unless switch_uid.nil?
 
-                switch = get_switch_session(user, switch_oid, is_switch_session)
+                switch = get_switch_session(user, switch_oid, is_admin_switch_session, is_organization_switch_session,
+                                            is_subunit_switch_session)
                 role = switch[:role]
               end
             end

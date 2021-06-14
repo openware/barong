@@ -157,22 +157,22 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
 
-    context 'user has SwitchSession ability' do
+    context 'user has SubunitSwitchSession ability' do
       let(:test_user) { User.find(2) }
 
-      it 'return SwitchSession abilities' do
+      it 'return SubunitSwitchSession abilities' do
         do_request
         result = JSON.parse(response.body)
 
         expect(response.status).to eq(200)
-        expect(result['manage']).to eq(['SwitchSession'])
+        expect(result['manage']).to eq(['OrganizationSwitchSession', 'SubunitSwitchSession'])
       end
     end
 
-    context 'user has no AdminSwitchSession/SwitchSession ability' do
+    context 'user has no AdminSwitchSession/SubunitSwitchSession ability' do
       let(:test_user) { User.find(7) }
 
-      it 'return SwitchSession abilities' do
+      it 'return SubunitSwitchSession abilities' do
         do_request
         result = JSON.parse(response.body)
 
@@ -206,7 +206,7 @@ describe API::V2::Organization::Organizations, type: :request do
       end
     end
 
-    context 'user has no AdminSwitchSession/SwitchSession ability' do
+    context 'user has no AdminSwitchSession/SubunitSwitchSession ability' do
       let(:test_user) { User.find(7) }
 
       it 'return false' do

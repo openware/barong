@@ -86,10 +86,16 @@ organization_permissions:
       - AdminSwitchSession
   org-admin:
     manage:
-      - SwitchSession
+      - OrganizationSwitchSession
+      - SubunitSwitchSession
   org-member:
     manage:
-      - SwitchSession
+      - SubunitSwitchSession
   org-accountant:
+    read:
+      - OrganizationSwitchSession
+      - SubunitSwitchSession
+  member:
     manage:
-      - SwitchSession
+      - OrganizationSwitchSession
+      - SubunitSwitchSession
