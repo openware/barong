@@ -80,14 +80,15 @@ describe API::V2::Organization::Users, type: :request do
         expect(response.status).to eq 422
       end
 
-      it 'cannot add the same user in the same organization' do
+      it 'can update user role in the same organization' do
         params[:uid] = 'IDFE10A90000'
         params[:oid] = 'OID001'
-        params[:role] = 'org-admin'
+        params[:role] = 'org-member'
 
         do_request
 
-        expect(response.status).to eq 404
+        expect(response.status).to eq 201
+        expect(::Membership.where(user_id: 2, organization_id: 1).first.role).to eq('org-member')
       end
 
       it 'can add organization admin in organization' do
