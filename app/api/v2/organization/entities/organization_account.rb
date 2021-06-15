@@ -21,6 +21,12 @@ module API::V2::Organization
                desc: 'Organization Account Name'
              }
 
+      expose :status,
+             documentation: {
+               type: 'String',
+               desc: 'Organization Status'
+             }
+
       expose :users do |member|
         member.memberships.length
       end
