@@ -77,6 +77,27 @@ RSpec.describe User, type: :model do
         expect(user2.referral_uid).to eq user1.uid
       end
     end
+
+    describe '#language' do
+      let!(:user1) { create(:user) }
+
+      it 'returns default language' do
+        expect(user1.data).to eq nil
+        expect(user1.language).to eq "EN"
+      end
+
+      it 'returns language from data' do
+        user1.update!(data: "{\"language\":\"de\"}")
+        expect(user1.data).to eq "{\"language\":\"de\"}"
+        expect(user1.language).to eq 'DE'
+      end
+
+      it 'returns defult language if language data missing' do
+        user1.update!(data: "{\"data\":\"foo\"}")
+        expect(user1.data).to eq "{\"data\":\"foo\"}"
+        expect(user1.language).to eq 'EN'
+      end
+    end
   end
 
   describe '#submitted_profile' do
