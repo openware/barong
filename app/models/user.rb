@@ -178,7 +178,7 @@ class User < ApplicationRecord
     if data.blank?
       Barong::App.config.default_language.upcase
     else
-      JSON.parse(data)['language'].upcase || Barong::App.config.default_language.upcase
+      JSON.parse(data)['language']&.upcase || Barong::App.config.default_language.upcase
     end
   end
 
