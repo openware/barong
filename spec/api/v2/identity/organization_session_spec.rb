@@ -452,6 +452,93 @@ describe API::V2::Identity::Sessions do
           expect(result['organization']['subunit']['name']).to eq 'Group A2'
         end
       end
+
+      context 'Organization have banned status' do
+        let(:sign_params) do
+          {
+            email: 'admin@barong.io',
+            password: 'testPassword111'
+          }
+        end
+
+        let!(:banned_organizations) do
+          create(:organization, id: 7, oid: 'OID003', parent_organization: nil, name: 'Company C', status: 'banned')
+          create(:organization, id: 8, oid: 'OID003AID001', parent_organization: 7, name: 'Group C1')
+          create(:organization, id: 9, oid: 'OID003AID002', parent_organization: 7, name: 'Group C2')
+        end
+
+        it 'cannot switch to organization Company C' do
+          params[:oid] = 'OID003'
+          switch_session
+
+          expect_status_to_eq 404
+        end
+
+        it 'cannot switch to subunit Group C1' do
+          params[:oid] = 'OID003AID001'
+          switch_session
+
+          expect_status_to_eq 404
+        end
+
+        it 'cannot switch to subunit Group C2' do
+          params[:oid] = 'OID003AID002'
+          switch_session
+
+          expect_status_to_eq 404
+        end
+      end
+    end
+
+    context 'Organization have banned status' do
+      let(:sign_params) do
+        {
+          email: 'admin@barong.io',
+          password: 'testPassword111'
+        }
+      end
+
+      let!(:banned_organizations) do
+        create(:organization, id: 7, oid: 'OID003', parent_organization: nil, name: 'Company C')
+        create(:organization, id: 8, oid: 'OID003AID001', parent_organization: 7, name: 'Group C1')
+        create(:organization, id: 9, oid: 'OID003AID002', parent_organization: 7, name: 'Group C2', status: 'banned')
+      end
+
+      it 'can switch to organization Company C' do
+        params[:oid] = 'OID003'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID003')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID003')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+        expect(session.instance_variable_get(:@delegate)[:role]).to eq('org-admin')
+        expect(session.instance_variable_get(:@delegate)[:user_role]).to eq('admin')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['name']).to eq 'Company C'
+        expect(result['organization']['subunit']).to eq nil
+      end
+
+      it 'can switch to subunit Group C1' do
+        params[:oid] = 'OID003AID001'
+        switch_session
+
+        expect_status_to_eq 200
+        expect(session.instance_variable_get(:@delegate)[:uid]).to eq('OID003AID001')
+        expect(session.instance_variable_get(:@delegate)[:oid]).to eq('OID003')
+        expect(session.instance_variable_get(:@delegate)[:rid]).to eq('IDFE09081060')
+
+        result = JSON.parse(response.body)
+        expect(result['organization']['subunit']['name']).to eq 'Group C1'
+      end
+
+      it 'cannot switch to subunit Group C2' do
+        params[:oid] = 'OID003AID002'
+        switch_session
+
+        expect_status_to_eq 404
+      end
     end
   end
 end

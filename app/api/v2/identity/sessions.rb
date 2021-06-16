@@ -57,8 +57,13 @@ module API::V2
         end
 
         def get_switch_session(user, switch_oid, is_admin_switch_session, is_organization_switch_session, is_subunit_switch_session)
-          org = ::Organization.find_by_oid(switch_oid)
+          org = ::Organization.with_actives.find_by_oid(switch_oid)
           error!({ errors: ['identity.member.not_found'] }, 404) if org.nil?
+
+          # Validate parent org of subunit need to be active
+          if org.parent_organization.present? && ::Organization.with_actives.find(org.parent_organization).nil?
+            error!({ errors: ['identity.member.not_found'] }, 404)
+          end
 
           is_target_organization = org.parent_organization.nil?
 
