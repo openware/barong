@@ -118,7 +118,8 @@ module Barong
     def validate_bitzlato_user!(user)
       return unless ENV.true? 'USE_BITZLATO_AUTHORIZATION'
       bitzlato_user = BitzlatoUser.find_by_email(user.email)
-      return if bitzlato_user.nil?
+      error!({ errors: ['authz.unknown_bitzlato_account'] }, 401) if bitzlato_user.nil?
+      error!({ errors: ['authz.no_user_feature_market'] }, 401) if bitzlato_user.user_features.where(feature_code: 'MARKET').empty?
       if bitzlato_user.user_profile.try(&:blocked_by_admin?)
         Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
         error!({ errors: ['authz.blocked_account'] }, 401)
