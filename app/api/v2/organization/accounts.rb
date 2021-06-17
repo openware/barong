@@ -46,14 +46,12 @@ module API
               keyword = params[:keyword]
               # Take current user as results
               users = []
-              users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES)
+              users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES).or(::User.where(id: current_user.id))
               if keyword.nil?
-                users.concat([current_user])
                 users.concat(users_collection.to_a)
               else
                 # Take matched uid or email
-                users.concat(users_collection.or(::User.where(id: current_user.id))
-                                             .where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
+                users.concat(users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
                 # Take matched user profile name
                 filtered = users_collection.select do |m|
                   m.verified_profile.full_name.include?(keyword) if m.verified_profile.present?
