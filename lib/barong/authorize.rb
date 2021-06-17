@@ -116,6 +116,7 @@ module Barong
     end
 
     def validate_bitzlato_user!(user)
+      return unless ENV.true? 'USE_BITZLATO_AUTHORIZATION'
       bitzlato_user = BitzlatoUser.find_by_email(user.email)
       return if bitzlato_user.nil?
       if bitzlato_user.user_profile.try(&:blocked_by_admin?)
