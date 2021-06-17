@@ -33,6 +33,7 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(result.length).to eq 10
         expect(result.select { |m| m['uid'].present? }.length).to eq 4
         expect(result.select { |m| m['oid'].present? }.length).to eq 6
+        expect(result.select { |m| m['uid'] == 'IDFE09081060' }.length).to eq 1
       end
 
       it 'return list of accounts filtered account by email' do

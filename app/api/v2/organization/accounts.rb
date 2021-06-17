@@ -52,7 +52,8 @@ module API
                 users.concat(users_collection.to_a)
               else
                 # Take matched uid or email
-                users.concat(users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
+                users.concat(users_collection.or(::User.where(id: current_user.id))
+                                             .where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
                 # Take matched user profile name
                 filtered = users_collection.select do |m|
                   m.verified_profile.full_name.include?(keyword) if m.verified_profile.present?
@@ -84,6 +85,7 @@ module API
             end
 
             unless users.nil?
+              users = users.uniq(&:id)
               # Get user uid in organizations
               uids = (::Organization.with_all_memberships.with_actives.map(&:memberships).flatten.map { |m| m.user.uid }).uniq
               # Get only user which NOT belong to organization
