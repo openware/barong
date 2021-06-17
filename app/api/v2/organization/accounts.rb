@@ -42,13 +42,18 @@ module API
               # User has AdminSwitchSession ability
               oids = ::Organization.all.pluck(:id)
 
-              # Take users
+              # Get search keyword
               keyword = params[:keyword]
+              # Take current user as results
+              users = []
               users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES)
               if keyword.nil?
-                users = users_collection
+                users.concat([current_user])
+                users.concat(users_collection.to_a)
               else
-                users = users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a
+                # Take matched uid or email
+                users.concat(users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
+                # Take matched user profile name
                 filtered = users_collection.select do |m|
                   m.verified_profile.full_name.include?(keyword) if m.verified_profile.present?
                 end

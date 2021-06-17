@@ -319,7 +319,10 @@ module API::V2
                 role = switch[:role]
               end
 
-              error!({ errors: ['organization.ability.unpermitted_role'] }, 401) if is_admin_switch_session && !OrganizationPlugin::check_authoirzed_role_for_admin_switch_session(role)
+              # Check permitted role unless current user
+              if is_admin_switch_session && switch[:uid] != user_uid && !OrganizationPlugin.check_authoirzed_role_for_admin_switch_session(role)
+                error!({ errors: ['organization.ability.unpermitted_role'] }, 401)
+              end
             end
 
             csrf_token = if session.present? && session[:csrf_token].present?

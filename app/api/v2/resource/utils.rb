@@ -31,25 +31,6 @@ module API::V2
         @_current_user
       end
 
-      def current_organization
-        if env[:current_payload].key?(:oid) && !env[:current_payload][:oid].nil?
-          # Determine organization from session first
-          ::Organization.find_by!(oid: env[:current_payload][:oid])
-        else
-          # User logged in as individual mode. Find user in organization
-          memberships = current_user.memberships
-          return nil if memberships.nil? || memberships.empty? || memberships.first.organization_id.zero?
-
-          # Find root organization
-          org = memberships.first.organization
-          if org.parent_organization.nil?
-            org
-          else
-            ::Organization.find(org.parent_organization)
-          end
-        end
-      end
-
       def record_error!(options = {})
         options[:data] = { reason: options[:reason] }.to_json
         options[:result] = 'failed'

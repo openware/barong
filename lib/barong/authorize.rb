@@ -265,7 +265,7 @@ module Barong
     # custom error, calls AuthError class
     def error!(text, code)
       Rails.logger.debug "Error raised with code #{code} and error message #{text.to_json}"
-      raise AuthError.new(code),  text.to_json
+      raise AuthError.new(code), text.to_json
     end
 
     def headers
