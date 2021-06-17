@@ -27,7 +27,7 @@ module API
             is_organization_switch_session = organization_ability? :read, ::OrganizationSwitchSession
             is_switch_session = organization_ability? :read, ::SubunitSwitchSession
             if !is_admin_switch_session && !is_switch_session && !is_organization_switch_session
-              error!({ errors: ['organization.ability.not_permitted'] }, 401)
+              error!({ errors: ['organization.ability.unpermitted'] }, 401)
             end
 
             # Check account in the organization that user belong to
@@ -44,16 +44,13 @@ module API
 
               # Take users
               keyword = params[:keyword]
+              users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES)
               if keyword.nil?
-                users = ::User.all
+                users = users_collection
               else
-                users = ::User.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a
-                filtered = ::User.all.select do |m|
-                  (m.profiles.map(&:first_name).any? do |s|
-                     s.include?(keyword)
-                   end) || (m.profiles.map(&:last_name).any? do |s|
-                              s.include?(keyword)
-                            end)
+                users = users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a
+                filtered = users_collection.select do |m|
+                  m.verified_profile.full_name.include?(keyword) if m.verified_profile.present?
                 end
                 users.concat(filtered)
               end
@@ -87,11 +84,7 @@ module API
               # Get only user which NOT belong to organization
               individual_users = users.select { |u| u.state == 'active' }.reject { |u| uids.include? u.uid }
               accounts.concat(individual_users.map do |m|
-                                name = m.email
-                                if m.profiles.length.positive? && m.state == 'verified'
-                                  profile = m.profiles[0]
-                                  name = "#{profile.first_name} #{profile.last_name}"
-                                end
+                                name = m.verified_profile.present? ? m.verified_profile.full_name : m.email
                                 {
                                   name: name,
                                   oid: nil,

@@ -277,21 +277,21 @@ module API::V2
               is_subunit_switch_session = organization_ability? :read, ::SubunitSwitchSession
 
               if !is_admin_switch_session && !is_subunit_switch_session && !is_organization_switch_session
-                error!({ errors: ['organization.ability.not_permitted'] },
+                error!({ errors: ['organization.ability.unpermitted'] },
                        401)
               end
 
               if switch_oid.nil?
                 # Switch to individual user
                 error!({ errors: ['required.params.missing'] }, 400) if switch_uid.nil?
-                error!({ errors: ['organization.ability.not_permitted'] }, 401) unless is_admin_switch_session
+                error!({ errors: ['organization.ability.unpermitted'] }, 401) unless is_admin_switch_session
 
                 switch_user = User.find_by_uid(switch_uid)
                 error!({ errors: ['identity.member.not_found'] }, 404) if switch_user.nil?
 
                 # User cannot belong to any organization
                 members = Membership.where(user_id: switch_user.id)
-                error!({ errors: ['organization.ability.not_permitted'] }, 401) if members.length.positive?
+                error!({ errors: ['organization.ability.unpermitted'] }, 401) if members.length.positive?
 
                 # Admin with ability AdminSwitchSession switch to user; set role, email with his role
                 switch = {
@@ -312,12 +312,14 @@ module API::V2
                 role = switch_user.role
               else
                 # Switch to organization/subunit
-                error!({ errors: ['organization.ability.not_permitted'] }, 401) unless switch_uid.nil?
+                error!({ errors: ['organization.ability.unpermitted'] }, 401) unless switch_uid.nil?
 
                 switch = get_switch_session(user, switch_oid, is_admin_switch_session, is_organization_switch_session,
                                             is_subunit_switch_session)
                 role = switch[:role]
               end
+
+              error!({ errors: ['organization.ability.unpermitted_role'] }, 401) if is_admin_switch_session && !OrganizationPlugin::check_authoirzed_role_for_admin_switch_session(role)
             end
 
             csrf_token = if session.present? && session[:csrf_token].present?

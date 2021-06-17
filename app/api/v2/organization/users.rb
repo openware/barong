@@ -81,7 +81,7 @@ module API
 
             role = params[:role]
             unless Ability.organization_roles.include? role
-              error!({ errors: ['organization.membership.role_not_permitted'] },
+              error!({ errors: ['organization.membership.unpermitted_role'] },
                      401)
             end
 

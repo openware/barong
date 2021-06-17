@@ -235,6 +235,15 @@ describe API::V2::Identity::Sessions do
         expect(result['organization']).to eq nil
       end
 
+      it 'can not switch to the individual user with unpermitted role' do
+        params[:uid] = 'ID_UNPERMITTED_SS'
+        switch_session
+
+        result = JSON.parse(response.body)
+        expect_status_to_eq 401
+        expect(result['errors']).to eq ['organization.ability.unpermitted_role']
+      end
+
       it 'can switch session back as the individual user' do
         params[:oid] = 'OID002AID002'
         switch_session

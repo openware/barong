@@ -8,6 +8,7 @@ shared_context 'organization memberships' do
     create(:permission, role: 'org-admin')
     create(:permission, role: 'org-member')
     create(:permission, role: 'org-accountant')
+    create(:permission, role: 'technical')
   end
 
   let!(:mock_users) do
@@ -33,6 +34,8 @@ shared_context 'organization memberships' do
                   password_confirmation: 'testPassword111', role: 'org-accountant', state: 'pending')
     create(:user, id: 11, uid: 'IDADMINUNOG', email: 'unorgadmin@barong.io', password: 'testPassword111',
                   password_confirmation: 'testPassword111', role: 'org-admin', state: 'active')
+    create(:user, id: 12, uid: 'ID_UNPERMITTED_SS', email: 'unpermitted_switch_session@barong.io', password: 'testPassword111',
+                  password_confirmation: 'testPassword111', role: 'technical', state: 'active')
   end
 
   let!(:mock_organizations) do
@@ -45,7 +48,11 @@ shared_context 'organization memberships' do
   end
 
   let!(:mock_profiles) do
-    create(:profile, user_id: 1, first_name: 'Vee', last_name: 'Jirapong')
-    create(:label, user_id: 1, key: 'email', value: 'verified', scope: 'private')
+    create(:profile, user_id: 2, first_name: 'UserFirstName', last_name: 'UserLastName', state: 'verified')
+    create(:label, user_id: 2, key: 'email', value: 'verified', scope: 'private')
+    create(:profile, user_id: 7, first_name: 'UserFirstName', last_name: 'UserLastName', state: 'verified')
+    create(:label, user_id: 7, key: 'email', value: 'verified', scope: 'private')
+    create(:profile, user_id: 9, first_name: 'UserFirstName', last_name: 'UserLastName', state: 'submitted')
+    create(:label, user_id: 9, key: 'email', value: 'verified', scope: 'private')
   end
 end

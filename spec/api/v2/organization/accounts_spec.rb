@@ -30,9 +30,9 @@ describe API::V2::Organization::Accounts, type: :request do
         get url, headers: auth_header
         result = JSON.parse(response.body)
         expect(response).to be_successful
-        expect(result.length).to eq 11
+        expect(result.length).to eq 9
         expect(result.select { |m| m['uid'].nil? }.length).to eq 6
-        expect(result.select { |m| m['oid'].nil? }.length).to eq 5
+        expect(result.select { |m| m['oid'].nil? }.length).to eq 3
       end
 
       it 'return list of accounts filtered account by email' do
@@ -58,21 +58,21 @@ describe API::V2::Organization::Accounts, type: :request do
       it 'return list of accounts filtered account by first_name' do
         get url,
             headers: auth_header,
-            params: { keyword: 'Vee' }
+            params: { keyword: 'FirstName' }
         result = JSON.parse(response.body)
         expect(response).to be_successful
         expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE09081060'
+        expect(result[0]['uid']).to eq 'IDFE0908101'
       end
 
       it 'return list of accounts filtered account by last_name' do
         get url,
             headers: auth_header,
-            params: { keyword: 'Jirapong' }
+            params: { keyword: 'LastName' }
         result = JSON.parse(response.body)
         expect(response).to be_successful
         expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE09081060'
+        expect(result[0]['uid']).to eq 'IDFE0908101'
       end
 
       it 'not return organization user' do

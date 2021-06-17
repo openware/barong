@@ -191,6 +191,10 @@ class User < ApplicationRecord
     self.profiles&.find_by(state: 'drafted')
   end
 
+  def verified_profile
+    self.profiles&.find_by(state: 'verified')
+  end
+
   attr_writer :current_organization
   def organization
     return @current_organization unless @current_organization.nil?
