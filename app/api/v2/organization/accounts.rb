@@ -10,6 +10,14 @@ module API
             def permitted_search_params(params)
               params.slice(:keyword)
             end
+
+            # FIXME: Move to utils
+            def user_uid
+              # To identiy origin user by session[:rid]
+              # if exist, user comes from switched mode use [:rid]; else use [:uid]
+              session = request.session
+              session[:rid].present? ? session[:rid] : session[:uid]
+            end
           end
 
           desc 'Returns array of accounts which user have access as paginated collection',
@@ -45,16 +53,15 @@ module API
               # Get search keyword
               keyword = params[:keyword]
               # Take current user as results
-              users = []
-              users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES).or(::User.where(id: current_user.id))
+              users_collection = ::User.where(role: ::OrganizationPlugin::ADMIN_SWITCH_SESSION_AUTHORIZED_ROLES).or(::User.where(uid: user_uid))
               if keyword.nil?
-                users.concat(users_collection.to_a)
+                users = users_collection.to_a
               else
                 # Take matched uid or email
-                users.concat(users_collection.where("uid LIKE '%#{keyword}%' OR email LIKE '%#{keyword}%'").to_a)
+                users = users_collection.where('uid LIKE ? OR email LIKE ?', "%#{keyword}%", "%#{keyword}%").to_a
                 # Take matched user profile name
                 filtered = users_collection.select do |m|
-                  m.verified_profile.full_name.include?(keyword) if m.verified_profile.present?
+                  m.verified_profile.full_name.downcase.include?(keyword.downcase) if m.verified_profile.present?
                 end
                 users.concat(filtered)
               end
