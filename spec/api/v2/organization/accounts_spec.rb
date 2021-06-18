@@ -26,58 +26,69 @@ describe API::V2::Organization::Accounts, type: :request do
     context 'user with AdminSwitchSession ability' do
       let(:test_user) { User.find(1) }
 
-      # FIXME: Fix current user session
-      # it 'get all individual users' do
-      #   get url, headers: auth_header
-      #   result = JSON.parse(response.body)
-      #   expect(response).to be_successful
-      #   expect(result.length).to eq 10
-      #   expect(result.select { |m| m['uid'].present? }.length).to eq 4
-      #   expect(result.select { |m| m['oid'].present? }.length).to eq 6
-      #   expect(result.select { |m| m['uid'] == 'IDFE09081060' }.length).to eq 1
-      # end
-
-      it 'return list of accounts filtered account by email' do
-        get url,
-            headers: auth_header,
-            params: { keyword: 'user1@barong.io' }
+      it 'get all individual users' do
+        get url, headers: auth_header
         result = JSON.parse(response.body)
         expect(response).to be_successful
-        expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE0908101'
+        expect(result.length).to eq 10
+        expect(result.select { |m| m['uid'].present? }.length).to eq 4
+        expect(result.select { |m| m['oid'].present? }.length).to eq 6
+        expect(result.select { |m| m['uid'] == 'IDFE09081060' }.length).to eq 1
       end
 
-      it 'return list of accounts filtered account by uid' do
-        get url,
-            headers: auth_header,
-            params: { keyword: 'IDFE0908101' }
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE0908101'
+      context 'filter accounts by keyword' do
+        it 'return list of accounts filtered account by email' do
+          get url,
+              headers: auth_header,
+              params: { keyword: 'user1@barong.io' }
+          result = JSON.parse(response.body)
+          expect(response).to be_successful
+          expect(result.length).to eq 1
+          expect(result[0]['uid']).to eq 'IDFE0908101'
+        end
+
+        it 'return list of accounts filtered account by uid' do
+          get url,
+              headers: auth_header,
+              params: { keyword: 'IDFE0908101' }
+          result = JSON.parse(response.body)
+          expect(response).to be_successful
+          expect(result.length).to eq 1
+          expect(result[0]['uid']).to eq 'IDFE0908101'
+        end
+
+        it 'return list of accounts filtered account by first_name' do
+          get url,
+              headers: auth_header,
+              params: { keyword: 'FirstName' }
+          result = JSON.parse(response.body)
+          expect(response).to be_successful
+          expect(result.length).to eq 1
+          expect(result[0]['uid']).to eq 'IDFE0908101'
+        end
+
+        it 'return list of accounts filtered account by last_name' do
+          get url,
+              headers: auth_header,
+              params: { keyword: 'LastName' }
+          result = JSON.parse(response.body)
+          expect(response).to be_successful
+          expect(result.length).to eq 1
+          expect(result[0]['uid']).to eq 'IDFE0908101'
+        end
+
+        it 'return self-account filtered account by keyword' do
+          get url,
+              headers: auth_header,
+              params: { keyword: 'Admin' }
+          result = JSON.parse(response.body)
+          expect(response).to be_successful
+          expect(result.length).to eq 2
+          expect(result.select { |m| m['uid'] == 'IDFE09081060' }.length).to eq 1
+        end
       end
 
-      it 'return list of accounts filtered account by first_name' do
-        get url,
-            headers: auth_header,
-            params: { keyword: 'FirstName' }
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE0908101'
-      end
-
-      it 'return list of accounts filtered account by last_name' do
-        get url,
-            headers: auth_header,
-            params: { keyword: 'LastName' }
-        result = JSON.parse(response.body)
-        expect(response).to be_successful
-        expect(result.length).to eq 1
-        expect(result[0]['uid']).to eq 'IDFE0908101'
-      end
-
-      it 'not return organization user' do
+      it 'should not return organization user' do
         get url,
             headers: auth_header,
             params: { keyword: 'IDFE10A90000' }
@@ -86,7 +97,7 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(result.length).to eq 0
       end
 
-      it 'not return unactivate user' do
+      it 'should not return unactivate user' do
         get url,
             headers: auth_header,
             params: { keyword: 'IDFE10UNATV' }
@@ -176,6 +187,32 @@ describe API::V2::Organization::Accounts, type: :request do
         expect(response).to be_successful
         expect(result.length).to eq 1
         expect(result[0]['name']).to eq 'Group A2'
+      end
+    end
+
+    context 'user come from switch to user session mode' do
+      let(:from_user) { User.find(1) }
+      let(:to_user) { User.find(7) }
+
+      it 'get all individual users' do
+        get url, headers: switch_user_auth_header
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 10
+        expect(result.select { |m| m['uid'].present? }.length).to eq 4
+        expect(result.select { |m| m['oid'].present? }.length).to eq 6
+        expect(result.select { |m| m['uid'] == 'IDFE09081060' }.length).to eq 1
+      end
+
+      it 'return self-account filtered account by keyword' do
+        get url,
+            headers: switch_user_auth_header,
+            params: { keyword: 'IDFE09081060' }
+        result = JSON.parse(response.body)
+        expect(response).to be_successful
+        expect(result.length).to eq 1
+
+        expect(result[0]['uid']).to eq 'IDFE09081060'
       end
     end
   end

@@ -214,6 +214,11 @@ class User < ApplicationRecord
     return @current_user_role unless @current_user_role.nil?
   end
 
+  attr_writer :origin_user_uid
+  def origin_uid
+    return @origin_user_uid unless @origin_user_uid.nil?
+  end
+
   private
 
   def assign_uid

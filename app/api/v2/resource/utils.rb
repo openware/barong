@@ -6,16 +6,21 @@ module API::V2
       def current_user
         # To identiy origin user by env[:current_payload][:rid]
         oid = nil
+        origin_uid = nil
         if env[:current_payload].key?(:oid)
-          uid = if env[:current_payload][:oid].nil?
-                  # switch as user
-                  env[:current_payload][:uid]
-                else
-                  # switch as organization
-                  oid = env[:current_payload][:uid]
-                  env[:current_payload][:rid]
-                end
+          # User is switch session mode
+          origin_uid = env[:current_payload][:rid]
+          if env[:current_payload][:oid].present?
+            # switch as organization
+            oid = env[:current_payload][:uid]
+            uid = env[:current_payload][:rid]
+          else
+            # switch as user
+            uid = env[:current_payload][:uid]
+          end
         elsif env[:current_payload].key?(:uid)
+          # User is normal login
+          origin_uid = env[:current_payload][:uid]
           uid = env[:current_payload][:uid]
         else
           raise(Peatio::Auth::Error, 'Middleware Error')
@@ -28,6 +33,7 @@ module API::V2
         @_current_user.role = role
         @_current_user.current_user_role = user_role
         @_current_user.current_oid = oid
+        @_current_user.origin_user_uid = origin_uid
         @_current_user
       end
 

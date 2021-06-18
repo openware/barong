@@ -55,4 +55,25 @@ shared_context 'organization memberships' do
     create(:profile, user_id: 9, first_name: 'UserFirstName', last_name: 'UserLastName', state: 'submitted')
     create(:label, user_id: 9, key: 'email', value: 'verified', scope: 'private')
   end
+
+  let(:switch_user_jwt_token) do
+    pkey = Rails.application.config.x.keystore.private_key
+    codec = Barong::JWT.new(key: pkey)
+    switchs = {
+      uid: to_user.uid,
+      oid: nil,
+      rid: from_user.uid,
+      role: to_user.role,
+      username: to_user.username,
+      email: to_user.email,
+      level: to_user.level,
+      state: to_user.state,
+      referral_id: to_user.referral_id,
+      user_role: from_user.role
+    }
+    payload = from_user.as_payload.merge(switchs)
+    codec.encode(payload)
+  end
+
+  let(:switch_user_auth_header) { { 'Authorization' => "Bearer #{switch_user_jwt_token}" } }
 end

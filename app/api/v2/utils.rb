@@ -40,6 +40,7 @@ module API::V2
 
       if defined?(current_user)
         user = current_user
+        user.role = current_user.user_role if current_user.user_role.present?
       else
         # To identiy origin user by session[:rid]
         # if exist, user comes from switched mode use [:rid]; else use [:uid]
@@ -51,7 +52,8 @@ module API::V2
         user = User.find_by_uid(uid)
         error!({ errors: ['identity.session.not_found'] }, 404) if user.nil?
       end
-      user.role = session[:user_role] if !request.session.nil? && !session[:user_role].nil?
+      # Use role of origin user to determine abilities
+      user.role = session[:user_role] if request.session.present? && session[:user_role].present?
       OrganizationAbility.new(user).authorize!(*args)
     rescue CanCan::AccessDenied
       false
