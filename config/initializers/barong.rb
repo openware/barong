@@ -41,7 +41,7 @@ end
 kstore = Barong::KeyStore.new(pkey)
 
 # Define default value for secret_key_base in test and development mode
-ENV['SECRET_KEY_BASE'] = '' unless Rails.env.production?
+ENV['SECRET_KEY_BASE'] = '' unless Rails.env.production? || Rails.env.staging?
 
 Barong::App.define do |config|
   # General configuration ---------------------------------------------

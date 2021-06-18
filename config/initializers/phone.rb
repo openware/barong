@@ -34,7 +34,7 @@ when 'twilio_verify'
   service = client.verify.services.create(friendly_name: Barong::App.config.app_name) unless service_sid.present?
   Barong::App.write(:twilio_provider, TwilioVerifyService)
 when 'mock'
-  if Rails.env.production?
+  if Rails.env.production? || Rails.env.staging?
     Rails.logger.info("WARNING! Don't use mock phone verification service in production")
   end
   Barong::App.write(:twilio_provider, MockPhoneVerifyService)

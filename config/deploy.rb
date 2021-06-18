@@ -10,7 +10,7 @@ set :roles, %w[app db].freeze
 set :repo_url, ENV.fetch('DEPLOY_REPO', `git remote -v | grep origin | head -1 | awk  '{ print $2 }'`) if ENV['USE_LOCAL_REPO'].nil?
 set :keep_releases, 10
 
-set :linked_files, %w[.env config/credentials.yml.enc]
+set :linked_files, %w[.env] # config/credentials.yml.enc]
 set :linked_dirs, %w[log tmp/pids tmp/cache tmp/sockets secrets]
 set :config_files, fetch(:linked_files)
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 begin
-  if Rails.env.production?
+  if Rails.env.production? || Rails.env.staging?
     redis_url = ENV.fetch('BARONG_REDIS_URL', 'redis://localhost:6379/1')
     r = Redis.new(url: redis_url)
     r.ping
