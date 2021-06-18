@@ -16,6 +16,7 @@
 | `barong_apikey_nonce_lifetime` | 5000 | integer representation of milliseconds | nonce in api key headers should not be older than this env value  |
 | `barong_gateway` | 'cloudflare' | `cloudflare`, `akamai` | when turned on (`true`) user IP on session and AuthZ level will firstly be checked in TRUE_CLIENT_IP header |
 | `barong_jwt_expire_time` | '3600' | integer representation of seconds  | general purpose tokens (reset password, confirm email) expiration time |
+| `barong_rack_attack_limit` | 5 | integer representation of calls per minute | allowed amount of calls per 60 seconds to endpoints which are protected by rack-attack |
 | `crc32_salt` | - | any string value | salt for crc32 algorithm which used to searching in encrypted fields |
 | `api_data_masking_enabled` | true | `true`, `false` | when turned on (`true`) user API will be with ecnrypted user data |
 |`first_registration_superadmin`| true | `true`, `false` | when turned on (`true`) first registered user on a platform will be superadmin without any email confirmation |
