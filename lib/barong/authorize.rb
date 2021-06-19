@@ -240,7 +240,7 @@ module Barong
 
     def validate_user!(user)
       unless user.state.in?(%w[active pending])
-        error!({ errors: ['authz.invalid_session'] }, 401)
+        error!({ errors: ['authz.user_is_not_activated'] }, 401)
       end
 
       if user.is_a?(User) && !user.otp
