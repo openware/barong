@@ -137,5 +137,3 @@ group :deploy do
   gem 'capistrano-sentry', require: false
   gem 'slackistrano', require: false
 end
-
-

@@ -1,7 +1,7 @@
 SecureHeaders::Configuration.default do |config|
   config.cookies = {
     samesite: {
-      none: true # mark all cookies as SameSite=lax
+      none: true
     }
   }
 end if defined? SecureHeaders
