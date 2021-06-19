@@ -35,6 +35,10 @@ class User < ApplicationRecord
   after_update :disable_api_keys
   after_update :disable_service_accounts
 
+  def to_s
+    [uid, email].join(':')
+  end
+
   def downcase_username
     username.downcase! unless username.nil?
   end
