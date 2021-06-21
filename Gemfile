@@ -105,6 +105,10 @@ group :development do
   gem 'guard-rspec', github: 'caspark/guard-rspec' # Use from github to remove rspec < 4.0 dependencies
 end
 
+group :development, :staging do
+  gem "secure_headers", github: 'bitzlato/secure_headers'
+end
+
 group :test do
   gem 'capybara', '>= 3.29.0'
   # gem 'selenium-webdriver'
@@ -133,4 +137,5 @@ group :deploy do
   gem 'capistrano-sentry', require: false
   gem 'slackistrano', require: false
 end
+
 

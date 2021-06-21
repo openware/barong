@@ -1,4 +1,10 @@
 GIT
+  remote: https://github.com/bitzlato/secure_headers.git
+  revision: ef0516df353f750691765db36bc4adc2e4433ea6
+  specs:
+    secure_headers (6.3.2)
+
+GIT
   remote: https://github.com/brandymint/capistrano-tasks.git
   revision: ed94c975c36a7ba41a173bddf6dba46034ca41e2
   specs:
@@ -606,6 +612,7 @@ DEPENDENCIES
   rspec
   rspec-rails (~> 3.9, >= 3.9.1)
   sd_notify (~> 0.1.1)
+  secure_headers!
   semver2 (~> 3.4)
   sentry-raven (~> 2.9.0)
   shoulda-matchers (~> 4.0.1.0)
