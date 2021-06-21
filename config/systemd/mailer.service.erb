@@ -1,0 +1,17 @@
+[Unit]
+Description=Mailer for <%= fetch(:application) %> (<%= fetch(:stage) %> / <%= fetch(:rails_env) %>) (instance %i)
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment=RAILS_ENV=<%= fetch(:rails_env) %>
+EnvironmentFile=<%= current_path %>/.env
+WorkingDirectory=<%= current_path %>
+ExecStart=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec ./bin/mailer run
+ExecStop=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec ./bin/mailer stop
+RestartSec=5
+Restart=on-failure
+SyslogIdentifier=<%= fetch(:application) %>-mailer
+
+[Install]
+WantedBy=default.target

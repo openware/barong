@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '~> 2.6.5'
-
 gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'
 
@@ -30,14 +28,13 @@ gem 'cancancan', '~> 2.3.0'
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
-# Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.12', '>= 3.12.6'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'mini_racer', platforms: :ruby
+gem 'puma', '>= 3.12.6'
+
+# We don't need it now
+#
+# gem 'mini_racer'
+# gem 'uglifier', '>= 1.3.0'
 
 gem 'maxmind-db', '~> 1.0'
 
@@ -83,6 +80,12 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Add the Sentry Ruby SDK
 gem 'sentry-raven', '~> 2.9.0'
 gem 'pry-rails'
+gem "pg", "~> 1.2"
+gem "semver2", "~> 3.4"
+gem 'dotenv'
+gem "sd_notify", "~> 0.1.1"
+
+gem 'multiverse'
 
 group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
@@ -92,10 +95,14 @@ group :development, :test do
 end
 
 group :development do
+  gem 'foreman'
   gem 'grape_on_rails_routes', '~> 0.3.2'
   gem 'web-console', '>= 3.7.0'
   gem 'listen',       '>= 3.0.5', '< 3.2'
   gem 'annotate', '~> 2.7', '>= 2.7.5'
+  gem 'rspec'
+  gem 'guard'
+  gem 'guard-rspec', github: 'caspark/guard-rspec' # Use from github to remove rspec < 4.0 dependencies
 end
 
 group :test do
@@ -108,4 +115,22 @@ group :test do
   gem 'database_cleaner', '~> 2.0.1'
 end
 
-gem "pg", "~> 1.2"
+group :deploy do
+  gem 'capistrano-dotenv'
+  gem 'capistrano-dotenv-tasks'
+  gem 'capistrano3-puma', github: 'seuros/capistrano-puma'
+  gem 'capistrano', require: false
+  gem 'capistrano-rbenv', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-shell', require: false
+  gem 'capistrano-db-tasks', require: false
+  gem 'capistrano-rails-console', require: false
+  gem 'capistrano-tasks', github: 'brandymint/capistrano-tasks', require: false
+  gem 'capistrano-systemd-multiservice', github: 'groovenauts/capistrano-systemd-multiservice', require: false
+  # gem 'capistrano-master-key', require: false, github: 'virgoproz/capistrano-master-key'
+  gem 'capistrano-git-with-submodules'
+  gem 'capistrano-sentry', require: false
+  gem 'slackistrano', require: false
+end
+

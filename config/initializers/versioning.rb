@@ -7,6 +7,6 @@ module Barong
     GIT_TAG =    '2.7.0'
     GIT_SHA =    '3d7fe81'
     BUILD_DATE = '2020-12-08 15:09:53+02:00'
-    VERSION =    GIT_TAG
+    VERSION = AppVersion.to_s
   end
 end

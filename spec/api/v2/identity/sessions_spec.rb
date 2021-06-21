@@ -423,7 +423,7 @@ describe API::V2::Identity::Sessions do
           post uri, params: { id_token: 'TestToken' }
 
           expect(User.find_by(email: 'example@barong.io')).to eq nil
-          expect_body.to eq(errors: ['identity.session.auth0.invalid_params'])
+          expect_body.to eq(errors: ['identity.session.auth0.email_not_verified'])
           expect(response.status).to eq(401)
         end
       end

@@ -46,6 +46,12 @@ bundle exec rake db:create db:migrate
 bundle exec rails server
 ```
 
+# Deploy with capistrano
+
+```
+bundle exec cap production deploy:check puma:config systemd:puma:setup
+```
+
 # Barong Levels
 
 In the process of verification Barong assign different levels to accounts
