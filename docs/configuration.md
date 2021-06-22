@@ -12,11 +12,15 @@
 | `barong_required_docs_expire` | true | `false` `true` | force Barong to validate or not validate `expires_in` parameter at document creation. with `false` still can be sent and recorded but with no time validation |
 | `barong_doc_num_limit` | 10 | any amount number | number of maximum documents that can be attached to uniq user |
 | `barong_geoip_lang` | en | `en`, `de`, `es`, `fr`, `ja`, `ru`  | internal GeoIP lang `Barong::GeoIP.lang`, which configures the language of detected country/continent name |
-| `barong_csrf_protection` | true | `true`, `false` | while turned on (`true`) exposes csrf_token on session create and requires X-CSRF-Token on every private POST PUT PATCH DELETE TRACE on AuthZ level |
+| `barong_csrf_protection` | true | `true`, `false` | when turned on (`true`) exposes csrf_token on session create and requires X-CSRF-Token on every private POST PUT PATCH DELETE TRACE on AuthZ level |
 | `barong_apikey_nonce_lifetime` | 5000 | integer representation of milliseconds | nonce in api key headers should not be older than this env value  |
-| `barong_gateway` | 'cloudflare' | `cloudflare`, `akamai` | while turned on (`true`) user IP on session and AuthZ level will firstly be checked in TRUE_CLIENT_IP header |
+| `barong_gateway` | 'cloudflare' | `cloudflare`, `akamai` | when turned on (`true`) user IP on session and AuthZ level will firstly be checked in TRUE_CLIENT_IP header |
 | `barong_jwt_expire_time` | '3600' | integer representation of seconds  | general purpose tokens (reset password, confirm email) expiration time |
 | `crc32_salt` | - | any string value | salt for crc32 algorithm which used to searching in encrypted fields |
+| `api_data_masking_enabled` | true | `true`, `false` | when turned on (`true`) user API will be with ecnrypted user data |
+|`first_registration_superadmin`| true | `true`, `false` | when turned on (`true`) first registered user on a platform will be superadmin without any email confirmation |
+|`mgn_api_keys_user`| false | `true`, `false` | when turned on (`true`) management API to create/update api keys will be provided for user entity|
+|`mgn_api_keys_sa`| false | `true`, `false` | when turned on (`true`) management API to create/update api keys will be provided for service account entity |
 
 ### Password configuration
 | Env name | Default value | Possible values | Description |
@@ -93,6 +97,13 @@ More details in [twilio configuration](#twilio-configuration)
 
 ### Sentry configuration
 | `barong_sentry_dsn_backend`  | ~ | valid host url | Sentry SDK client key |
+
+### Auth0 configuration
+
+| Env name | Default value | Possible values | Description |
+| ---------- | :------: |:------: |---------------------------------- |
+|`auth0_domain`| - | any string value | auth0 Domain name (without https://) |
+|`auth0_client_id`| - | any string value | the client_id of your auth0 application |
 
 ### SMTP configuration
 | Env name | Default value | Possible values | Description |

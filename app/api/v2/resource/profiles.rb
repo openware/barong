@@ -14,31 +14,31 @@ module API::V2
       desc 'Profile related routes'
       resource :profiles do
         desc 'Return profiles of current resource owner',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 404, message: 'User has no profile' }
-             ]
+          failure: [
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 404, message: 'User has no profile' }
+          ],
+          success: API::V2::Entities::Profile
         get '/me' do
           present current_user.profiles, with: API::V2::Entities::Profile
         end
 
         desc 'Create a profile for current_user',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 409, message: 'Profile already exists' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 409, message: 'Profile already exists' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: API::V2::Entities::Profile
         params do
-          optional :first_name, type: String
-          optional :last_name, type: String
-          optional :dob, type: Date
-          optional :address, type: String
-          optional :postcode, type: String
-          optional :city, type: String
-          optional :country, type: String
+          optional :first_name, type: String, desc: 'First Name'
+          optional :last_name, type: String, desc: 'Last Name'
+          optional :dob, type: Date, desc: 'Date of Birth'
+          optional :address, type: String, desc: 'Address'
+          optional :postcode, type: String, desc: 'Postcode'
+          optional :city, type: String, desc: 'City'
+          optional :country, type: String, desc: 'Country'
           optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
           optional :confirm, type: Boolean, default: false, desc: 'Profile confirmation'
         end
@@ -51,24 +51,23 @@ module API::V2
           code_error!(profile.errors.details, 422) if profile.errors.any?
 
           present profile, with: API::V2::Entities::Profile
-          status 201
         end
 
         desc 'Update a profile for current_user',
-             security: [{ "BearerToken": [] }],
-             failure: [
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          failure: [
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: API::V2::Entities::Profile
         params do
-          optional :first_name, type: String
-          optional :last_name, type: String
-          optional :dob, type: Date
-          optional :address, type: String
-          optional :postcode, type: String
-          optional :city, type: String
-          optional :country, type: String
+          optional :first_name, type: String, desc: 'First Name'
+          optional :last_name, type: String, desc: 'Last Name'
+          optional :dob, type: Date, desc: 'Date of Birth'
+          optional :address, type: String, desc: 'Address'
+          optional :postcode, type: String, desc: 'Postcode'
+          optional :city, type: String, desc: 'City'
+          optional :country, type: String, desc: 'Country'
           optional :metadata, type: String, desc: 'Any additional key: value pairs in json string format'
           optional :confirm, type: Boolean, default: false, desc: 'Profile confirmation'
         end

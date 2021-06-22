@@ -18,7 +18,6 @@ RSpec.describe User, type: :model do
 
     ## Test of validations
     it { should validate_presence_of(:email) }
-    it { should validate_presence_of(:password) }
     it { should have_many(:documents).dependent(:destroy) }
 
     ## Test of relationships
@@ -48,6 +47,18 @@ RSpec.describe User, type: :model do
       usr = create(:user)
       payload = usr.as_payload
       expect(payload['email']).to eq(usr.email)
+    end
+
+    describe '#username' do
+      it 'create user with unique username' do
+        create(:user, username: 'nick')
+        expect { create(:user, username: 'nick') }.to raise_error ActiveRecord::RecordInvalid
+      end
+
+      it 'create user with nil username' do
+        create(:user, username: nil)
+        expect(create(:user, username: nil)).to be_valid
+      end
     end
 
     describe '#referral' do
@@ -333,6 +344,7 @@ RSpec.describe User, type: :model do
             "email" => "verified"
           },
           "state_triggers" => {
+            "banned" => ['ban'],
             "locked" => ['trade', 'withdraw']
           }
         }
@@ -345,6 +357,13 @@ RSpec.describe User, type: :model do
 
             user.labels.create(key: 'trade', value: 'suspicious', scope: 'private')
             expect(user.state).to eq('locked')
+          end
+
+          it 'changes state only with full match' do
+            expect(user.state).to eq('pending')
+
+            user.labels.create(key: 'bank_account', value: 'verified', scope: 'private')
+            expect(user.state).to eq('pending')
           end
         end
 

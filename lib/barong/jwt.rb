@@ -16,7 +16,7 @@ module Barong
       ::JWT.encode(merge_claims(payload),
                  @options[:key], @options[:algoritm])
     end
-    
+
     def decode_and_verify(token, verify_options)
       @verify_options = verify_options.reverse_merge({
         verify_expiration: true,

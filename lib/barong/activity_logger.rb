@@ -20,6 +20,14 @@ module Barong
           rescue StandardError => e
             Rails.logger.error { "Failed to create activity with params: #{params}\n" \
                                  "Inspect error: #{e.inspect}\n#{e.backtrace.join("\n")}" }
+
+            # If system catch Mysql2::Error::ConnectionError
+            # System will reconnect to DB and push message again to the activities queue
+            if e.is_a? (ActiveRecord::StatementInvalid)
+              ActiveRecord::Base.connection.reconnect!
+              sleep(0.1)
+              @activities.push(options)
+            end
           end
         end
       end
@@ -32,15 +40,16 @@ module Barong
     def self.format_params(params)
       topic = params[:topic].nil? && params[:path].split('admin/')[1].nil? ? 'general' : params[:topic] || params[:path].split('admin/')[1].split('/')[0]
       {
-        user_id:       params[:user_id],
-        target_uid:    target_user(params[:payload]) || '',
-        user_ip:       params[:user_ip],
-        user_agent:    params[:user_agent],
-        topic:         topic,
-        action:        ACTION[params[:verb].downcase.to_sym] || 'system',
-        result:        params[:result],
-        category:      'admin',
-        data:          format_payload(params[:payload])
+        user_id:         params[:user_id],
+        target_uid:      target_user(params[:payload]) || '',
+        user_ip:         params[:user_ip],
+        user_ip_country: Barong::GeoIP.info(ip: params[:user_ip], key: :country),
+        user_agent:      params[:user_agent],
+        topic:           topic,
+        action:          ACTION[params[:verb].downcase.to_sym] || 'system',
+        result:          params[:result],
+        category:        'admin',
+        data:            format_payload(params[:payload])
       }
     end
 

@@ -7,13 +7,12 @@ module API::V2
       desc 'Documents related routes'
       resource :addresses do
         desc 'Upload a new address approval document for current user',
-             security: [{ 'BearerToken': [] }],
-             success: { code: 201, message: 'Document is uploaded' },
-             failure: [
-               { code: 400, message: 'Required params are empty' },
-               { code: 401, message: 'Invalid bearer token' },
-               { code: 422, message: 'Validation errors' }
-             ]
+          success: { code: 201, message: 'New address approval document was uploaded' },
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 401, message: 'Invalid bearer token' },
+            { code: 422, message: 'Validation errors' }
+          ]
         params do
           requires :country,
                    type: String,

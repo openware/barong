@@ -20,10 +20,10 @@ module API
           end
 
           desc 'Returns array of users as paginated collection',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::User
           params do
             optional :extended,
                      type: { value: Boolean, message: 'admin.user.non_boolean_extended' },
@@ -65,10 +65,10 @@ module API
           end
 
           desc 'Update user attributes',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'User attributes were updated' }
           params do
             requires :uid,
                      type: String,
@@ -118,10 +118,10 @@ module API
           end
 
           desc 'Update user role',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'User role was created' }
           params do
             requires :uid,
                      type: String,
@@ -157,10 +157,10 @@ module API
           end
 
           desc 'Update user attributes',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'User attributes were created' }
           params do
             requires :uid,
                      type: String,
@@ -218,10 +218,10 @@ module API
           end
 
           desc 'Returns array of users with pending or replaced documents as paginated collection',
-               security: [{ "BearerToken": [] }],
                failure: [
                    { code: 401, message: 'Invalid bearer token' }
-               ]
+               ],
+               success: API::V2::Entities::User
           params do
             optional :extended,
                      type: { value: Boolean, message: 'admin.user.non_boolean_extended' },
@@ -263,10 +263,9 @@ module API
 
           namespace :labels do
             desc 'Returns existing labels keys and values',
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ]
             params do
             end
             get '/list' do
@@ -275,15 +274,13 @@ module API
               labels = Label.where(scope: 'private').group(:key, :value).size
 
               present labels
-
-              status 200
             end
 
             desc 'Returns array of users as paginated collection',
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: API::V2::Entities::User
             params do
               requires :key,      type: String, desc: 'Label key'
               requires :value,    type: String, desc: 'Label value'
@@ -297,11 +294,11 @@ module API
               present paginate(users), with: API::V2::Entities::User
             end
 
-            desc 'Adds label for user',
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+            desc 'Add label for user',
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: { code: 200, message: 'Label was created' }
             params do
               requires :uid,
                        type: String,
@@ -343,13 +340,13 @@ module API
             end
 
             desc 'Update user label value',
-            security: [{ 'BearerToken': [] }],
-            failure: [
-              { code: 400, message: 'Required params are empty' },
-              { code: 401, message: 'Invalid bearer token' },
-              { code: 404, message: 'Record is not found' },
-              { code: 422, message: 'Validation errors' }
-            ]
+              failure: [
+                { code: 400, message: 'Required params are empty' },
+                { code: 401, message: 'Invalid bearer token' },
+                { code: 404, message: 'Record is not found' },
+                { code: 422, message: 'Validation errors' }
+              ],
+              success: { code: 200, message: 'Label was updated' }
             params do
               requires :uid,
                        type: String,
@@ -411,13 +408,13 @@ module API
             end
 
             desc 'Update user label scope',
-                 security: [{ 'BearerToken': [] }],
-                 failure: [
-                   { code: 400, message: 'Required params are empty' },
-                   { code: 401, message: 'Invalid bearer token' },
-                   { code: 404, message: 'Record is not found' },
-                   { code: 422, message: 'Validation errors' }
-                 ]
+              failure: [
+                { code: 400, message: 'Required params are empty' },
+                { code: 401, message: 'Invalid bearer token' },
+                { code: 404, message: 'Record is not found' },
+                { code: 422, message: 'Validation errors' }
+              ],
+              success: { code: 200, message: 'Label was updated' }
             params do
               requires :uid,
                        type: String,
@@ -463,10 +460,10 @@ module API
             end
 
             desc 'Deletes label for user',
-                 security: [{ "BearerToken": [] }],
-                 failure: [
-                   { code: 401, message: 'Invalid bearer token' }
-                 ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: { code: 200, message: 'Label was deleted' }
             params do
               requires :uid,
                        type: String,
@@ -503,10 +500,10 @@ module API
           end
 
           desc 'Returns user info',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Admin::Entities::UserWithKYC
           params do
             requires :uid,
                      type: String,
@@ -523,10 +520,10 @@ module API
           end
 
           desc "Deletes user's data storage record",
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Admin::Entities::UserWithKYC
           params do
             requires :uid,
                      type: String,
@@ -553,10 +550,10 @@ module API
 
           namespace :comments do
             desc "Adds new user's comment",
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: API::V2::Admin::Entities::UserWithKYC
             params do
               requires :uid,
                        type: String,
@@ -590,10 +587,10 @@ module API
             end
 
             desc "Edit user's comment",
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: API::V2::Admin::Entities::UserWithKYC
             params do
               requires :id,
                        type: Integer,
@@ -619,10 +616,10 @@ module API
             end
 
             desc "Delete user's comment",
-            security: [{ "BearerToken": [] }],
-            failure: [
-              { code: 401, message: 'Invalid bearer token' }
-            ]
+              failure: [
+                { code: 401, message: 'Invalid bearer token' }
+              ],
+              success: API::V2::Admin::Entities::UserWithKYC
             params do
               requires :id,
                        type: Integer,

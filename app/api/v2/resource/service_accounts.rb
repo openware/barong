@@ -19,11 +19,11 @@ module API::V2
 
       resource :service_accounts do
         desc 'List all service accounts for current user.',
-        security: [{ "BearerToken": [] }],
-        failure: [
-          { code: 400, message: 'Require 2FA and totp code' },
-          { code: 401, message: 'Invalid bearer token' }
-        ]
+          security: [{ "BearerToken": [] }],
+          failure: [
+            { code: 400, message: 'Require 2FA and totp code' },
+            { code: 401, message: 'Invalid bearer token' }
+          ]
         params do
         end
         get do
@@ -32,11 +32,11 @@ module API::V2
 
         resource :api_keys do
           desc 'List all api keys for specific service account.',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Require 2FA and totp code' },
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 400, message: 'Require 2FA and totp code' },
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: Entities::APIKey
           params do
             optional :ordering,
                     values: { value: -> (p){ %w[asc desc].include?(p) }, message: 'resource.service_accounts.invalid_ordering' },
@@ -58,20 +58,21 @@ module API::V2
           end
 
           desc 'Create api key for specific service account.',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Require 2FA and totp code' },
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 400, message: 'Require 2FA and totp code' },
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: Entities::APIKey
           params do
             requires :service_account_uid, type: { value: String, message: 'resource.service_account.non_string_service_account_uid' }
             requires :algorithm,
                     type: String,
-                    allow_blank: false
+                    allow_blank: false,
+                    desc: 'Service account algorithm'
             optional :scope,
                     type: String,
                     allow_blank: false,
-                    desc: 'comma separated scopes'
+                    desc: 'Comma separated scopes'
             requires :totp_code,
                     type: String,
                     message: 'resource.service_accounts.missing_totp',
@@ -107,7 +108,6 @@ module API::V2
           end
 
           desc 'Delete an api key for specific service account',
-            security: [{ "BearerToken": [] }],
             success: { code: 204, message: 'Succefully deleted' },
             failure: [
               { code: 400, message: 'Required params are empty' },
@@ -117,12 +117,13 @@ module API::V2
           params do
             requires :service_account_uid, type: { value: String, message: 'resource.service_account.non_string_service_account_uid' }
             requires :kid,
-                    type: String,
-                    allow_blank: false
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Service account kid'
             requires :totp_code,
-                    type: String,
-                    allow_blank: false,
-                    desc: 'Code from Google Authenticator'
+                     type: String,
+                     allow_blank: false,
+                     desc: 'Code from Google Authenticator'
           end
           delete ':kid' do
             target_service_account = current_user.service_accounts.find_by(uid: params[:service_account_uid])
@@ -136,22 +137,23 @@ module API::V2
           end
 
           desc 'Updates an api key',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 401, message: 'Invalid bearer token' },
-            { code: 404, message: 'Record is not found' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 401, message: 'Invalid bearer token' },
+              { code: 404, message: 'Record is not found' },
+              { code: 422, message: 'Validation errors' }
+            ],
+            success: Entities::APIKey
           params do
             requires :service_account_uid, type: { value: String, message: 'resource.service_account.non_string_service_account_uid' }
             requires :kid,
                      type: String,
-                     allow_blank: false
+                     allow_blank: false,
+                     desc: 'Service account kid'
             optional :scope,
                      type: String,
                      allow_blank: false,
-                     desc: 'comma separated scopes'
+                     desc: 'Comma separated scopes'
             optional :state,
                      type: String,
                      allow_blank: false,
@@ -174,7 +176,7 @@ module API::V2
             unless api_key.update(declared_params)
               code_error!(api_key.errors.details, 422)
             end
-  
+
             present api_key, with: Entities::APIKey, except: [:secret]
           end
         end

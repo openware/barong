@@ -20,15 +20,15 @@ module API::V2
 
         params do
           requires :uid, type: String, desc: 'User Uid', allow_blank: false
-          optional :first_name, type: String, allow_blank: false
-          optional :last_name, type: String, allow_blank: false
-          optional :dob, type: Date, desc: 'Birthday date', allow_blank: false
-          optional :address, type: String, allow_blank: false
-          optional :postcode, type: String, allow_blank: false
-          optional :city, type: String, allow_blank: false
-          optional :country, type: String, allow_blank: false
-          optional :state, type: String, allow_blank: false
-          optional :metadata, type: String, allow_blank: false
+          optional :first_name, type: String, desc: 'First Name', allow_blank: false
+          optional :last_name, type: String, desc: 'Last Name', allow_blank: false
+          optional :dob, type: Date, desc: 'Birth date', allow_blank: false
+          optional :address, type: String, desc: 'Address', allow_blank: false
+          optional :postcode, type: String, desc: 'Postcode', allow_blank: false
+          optional :city, type: String, desc: 'City', allow_blank: false
+          optional :country, type: String, desc: 'Country', allow_blank: false
+          optional :state, type: String, desc: 'State', allow_blank: false
+          optional :metadata, type: String, desc: 'Metadata', allow_blank: false
         end
 
         post do

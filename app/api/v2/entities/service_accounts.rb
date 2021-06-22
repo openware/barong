@@ -3,11 +3,36 @@
 module API::V2
   module Entities
     class ServiceAccounts < API::V2::Entities::Base
-      expose :email, documentation: { type: 'String' }
-      expose :uid, documentation: { type: 'String' }
-      expose :role, documentation: { type: 'String' }
-      expose :level, documentation: { type: 'Integer' }
-      expose :state, documentation: { type: 'String' }
+      expose :email,
+             documentation: {
+              type: 'String',
+              desc: 'User Email'
+             }
+
+      expose :uid,
+             documentation: {
+              type: 'String',
+              desc: 'User UID'
+             }
+
+      expose :role,
+             documentation: {
+              type: 'String',
+              desc: 'Service Account Role'
+             }
+
+      expose :level,
+             documentation: {
+              type: 'Integer',
+              desc: 'User Level'
+             }
+
+      expose :state,
+             documentation: {
+              type: 'String',
+              desc: 'Service Account State: active, disabled'
+             }
+
       expose :user, using: Entities::User
 
       with_options(format_with: :iso_timestamp) do

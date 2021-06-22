@@ -9,11 +9,10 @@
     "application/json"
   ],
   "securityDefinitions": {
-    "BearerToken": {
-      "description": "Bearer Token authentication",
-      "type": "jwt",
-      "name": "Authorization",
-      "in": "header"
+    "SecurityScope": {
+      "description": "JWT should have signature keychains",
+      "type": "basic",
+      "name": "Authorization"
     }
   },
   "host": "localhost:3000",
@@ -319,25 +318,28 @@
           {
             "in": "formData",
             "name": "phone",
+            "description": "Phone",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "first_name",
+            "description": "First Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "last_name",
+            "description": "Last Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "dob",
-            "description": "Birthday date",
+            "description": "Birth date",
             "type": "string",
             "format": "date",
             "required": false
@@ -345,30 +347,35 @@
           {
             "in": "formData",
             "name": "address",
+            "description": "Address",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "postcode",
+            "description": "Postcode",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "city",
+            "description": "City",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "country",
+            "description": "Country",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "state",
+            "description": "State",
             "type": "string",
             "required": false
           }
@@ -620,19 +627,21 @@
           {
             "in": "formData",
             "name": "first_name",
+            "description": "First Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "last_name",
+            "description": "Last Name",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "dob",
-            "description": "Birthday date",
+            "description": "Birth date",
             "type": "string",
             "format": "date",
             "required": false
@@ -640,36 +649,42 @@
           {
             "in": "formData",
             "name": "address",
+            "description": "Address",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "postcode",
+            "description": "Postcode",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "city",
+            "description": "City",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "country",
+            "description": "Country",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "state",
+            "description": "State",
             "type": "string",
             "required": false
           },
           {
             "in": "formData",
             "name": "metadata",
+            "description": "Metadata",
             "type": "string",
             "required": false
           }
@@ -715,7 +730,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Delete phone number for user"
+            "description": "Delete phone number for user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Management_Entities_Phone"
+            }
           }
         },
         "tags": [
@@ -751,7 +769,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Create phone number for user"
+            "description": "Create phone number for user",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Management_Entities_Phone"
+            }
           }
         },
         "tags": [
@@ -780,7 +801,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Get user phone numbers"
+            "description": "Get user phone numbers",
+            "schema": {
+              "$ref": "#/definitions/API_V2_Management_Entities_Phone"
+            }
           }
         },
         "tags": [
@@ -1173,24 +1197,29 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
@@ -1198,7 +1227,7 @@
         },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         }
       },
       "description": "Returns array of users as collection"
@@ -1207,35 +1236,40 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
           "type": "boolean",
           "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
-        },
-        "data": {
           "type": "string",
-          "description": "additional phone and profile info"
-        },
-        "profiles": {
-          "$ref": "#/definitions/API_V2_Management_Entities_Profile"
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
+        },
+        "data": {
+          "type": "string",
+          "description": "Additional phone and profile info"
+        },
+        "profiles": {
+          "$ref": "#/definitions/API_V2_Management_Entities_Profile"
         },
         "created_at": {
           "type": "string"
@@ -1250,7 +1284,8 @@
       "type": "object",
       "properties": {
         "first_name": {
-          "type": "string"
+          "type": "string",
+          "description": "First Name"
         },
         "last_name": {
           "type": "string",
@@ -1259,22 +1294,27 @@
         "dob": {
           "type": "string",
           "format": "date",
-          "description": "Birthday date"
+          "description": "Birth date"
         },
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "Address"
         },
         "postcode": {
-          "type": "string"
+          "type": "string",
+          "description": "Address Postcode"
         },
         "city": {
-          "type": "string"
+          "type": "string",
+          "description": "City name"
         },
         "country": {
-          "type": "string"
+          "type": "string",
+          "description": "Country name"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "Profile state: drafted, submitted, verified, rejected"
         },
         "metadata": {
           "type": "object",
@@ -1292,27 +1332,37 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
+        },
+        "referral_uid": {
+          "type": "string",
+          "description": "UID of referrer"
         },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         },
         "profiles": {
           "$ref": "#/definitions/API_V2_Management_Entities_Profile"
@@ -1332,10 +1382,6 @@
         "comments": {
           "$ref": "#/definitions/API_V2_Entities_Comment"
         },
-        "referral_uid": {
-          "type": "string",
-          "description": "UID of referrer"
-        },
         "created_at": {
           "type": "string"
         },
@@ -1349,39 +1395,43 @@
       "type": "object",
       "properties": {
         "country": {
-          "type": "string"
+          "type": "string",
+          "description": "Phone country"
         },
         "number": {
-          "type": "string"
+          "type": "string",
+          "description": "Phone Number"
         },
         "validated_at": {
           "type": "s",
-          "format": "g"
+          "format": "g",
+          "description": "Phone validation date"
         }
-      }
+      },
+      "description": "Get user phone numbers"
     },
     "API_V2_Management_Entities_Document": {
       "type": "object",
       "properties": {
         "upload": {
           "type": "string",
-          "description": "file url"
+          "description": "File url"
         },
         "doc_type": {
           "type": "string",
-          "description": "document type: passport, driver license"
+          "description": "Document type: passport, driver license, utility bill, identity card, institutional, address, residental"
         },
         "doc_number": {
           "type": "string",
-          "description": "document number: AB123123 type"
+          "description": "Document number: AB123123 type"
         },
         "doc_expire": {
           "type": "string",
-          "description": "expire date of uploaded documents"
+          "description": "Expire date of uploaded documents"
         },
         "metadata": {
           "type": "string",
-          "description": "any additional stored data"
+          "description": "Any additional stored data"
         },
         "created_at": {
           "type": "string"
@@ -1396,11 +1446,11 @@
       "properties": {
         "title": {
           "type": "string",
-          "description": "any additional data title"
+          "description": "Any additional data title"
         },
         "data": {
           "type": "string",
-          "description": "any additional data json key:value pairs"
+          "description": "Any additional data json key:value pairs"
         },
         "created_at": {
           "type": "string"
@@ -1416,19 +1466,19 @@
         "id": {
           "type": "integer",
           "format": "int32",
-          "description": "comment id"
+          "description": "Comment id"
         },
         "author_uid": {
           "type": "string",
-          "description": "comment author"
+          "description": "Comment author UID"
         },
         "title": {
           "type": "string",
-          "description": "comment title"
+          "description": "Comment title"
         },
         "data": {
           "type": "string",
-          "description": "comment plain text"
+          "description": "Comment plain text"
         },
         "created_at": {
           "type": "string"
@@ -1442,20 +1492,25 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "Service Account Role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User Level"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "Service Account State: active, disabled"
         },
         "user": {
           "$ref": "#/definitions/API_V2_Entities_User"
@@ -1474,22 +1529,23 @@
       "properties": {
         "kid": {
           "type": "string",
-          "description": "jwt public key"
+          "description": "JWT public key"
         },
         "algorithm": {
           "type": "string",
-          "description": "cryptographic hash function type"
+          "description": "Cryptographic hash function type"
         },
         "scope": {
           "type": "string",
-          "description": "serialized array of scopes"
+          "description": "Serialized array of scopes"
         },
         "state": {
           "type": "string",
           "description": "active/non-active state of key"
         },
         "secret": {
-          "type": "string"
+          "type": "string",
+          "description": "Api key secret"
         },
         "created_at": {
           "type": "string"
@@ -1503,41 +1559,41 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string"
+          "type": "string",
+          "description": "User Email"
         },
         "uid": {
-          "type": "string"
+          "type": "string",
+          "description": "User UID"
         },
         "role": {
-          "type": "string"
+          "type": "string",
+          "description": "User role"
         },
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "description": "User level"
         },
         "otp": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "is 2FA enabled for account"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "User state: active, pending, inactive"
         },
         "referral_uid": {
           "type": "string",
           "description": "UID of referrer"
         },
-        "csrf_token": {
-          "type": "string",
-          "description": "csrf protection token"
-        },
         "data": {
           "type": "string",
-          "description": "additional phone and profile info"
+          "description": "Additional phone and profile info"
         },
-        "created_at": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
+        "csrf_token": {
+          "type": "string",
+          "description": "Сsrf protection token"
         },
         "labels": {
           "$ref": "#/definitions/API_V2_Entities_Label"
@@ -1550,6 +1606,12 @@
         },
         "data_storages": {
           "$ref": "#/definitions/API_V2_Entities_DataStorage"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
         }
       }
     },
@@ -1557,15 +1619,17 @@
       "type": "object",
       "properties": {
         "country": {
-          "type": "string"
+          "type": "string",
+          "description": "Phone country"
         },
         "number": {
           "type": "string",
-          "description": "Submasker phone number"
+          "description": "Submasked phone number"
         },
         "validated_at": {
           "type": "s",
-          "format": "g"
+          "format": "g",
+          "description": "Phone validation date"
         }
       }
     },
@@ -1573,7 +1637,8 @@
       "type": "object",
       "properties": {
         "first_name": {
-          "type": "string"
+          "type": "string",
+          "description": "First Name"
         },
         "last_name": {
           "type": "string",
@@ -1582,22 +1647,27 @@
         "dob": {
           "type": "string",
           "format": "date",
-          "description": "Submasked birthday date"
+          "description": "Submasked birth date"
         },
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "Address"
         },
         "postcode": {
-          "type": "string"
+          "type": "string",
+          "description": "Address Postcode"
         },
         "city": {
-          "type": "string"
+          "type": "string",
+          "description": "City name"
         },
         "country": {
-          "type": "string"
+          "type": "string",
+          "description": "Country name"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "description": "Profile state: drafted, submitted, verified, rejected"
         },
         "metadata": {
           "type": "object",

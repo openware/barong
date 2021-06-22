@@ -2,12 +2,14 @@
 # email and level are required for users
 #
 # permissions defines user roles and abilities
-users:
-  - email: <%= ENV.fetch("ADMIN_EMAIL", "admin@barong.io") %>
-    password: <%= ENV.fetch("ADMIN_PASSWORD", nil) %>
-    role: "admin"
-    state: "active"
-    level: 1
+
+# If you want to seed users follow example below
+# users:
+#   - email: <%= ENV.fetch("BARONG_ADMIN_EMAIL", "admin@barong.io") %>
+#     password: <%= ENV.fetch("BARONG_ADMIN_PASSWORD", nil) %>
+#     role: "admin"
+#     state: "active"
+#     level: 1
 
 levels:
   - key: email
@@ -303,3 +305,27 @@ permissions:
  - { role: sa_maker, verb: get, path: api/v2/ranger, action: accept }
  # applogic access
  - { role: sa_maker, verb: all, path: api/v2/applogic, action: accept }
+
+ # REPORTER
+ - { role: reporter, verb: all, path: api/v2/peatio/account, action: accept }
+ - { role: reporter, verb: all, path: api/v2/peatio/market, action: accept }
+ - { role: reporter, verb: all, path: api/v2/finex/market, action: accept }
+ - { role: reporter, verb: all, path: api/v2/barong/resource, action: accept }
+ - { role: reporter, verb: get, path: api/v2/barong/admin/users, action: accept }
+ # reporter has a read access to Peatio financial information
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/deposits, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/withdraws, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/revenues, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/liabilities, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/assets, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/expenses, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/wallets, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/blockchains, action: accept }
+ - { role: reporter, verb: get, path: api/v2/peatio/admin/currencies, action: accept }
+ # ranger access
+ - { role: reporter, verb: get, path: api/v2/ranger, action: accept }
+ # Finex upstream access
+ - { role: reporter, verb: get, path: api/v2/open_finance, action: accept }
+ # applogic access
+ - { role: reporter, verb: all, path: api/v2/applogic, action: accept }
+ - { role: reporter, verb: get, path: v2/applogic/admin/marketplace/subscriptions/items, action: accept }

@@ -51,16 +51,12 @@ module API::V2
         }.compact
       end
 
-      resource :health do
-        desc 'Get application liveness status'
-        get "/alive" do
-          status Services::HealthChecker.alive? ? 200 : 503
-        end
-
-        desc 'Get application readiness status'
-        get "/ready" do
-          status Services::HealthChecker.ready? ? 200 : 503
-        end
+      desc 'Get auth0 configuration'
+      get '/configs/auth0' do
+        {
+          auth0_domain: Barong::App.config.auth0_domain,
+          auth0_client_id: Barong::App.config.auth0_client_id
+        }.compact
       end
     end
   end

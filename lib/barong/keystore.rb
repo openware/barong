@@ -29,7 +29,15 @@ module Barong
       end
 
       def read!(private_key)
-        return OpenSSL::PKey.read(private_key).to_pem
+        key = OpenSSL::PKey.read(private_key)
+        raise ArgumentError, 'JWT_PRIVATE_KEY was set to public key, however it should be private.' unless key.private?
+        key.to_pem
+      rescue => e
+        raise Barong::KeyStore::Fatal, e.message
+      end
+
+      def save!(key, path)
+        File.open(path, 'w+') { |file| file.write(key) }
       rescue
         raise Barong::KeyStore::Fatal
       end

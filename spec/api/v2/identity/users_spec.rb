@@ -6,9 +6,16 @@ include ActiveSupport::Testing::TimeHelpers
 describe API::V2::Identity::Users do
   include_context 'geoip mock'
 
+  before do
+    allow(Barong::App.config).to receive_messages(first_registration_superadmin: false)
+  end
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member',
+           verb: 'all'
+    create :permission,
+           role: 'superadmin',
            verb: 'all'
     create :permission,
            role: 'member',
@@ -125,11 +132,119 @@ describe API::V2::Identity::Users do
     end
 
     context 'when email is valid' do
-      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+      let(:params) { { email: 'valid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
 
       it 'creates an account' do
         do_request
         expect_status_to_eq 201
+      end
+
+      context 'first user registration' do
+        before do
+          allow(Barong::App.config).to receive_messages(first_registration_superadmin: true)
+        end
+
+        it 'creates superadmin user' do
+          post '/api/v2/identity/users', params: params
+
+          expect(response.status).to eq(201)
+
+          expect(json_body.keys).to match_array %i[email uid role level otp state referral_uid csrf_token data created_at updated_at labels phones profiles data_storages username]
+          expect(json_body[:email]).to eq 'valid.email@gmail.com'
+          expect(json_body[:level]).to eq 1
+          expect(json_body[:role]).to eq 'superadmin'
+          expect(json_body[:state]).to eq 'active'
+          expect(json_body[:labels].count).to eq 1
+          expect(json_body[:labels][0][:key]).to eq 'email'
+          expect(json_body[:labels][0][:value]).to eq 'verified'
+          expect(json_body[:labels][0][:scope]).to eq 'private'
+        end
+      end
+    end
+
+    context 'when username is invalid' do
+      let(:params) { { email: 'vadid.email@gmail.com', password: 'eeC2BiCucxWEQ' } }
+
+      it 'renders an error too_short' do
+        params[:username] = 'qwe'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_short"])
+      end
+
+
+      it 'renders an error too_long' do
+        params[:username] = 'qwertyuiopasd'
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_long"])
+      end
+
+      it 'renders an error invalid' do
+        params[:username] = 'qwerty@='
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.invalid"])
+      end
+
+      it 'renders an error with blank value' do
+        params[:username] = ''
+        do_request
+        expect_status_to_eq 422
+        expect_body.to eq(errors: ["username.too_short", "username.invalid"])
+      end
+
+      it 'should be unique for UPPER or lower username' do
+        params[:username] = 'NICK'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:username] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "username.taken"
+      end
+
+      it 'should be unique for username' do
+        params[:username] = 'nick'
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:username] = 'nick'
+        post '/api/v2/identity/users', params: params
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "username.taken"
+      end
+    end
+
+    context 'when username is valid' do
+      let(:params) { { email: 'vadid.email@gmail.com', username: 'vadid', password: 'eeC2BiCucxWEQ' } }
+
+      it 'creates an account' do
+        do_request
+        expect_status_to_eq 201
+      end
+
+      it 'create an account with nil username' do
+        params[:email] = 'vadid1.email@gmail.com'
+        params[:username] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
+
+        params[:email] = 'vadid2.email@gmail.com'
+        params[:username] = nil
+        expect {
+          post '/api/v2/identity/users', params: params
+        }.to change { User.count }.by(1)
+        expect(response.status).to eq(201)
       end
     end
   end
@@ -602,15 +717,29 @@ describe API::V2::Identity::Users do
     end
 
     context 'when Reset Password Token and Password are valid ' do
-      let!(:user) { create(:user) }
+      let!(:initial_password) { 'ZahSh8ei' }
+      let!(:user) { create(:user, password: initial_password, password_confirmation: initial_password) }
       let(:reset_password_token) { codec.encode(sub: 'reset', email: user.email, uid: user.uid) }
       let(:password) { 'ZahSh8ei' }
       let(:confirm_password) { 'ZahSh8ei' }
       let(:log_in) { post '/api/v2/identity/sessions', params: { email: user.email, password: password } }
+      before { clear_redis }
 
       it 'resets a password' do
+        post '/api/v2/identity/sessions', params: { email: user.email, password: initial_password }
+        expect_status_to_eq 200
+        key = Barong::RedisSession.key_name(user.uid, request.session.id)
+        value = Rails.cache.read(key)
+        # There are values in redis with user session
+        expect(value).not_to eq nil
+        expect(Rails.cache.read(value)).not_to eq nil
+
         do_request
         expect_status_to_eq 201
+        # There are no values in redis with user session after confirming new password
+        expect(Rails.cache.read(key)).to eq nil
+        expect(Rails.cache.read(value)).to eq nil
+
         log_in
         expect_status_to_eq 200
       end

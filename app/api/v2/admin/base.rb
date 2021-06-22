@@ -39,6 +39,14 @@ module API::V2
                                   title: 'Barong',
                                   description: 'RESTful AdminAPI for barong OAuth server'
                                 },
+                                security_definitions: {
+                                  'BearerToken': {
+                                    description: 'Bearer Token authentication',
+                                    type: 'basic',
+                                    name: 'Authorization',
+                                    in: 'header'
+                                  }
+                                },
                                 models: [
                                   API::V2::Admin::Entities::ActivityWithUser,
                                   API::V2::Admin::Entities::AdminActivity,
@@ -46,7 +54,8 @@ module API::V2
                                   API::V2::Admin::Entities::Phone,
                                   API::V2::Admin::Entities::Profile,
                                   API::V2::Admin::Entities::UserWithKYC,
-                                  API::V2::Admin::Entities::UserWithProfile
+                                  API::V2::Admin::Entities::UserWithProfile,
+                                  API::V2::Entities::APIKey
                                 ]
     end
   end

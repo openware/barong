@@ -23,6 +23,7 @@ module API::V2
       mount API::V2::Management::Otp
       mount API::V2::Management::Documents
       mount API::V2::Management::ServiceAccounts
+      mount API::V2::Management::APIKeys
 
       add_swagger_documentation base_path: File.join(API::Base::PREFIX, API::V2::Base::API_VERSION, 'barong', PREFIX),
                                 info: {
@@ -31,11 +32,10 @@ module API::V2
                                 },
                                 mount_path:  '/swagger',
                                 security_definitions: {
-                                  "BearerToken": {
-                                    description: 'Bearer Token authentication',
-                                    type: 'jwt',
-                                    name: 'Authorization',
-                                    in: 'header'
+                                  'SecurityScope': {
+                                    description: 'JWT should have signature keychains',
+                                    type: 'basic',
+                                    name: 'Authorization'
                                   }
                                 },
                                 models: [
@@ -48,6 +48,7 @@ module API::V2
                                   API::V2::Management::Entities::Document,
                                   API::V2::Management::Entities::UserWithProfile,
                                   API::V2::Management::Entities::UserWithKYC,
+                                  API::V2::Management::Entities::APIKey,
                                 ],
                                 api_version: API::V2::Base::API_VERSION,
                                 doc_version: Barong::Application::GIT_TAG,

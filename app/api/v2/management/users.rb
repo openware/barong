@@ -133,15 +133,15 @@ module API::V2
                                      desc: 'User Password Hash',
                                      allow_blank: false
           optional :referral_uid, type: String, desc: 'Referral uid', allow_blank: false
-          optional :phone, type: String, allow_blank: false
-          optional :first_name, type: String, allow_blank: false
-          optional :last_name, type: String, allow_blank: false
-          optional :dob, type: Date, desc: 'Birthday date', allow_blank: false
-          optional :address, type: String, allow_blank: false
-          optional :postcode, type: String, allow_blank: false
-          optional :city, type: String, allow_blank: false
-          optional :country, type: String, allow_blank: false
-          optional :state, type: String, allow_blank: false
+          optional :phone, type: String, allow_blank: false, desc: 'Phone'
+          optional :first_name, type: String, allow_blank: false, desc: 'First Name'
+          optional :last_name, type: String, allow_blank: false, desc: 'Last Name'
+          optional :dob, type: Date, desc: 'Birth date', allow_blank: false
+          optional :address, type: String, allow_blank: false, desc: 'Address'
+          optional :postcode, type: String, allow_blank: false, desc: 'Postcode'
+          optional :city, type: String, allow_blank: false, desc: 'City'
+          optional :country, type: String, allow_blank: false, desc: 'Country'
+          optional :state, type: String, allow_blank: false, desc: 'State'
         end
         post '/import' do
           if User.find_by(email: params[:email]).present?

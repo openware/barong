@@ -18,11 +18,11 @@ module API::V2
       desc 'User related routes'
       resource :users do
         desc 'Creates new whitelist restriction',
-        success: { code: 201, message: 'Creates new user' },
-        failure: [
-          { code: 400, message: 'Required params are missing' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ],
+          success: { code: 200, message: 'Whitelist restriction was created' }
         params do
           requires :whitelink_token,
                    type: String,
@@ -45,11 +45,11 @@ module API::V2
         end
 
         desc 'Creates new user',
-        success: { code: 201, message: 'Creates new user' },
-        failure: [
-          { code: 400, message: 'Required params are missing' },
-          { code: 422, message: 'Validation errors' }
-        ]
+          success: API::V2::Entities::UserWithFullInfo,
+          failure: [
+            { code: 400, message: 'Required params are missing' },
+            { code: 422, message: 'Validation errors' }
+          ]
         params do
           requires :email,
                    type: String,
@@ -59,6 +59,9 @@ module API::V2
                    type: String,
                    allow_blank: false,
                    desc: 'User Password'
+          optional :username,
+                   type: String,
+                   desc: 'User Username'
           optional :refid,
                    type: String,
                    desc: 'Referral uid'
@@ -73,21 +76,26 @@ module API::V2
           verify_captcha!(response: params['captcha_response'], endpoint: 'user_create')
 
           declared_params = declared(params, include_missing: false)
-          user_params = declared_params.slice('email', 'password', 'data')
+          user_params = declared_params.slice('email', 'password', 'data', 'username')
 
           user_params[:referral_id] = parse_refid! unless params[:refid].nil?
 
           user = User.new(user_params)
-
           code_error!(user.errors.details, 422) unless user.save
 
           activity_record(user: user.id, action: 'signup', result: 'succeed', topic: 'account')
 
-          publish_confirmation_code(user, "register", 'system.user.email.confirmation.code')
+          # Creates superadmin user in first platform registration
+          if Barong::App.config.first_registration_superadmin && User.count == 1
+            user.update(role: 'superadmin', state: 'active')
+            user.labels.create(key: 'email', value: 'verified', scope: 'private')
+          else
+            publish_confirmation(user, Barong::App.config.domain)
+          end
+
           csrf_token = open_session(user)
 
           present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-          status 201
         end
 
         desc 'Register Geetest captcha'
@@ -97,11 +105,11 @@ module API::V2
 
         namespace :email do
           desc 'Send confirmations instructions',
-          success: { code: 201, message: 'Generated verification code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: { code: 201, message: 'Generated verification code' },
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :email,
                      type: String,
@@ -125,11 +133,11 @@ module API::V2
           end
 
           desc 'Confirms an account',
-          success: { code: 201, message: 'Confirms an account' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: API::V2::Entities::UserWithFullInfo,
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :email,
                      type: String,
@@ -172,18 +180,17 @@ module API::V2
                             })
 
             present current_user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
-            status 201
           end
         end
 
         namespace :password do
           desc 'Send password reset instructions',
-          success: { code: 201, message: 'Generated password reset code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' },
-            { code: 404, message: 'User doesn\'t exist'}
-          ]
+            success: { code: 201, message: 'Generated password reset code' },
+            failure: [
+              { code: 400, message: 'Required params are missing' },
+              { code: 422, message: 'Validation errors' },
+              { code: 404, message: 'User doesn\'t exist'}
+            ]
           params do
             requires :email,
                      type: String,
@@ -204,51 +211,23 @@ module API::V2
 
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
-            publish_confirmation_code(current_user, "reset_password", 'system.user.password.reset.code')
-            status 201
-          end
-
-          desc 'Check reset password token',
-          success: { code: 201, message: 'Check password reset code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
-          params do
-            requires :email,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'Account email'
-            requires :code,
-                     type: String,
-                     allow_blank: false,
-                     desc: 'Code from email'
-          end
-          post '/check_code' do
-            current_user = User.find_by_email(params[:email])
-            response = management_api_request("post", "http://applogic:3000/api/management/users/verify/get", { type: "reset_password", email: current_user.email })
-
-            error!({ errors: ['identity.user.code_doesnt_exist'] }, 422) unless response.code.to_i == 200
-            applogic_code = JSON.parse(response.body.to_s)
-
-            error!({ errors: ['identity.user.out_of_attempts'] }, 422) if applogic_code["attempts"] >= 3
-
-            unless applogic_code["confirmation_code"] == params[:code]
-              management_api_request("put", "http://applogic:3000/api/management/users/verify", { type: "reset_password", email: current_user.email, attempts: applogic_code["attempts"] + 1 })
-
-              error!({ errors: ['identity.user.code_incorrect'] }, 422)
-            end
+            EventAPI.notify('system.user.password.reset.token',
+                            record: {
+                              user: current_user.as_json_for_event_api,
+                              domain: Barong::App.config.domain,
+                              token: token
+                            })
 
             status 201
           end
 
           desc 'Sets new account password',
-          success: { code: 201, message: 'Resets password' },
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' },
-            { code: 422, message: 'Validation errors' }
-          ]
+            success: { code: 201, message: 'Resets password' },
+            failure: [
+              { code: 400, message: 'Required params are empty' },
+              { code: 404, message: 'Record is not found' },
+              { code: 422, message: 'Validation errors' }
+            ]
           params do
             requires :email,
                      type: String,
@@ -305,6 +284,10 @@ module API::V2
                               user: current_user.as_json_for_event_api,
                               domain: Barong::App.config.domain
                             })
+
+            # Invalidate all old user session
+            Barong::RedisSession.invalidate_all(current_user.uid)
+
             status 201
           end
 

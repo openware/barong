@@ -42,14 +42,6 @@ module API::V2
                                 title: 'Barong',
                                 description: 'RESTful API for barong OAuth server'
                               },
-                              security_definitions: {
-                                "BearerToken": {
-                                  description: 'Bearer Token authentication',
-                                  type: 'jwt',
-                                  name: 'Authorization',
-                                  in: 'header'
-                                }
-                              },
                               models: [
                                 API::V2::Entities::Level,
                                 API::V2::Entities::Label,

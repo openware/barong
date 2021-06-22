@@ -21,6 +21,7 @@ class User < ApplicationRecord
   validate :referral_exists
   validates :data, data_is_json: true
   validates :email,       email: true, presence: true, uniqueness: true
+  validates :username,    length: { minimum: 4, maximum: 12 }, format: { with: /\A[a-zA-Z0-9]+\z/ }, uniqueness: true, allow_nil: true
   validates :uid,         presence: true, uniqueness: true
   validates :password,    presence: true, if: :should_validate?
   validate  :validate_pass!
@@ -29,9 +30,18 @@ class User < ApplicationRecord
   scope :with_pending_or_replaced_docs, -> { self.joins(:labels).where(labels:
                                            { key: 'document', value: ['pending', 'replaced'], scope: 'private' }) }
 
-  before_validation :assign_uid
+  before_validation :assign_uid, :downcase_username
+  before_validation :generate_password, on: :create
   after_update :disable_api_keys
   after_update :disable_service_accounts
+
+  def downcase_username
+    username.downcase! unless username.nil?
+  end
+
+  def generate_password
+    self.password = SecureRandom.base64(30) unless password
+  end
 
   def validate_pass!
     return unless (new_record? && password.present?) || password.present?
@@ -123,7 +133,7 @@ class User < ApplicationRecord
     BarongConfig.list['state_triggers']&.each do |state, triggers|
       triggers.each { |trigger|
         labels.pluck(:key).each { |label|
-          @resulting_state = state if label.start_with?(trigger)
+          @resulting_state = state if label == trigger
         }
       }
     end
@@ -148,6 +158,7 @@ class User < ApplicationRecord
   def as_json_for_event_api
     {
       uid: uid,
+      username: username,
       email: email,
       role: role,
       level: level,
@@ -160,7 +171,7 @@ class User < ApplicationRecord
   end
 
   def as_payload
-    as_json(only: %i[uid email referral_id role level state])
+    as_json(only: %i[uid username email referral_id role level state])
   end
 
   def language
@@ -189,11 +200,13 @@ class User < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20210316083841
 #
 # Table name: users
 #
 #  id              :bigint           not null, primary key
 #  uid             :string(255)      not null
+#  username        :string(255)
 #  email           :string(255)      not null
 #  password_digest :string(255)      not null
 #  role            :string(255)      default("member"), not null
@@ -207,6 +220,7 @@ end
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE
-#  index_users_on_uid    (uid) UNIQUE
+#  index_users_on_email     (email) UNIQUE
+#  index_users_on_uid       (uid) UNIQUE
+#  index_users_on_username  (username) UNIQUE
 #

@@ -13,10 +13,9 @@ module API
 
         resource :metrics do
           desc 'Returns main statistic in the given time period',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ]
           params do
             optional :created_from
             optional :created_to

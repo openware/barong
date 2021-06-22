@@ -7,7 +7,7 @@ Starting from latest 2.4 restrictions will act as system of traffic control. New
 
 ##### Main points: 
 Every request to the server will be validated (both `public` and `private` APIs, but not `management` one ). Request IP will match with existing restrictions and a first found rule will be applayed. 
-`category` - one of `whitelist`, `maintenance`, `blacklist`. 
+`category` - one of `whitelist`, `maintenance`, `blacklist`, `blocklogin`. 
 
 The order of matching IP with existing rules is strict and cant be changed: 
 1. Whitelist ( all -> ip -> ip_subnet -> country -> continent )

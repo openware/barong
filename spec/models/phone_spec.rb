@@ -25,6 +25,11 @@ RSpec.describe Phone, type: :model do
         expect(phone.sub_masked_number).to eq '380*****2322'
       end
 
+      it 'should return empty phone number' do
+        phone.update(number: '')
+        expect(phone.sub_masked_number).to eq ''
+      end
+
       context 'default country code' do
         it 'should mask country code' do
           phone.update_attribute(:number, '1112222')

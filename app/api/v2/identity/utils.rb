@@ -12,13 +12,17 @@ module API::V2
 
       def open_session(user)
         csrf_token = SecureRandom.hex(10)
+        expire_time = Time.now.to_i + Barong::App.config.session_expire_time
         session.merge!(
           "uid": user.uid,
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
-          "expire_time": Time.now.to_i + Barong::App.config.session_expire_time,
+          "expire_time": expire_time,
           "csrf_token": csrf_token
         )
+
+        # Add current session key info in additional redis list
+        Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)
 
         csrf_token
       end
@@ -77,14 +81,15 @@ module API::V2
 
       def activity_record(options = {})
         params = {
-          category:   'user',
-          user_id:    options[:user],
-          user_ip:    remote_ip,
-          user_agent: request.env['HTTP_USER_AGENT'],
-          topic:      options[:topic],
-          action:     options[:action],
-          result:     options[:result],
-          data:       options[:data]
+          category:        'user',
+          user_id:         options[:user],
+          user_ip:         remote_ip,
+          user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
+          user_agent:      request.env['HTTP_USER_AGENT'],
+          topic:           options[:topic],
+          action:          options[:action],
+          result:          options[:result],
+          data:            options[:data]
         }
         Activity.create(params)
       end

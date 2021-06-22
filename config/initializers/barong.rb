@@ -8,15 +8,20 @@
 require 'barong/app'
 require 'barong/keystore'
 
+private_key_env = ENV['JWT_PRIVATE_KEY']
 private_key_path = ENV['JWT_PRIVATE_KEY_PATH']
 
-if !private_key_path.nil?
+if !private_key_env.nil?
+  Rails.logger.info('Loading private key from JWT_PRIVATE_KEY ENV')
+  pkey = Barong::KeyStore.read!(Base64.urlsafe_decode64(private_key_env))
+
+elsif !private_key_path.nil?
+  Rails.logger.info('Loading private key from: ' + private_key_path)
   pkey = Barong::KeyStore.open!(private_key_path)
-  Rails.logger.error('Loading private key from: ' + private_key_path)
 
 elsif Rails.application.credentials.has?(:private_key)
-  pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
   Rails.logger.info('Loading private key from credentials.yml.enc')
+  pkey = Barong::KeyStore.read!(Rails.application.credentials.private_key)
 
 elsif !Rails.env.production?
   # Generates private key
@@ -56,6 +61,10 @@ Barong::App.define do |config|
   config.set(:jwt_expire_time, '3600', type: :integer)
   config.set(:profile_double_verification, 'false', type: :bool)
   config.set(:crc32_salt, '')
+  config.set(:api_data_masking_enabled, 'true', type: :bool)
+  config.set(:first_registration_superadmin, 'true', type: :bool)
+  config.set(:mgn_api_keys_user, 'false', type: :bool)
+  config.set(:mgn_api_keys_sa, 'false', type: :bool)
 
   # Password configuration  -----------------------------------------------
   # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration
@@ -112,6 +121,11 @@ Barong::App.define do |config|
   config.set(:kycaid_authorization_token, '')
   config.set(:kycaid_sandbox_mode, 'true', type: :bool)
   config.set(:kycaid_api_endpoint, 'https://api.kycaid.com/')
+  config.set(:kycaid_form_id, '')
+
+  # Auth0 configuration -----------------------------------------------
+  config.set(:auth0_domain, '')
+  config.set(:auth0_client_id, '')
 end
 
 # KYCAID configuring

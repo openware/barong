@@ -28,8 +28,13 @@ ENV TZ=UTC
 
 # Create group "app" and user "app".
 RUN groupadd -r --gid ${GID} app \
- && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
-      --gid ${GID} --uid ${UID} app
+    && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
+    --gid ${GID} --uid ${UID} app
+
+# Install Kaigara
+ARG KAIGARA_VERSION=0.1.24
+RUN curl -Lo /usr/bin/kaigara https://github.com/openware/kaigara/releases/download/${KAIGARA_VERSION}/kaigara \
+    && chmod +x /usr/bin/kaigara
 
 WORKDIR $APP_HOME
 USER app
@@ -45,14 +50,14 @@ COPY --chown=app:app . $APP_HOME
 
 # Download MaxMind Country DB
 RUN wget -O ${APP_HOME}/geolite.tar.gz ${MAXMINDDB_LINK} \
-      && mkdir -p ${APP_HOME}/geolite \
-      && tar xzf ${APP_HOME}/geolite.tar.gz -C ${APP_HOME}/geolite --strip-components 1 \
-      && rm ${APP_HOME}/geolite.tar.gz
+    && mkdir -p ${APP_HOME}/geolite \
+    && tar xzf ${APP_HOME}/geolite.tar.gz -C ${APP_HOME}/geolite --strip-components 1 \
+    && rm ${APP_HOME}/geolite.tar.gz
 ENV BARONG_MAXMINDDB_PATH=${APP_HOME}/geolite/GeoLite2-Country.mmdb
 
 # Download list of Cloudflare IP Ranges (v4 and v6)
 RUN curl https://www.cloudflare.com/ips-v4 >> ${APP_HOME}/config/cloudflare_ips.yml \
- && curl https://www.cloudflare.com/ips-v6 >> ${APP_HOME}/config/cloudflare_ips.yml
+    && curl https://www.cloudflare.com/ips-v6 >> ${APP_HOME}/config/cloudflare_ips.yml
 
 # Initialize application configuration & assets.
 RUN ./bin/init_config \

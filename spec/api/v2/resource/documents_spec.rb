@@ -230,6 +230,27 @@ describe 'Documents API test' do
       expect(response.status).to eq(200)
     end
 
+    context 'without masking' do
+      before do
+        Barong::App.config.stub(:api_data_masking_enabled).and_return(false)
+      end
+
+      it 'Returns user all his documents' do
+        post '/api/v2/resource/documents', params: params, headers: auth_header
+        expect(response.status).to eq(201)
+
+        get '/api/v2/resource/documents', headers: auth_header
+        response_arr = JSON.parse(response.body)
+
+        expect(response_arr.count).to eq(1)
+        expect(response_arr.last['upload']).to_not be_nil
+        expect(response_arr.last['doc_type']).to eq('Passport')
+        expect(response_arr.last['doc_expire']).to eq('3020-01-22')
+        expect(response_arr.last['doc_number']).to eq('AA1234BB')
+        expect(response.status).to eq(200)
+      end
+    end
+
     it 'Returns error without token' do
       post '/api/v2/resource/documents', params: params
       expect(response.status).to eq(401)

@@ -4,13 +4,12 @@ Management API for barong OAuth server
 ## Version: 2.7.0
 
 ### Security
-**BearerToken**  
+**SecurityScope**  
 
-|jwt|*undefined*|
+|basic|*Basic*|
 |---|---|
-|Description|Bearer Token authentication|
+|Description|JWT should have signature keychains|
 |Name|Authorization|
-|In|header|
 
 ### /api/v2/barong/management/labels/delete
 
@@ -133,15 +132,15 @@ Imports an existing user
 | email | formData | User Email | Yes | string |
 | password_digest | formData | User Password Hash | Yes | string |
 | referral_uid | formData | Referral uid | No | string |
-| phone | formData |  | No | string |
-| first_name | formData |  | No | string |
-| last_name | formData |  | No | string |
-| dob | formData | Birthday date | No | date |
-| address | formData |  | No | string |
-| postcode | formData |  | No | string |
-| city | formData |  | No | string |
-| country | formData |  | No | string |
-| state | formData |  | No | string |
+| phone | formData | Phone | No | string |
+| first_name | formData | First Name | No | string |
+| last_name | formData | Last Name | No | string |
+| dob | formData | Birth date | No | date |
+| address | formData | Address | No | string |
+| postcode | formData | Postcode | No | string |
+| city | formData | City | No | string |
+| country | formData | Country | No | string |
+| state | formData | State | No | string |
 
 ##### Responses
 
@@ -248,15 +247,15 @@ Imports a profile for user
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | uid | formData | User Uid | Yes | string |
-| first_name | formData |  | No | string |
-| last_name | formData |  | No | string |
-| dob | formData | Birthday date | No | date |
-| address | formData |  | No | string |
-| postcode | formData |  | No | string |
-| city | formData |  | No | string |
-| country | formData |  | No | string |
-| state | formData |  | No | string |
-| metadata | formData |  | No | string |
+| first_name | formData | First Name | No | string |
+| last_name | formData | Last Name | No | string |
+| dob | formData | Birth date | No | date |
+| address | formData | Address | No | string |
+| postcode | formData | Postcode | No | string |
+| city | formData | City | No | string |
+| country | formData | Country | No | string |
+| state | formData | State | No | string |
+| metadata | formData | Metadata | No | string |
 
 ##### Responses
 
@@ -280,9 +279,9 @@ Delete phone number for user
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 201 | Delete phone number for user |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Delete phone number for user | [API_V2_Management_Entities_Phone](#api_v2_management_entities_phone) |
 
 ### /api/v2/barong/management/phones
 
@@ -300,9 +299,9 @@ Create phone number for user
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 201 | Create phone number for user |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Create phone number for user | [API_V2_Management_Entities_Phone](#api_v2_management_entities_phone) |
 
 ### /api/v2/barong/management/phones/get
 
@@ -319,9 +318,9 @@ Get user phone numbers
 
 ##### Responses
 
-| Code | Description |
-| ---- | ----------- |
-| 201 | Get user phone numbers |
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 201 | Get user phone numbers | [API_V2_Management_Entities_Phone](#api_v2_management_entities_phone) |
 
 ### /api/v2/barong/management/otp/sign
 
@@ -500,13 +499,14 @@ Returns array of users as collection
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
+| state | string | User state: active, pending, inactive | No |
 | referral_uid | string | UID of referrer | No |
-| data | string | additional phone and profile info | No |
+| data | string | Additional phone and profile info | No |
 
 #### API_V2_Management_Entities_UserWithProfile
 
@@ -515,14 +515,15 @@ Imports a profile for user
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
 | otp | boolean | is 2FA enabled for account | No |
-| state | string |  | No |
-| data | string | additional phone and profile info | No |
-| profiles | [API_V2_Management_Entities_Profile](#api_v2_management_entities_profile) |  | No |
+| state | string | User state: active, pending, inactive | No |
 | referral_uid | string | UID of referrer | No |
+| data | string | Additional phone and profile info | No |
+| profiles | [API_V2_Management_Entities_Profile](#api_v2_management_entities_profile) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -530,14 +531,14 @@ Imports a profile for user
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| first_name | string |  | No |
+| first_name | string | First Name | No |
 | last_name | string | Last name | No |
-| dob | date | Birthday date | No |
-| address | string |  | No |
-| postcode | string |  | No |
-| city | string |  | No |
-| country | string |  | No |
-| state | string |  | No |
+| dob | date | Birth date | No |
+| address | string | Address | No |
+| postcode | string | Address Postcode | No |
+| city | string | City name | No |
+| country | string | Country name | No |
+| state | string | Profile state: drafted, submitted, verified, rejected | No |
 | metadata | object | Profile additional fields | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
@@ -549,6 +550,7 @@ Get users and profile information
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
@@ -561,27 +563,28 @@ Get users and profile information
 | documents | [API_V2_Management_Entities_Document](#api_v2_management_entities_document) |  | No |
 | data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
 | comments | [API_V2_Entities_Comment](#api_v2_entities_comment) |  | No |
-| referral_uid | string | UID of referrer | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
 #### API_V2_Management_Entities_Phone
 
+Get user phone numbers
+
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| country | string |  | No |
-| number | string |  | No |
-| validated_at | s (g) |  | No |
+| country | string | Phone country | No |
+| number | string | Phone Number | No |
+| validated_at | s (g) | Phone validation date | No |
 
 #### API_V2_Management_Entities_Document
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| upload | string | file url | No |
-| doc_type | string | document type: passport, driver license | No |
-| doc_number | string | document number: AB123123 type | No |
-| doc_expire | string | expire date of uploaded documents | No |
-| metadata | string | any additional stored data | No |
+| upload | string | File url | No |
+| doc_type | string | Document type: passport, driver license, utility bill, identity card, institutional, address, residental | No |
+| doc_number | string | Document number: AB123123 type | No |
+| doc_expire | string | Expire date of uploaded documents | No |
+| metadata | string | Any additional stored data | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -589,8 +592,8 @@ Get users and profile information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| title | string | any additional data title | No |
-| data | string | any additional data json key:value pairs | No |
+| title | string | Any additional data title | No |
+| data | string | Any additional data json key:value pairs | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -598,10 +601,10 @@ Get users and profile information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| id | integer | comment id | No |
-| author_uid | string | comment author | No |
-| title | string | comment title | No |
-| data | string | comment plain text | No |
+| id | integer | Comment id | No |
+| author_uid | string | Comment author UID | No |
+| title | string | Comment title | No |
+| data | string | Comment plain text | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -611,11 +614,11 @@ Get specific service_account information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| email | string |  | No |
-| uid | string |  | No |
-| role | string |  | No |
-| level | integer |  | No |
-| state | string |  | No |
+| email | string | User Email | No |
+| uid | string | User UID | No |
+| role | string | Service Account Role | No |
+| level | integer | User Level | No |
+| state | string | Service Account State: active, disabled | No |
 | user | [API_V2_Entities_User](#api_v2_entities_user) |  | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
@@ -624,11 +627,11 @@ Get specific service_account information
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| kid | string | jwt public key | No |
-| algorithm | string | cryptographic hash function type | No |
-| scope | string | serialized array of scopes | No |
+| kid | string | JWT public key | No |
+| algorithm | string | Cryptographic hash function type | No |
+| scope | string | Serialized array of scopes | No |
 | state | string | active/non-active state of key | No |
-| secret | string |  | No |
+| secret | string | Api key secret | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |
 
@@ -637,41 +640,42 @@ Get specific service_account information
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | email | string |  | No |
+| username | string | User username | No |
 | uid | string |  | No |
 | role | string |  | No |
 | level | integer |  | No |
 | otp | boolean |  | No |
 | state | string |  | No |
 | referral_uid | string | UID of referrer | No |
-| csrf_token | string | csrf protection token | No |
-| data | string | additional phone and profile info | No |
-| created_at | string |  | No |
-| updated_at | string |  | No |
+| data | string | Additional phone and profile info | No |
+| csrf_token | string | Сsrf protection token | No |
 | labels | [API_V2_Entities_Label](#api_v2_entities_label) |  | No |
 | phones | [API_V2_Entities_Phone](#api_v2_entities_phone) |  | No |
 | profiles | [API_V2_Entities_Profile](#api_v2_entities_profile) |  | No |
 | data_storages | [API_V2_Entities_DataStorage](#api_v2_entities_datastorage) |  | No |
+| created_at | string |  | No |
+| updated_at | string |  | No |
 
 #### API_V2_Entities_Phone
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| country | string |  | No |
-| number | string | Submasker phone number | No |
-| validated_at | s (g) |  | No |
+| country | string | Phone country | No |
+| number | string | Submasked phone number | No |
+| validated_at | s (g) | Phone validation date | No |
 
 #### API_V2_Entities_Profile
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| first_name | string |  | No |
+| first_name | string | First Name | No |
 | last_name | string | Submasked last name | No |
-| dob | date | Submasked birthday date | No |
-| address | string |  | No |
-| postcode | string |  | No |
-| city | string |  | No |
-| country | string |  | No |
-| state | string |  | No |
+| dob | date | Submasked birth date | No |
+| address | string | Address | No |
+| postcode | string | Address Postcode | No |
+| city | string | City name | No |
+| country | string | Country name | No |
+| state | string | Profile state: drafted, submitted, verified, rejected | No |
 | metadata | object | Profile additional fields | No |
 | created_at | string |  | No |
 | updated_at | string |  | No |

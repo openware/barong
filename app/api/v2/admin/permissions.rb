@@ -18,24 +18,24 @@ module API
           end
 
           desc 'Returns array of permissions as paginated collection',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::Permission
           params do
             use :pagination_filters
           end
           get do
             admin_authorize! :read, Permission
 
-            Permission.all.tap { |q| present paginate(q) }
+            present paginate(Permission.all), with: API::V2::Entities::Permission
           end
 
           desc 'Create permission',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Permission was created' }
           params do
             requires :role,
                      type: String,
@@ -72,10 +72,10 @@ module API
           end
 
           desc 'Deletes permission',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Permission was deleted' }
           params do
             requires :id,
                      type: Integer,
@@ -97,10 +97,10 @@ module API
           end
 
           desc 'Update Permission',
-          security: [{ "BearerToken": [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: { code: 200, message: 'Permission was updated' }
           params do
             requires :id,
                      type: Integer,

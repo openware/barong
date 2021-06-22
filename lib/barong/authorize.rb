@@ -56,7 +56,12 @@ module Barong
       unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
              Time.now.to_i < session[:expire_time] &&
              find_ip.include?(remote_ip)
+
+        # Delete session from additional redis list
+        Barong::RedisSession.delete(session[:uid], session.id.to_s)
+
         session.destroy
+
         Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
                            " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
                            " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
@@ -64,7 +69,10 @@ module Barong
         error!({ errors: ['authz.client_session_mismatch'] }, 401)
       end
 
+
+      # Update session key expiration date
       session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
+      Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
     end
 
     def find_ip
@@ -152,6 +160,7 @@ module Barong
         result: result,
         user_agent: @request.env['HTTP_USER_AGENT'],
         user_ip: remote_ip,
+        user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
         path: @path,
         topic: topic,
         verb: @request.env['REQUEST_METHOD'],

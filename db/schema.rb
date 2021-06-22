@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_01_112814) do
+ActiveRecord::Schema.define(version: 2021_04_07_094208) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "target_uid"
     t.string "category"
     t.string "user_ip", null: false
+    t.string "user_ip_country"
     t.string "user_agent", null: false
     t.string "topic", null: false
     t.string "action", null: false
@@ -85,7 +86,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "key", "scope"], name: "index_labels_on_user_id_and_key_and_scope"
+    t.index ["user_id", "key", "scope"], name: "index_labels_on_user_id_and_key_and_scope", unique: true
     t.index ["user_id"], name: "index_labels_on_user_id"
   end
 
@@ -151,7 +152,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "service_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
-    t.bigint "owner_id", null: false, unsigned: true
+    t.bigint "owner_id", unsigned: true
     t.string "email", null: false
     t.string "role", default: "service_account", null: false
     t.integer "level", default: 0, null: false
@@ -162,6 +163,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
+    t.string "username"
     t.string "email", null: false
     t.string "password_digest", null: false
     t.string "role", default: "member", null: false
@@ -174,6 +176,7 @@ ActiveRecord::Schema.define(version: 2020_10_01_112814) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["uid"], name: "index_users_on_uid", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
 end

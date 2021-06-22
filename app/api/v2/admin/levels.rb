@@ -7,10 +7,10 @@ module API
       class Levels < Grape::API
         resource :levels do
           desc 'Returns array of permissions as paginated collection',
-          security: [{ 'BearerToken': [] }],
-          failure: [
-            { code: 401, message: 'Invalid bearer token' }
-          ]
+            failure: [
+              { code: 401, message: 'Invalid bearer token' }
+            ],
+            success: API::V2::Entities::Level
           get do
             admin_authorize! :read, Level
 

@@ -53,7 +53,12 @@ class Phone < ApplicationRecord
   def sub_masked_number
     code_count = parse_code&.length
     code_count = DEFAULT_COUNTRY_CODE_COUNT unless code_count
-    number.sub(/(?<=\A.{#{code_count}})(.*)(?=.{4}\z)/) { |match| '*' * match.length }
+
+    if number.present?
+      number.sub(/(?<=\A.{#{code_count}})(.*)(?=.{4}\z)/) { |match| '*' * match.length }
+    else
+      number
+    end
   end
 
   private

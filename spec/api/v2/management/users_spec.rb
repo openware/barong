@@ -32,7 +32,7 @@ describe API::V2::Management::Users, type: :request do
         %i[email uid role level otp state data profiles referral_uid created_at updated_at]
       end
       let(:extended_attributes) do
-        %i[email uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
+        %i[email username uid role level otp state data profiles labels phones documents data_storages comments referral_uid created_at updated_at]
       end
       let(:signers) { %i[alex jeff] }
 
@@ -46,7 +46,7 @@ describe API::V2::Management::Users, type: :request do
         do_request
 
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
@@ -57,7 +57,7 @@ describe API::V2::Management::Users, type: :request do
 
         do_request
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
@@ -72,7 +72,7 @@ describe API::V2::Management::Users, type: :request do
 
         do_request
         expect(response.status).to eq 201
-        expect(json_body.keys).to eq extended_attributes
+        expect(json_body.keys).to match_array extended_attributes
         expect(json_body).to include(:profiles, :comments, :phones, :documents)
         expect(json_body[:profiles][0][:last_name]).to eq user.profiles[0].last_name
         expect(json_body[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
@@ -142,7 +142,7 @@ describe API::V2::Management::Users, type: :request do
         let!(:fourth_user) { create(:user, email: 'testc@gmail.com') }
 
         def validate_fields(user)
-          user.attributes.slice('email', 'role', 'level', 'otp', 'state', 'uid', 'data')
+          user.attributes.slice('email', 'username', 'role', 'level', 'otp', 'state', 'uid', 'data')
         end
 
         include_context 'bearer authentication'
