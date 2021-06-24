@@ -30,3 +30,5 @@
 /config/rsa-key
 
 .idea/
+
+/*.sql
