@@ -15,7 +15,7 @@ gem 'fog-aliyun', '~> 0.3.5'
 # aws support (amazon)
 gem 'fog-aws', '~> 3.5.2'
 # gcp support (google)
-gem 'fog-google', '~> 1.9.1'
+# gem 'fog-google', '~> 1.9.1'
 
 gem 'kycaid'
 gem 'sidekiq', '>= 6.0.7'
@@ -53,7 +53,7 @@ gem 'jwt', '~> 2.2'
 gem 'jwt-multisig', '~> 1.0', '>= 1.0.4'
 gem 'bunny'
 gem 'phonelib',     '~> 0.6.45'
-gem 'twilio-ruby',  '~> 5.25.4'
+gem 'twilio-ruby',  github: 'twilio/twilio-ruby'
 gem 'vault',        '~> 0.1'
 gem 'vault-rails', git: 'https://github.com/rubykube/vault-rails'
 # Use Redis adapter to run Action Cable in production
@@ -77,8 +77,10 @@ gem 'strong_password', '~> 0.0.8'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
-# Add the Sentry Ruby SDK
-gem 'sentry-raven', '~> 2.9.0'
+gem "sentry-ruby"
+gem "sentry-rails"
+gem "sentry-sidekiq"
+
 gem 'pry-rails'
 gem "pg", "~> 1.2"
 gem "semver2", "~> 3.4"
