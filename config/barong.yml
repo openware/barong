@@ -27,5 +27,5 @@ captcha_protected_endpoints:
   - email_confirmation
 profile_verification_roles:
   - superadmin
-  # - admin
-  # - kyc_worker
+  - admin
+  - kyc_worker
