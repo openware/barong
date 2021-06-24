@@ -71,6 +71,10 @@ class Rack::Attack
     # believing that they've successfully broken your app (or you just want to
     # customize the response), then uncomment these lines.
     self.throttled_response = lambda do |env|
-      [ 429, {}, ["Limit of requests to the 'barong/identity/sessions' endpoint is exceeded"]]
+      headers = {
+        'Content-Type' => 'text/plain',
+      }
+
+      [ 429, headers, ['{"errors":["identity.session.rack_attack_limit"]}']]
     end
   end
