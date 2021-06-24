@@ -122,10 +122,6 @@ module Barong
         Rails.logger.warn("No bitzlato user #{user.email}")
         error!({ errors: ['authz.unknown_bitzlato_account'] }, 401)
       end
-      if bitzlato_user.user_features.where(feature_code: 'MARKET').empty?
-        Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} has not market feature")
-        error!({ errors: ['authz.no_user_feature_market'] }, 401)
-      end
       if bitzlato_user.user_profile.try(&:blocked_by_admin?)
         Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
         error!({ errors: ['authz.blocked_account'] }, 401)
