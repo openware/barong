@@ -20,8 +20,16 @@ set :disallow_pushing, true
 
 set :db_dump_extra_opts, '--force'
 
-set :branch, ENV.fetch('BRANCH', 'main')
-#  ask(:branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp })
+default_branch = 'master'
+current_branch = `git rev-parse --abbrev-ref HEAD`.chomp
+
+if ENV.key? 'BRANCH'
+  set :branch, ENV.fetch('BRANCH')
+elsif default_branch == current_branch
+  set :branch, default_branch
+else
+  ask(:branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp })
+end
 
 set :rbenv_type, :user
 set :rbenv_ruby, File.read('.ruby-version').strip
