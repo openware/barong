@@ -43,7 +43,7 @@ set :app_version, SemVer.find.to_s
 set :current_version, `git rev-parse HEAD`.strip
 
 set :sentry_organization, ENV['SENTRY_ORGANIZATION']
-set :sentry_release_version, -> { [fetch(:app_version), fetch(:current_version)].join('-') }
+set :sentry_release_version, -> { [fetch(:app_version), fetch(:current_version)].compact.join('-') }
 
 set :puma_init_active_record, true
 set :puma_control_app, true
