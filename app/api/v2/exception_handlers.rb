@@ -35,7 +35,7 @@ module API
           end
 
           rescue_from :all do |e|
-            Rails.logger.error "#{e.message}\n#{e.backtrace[0..5].join("\n")}"
+            report_exception e
             error!({ errors: ['server.internal_error'] }, 500)
           end
         end
