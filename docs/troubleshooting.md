@@ -20,5 +20,12 @@ irb(main)013:0> Rails.cache.delete('permissions')
 bundle exec rake db:seed
 ```
 ***
+## CORS
+
+1. After setting up CORS Barong envs make sure to configure envoy.
+Configuration example can be found on the [opendax documentation](https://github.com/openware/opendax/#using-an-opendax-deployment-for-local-frontend-development).
+
+2. For kubernetes cluster: if you can see that `access-control-allow-origin` or other cors headers are differ from what you set up in Barong envs - it can be caused by ingress controller which overwrites your cors settings. Check [this documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#enable-cors) and edit envoy ingress controller.
+***
 ## Restictions
 *Be careful with testing restriction and don't ban your local IP!*
