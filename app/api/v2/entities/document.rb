@@ -8,10 +8,11 @@ module API
         expose :upload,
                documentation: {
                 type: 'String',
-                desc: 'File url'
+                desc: 'File url and type'
                } do |document|
           {
-            url: document.verification_url
+            url: document.verification_url,
+            type: document.upload.file.extension
           }
         end
 
