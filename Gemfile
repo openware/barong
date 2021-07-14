@@ -39,7 +39,7 @@ gem 'puma', '>= 3.12.6'
 gem 'maxmind-db', '~> 1.0'
 
 gem 'kaminari', '>= 1.2.1'
-gem 'peatio', '~> 0.4.4'
+gem 'peatio', github: 'bitzlato/peatio-core'
 gem 'rack-cors', '~> 1.0.2'
 
 # REST-like API framework for Ruby

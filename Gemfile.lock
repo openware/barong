@@ -1,4 +1,22 @@
 GIT
+  remote: https://github.com/bitzlato/peatio-core.git
+  revision: 9c62876448c7d002f581383d0c5d84473421a31c
+  specs:
+    peatio (2.6.4)
+      activemodel (> 5.2, <= 6.0.0)
+      amqp
+      bunny
+      clamp
+      em-synchrony (~> 1.0)
+      em-websocket
+      eventmachine
+      faraday_middleware (~> 1.0)
+      faye (~> 1.2)
+      jwt
+      prometheus-client
+      thin
+
+GIT
   remote: https://github.com/bitzlato/secure_headers.git
   revision: ef0516df353f750691765db36bc4adc2e4433ea6
   specs:
@@ -168,15 +186,17 @@ GEM
       image_processing (~> 1.1)
       mimemagic (>= 0.3.0)
       mini_mime (>= 0.1.3)
-    clamp (1.3.1)
+    clamp (1.3.2)
     coderay (1.1.3)
     concurrent-ruby (1.1.7)
     connection_pool (2.2.3)
+    cookiejar (0.3.3)
     countries (3.0.1)
       i18n_data (~> 0.10.0)
       sixarm_ruby_unaccent (~> 1.1)
       unicode_utils (~> 1.4)
     crass (1.0.6)
+    daemons (1.4.0)
     database_cleaner (2.0.1)
       database_cleaner-active_record (~> 2.0.0)
     database_cleaner-active_record (2.0.0)
@@ -209,7 +229,17 @@ GEM
       dry-equalizer (~> 0.3)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    em-websocket (0.5.1)
+    em-http-request (1.1.7)
+      addressable (>= 2.3.4)
+      cookiejar (!= 0.3.1)
+      em-socksify (>= 0.3)
+      eventmachine (>= 1.0.3)
+      http_parser.rb (>= 0.6.0)
+    em-socksify (0.3.2)
+      eventmachine (>= 1.0.0.beta.4)
+    em-synchrony (1.0.6)
+      eventmachine (>= 1.0.0.beta.1)
+    em-websocket (0.5.2)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     email_validator (1.6.0)
@@ -231,6 +261,19 @@ GEM
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
     faraday-net_http (1.0.1)
+    faraday_middleware (1.0.0)
+      faraday (~> 1.0)
+    faye (1.4.0)
+      cookiejar (>= 0.3.0)
+      em-http-request (>= 1.1.6)
+      eventmachine (>= 0.12.0)
+      faye-websocket (>= 0.11.0)
+      multi_json (>= 1.0.0)
+      rack (>= 1.0.0)
+      websocket-driver (>= 0.5.1)
+    faye-websocket (0.11.1)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     ffi (1.13.1)
     fog-aliyun (0.3.18)
       aliyun-sdk (~> 0.7.3)
@@ -357,7 +400,6 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
-    mysql2 (0.5.3)
     nenv (0.3.0)
     net-scp (3.0.0)
       net-ssh (>= 2.6.5, < 7.0.0)
@@ -370,16 +412,9 @@ GEM
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    peatio (0.4.5)
-      amqp
-      bunny
-      clamp
-      em-websocket
-      eventmachine
-      jwt
-      mysql2
     pg (1.2.3)
     phonelib (0.6.45)
+    prometheus-client (2.1.0)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -502,6 +537,10 @@ GEM
     sshkit-interactive (0.3.0)
       sshkit (~> 1.12)
     strong_password (0.0.9)
+    thin (1.8.1)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0, >= 1.0.4)
+      rack (>= 1, < 3)
     thor (1.0.1)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
@@ -582,7 +621,7 @@ DEPENDENCIES
   maxmind-db (~> 1.0)
   memoist (~> 0.16)
   multiverse
-  peatio (~> 0.4.4)
+  peatio!
   pg (~> 1.2)
   phonelib (~> 0.6.45)
   pry-byebug
