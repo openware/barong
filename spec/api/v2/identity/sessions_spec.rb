@@ -289,6 +289,10 @@ describe API::V2::Identity::Sessions do
   end
 
   describe 'POST /api/v2/indentity/sessions/auth0' do
+    before do
+      allow(Barong::App.config).to receive_messages(auth_methods: 'auth0')
+    end
+
     let(:uri) { '/api/v2/identity/sessions/auth0' }
 
     context 'user doesnt exist' do
@@ -430,3 +434,4 @@ describe API::V2::Identity::Sessions do
     end
   end
 end
+
