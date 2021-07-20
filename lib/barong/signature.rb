@@ -2,98 +2,99 @@
 
 module Barong
   class Signature
+    POSSIBLE_SIGNATURE_LENGTH = [64, 65, 66].freeze
+    ALLOWED_ENCODED_ADDRESS_LENGTH = [3, 4, 6, 10, 35, 36, 37, 38].freeze
     BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'.freeze
     SS58_PREFIX = 'SS58PRE'.freeze
 
     class <<self
-      def transform_signature(signature)
-        value = signature.delete_prefix('0x')
-        val_length = value.length / 2
-        buf_length = val_length.ceil
-        array = Array.new(buf_length, 0)
-        offset = [0, buf_length - val_length].max
-        for i in (0...array.size)
-          array[i + offset] = value.slice(i*2, 2).to_i(16)
-        end
+      def signature_verify?(message, signature, public_key)
+        signature = transform_signature(signature)
+        public_key = decode_address(public_key)
 
-        # TODO here
-        # identity.session.signature.invalid_signature_length
-        raise StandartError unless array.length.in?([64, 65, 66])
-        array.pack("C*")
+        # verify signature with Ed25519 algorithm
+        verify_key = Ed25519::VerifyKey.new(public_key)
+        verify_key.verify(signature, message)
+      rescue StandardError, Ed25519::VerifyError => e
+        Rails.logger.error(e.message)
+        false
+      end
+
+      def transform_signature(signature)
+        # verify hex value
+        pattern = /^0x[a-fA-F0-9]+$/
+        signature_check = (signature.match?(pattern) || signature == '0x') && signature.length % 2 == 0
+        raise StandardError, 'invalid hex value' unless signature_check
+
+        value = signature.delete_prefix('0x')
+        # convert to hex string
+        hex_value = [value].pack('H*')
+        # transform hex string to byte array
+        length = hex_value.bytes.to_a.length
+        raise StandardError, 'invalid signature length' unless length.in?(POSSIBLE_SIGNATURE_LENGTH)
+
+        hex_value
       end
 
       def decode_address(address)
         decoded = base58_decode(address)
-
-        allowed_encoded_lengths = [3, 4, 6, 10, 35, 36, 37, 38]
-        # error!({ errors: ['identity.session.signature.invalid_signature_length'] }, 401)
-        raise StandartError unless decoded.length.in?(allowed_encoded_lengths)
+        raise StandardError, 'invalid decoded address length' unless decoded.length.in?(ALLOWED_ENCODED_ADDRESS_LENGTH)
 
         is_valid, end_pos, ss58_length = check_address_checksum(decoded)
+        raise StandardError, 'invalid decoded address checksum' unless is_valid
 
-        # error!({ errors: ['identity.session.signature.invalid']
-        raise StandartError unless is_valid
-
-
-        decoded.slice(ss58_length, end_pos).pack("C*")
+        decoded.slice(ss58_length, end_pos - 1).pack('C*')
       end
 
+      def blake2_as_hex(message, bit_length = 256)
+        byte_length = (bit_length / 8).ceil
+        none_key = Blake2b::Key.none
+        '0x' + Blake2b.hex(message, none_key, byte_length)
+      end
+
+      private
+
       def base58_decode(encoded)
-        basex_aphabet = BaseX.new(BASE58_ALPHABET)
-        basex_aphabet.decode(encoded).unpack("C*")
+        raise StandardError, 'character is not included in base58 alphabet' unless validate_base58(encoded)
+        # second params is alphabet representation
+        # https://github.com/dougal/base58/blob/master/lib/base58.rb#L11
+        Base58.base58_to_binary(encoded, :bitcoin).unpack('C*')
+      end
+
+      def validate_base58(encoded)
+        return unless encoded.present?
+
+        # validate if characters are existing in base58 alphabet
+        encoded.chars.all? { |char| BASE58_ALPHABET.include?(char) }
       end
 
       def check_address_checksum(decoded)
-        ss58Length = (decoded[0] & 0b0100_0000) == 0 ? 1 : 2
-        # second_choice = [((decoded[0] & 0b0011_1111) << 2) | (decoded[1] >> 6) | ((decoded[1] & 0b0011_1111) << 8)].pack("l").unpack("l").first
-        # ss58Decoded = ss58Length == 1 ? decoded[0] : second_choice
-        isPublicKey = [34 + ss58Length, 35 + ss58Length].include?(decoded.length)
-        length = decoded.length - (isPublicKey ? 2 : 1)
+        ss58_length = (decoded[0] & 0b0100_0000) == 0 ? 1 : 2
 
+        # 32/33 bytes public + 2 bytes checksum + prefix
+        is_public_key = [34 + ss58_length, 35 + ss58_length].include?(decoded.length)
+        length = decoded.length - (is_public_key ? 2 : 1)
+
+        # calculate the hash and do the checksum byte checks
         hash = ssh_hash(decoded.slice(0, length))
-        p hash
-        is_valid = (decoded[0] & 0b1000_0000) === 0 && ![46, 47].include?(decoded[0]) && isPublicKey ?
-            decoded[decoded.length - 2] === hash[0] && decoded[decoded.length - 1] === hash[1] :
-            decoded[decoded.length - 1] === hash[0]
 
-        return is_valid, length, ss58Length
+        check = is_public_key ? decoded[decoded.length - 2] == hash[0] && decoded[decoded.length - 1] == hash[1]
+                                :
+                                decoded[decoded.length - 1] == hash[0]
+        is_valid = (decoded[0] & 0b1000_0000) == 0 && ![46, 47].include?(decoded[0]) && check
+
+        return is_valid, length, ss58_length
       end
 
-      def ssh_hash(key)
-        hex_values = SS58_PREFIX.split('').collect { |char| "%2d" % [char.ord] }.map(&:to_i)
-
-        u8uaConcat = hex_values.concat(key)
-
-        byteLength = (512 / 8).ceil
+      def ssh_hash(key, bit_length = 512)
+        byte_length = (bit_length / 8).ceil
+        str_value = key.pack('C*')
 
         none_key = Blake2b::Key.none
-        input = u8uaConcat.pack('c*').force_encoding('UTF-8')
-        Blake2b.bytes(input, none_key, byteLength)
+        # input should consists of ss58 prefix and string value of key
+        input = str_value.prepend(SS58_PREFIX)
+        Blake2b.bytes(input, none_key, byte_length)
       end
     end
-
-    # def self.base58_decode(address)
-    # 	bits = 0
-    # 	buffer = 0
-    # 	written = 0
-    # 	BASE32_ALPHABET = 'abcdefghijklmnopqrstuvwxyz234567'
-    # 	BITS_PER_CHAR = 5
-    # 	output = Array.new()
-    # 	hash = BASE32_ALPHABET.split('').each_with_object({}).with_index do |(char, result), i|
-    # 		result[i] = char
-    # 	end
-
-    # 	for i in (0...address.length)
-    # 		lol = hash.key(address[i]).present? ? hash.key(address[i]) : 0
-    # 		buffer = [(buffer << BITS_PER_CHAR) | lol].pack("l").unpack("l").first
-    # 		bits += BITS_PER_CHAR
-
-    # 		if (bits >= 8)
-    # 			bits -= 8
-    # 			output[written] = (0xff & (buffer >> bits))
-    # 			written = written + 1
-    # 		end
-    # 	end
-    # end
   end
 end

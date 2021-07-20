@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2021_06_30_090934) do
   create_table "public_addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "uid", null: false
     t.string "role", null: false
-    t.string "public_address", null: false
+    t.string "address", null: false
     t.integer "level", default: 1, null: false
     t.string "state", default: "active", null: false
     t.datetime "created_at", null: false

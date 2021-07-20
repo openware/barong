@@ -5,7 +5,8 @@ ruby '~> 2.6.5'
 
 gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'
-
+gem 'base58', '~> 0.2.3'
+gem 'blake2b', '~> 0.10.0'
 gem 'env-tweaks', '~> 1.0.0'
 gem 'ed25519', '~> 1.2.4'
 
@@ -22,10 +23,6 @@ gem 'fog-google', '~> 1.9.1'
 gem 'kycaid'
 gem 'sidekiq', '>= 6.0.7'
 # GLI
-
-gem 'base_x'
-gem 'blake2b'
-
 gem 'gli', '~> 2.19.0'
 ##
 ## abilities and permissions for admin API module

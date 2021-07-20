@@ -95,15 +95,13 @@ module API::V2
                    desc: 'Auth method'
         end
         delete do
-          if params[:auth_method].in?['password','auth0']
+          if params[:auth_method].in?(['password','auth0'])
             entity = User.find_by(uid: session[:uid])
             error!({ errors: ['identity.session.not_found'] }, 404) unless entity
             activity_record(user: entity.id, action: 'logout', result: 'succeed', topic: 'session')
           elsif params[:auth_method] == 'signature'
             entity = PublicAddress.find_by(uid: session[:uid])
             error!({ errors: ['identity.session.not_found'] }, 404) unless entity
-          else
-            error!({ errors: ['identity.session.not_found'] }, 404)
           end
 
           Barong::RedisSession.delete(entity.uid, session.id)
@@ -159,81 +157,24 @@ module API::V2
             { code: 404, message: 'Record is not found' }
           ]
         params do
-          requires :nickname, type: String, desc: -> { API::V2::Entities::PublicAddress.documentation[:address][:desc] }
-          requires :nonce, type: String, desc: 'Auth Nonce'
-          requires :signature, type: Integer, desc: 'Auth Signature'
+          requires :nickname, type: String, allow_blank: false, desc: -> { API::V2::Entities::PublicAddress.documentation[:address][:desc] }
+          requires :nonce, type: String, allow_blank: false, desc: 'Auth Nonce'
+          requires :signature, type: String, allow_blank: false, desc: 'Auth Signature'
           optional :captcha_response, type: String, desc: 'Response from captcha widget'
         end
         post '/signature' do
           error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('signature')
+          verify_captcha!(response: params['captcha_response'], endpoint: 'signature_session_create')
 
-          # 1 Manage errors
-          signature = Barong::Signature.transform_signature(params[:nickname])
-          # params[:signature] = "0x96d85e31444319bea6cf14af909e1c321f57aaaeb376426f5621d8047093724558b27d795655498b9f38ce8009620f9931f2d706507875c987da2f7afd539602"
-          # signature = params[:signature]
-
-          # ## u8aToU8a function body
-          # value = signature.delete_prefix("0x")
-          # valLength = value.length / 2
-          # bufLength = valLength.ceil
-          # array = Array.new(bufLength, 0)
-          # offset = [0, bufLength - valLength].max
-          # for i in (0...array.size)
-          #   array[i + offset] = value.slice(i*2, 2).to_i(16)
-          # end
-          # ## end of function body
-
-          # error!({ errors: ['identity.session.signature.invalid_signature_length'] }, 401) unless signature.length.include?[64, 65, 66]
-          # signature = array.pack("C*")
-
-          # decodeAddress
-          # function body
-          # TODO VALIDATE
-          # base58 encode
-          BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-          lol = BaseX.new(BASE58_ALPHABET)
-          decoded = lol.decode(params[:nickname]).unpack("C*")
-          allowed_encoded_lengths = [3, 4, 6, 10, 35, 36, 37, 38]
-          error!({ errors: ['identity.session.signature.invalid_signature_length'] }, 401) unless decoded.length.in?allowed_encoded_lengths
-          
-          # checkAddressChecksum
-
-          ss58Length = (decoded[0] & 0b0100_0000) == 0 ? 1 : 2
-          second_choice = [((decoded[0] & 0b0011_1111) << 2) | (decoded[1] >> 6) | ((decoded[1] & 0b0011_1111) << 8)].pack("l").unpack("l").first
-          ss58Decoded = ss58Length == 1 ? decoded[0] : second_choice
-          isPublicKey = [34 + ss58Length, 35 + ss58Length].include?(decoded.length)
-          length = decoded.length - (isPublicKey ? 2 : 1)
-
-          # calculate the hash and do the checksum byte checks
-          SS58_PREFIX = 'SS58PRE'
-          hex_values = SS58_PREFIX.split('').collect { |char| "%2d" % [char.ord] }.map(&:to_i)
-
-          u8uaConcat = hex_values.concat(decoded.slice(0, length))
-
-
-          byteLength = (512 / 8).ceil
-
-          key = Blake2b::Key.none
-          input = u8uaConcat.pack('c*').force_encoding('UTF-8')
-          hash = Blake2b.bytes(input, key, byteLength)
-
-          isValid = (decoded[0] & 0b1000_0000) === 0 && ![46, 47].include?(decoded[0]) && isPublicKey ?
-              decoded[decoded.length - 2] === hash[0] && decoded[decoded.length - 1] === hash[1] : decoded[decoded.length - 1] === hash[0]
-
-          ## end of function body
-
-
-          verify_key = Ed25519::VerifyKey.new(public_key)
-          # here should be hashed message !!!
           message = "#" + params[:nickname] + "#" + params[:nonce]
+          hashed_message = Barong::Signature.blake2_as_hex(message)
 
-          unless verify_key.verify(signature, message)
-            error!({ errors: ['identity.session.signature.invalid_params'] }, 401)
+          unless Barong::Signature.signature_verify?(hashed_message, params[:signature], params[:nickname])
+            error!({ errors: ['identity.session.signature.verification_failed'] }, 422)
           end
 
           public_address = PublicAddress.find_by(address: params[:nickname])
           unless public_address
-            # With which level we should create public address?
             public_address = PublicAddress.create(address: params[:nickname], role: 'member')
           end
 

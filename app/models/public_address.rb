@@ -6,10 +6,8 @@ class PublicAddress < ApplicationRecord
 
   before_validation :assign_uid
 
-  scope :active, -> { where(state: 'active') }
-
   def as_payload
-    as_json(only: %i[uid email role level state])
+    as_json(only: %i[uid role level state])
   end
 
   def role_exists
@@ -32,12 +30,12 @@ end
 #
 # Table name: public_addresses
 #
-#  id             :bigint           not null, primary key
-#  uid            :string(255)      not null
-#  role           :string(255)      not null
-#  public_address :string(255)      not null
-#  level          :integer          default(1), not null
-#  state          :string(255)      default("active"), not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
+#  id         :bigint           not null, primary key
+#  uid        :string(255)      not null
+#  role       :string(255)      not null
+#  address    :string(255)      not null
+#  level      :integer          default(1), not null
+#  state      :string(255)      default("active"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #

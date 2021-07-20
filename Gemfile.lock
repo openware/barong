@@ -67,7 +67,7 @@ GEM
     aws-eventstream (1.1.0)
     aws-sigv4 (1.2.2)
       aws-eventstream (~> 1, >= 1.0.2)
-    base_x (0.8.1)
+    base58 (0.2.3)
     bcrypt (3.1.15)
     bindex (0.8.1)
     blake2b (0.10.0)
@@ -450,9 +450,9 @@ DEPENDENCIES
   aliyun-sdk (~> 0.7.0)
   annotate (~> 2.7, >= 2.7.5)
   api-pagination (~> 4.8.2)
-  base_x
+  base58 (~> 0.2.3)
   bcrypt (~> 3.1)
-  blake2b
+  blake2b (~> 0.10.0)
   bootsnap (>= 1.1.0)
   browser
   bump
