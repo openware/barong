@@ -4,6 +4,8 @@
 class Permission < ApplicationRecord
   validates :role, :verb, :action, :path, presence: true
 
+  validates :action, uniqueness: { scope: [:role, :verb, :path] }
+
   before_validation :upcase_action_verb
 
   private

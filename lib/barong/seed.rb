@@ -30,13 +30,14 @@ module Barong
 
     def seed_levels
       logger.info "Seeding levels"
+      start_index = Level.maximum(:id)
       seeds["levels"].each_with_index do |level, index|
         logger.info "---"
         if Level.find_by(key: level["key"], value: level["value"]).present?
           logger.info "Level '#{level['key']}:#{level['value']}' already exists"
           next
         end
-        level[:id] = index+1
+        level[:id] = start_index + index+1
         Level.create!(level)
       end
     end
@@ -45,16 +46,14 @@ module Barong
       logger.info "Seeding permissions"
       seeds["permissions"].each do |perm|
         logger.info "---"
-        if Permission.find_by(role: perm["role"], verb: perm["verb"], path: perm["path"], action: perm["action"]).present?
+        if Permission.find_by(role: perm["role"], verb: perm["verb"].upcase, path: perm["path"], action: perm["action"].upcase).present?
           logger.info "Permission for '#{perm['role']}' : '#{perm['verb']} to #{perm['path']}' already exists"
           next
         end
 
-        permission = Permission.new(perm)
-
-        unless permission.save
-          raise ConfigError.new("Can't create permission: #{permission.errors.full_messages.join('; ')}")
-        end
+        Permission.create!(perm)
+      rescue => err
+        raise ConfigError.new("Can't create permission: #{err.full_messages.join('; ')}")
       end
     end
 
