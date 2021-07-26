@@ -142,6 +142,16 @@ ActiveRecord::Schema.define(version: 2021_10_19_200925) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "public_addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "uid", null: false
+    t.string "role", null: false
+    t.string "address", null: false
+    t.integer "level", default: 1, null: false
+    t.string "state", default: "active", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "restrictions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "category", null: false
     t.string "scope", limit: 64, null: false
