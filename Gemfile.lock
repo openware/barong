@@ -67,8 +67,10 @@ GEM
     aws-eventstream (1.1.0)
     aws-sigv4 (1.2.2)
       aws-eventstream (~> 1, >= 1.0.2)
+    base58 (0.2.3)
     bcrypt (3.1.15)
     bindex (0.8.1)
+    blake2b (0.10.0)
     bootsnap (1.4.7)
       msgpack (~> 1.0)
     browser (4.2.0)
@@ -135,6 +137,7 @@ GEM
       dry-equalizer (~> 0.3)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
+    ed25519 (1.2.4)
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -451,7 +454,9 @@ DEPENDENCIES
   aliyun-sdk (~> 0.7.0)
   annotate (~> 2.7, >= 2.7.5)
   api-pagination (~> 4.8.2)
+  base58 (~> 0.2.3)
   bcrypt (~> 3.1)
+  blake2b (~> 0.10.0)
   bootsnap (>= 1.1.0)
   browser
   bump
@@ -461,6 +466,7 @@ DEPENDENCIES
   carrierwave (~> 2.1, >= 2.1.0)
   countries
   database_cleaner (~> 2.0.1)
+  ed25519 (~> 1.2.4)
   email_validator (= 1.6.0)
   env-tweaks (~> 1.0.0)
   factory_bot_rails (~> 4.11, >= 4.11.1)

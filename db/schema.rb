@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_07_094208) do
+ActiveRecord::Schema.define(version: 2021_06_30_090934) do
 
   create_table "activities", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -138,6 +138,16 @@ ActiveRecord::Schema.define(version: 2021_04_07_094208) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "public_addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "uid", null: false
+    t.string "role", null: false
+    t.string "address", null: false
+    t.integer "level", default: 1, null: false
+    t.string "state", default: "active", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "restrictions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

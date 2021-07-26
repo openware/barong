@@ -5,8 +5,10 @@ ruby '~> 2.6.5'
 
 gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'
-
+gem 'base58', '~> 0.2.3'
+gem 'blake2b', '~> 0.10.0'
 gem 'env-tweaks', '~> 1.0.0'
+gem 'ed25519', '~> 1.2.4'
 
 # storage related gems
 gem 'carrierwave', '~> 2.1', '>= 2.1.0'
@@ -18,7 +20,6 @@ gem 'fog-aliyun', '~> 0.3.5'
 gem 'fog-aws', '~> 3.5.2'
 # gcp support (google)
 gem 'fog-google', '~> 1.9.1'
-
 gem 'kycaid'
 gem 'sidekiq', '>= 6.0.7'
 # GLI

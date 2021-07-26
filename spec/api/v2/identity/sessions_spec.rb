@@ -170,6 +170,32 @@ describe API::V2::Identity::Sessions do
           end
         end
       end
+
+      context 'disabled endpoint' do
+        before do
+          allow(Barong::App.config).to receive_messages(auth_methods: 'auth0')
+        end
+
+        let(:do_request) { post uri, params: params }
+        let(:session_expire_time) do
+          Barong::App.config.session_expire_time
+        end
+        let(:check_session) do
+          get '/api/v2/auth/api/v2/tasty_endpoint'
+        end
+        let(:params) do
+          {
+            email: email,
+            password: password
+          }
+        end
+
+        it 'return error' do
+          do_request
+          expect(json_body[:errors]).to eq(['identity.session.endpoint_not_enabled'])
+          expect_status_to_eq 422
+        end
+      end
     end
 
     context 'User state related errors' do
@@ -255,12 +281,21 @@ describe API::V2::Identity::Sessions do
     context 'With invalid session' do
       let(:do_create_session_request) { post uri, params: params }
       let(:do_delete_session_request) { delete uri }
-
-
       it 'receives 404 on delete session' do
         do_delete_session_request
         expect(response.status).to eq(404)
         expect(response.body).to eq("{\"errors\":[\"identity.session.not_found\"]}")
+      end
+    end
+
+    context 'with invalid auth_method' do
+      let(:do_create_session_request) { post uri, params: params }
+      let(:do_delete_session_request) { delete uri, params: { auth_method: 'test'} }
+
+      it 'receives 404 on delete session' do
+        do_delete_session_request
+        expect(response.status).to eq(422)
+        expect(response.body).to eq("{\"errors\":[\"identity.session.invalid_auth_method\"]}")
       end
     end
 
@@ -271,7 +306,6 @@ describe API::V2::Identity::Sessions do
       it 'Deletes session' do
         do_create_session_request
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
-
         do_delete_session_request
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq(nil)
       end
@@ -279,16 +313,62 @@ describe API::V2::Identity::Sessions do
       it "return invalid set-cookie header on #logout" do
         do_create_session_request
         expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
-
         do_delete_session_request
         expect(response.status).to eq(200)
         expect(response.headers['Set-Cookie']).not_to be_nil
         expect(response.headers['Set-Cookie']).to include "barong_session"
       end
     end
+
+    context 'signature' do
+      before do
+        allow(Barong::Signature).to receive(:signature_verify?).and_return(true)
+        allow(Barong::App.config).to receive_messages(auth_methods: 'signature')
+      end
+
+      let(:uri) { '/api/v2/identity/sessions/signature' }
+      let(:delete_uri) { '/api/v2/identity/sessions' }
+      let(:params) {
+        {
+          nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
+          nonce: '1623693678',
+          signature: '0xb1a7b808c1566f8a36f44949d6fd4250f398d1b6f789a84551ab5725571d41d9b9033a176ce55a07dabe0a49a95869dceb6e2aeaa87eb2ec101f9431b623b603',
+        }
+      }
+
+      context 'there is no public address' do
+        let(:do_create_session_request) { post uri, params: params }
+        let(:do_delete_session_request) { delete delete_uri, params: {auth_method: 'signature'} }
+
+        it 'receives 404 on delete session' do
+          do_delete_session_request
+          expect(response.status).to eq(404)
+          expect(response.body).to eq("{\"errors\":[\"identity.session.not_found\"]}")
+        end
+      end
+
+      context 'with existing public address' do
+        let(:do_create_session_request) { post uri, params: params }
+        let(:do_delete_session_request) { delete delete_uri, params: {auth_method: 'signature'} }
+
+        it 'successfully deletes session' do
+          do_create_session_request
+          expect(response.status).to eq(201)
+          uid = json_body[:uid]
+          expect(session.instance_variable_get(:@delegate)[:uid]).to eq(uid)
+          do_delete_session_request
+          expect(response.status).to eq(200)
+          expect(session.instance_variable_get(:@delegate)[:uid]).to eq(nil)
+        end
+      end
+    end
   end
 
   describe 'POST /api/v2/indentity/sessions/auth0' do
+    before do
+      allow(Barong::App.config).to receive_messages(auth_methods: 'auth0')
+    end
+
     let(:uri) { '/api/v2/identity/sessions/auth0' }
 
     context 'user doesnt exist' do
@@ -394,6 +474,18 @@ describe API::V2::Identity::Sessions do
         end
       end
 
+      context 'disabled endpoint' do
+        before do
+          allow(Barong::App.config).to receive_messages(auth_methods: 'password')
+        end
+
+        it 'return error' do
+          post uri, params: { id_token: 'TestToken' }
+          expect(json_body[:errors]).to eq(['identity.session.endpoint_not_enabled'])
+          expect_status_to_eq 422
+        end
+      end
+
       context 'email is not verified' do
         let(:payload) do
           [
@@ -429,4 +521,66 @@ describe API::V2::Identity::Sessions do
       end
     end
   end
+
+  describe 'POST /api/v2/indentity/sessions/signature' do
+    let(:uri) { '/api/v2/identity/sessions/signature' }
+    let(:params) {
+      {
+        nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
+        nonce: '1623693678',
+        signature: '0xb1a7b808c1566f8a36f44949d6fd4250f398d1b6f789a84551ab5725571d41d9b9033a176ce55a07dabe0a49a95869dceb6e2aeaa87eb2ec101f9431b623b603',
+      }
+    }
+
+    context 'with invalid params' do
+      context 'disabled endpoint' do
+        before do
+          allow(Barong::App.config).to receive_messages(auth_methods: 'auth0')
+        end
+
+        it 'should raise an error' do
+          post uri, params: params
+          expect(response.status).to eq(422)
+          expect(json_body[:errors]).to eq(['identity.session.endpoint_not_enabled'])
+        end
+      end
+
+      context 'signature verification issue' do
+        before do
+          allow(Barong::App.config).to receive_messages(auth_methods: 'signature')
+        end
+
+        let(:wrong_params) {
+          {
+            nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
+            nonce: '1623693678',
+            signature: '123',
+          }
+        }
+
+        it 'should raise an error' do
+          post uri, params: wrong_params
+          expect(response.status).to eq(422)
+          expect(json_body[:errors]).to eq(['identity.session.signature.verification_failed'])
+        end
+      end
+    end
+
+    context 'with valid params' do
+      before do
+        allow(Barong::Signature).to receive(:signature_verify?).and_return(true)
+        allow(Barong::App.config).to receive_messages(auth_methods: 'signature')
+      end
+
+      it 'should create session' do
+        post uri, params: params
+        expect(response.status).to eq(201)
+        expect(json_body[:role]).to eq 'member'
+        expect(json_body[:address]).to eq 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2'
+        expect(json_body[:level]).to eq 1
+        expect(json_body[:state]).to eq 'active'
+      end
+    end
+  end
 end
+

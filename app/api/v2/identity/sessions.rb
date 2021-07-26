@@ -47,6 +47,7 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         post do
+          error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('password')
           verify_captcha!(response: params['captcha_response'], endpoint: 'session_create')
 
           declared_params = declared(params, include_missing: false)
@@ -86,13 +87,24 @@ module API::V2
             { code: 404, message: 'Record is not found' }
           ],
           success: { code: 200, message: 'Session was destroyed' }
+        params do
+          optional :auth_method,
+                   type: String,
+                   default: 'password',
+                   values: { value: -> {  %w[password signature auth0] }, message: 'identity.session.invalid_auth_method' },
+                   desc: 'Auth method'
+        end
         delete do
-          user = User.find_by(uid: session[:uid])
-          error!({ errors: ['identity.session.not_found'] }, 404) unless user
+          if params[:auth_method].in?(['password','auth0'])
+            entity = User.find_by(uid: session[:uid])
+            error!({ errors: ['identity.session.not_found'] }, 404) unless entity
+            activity_record(user: entity.id, action: 'logout', result: 'succeed', topic: 'session')
+          elsif params[:auth_method] == 'signature'
+            entity = PublicAddress.find_by(uid: session[:uid])
+            error!({ errors: ['identity.session.not_found'] }, 404) unless entity
+          end
 
-          activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
-
-          Barong::RedisSession.delete(user.uid, session.id)
+          Barong::RedisSession.delete(entity.uid, session.id)
           session.destroy
 
           status(200)
@@ -111,6 +123,8 @@ module API::V2
                    desc: 'ID Token'
         end
         post '/auth0' do
+          error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('auth0')
+
           begin
             # Decode ID token to get user info
             claims = Barong::Auth0::JWT.verify(params[:id_token]).first
@@ -135,6 +149,38 @@ module API::V2
             report_exception(e)
             error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
           end
+        end
+
+        desc 'Start session by signature',
+          failure: [
+            { code: 400, message: 'Required params are empty' },
+            { code: 404, message: 'Record is not found' }
+          ]
+        params do
+          requires :nickname, type: String, allow_blank: false, desc: -> { API::V2::Entities::PublicAddress.documentation[:address][:desc] }
+          requires :nonce, type: String, allow_blank: false, desc: 'Auth Nonce'
+          requires :signature, type: String, allow_blank: false, desc: 'Auth Signature'
+          optional :captcha_response, type: String, desc: 'Response from captcha widget'
+        end
+        post '/signature' do
+          error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('signature')
+          verify_captcha!(response: params['captcha_response'], endpoint: 'signature_session_create')
+
+          message = "#" + params[:nickname] + "#" + params[:nonce]
+          hashed_message = Barong::Signature.blake2_as_hex(message)
+
+          unless Barong::Signature.signature_verify?(hashed_message, params[:signature], params[:nickname])
+            error!({ errors: ['identity.session.signature.verification_failed'] }, 422)
+          end
+
+          public_address = PublicAddress.find_by(address: params[:nickname])
+          unless public_address
+            public_address = PublicAddress.create(address: params[:nickname], role: 'member')
+          end
+
+          csrf_token = open_session(public_address)
+
+          present public_address, with: API::V2::Entities::PublicAddress, csrf_token: csrf_token
         end
       end
     end
