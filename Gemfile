@@ -11,7 +11,7 @@ gem 'env-tweaks', '~> 1.0.0'
 gem 'ed25519', '~> 1.2.4'
 
 # storage related gems
-gem 'carrierwave', '~> 2.1', '>= 2.1.0'
+gem 'carrierwave', '~> 2.1'
 # fog's core, shared behaviors without API and provider specifics
 gem 'fog-core', '~> 2.1.0'
 # alicloud support
