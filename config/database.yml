@@ -41,6 +41,20 @@ bitzlato_default: &bitzlato_default
   adapter: postgresql
   encoding: utf8
   schema_search_path: p2p,public
+  <% if ENV.key?('DATABASE_COLLATION') %>
+  collation: <%= ENV.fetch('DATABASE_COLLATION', 'C') %>
+  <% end %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 8).to_i * ENV.fetch("WEB_CONCURRENCY", 1).to_i %>
+  <% if ENV.key?('DATABASE_HOST') %>
+  host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
+  <% end %>
+  port: <%= ENV.fetch('DATABASE_PORT', 5432) %>
+  <% if ENV.key?('DATABASE_USER') %>
+  username: <%= ENV.fetch('DATABASE_USER', `whoami`.chomp) %>
+  <% end %>
+  <% if ENV.key?('DATABASE_PASS') %>
+  password: <%= ENV['DATABASE_PASS'] %>
+  <% end %>
 
 bitzlato_development:
   <<: *bitzlato_default
