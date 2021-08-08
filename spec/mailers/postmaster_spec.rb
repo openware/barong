@@ -22,7 +22,8 @@ RSpec.describe Postmaster, type: :mailer do
         record: record,
         subject: 'Test Email',
         template_name: 'email_confirmation.en.html.erb',
-        logo: 'https://storage.googleapis.com/public_peatio/logo.png'
+        logo: 'https://storage.googleapis.com/public_peatio/logo.png',
+        signature: '<span>Company Inc, 3 Abbey Road, San Francisco CA 94102, USA</span><br><a href="http://opendax.io">opendax.io</a>'.html_safe
       }
     end
     let(:mail) { Postmaster.process_payload(payload) }
