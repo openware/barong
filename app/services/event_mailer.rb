@@ -196,7 +196,8 @@ class EventMailer
   end
 
   def db_connection_error?(exception)
-    exception.is_a?(Mysql2::Error::ConnectionError) || exception.cause.is_a?(Mysql2::Error)
+    (defined?(Mysql2) && (exception.is_a?(Mysql2::Error::ConnectionError) || exception.cause.is_a?(Mysql2::Error))) ||
+      (defined?(PG) && exception.is_a?(PG::Error))
   end
 
   def safe_dig(hash, keypath, default = nil)
