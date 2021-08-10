@@ -42,8 +42,10 @@ set :db_remote_clean, true
 set :app_version, SemVer.find.to_s
 set :current_version, `git rev-parse HEAD`.strip
 
-set :sentry_organization, ENV['SENTRY_ORGANIZATION']
-set :sentry_release_version, -> { [fetch(:app_version), fetch(:current_version)].compact.join('-') }
+if Gem.loaded_specs.key?('capistrano-sentry')
+  set :sentry_organization, ENV['SENTRY_ORGANIZATION']
+  set :sentry_release_version, -> { [fetch(:app_version), fetch(:current_version)].compact.join('-') }
+end
 
 set :puma_init_active_record, true
 set :puma_control_app, true
@@ -64,8 +66,10 @@ set :init_system, :systemd
 # set :systemd_sidekiq_role, :app
 # set :systemd_sidekiq_instances, -> { %i[cron_job] }
 
-before 'deploy:starting', 'sentry:validate_config'
-after 'deploy:published', 'sentry:notice_deployment'
+if Gem.loaded_specs.key?('capistrano-sentry')
+  before 'deploy:starting', 'sentry:validate_config'
+  after 'deploy:published', 'sentry:notice_deployment'
+end
 
 after 'deploy:publishing', 'systemd:puma:reload-or-restart'
 after 'deploy:publishing', 'systemd:mailer:reload-or-restart'

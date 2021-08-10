@@ -77,9 +77,7 @@ gem 'strong_password', '~> 0.0.8'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
-gem "sentry-ruby"
-gem "sentry-rails"
-gem "sentry-sidekiq"
+gem 'bugsnag'
 
 gem 'pry-rails'
 gem "pg", "~> 1.2"
@@ -136,6 +134,6 @@ group :deploy do
   gem 'capistrano-systemd-multiservice', github: 'groovenauts/capistrano-systemd-multiservice', require: false
   # gem 'capistrano-master-key', require: false, github: 'virgoproz/capistrano-master-key'
   gem 'capistrano-git-with-submodules'
-  gem 'capistrano-sentry', require: false
+  gem 'bugsnag-capistrano', require: false
   gem 'slackistrano', require: false
 end
