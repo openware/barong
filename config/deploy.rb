@@ -58,7 +58,16 @@ set :puma_init_active_record, true
 set :puma_workers, 0
 set :puma_bind, %w(tcp://0.0.0.0:9201)
 set :puma_start_task, 'systemd:puma:start'
+set :puma_extra_settings, %{
+lowlevel_error_handler do |e|
+  Bugsnag.notify(e)
+  [500, {}, ["An error has occurred"]]
+end
+}
 
+
+set :bugsnag_api_key, ENV.fetch('BUGSNAG_API_KEY')
+set :app_version, `semver`.strip
 set :assets_roles, []
 
 set :init_system, :systemd
