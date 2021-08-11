@@ -19,6 +19,7 @@ def report_exception_to_screen(exception)
 end
 
 def report_exception_to_ets(exception)
+  Bugsnag.notify(exception) if defined?(Bugsnag)
   Sentry.capture_exception(exception) if defined?(Sentry)
 rescue => ets_exception
   report_exception(ets_exception, false)

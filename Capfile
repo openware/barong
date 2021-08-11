@@ -33,7 +33,8 @@ require 'capistrano/slackistrano' # My Custom Message
 require 'capistrano/rails/migrations'
 require 'capistrano/dotenv/tasks'
 require 'capistrano/dotenv'
-require 'capistrano/sentry'
+require 'bugsnag-capistrano' if Gem.loaded_specs.key?('bugsnag-capistrano')
+require 'capistrano/sentry' if Gem.loaded_specs.key?('capistrano-sentry')
 
 require 'capistrano/puma'
 install_plugin Capistrano::Puma
