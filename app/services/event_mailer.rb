@@ -146,7 +146,8 @@ class EventMailer
       template_name: template_config[language][:template_path],
       record: obj.record,
       changes: obj.changes,
-      user: user
+      user: user,
+      signature: Barong::App.config.smtp_signature.html_safe
     }
 
     Postmaster.process_payload(params).deliver_now

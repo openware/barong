@@ -107,7 +107,7 @@ Barong::App.define do |config|
   config.set(:authz_rules_file, Rails.root.join('config', 'authz_rules.yml'), type: :path)
 
   # SMTP configuration ------------------------------------------------
-  # https://github.com/openware/barong/blob/master/docs/general/env_configuration.md#smtp-configuration
+  # https://github.com/openware/barong/blob/master/docs/configuration.md#smtp-configuration
   config.set(:sender_email, 'noreply@barong.io')
   config.set(:sender_name, 'Barong')
   config.set(:smtp_password, '')
@@ -115,6 +115,7 @@ Barong::App.define do |config|
   config.set(:smtp_host, 'localhost')
   config.set(:smtp_user, '')
   config.set(:smtp_logo_link, 'https://storage.cloud.google.com/public_peatio/logo.png')
+  config.set(:smtp_signature, '<span>Company Inc, 3 Abbey Road, San Francisco CA 94102, USA</span><br><a href="http://opendax.io">opendax.io</a>')
   config.set(:default_language, 'en')
 
   # KYCAID ------------------------------------------------------------

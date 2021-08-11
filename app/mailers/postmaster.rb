@@ -4,10 +4,11 @@ class Postmaster < ApplicationMailer
   layout 'mailer'
 
   def process_payload(params)
-    @record  = params[:record]
-    @changes = params[:changes]
-    @user    = params[:user]
-    @logo    = params[:logo]
+    @record    = params[:record]
+    @changes   = params[:changes]
+    @user      = params[:user]
+    @logo      = params[:logo]
+    @signature = params[:signature]
 
     sender = "#{Barong::App.config.sender_name} <#{Barong::App.config.sender_email}>"
 
