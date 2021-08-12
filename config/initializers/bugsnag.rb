@@ -1,4 +1,4 @@
-if defined? Bugsnagj
+if defined? Bugsnag
   Bugsnag.configure do |config|
     config.app_version = AppVersion.format('%M.%m.%p')
 
