@@ -57,6 +57,7 @@ ENV BARONG_MAXMINDDB_PATH=${APP_HOME}/geolite/GeoLite2-Country.mmdb
 
 # Download list of Cloudflare IP Ranges (v4 and v6)
 RUN curl https://www.cloudflare.com/ips-v4 >> ${APP_HOME}/config/cloudflare_ips.yml \
+    && echo >> ${APP_HOME}/config/cloudflare_ips.yml \
     && curl https://www.cloudflare.com/ips-v6 >> ${APP_HOME}/config/cloudflare_ips.yml
 
 # Initialize application configuration & assets.
