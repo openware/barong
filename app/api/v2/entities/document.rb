@@ -12,7 +12,7 @@ module API
                } do |document|
           {
             url: document.verification_url,
-            type: document.upload.file.extension
+            type: document.upload.file.extension.downcase
           }
         end
 
