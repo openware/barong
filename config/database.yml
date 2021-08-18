@@ -7,7 +7,7 @@ default: &default
   <% if ENV.key?('DATABASE_COLLATION') %>
   collation: <%= ENV.fetch('DATABASE_COLLATION', 'C') %>
   <% end %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 8).to_i * ENV.fetch("WEB_CONCURRENCY", 1).to_i %>
+  pool: <%= ENV.fetch('DATABASE_POOL', ENV.fetch("RAILS_MAX_THREADS", 8).to_i * ENV.fetch("WEB_CONCURRENCY", 1).to_i) %>
   <% if ENV.key?('DATABASE_HOST') %>
   host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
   <% end %>
