@@ -91,6 +91,17 @@ events:
         subject: New Beneficiary
         template_path: new_beneficiary.en.html.erb
 
+  - name: Beneficiary Pin Resend
+    key: beneficiary.updated
+    expression:
+      not:
+        changes.pin: null
+    exchange: peatio
+    templates:
+      en:
+        subject: Beneficiary Pin
+        template_path: beneficiary_pin.en.html.erb
+
   # expression example
   # - name: Session Create
   #   key: session.create
