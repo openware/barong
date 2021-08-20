@@ -4,7 +4,7 @@ set :rails_env, :staging
 
 set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:application)}" }
 
-server 'ex1.fr1.lgk.one',
+server '217.182.138.99',
   user: fetch(:user),
   port: '22',
   roles: %w[app db].freeze,
