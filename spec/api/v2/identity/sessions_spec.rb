@@ -355,7 +355,7 @@ describe API::V2::Identity::Sessions do
       let(:params) {
         {
           nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
-          nonce: '1623693678',
+          nonce: ((Time.now - 1.seconds).to_f * 1000).to_i,
           signature: '0xb1a7b808c1566f8a36f44949d6fd4250f398d1b6f789a84551ab5725571d41d9b9033a176ce55a07dabe0a49a95869dceb6e2aeaa87eb2ec101f9431b623b603',
         }
       }
@@ -551,7 +551,7 @@ describe API::V2::Identity::Sessions do
     let(:params) {
       {
         nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
-        nonce: '1623693678',
+        nonce: ((Time.now - 2.seconds).to_f * 1000).to_i,
         signature: '0xb1a7b808c1566f8a36f44949d6fd4250f398d1b6f789a84551ab5725571d41d9b9033a176ce55a07dabe0a49a95869dceb6e2aeaa87eb2ec101f9431b623b603',
       }
     }
@@ -577,7 +577,7 @@ describe API::V2::Identity::Sessions do
         let(:wrong_params) {
           {
             nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
-            nonce: '1623693678',
+            nonce: ((Time.now - 2.seconds).to_f * 1000).to_i,
             signature: '123',
           }
         }
@@ -586,6 +586,22 @@ describe API::V2::Identity::Sessions do
           post uri, params: wrong_params
           expect(response.status).to eq(422)
           expect(json_body[:errors]).to eq(['identity.session.signature.verification_failed'])
+        end
+
+        context 'with wrong nonce' do
+          let(:wrong_params) {
+            {
+              nickname: 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2',
+              nonce: ((Time.now - 6.seconds).to_f * 1000).to_i,
+              signature: '123',
+            }
+          }
+
+          it 'should raise an error' do
+            post uri, params: wrong_params
+            expect(response.status).to eq(422)
+            expect(json_body[:errors]).to eq(['identity.session.nonce_expired'])
+          end
         end
       end
     end
