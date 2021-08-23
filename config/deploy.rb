@@ -56,7 +56,6 @@ set :puma_preload_app, false
 set :puma_prune_bundler, true
 set :puma_init_active_record, true
 set :puma_workers, 0
-set :puma_bind, %w(tcp://0.0.0.0:9201)
 set :puma_start_task, 'systemd:puma:start'
 set :puma_extra_settings, %{
 lowlevel_error_handler do |e|
