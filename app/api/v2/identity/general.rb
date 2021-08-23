@@ -18,8 +18,10 @@ module API::V2
 
       desc 'Get server current unix timestamp.'
       get '/time' do
-        ts = ::Time.now.to_i
-        { time: ts }
+        time = ::Time.now
+        ts = time.to_i
+        tms = (time.to_f * 1000).to_i
+        { time: ts, time_ms: tms }
       end
 
       desc 'Get barong version'

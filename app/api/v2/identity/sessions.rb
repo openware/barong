@@ -164,13 +164,18 @@ module API::V2
           ]
         params do
           requires :nickname, type: String, allow_blank: false, desc: -> { API::V2::Entities::PublicAddress.documentation[:address][:desc] }
-          requires :nonce, type: String, allow_blank: false, desc: 'Auth Nonce'
+          requires :nonce, type: String, allow_blank: false, desc: 'Auth Nonce in milliseconds'
           requires :signature, type: String, allow_blank: false, desc: 'Auth Signature'
           optional :captcha_response, type: String, desc: 'Response from captcha widget'
         end
         post '/signature' do
           error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('signature')
           verify_captcha!(response: params['captcha_response'], endpoint: 'signature_session_create')
+
+          # timestamp_window is a difference between server_time and nonce creation time
+          nonce_timestamp_window = ((Time.now.to_f * 1000).to_i - params[:nonce].to_i).abs
+          # (server_time - nonce) should not be more than nonce lifetime
+          error!({ errors: ['identity.session.nonce_expired'] }, 422) if nonce_timestamp_window >= Barong::App.config.apikey_nonce_lifetime
 
           message = "#" + params[:nickname] + "#" + params[:nonce]
           hashed_message = Barong::Signature.blake2_as_hex(message)
