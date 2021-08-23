@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 set :rails_env, :staging
+set :disallow_pushing, false
 
 set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:application)}" }
 
