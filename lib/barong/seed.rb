@@ -30,7 +30,7 @@ module Barong
 
     def seed_levels
       logger.info "Seeding levels"
-      start_index = Level.maximum(:id)
+      start_index = Level.maximum(:id).to_i
       seeds["levels"].each_with_index do |level, index|
         logger.info "---"
         if Level.find_by(key: level["key"], value: level["value"]).present?
