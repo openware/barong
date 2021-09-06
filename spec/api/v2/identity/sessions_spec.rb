@@ -619,6 +619,7 @@ describe API::V2::Identity::Sessions do
         expect(json_body[:address]).to eq 'J1tcG8UPcwYrjxMHu84CxHrHRps4E7xN12wxzaWKpU5RrH2'
         expect(json_body[:level]).to eq 1
         expect(json_body[:state]).to eq 'active'
+        expect(json_body[:csrf_token]).not_to eq nil
       end
     end
   end
