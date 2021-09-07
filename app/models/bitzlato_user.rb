@@ -1,5 +1,5 @@
 class BitzlatoUser < BitzlatoRecord
-  self.table_name = :users
+  self.table_name = :user
 
   scope :by_email, ->(email) { where real_email: email }
 
