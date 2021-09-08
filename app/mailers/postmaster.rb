@@ -19,6 +19,7 @@ class Postmaster < ApplicationMailer
       to: @user.email
     }
 
+    Rails.logger.info("Sent email from #{sender} to #{@user.email} with params #{params}")
     mail(email_options)
   end
 end
