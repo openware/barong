@@ -14,8 +14,10 @@ namespace 'mailer' do
       subject: 'Test Message',
       template_name: 'email_confirmation.en.html.erb',
       record: record,
+      logo: Barong::App.config.smtp_logo_link,
       changes: nil,
-      user: User.first
+      user: record.user,
+      signature: 'signature'
     }
 
     Postmaster.process_payload(params).deliver_now
