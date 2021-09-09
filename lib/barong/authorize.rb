@@ -38,7 +38,10 @@ module Barong
 
       error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
-      user = User.find_by!(uid: session[:uid])
+      user = User.find_by(uid: session[:uid])
+      # If there is no user, system will check public address availabilities then
+      user = PublicAddress.find_by!(uid: session[:uid]) if user.blank?
+
       Rails.logger.debug "User #{user} authorization via cookies"
 
       validate_session!
