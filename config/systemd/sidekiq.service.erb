@@ -3,14 +3,14 @@ Description=Sidekiq for <%= fetch(:application) %> (<%= fetch(:stage) %> / <%= f
 After=syslog.target network.target
 
 [Service]
-Type=simple
+Type=exec
 Environment=RAILS_ENV=<%= fetch(:rails_env) %>
 EnvironmentFile=<%= current_path %>/.env
 WorkingDirectory=<%= current_path %>
 ExecStart=/home/<%= fetch(:user) %>/.rbenv/bin/rbenv exec bundle exec sidekiq -e <%= fetch(:stage) %> -C <%= current_path %>/config/sidekiq-<%= fetch(:stage) %>-%i.yml
 ExecStop=/bin/kill -TERM $MAINPID
 RestartSec=5
-Restart=on-failure
+Restart=always
 SyslogIdentifier=<%= fetch(:application) %>-sidekiq
 
 [Install]
