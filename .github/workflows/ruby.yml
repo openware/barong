@@ -1,0 +1,107 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
+# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+
+name: Ruby
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    env:
+      # REDIS_HOST: redis
+      # The default Redis port
+      # REDIS_PORT: 6379
+      RAILS_ENV: test
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_USER: postgres
+      DATABASE_PASS: postgres
+      REDIS_URL: redis://localhost:6379
+      VAULT_TOKEN: changeme
+      BARONG_VAULT_TOKEN: changeme
+      BARONG_VAULT_ADDRESS: http://127.0.0.1:8200
+      JWT_PUBLIC_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUR3d0RRWUpLb1pJaHZjTkFRRUJCUUFES3dBd0tBSWhBTDBlNnNhMFc4SzN1WS8rRVlrRXdxemo4UTZxc2lwcgp0R1dtYjhPVzhZcDdBZ01CQUFFPQotLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0K
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['2.7.4']
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        ports:
+          - 6379:6379
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          # required
+          POSTGRES_PASSWORD: postgres
+      influxdb:
+        image: influxdb:1.7.8
+        ports:
+          - "8083:8083"
+          - "8086:8086"
+      rabbitmq:
+        image: rabbitmq:3.7.6-management
+        volumes:
+          - rabbitmq_data:/var/lib/rabbitmq
+        ports:
+          - "5672:5672"
+          - "15672:15672"
+        options: >-
+          --health-cmd "rabbitmqctl node_health_check"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      vault:
+        image: vault:1.6.7
+        ports:
+          - "8200:8200"
+        env:
+          SKIP_SETCAP: 1
+          VAULT_TOKEN: changeme
+          VAULT_DEV_ROOT_TOKEN_ID: changeme
+          VAULT_ADDR: http://127.0.0.1:8200
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Bundle install
+      run: bundle install
+    - name: Initialize config
+      run: ./bin/init_config
+    - name: Initialize vault
+      run: ./bin/init_vault
+    - name: Setup database
+      run: bundle exec rake db:create db:migrate
+    - name: Seed database
+      run: bundle exec rake db:seed
+    - name: Run specs
+      run: bundle exec rake
