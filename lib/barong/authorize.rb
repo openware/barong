@@ -24,12 +24,24 @@ module Barong
       @rules = lists['rules']
     end
 
+    def uid
+      auth_owner.try(:uid)
+    end
+
+    def rate_limit_level
+      auth_owner.try(:rate_limit_level) || 0
+    end
+
     # main: switch between cookie and api key logic, return bearer token
     def auth
+      'Bearer ' + codec.encode(auth_owner.as_payload) # encoded user info
+    end
+
+    def auth_owner
+      return @auth_owner if instance_variable_defined?('@auth_owner')
       auth_type = 'cookie'
       auth_type = 'api_key' if api_key_headers?
-      auth_owner = method("#{auth_type}_owner").call
-      'Bearer ' + codec.encode(auth_owner.as_payload) # encoded user info
+      @auth_owner = method("#{auth_type}_owner").call
     end
 
     # cookies validations
