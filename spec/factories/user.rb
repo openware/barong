@@ -6,6 +6,7 @@ FactoryBot.define do
     password { 'Tecohvi0' }
     password_confirmation { 'Tecohvi0' }
     state { 'active' }
+    api_keys_limit { 10 }
 
     trait :with_profile do
       after(:create) do |user, _|
