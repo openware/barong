@@ -34,7 +34,7 @@ class APIKey < ApplicationRecord
   validate if: :key_holder_account do
     limit = key_holder_account.try(:api_keys_limit) || DEFAULT_LIMIT_KEYS_BY_HOLDER
     api_keys_count = key_holder_account.api_keys.count
-    errors.add(:key_holder_account, :limit_api_keys_exceed, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
+    errors.add(:key_holder_account, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
   end
 
   before_validation :assign_kid, if: :hmac?
