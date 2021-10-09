@@ -46,14 +46,14 @@ module Barong
       logger.info "Seeding permissions"
       seeds["permissions"].each do |perm|
         logger.info "---"
-        if Permission.find_by(role: perm["role"], verb: perm["verb"].upcase, path: perm["path"], action: perm["action"].upcase).present?
+        if Permission.find_by(role: perm["role"], verb: perm["verb"].to_s.upcase, path: perm["path"], action: perm["action"].to_s.upcase).present?
           logger.info "Permission for '#{perm['role']}' : '#{perm['verb']} to #{perm['path']}' already exists"
           next
         end
 
         Permission.create!(perm)
-      rescue => err
-        raise ConfigError.new("Can't create permission: #{err.full_messages.join('; ')}")
+      rescue StandardError => err
+        raise ConfigError.new("Can't create permission: #{err.message}. Permission: #{perm}")
       end
     end
 
