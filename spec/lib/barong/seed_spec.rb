@@ -289,7 +289,7 @@ describe Barong::Seed do
     it "raises an explicit error" do
       expect {
         seeder.seed_permissions
-      }.to raise_error(Barong::Seed::ConfigError, "Can't create permission: Verb can't be blank")
+      }.to raise_error(Barong::Seed::ConfigError)
     end
   end
 
@@ -306,7 +306,7 @@ describe Barong::Seed do
     it "raises an explicit error" do
       expect {
         seeder.seed_permissions
-      }.to raise_error(Barong::Seed::ConfigError, "Can't create permission: Path can't be blank")
+      }.to raise_error(Barong::Seed::ConfigError)
     end
   end
 
