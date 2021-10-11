@@ -132,7 +132,7 @@ module API::V2
 
             present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token
           rescue StandardError => e
-            report_exception(e)
+            report_exception(e) unless Rails.env.test?
             error!({ errors: ['identity.session.auth0.invalid_params'] }, 422)
           end
         end
