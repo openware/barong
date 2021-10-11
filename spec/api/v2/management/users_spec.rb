@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 describe API::V2::Management::Users, type: :request do
+  before :all do
+    User.destroy_all
+  end
+
   before do
     defaults_for_management_api_v2_security_configuration!
     management_api_v2_security_configuration.merge! \
