@@ -149,13 +149,16 @@ describe '/api/v2/auth functionality test' do
     end
 
     context 'testing restrictions' do
+      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping' }
+
       before do
         Rails.cache.delete('permissions')
+      end
+
+      it do
         do_create_session_request
         expect(response.status).to eq(200)
       end
-
-      let(:do_restricted_request) { put '/api/v2/auth/api/v2/peatio/management/ping' }
 
       it 'receives access error if path is blacklisted' do
         do_restricted_request
