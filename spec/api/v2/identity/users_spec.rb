@@ -732,13 +732,11 @@ describe API::V2::Identity::Users do
         value = Rails.cache.read(key)
         # There are values in redis with user session
         expect(value).not_to eq nil
-        expect(Rails.cache.read(value)).not_to eq nil
 
         do_request
         expect_status_to_eq 201
         # There are no values in redis with user session after confirming new password
         expect(Rails.cache.read(key)).to eq nil
-        expect(Rails.cache.read(value)).to eq nil
 
         log_in
         expect_status_to_eq 200
