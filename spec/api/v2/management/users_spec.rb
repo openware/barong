@@ -237,6 +237,7 @@ describe API::V2::Management::Users, type: :request do
             post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
             expect(response.status).to eq 200
             expect(json_body[0]).to include(:profiles)
+            expect(json_body.count).to eq 5
             expect(json_body.first[:profiles][0][:last_name]).to eq user.profiles[0].last_name
             expect(json_body.first[:profiles][0][:dob]).to eq user.profiles[0].dob.to_s
           end
