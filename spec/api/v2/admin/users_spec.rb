@@ -1027,13 +1027,12 @@ describe API::V2::Admin::Users do
 
         before(:example) do
           # Fix float fails
-          User.where.not(id: [first_user.id, second_user.id, test_user.id]).destroy_all
+          Level.delete_all
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago)
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id, created_at: 5.minutes.ago)
         end
 
         it 'returns users sorted by time of label creation' do
-          puts 'User.count', User.count
           get '/api/v2/admin/users/documents/pending', headers: auth_header
           expect(json_body.last[:email]).to eq first_user.email
         end
