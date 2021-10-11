@@ -1026,6 +1026,8 @@ describe API::V2::Admin::Users do
         let!(:test_user) { create(:user, email: 'test_admin_user@email.com', role: 'admin') }
 
         before(:example) do
+          # Fix float fails
+          User.where.not(id: [first_user.id, second_user.id, test_user.id]).destroy_all
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago)
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id, created_at: 5.minutes.ago)
         end
