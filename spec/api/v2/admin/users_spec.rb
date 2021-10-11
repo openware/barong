@@ -373,7 +373,7 @@ describe API::V2::Admin::Users do
     context 'superadmin user' do
       let(:do_request) { put '/api/v2/admin/users', params: params, headers: auth_header }
       let(:test_user) { create(:user, role: "superadmin") }
-  
+
       let(:params) do
         {
           uid: experimental_user.uid,
@@ -399,7 +399,7 @@ describe API::V2::Admin::Users do
       context 'when email is valid' do
         let(:new_email) { 'valid.email@gmail.com' }
         it 'change an email' do
-          do_request          
+          do_request
           expect_status_to_eq 200
           expect(experimental_user.reload.email).to eq 'valid.email@gmail.com'
         end
@@ -1021,9 +1021,9 @@ describe API::V2::Admin::Users do
       end
 
       context 'sorting test' do
-        let!(:first_user) { create(:user) }
-        let!(:second_user) { create(:user) }
-        let!(:test_user) { create(:user, role: 'admin') }
+        let!(:first_user) { create(:user, email: 'first_user@email.com') }
+        let!(:second_user) { create(:user, email: 'second_user@email.com') }
+        let!(:test_user) { create(:user, email: 'test_admin_user@email.com', role: 'admin') }
 
         before(:example) do
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago)
@@ -1031,6 +1031,7 @@ describe API::V2::Admin::Users do
         end
 
         it 'returns users sorted by time of label creation' do
+          puts 'User.count', User.count
           get '/api/v2/admin/users/documents/pending', headers: auth_header
           expect(json_body.last[:email]).to eq first_user.email
         end
