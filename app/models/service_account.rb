@@ -26,6 +26,10 @@ class ServiceAccount < ApplicationRecord
     self.state == 'active'
   end
 
+  def api_keys_limit
+    10
+  end
+
   def disable_api_keys
     if state_previously_changed? && state == 'disabled'
       api_keys.active.each do |key|
