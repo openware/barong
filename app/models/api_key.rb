@@ -31,10 +31,11 @@ class APIKey < ApplicationRecord
   validates :algorithm, inclusion: { in: ALGORITHMS }
   validate on: :create, if: :key_holder_account do
     unless key_holder_account.is_a? ServiceAccount
-    limit = key_holder_account.api_keys_limit
-    unless limit.nil?
-      api_keys_count = key_holder_account.api_keys.count
-      errors.add(:key_holder_account, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
+      limit = key_holder_account.api_keys_limit
+      unless limit.nil?
+        api_keys_count = key_holder_account.api_keys.count
+        errors.add(:key_holder_account, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
+      end
     end
   end
 
