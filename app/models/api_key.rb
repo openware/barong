@@ -3,8 +3,6 @@
 class APIKey < ApplicationRecord
   self.table_name = :apikeys
 
-  DEFAULT_LIMIT_KEYS_BY_HOLDER = 1
-
   include Vault::EncryptedModel
 
   ALGORITHMS = ['HS256'].freeze
@@ -32,9 +30,12 @@ class APIKey < ApplicationRecord
   validates :kid, uniqueness: true
   validates :algorithm, inclusion: { in: ALGORITHMS }
   validate on: :create, if: :key_holder_account do
-    limit = key_holder_account.try(:api_keys_limit) || DEFAULT_LIMIT_KEYS_BY_HOLDER
-    api_keys_count = key_holder_account.api_keys.count
-    errors.add(:key_holder_account, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
+    unless key_holder_account.is_a? ServiceAccount
+    limit = key_holder_account.api_keys_limit
+    unless limit.nil?
+      api_keys_count = key_holder_account.api_keys.count
+      errors.add(:key_holder_account, "You already have #{api_keys_count} api keys and your limit is #{limit}") if api_keys_count>=limit
+    end
   end
 
   before_validation :assign_kid, if: :hmac?
