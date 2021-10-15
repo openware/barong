@@ -29,11 +29,11 @@ class AuthorizeController < ActionController::Metal
     return access_error!('authz.permission_denied', 401) if req.under_path_rules?('block')
 
     response.status = 200
-    response.headers['X-Rate-Limit-Level'] = req.rate_limit_level unless req.rate_limit_level.nil?
-    response.headers['X-User-UID'] = req.uid unless req.uid.nil?
     return if req.under_path_rules?('pass') # check if request is whitelisted
 
     response.headers['Authorization'] = req.auth # sets bearer token
+    response.headers['X-Rate-Limit-Level'] = req.rate_limit_level unless req.rate_limit_level.nil?
+    response.headers['X-User-UID'] = req.uid unless req.uid.nil?
   rescue Barong::Authorize::AuthError => e # returns error from validations
     response.body = e.message
     response.status = e.code

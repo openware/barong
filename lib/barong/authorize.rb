@@ -25,11 +25,11 @@ module Barong
     end
 
     def uid
-      auth_owner.try(:uid)
+      @auth_owner.uid
     end
 
     def rate_limit_level
-      auth_owner.try(:rate_limit_level) || 0
+      @auth_owner.rate_limit_level || 0
     end
 
     # main: switch between cookie and api key logic, return bearer token
@@ -38,7 +38,6 @@ module Barong
     end
 
     def auth_owner
-      return @auth_owner if instance_variable_defined?('@auth_owner')
       auth_type = 'cookie'
       auth_type = 'api_key' if api_key_headers?
       @auth_owner = method("#{auth_type}_owner").call
@@ -48,6 +47,7 @@ module Barong
     def cookie_owner
       validate_csrf!
 
+      session[:uid] = ENV.fetch('FORCE_SESSION_UID') if ENV.key? 'FORCE_SESSION_UID'
       error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
 
       user = User.find_by!(uid: session[:uid])
@@ -66,6 +66,7 @@ module Barong
     end
 
     def validate_session!
+      return if ENV.true? 'DISABLE_SESSION_VALIDATION'
       unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
              Time.now.to_i < session[:expire_time] &&
              find_ip.include?(remote_ip) && ENV.false?( 'SKIP_SESSION_INVALIDATION' )
