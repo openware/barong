@@ -58,7 +58,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 - name: Bump and tag
@@ -251,7 +251,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:
@@ -323,7 +323,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:
@@ -397,7 +397,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:
