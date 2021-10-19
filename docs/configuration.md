@@ -73,6 +73,7 @@ More details in [twilio configuration](#twilio-configuration)
 | Env name | Default value | Possible values | Description |
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_phone_verification` | mock | `twilio_verify` , `twilio_sms` , `mock` | sms send policy, switcher between twilio services and stub (mock) |
+| `phone_max_unverified` | 3 | - | Maximum of unverfied phone numbers per user |
 | `barong_twilio_phone_number`  | +15005550000 | any twilio valid number or twilio string name | Twilio sms sender number/name |
 | `barong_twilio_account_sid` | - | any string value | twilio account sid, required by configuration |
 | `barong_twilio_auth_token` | - | any string value | twilio auth token, required by configuration |
@@ -123,7 +124,7 @@ More details in [twilio configuration](#twilio-configuration)
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_config`  | config/barong.yml | any valid path to existing file | path to barong config with `activation_requirements`, `state_triggers`, `document_types` and `user_storage_titles` |
 | `barong_maxminddb_path` | geolite/GeoLite2-Country.mmdb | any valid path to existing file | path to geolite country DB file |
-| `barong_seeds_file` | config/seeds.yml | any valid path to existing file | path to configuration file with pre-defined API rules, users and levels | 
+| `barong_seeds_file` | config/seeds.yml | any valid path to existing file | path to configuration file with pre-defined API rules, users and levels |
 | `barong_authz_rules_file` | config/authz_rules.yml | any valid path to existing file | path to configuration file with blacklisted and whitelisted API pathes |
 
 # Barong configurations overview

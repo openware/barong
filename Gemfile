@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '~> 2.6.5'
+ruby '~> 2.7.4'
 
 gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'

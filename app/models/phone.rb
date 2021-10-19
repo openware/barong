@@ -21,6 +21,7 @@ class Phone < ApplicationRecord
   before_save :save_number_index
 
   scope :verified, -> { where.not(validated_at: nil) }
+  scope :unverified, -> { where(validated_at: nil) }
 
   #FIXME: Clean code below
   class << self
