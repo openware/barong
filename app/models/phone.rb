@@ -90,6 +90,7 @@ class Phone < ApplicationRecord
 end
 
 # == Schema Information
+# Schema version: 20211019200925
 #
 # Table name: phones
 #
@@ -102,6 +103,7 @@ end
 #  validated_at     :datetime
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  retries          :integer          default(0), not null
 #
 # Indexes
 #
