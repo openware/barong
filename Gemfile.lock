@@ -496,6 +496,8 @@ GEM
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.9.3)
     ruby-vips (2.0.17)
       ffi (~> 1.9)
@@ -624,6 +626,7 @@ DEPENDENCIES
   redis (~> 4.0)
   rspec
   rspec-rails (~> 3.9, >= 3.9.1)
+  rspec-retry
   sd_notify (~> 0.1.1)
   secure_headers!
   semver2 (~> 3.4)

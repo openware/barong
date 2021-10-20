@@ -154,6 +154,7 @@ describe API::V2::Admin::Profiles do
 
       it 'return error when author is trying to approve himself' do
         pending 'Add AdminAbility'
+
         allow(Barong::App.config).to receive_messages(profile_double_verification: 'true')
 
         put '/api/v2/admin/profiles', params: { uid: @user_admin.uid, state: 'rejected' }, headers: auth_header

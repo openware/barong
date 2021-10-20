@@ -155,9 +155,6 @@ RSpec.describe User, type: :model do
 
   describe 'States and labels dependency' do
     let(:reqs_list) { {} }
-    let!(:create_permissions) do
-      create :permission, role: 'member' unless Permission.exists?(role: 'member')
-    end
 
     before do
       allow(BarongConfig).to receive(:list) { reqs_list }

@@ -236,7 +236,6 @@ describe API::V2::Management::Users, type: :request do
         end
 
         it 'returns filetered list of users with extended param' do
-          pending 'fails some times'
           users_list_params[:extended] = true
           post_json '/api/v2/management/users/list', multisig_jwt_management_api_v2({ data: users_list_params }, *signers), headers: auth_header
           expect(response.status).to eq 200

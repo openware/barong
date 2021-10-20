@@ -734,13 +734,8 @@ describe API::V2::Admin::Users do
       let(:public_labels_count)     { 2 }
 
       before(:example) do
-        document_pending_count.times do |i|
-          create(:label, key: 'document', value: 'pending', scope: 'private')
-        end
-
-        document_rejected_count.times do |i|
-          create(:label, key: 'document', value: 'rejected', scope: 'private')
-        end
+        create_list(:label, document_pending_count, key: 'document', value: 'pending', scope: 'private')
+        create_list(:label, document_rejected_count, key: 'document', value: 'rejected', scope: 'private')
       end
 
       it 'renders error when key is missing' do
@@ -770,7 +765,6 @@ describe API::V2::Admin::Users do
 
       context 'pagination test' do
         it 'returns 1st page as default, limit 2 users per page' do
-          pending 'float fails'
           get '/api/v2/admin/users/labels', headers: auth_header, params: {
             key: 'document',
             value: 'pending',
@@ -1027,8 +1021,6 @@ describe API::V2::Admin::Users do
         let!(:test_user) { create(:user, email: 'test_admin_user@email.com', role: 'admin') }
 
         before(:example) do
-          # Fix float fails
-          Level.delete_all
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: second_user.id, created_at: 10.minutes.ago, updated_at: 10.minutes.ago)
           create(:label, key: 'document', value: 'pending', scope: 'private', user_id: first_user.id, created_at: 5.minutes.ago, updated_at: 5.minutes.ago)
         end
@@ -1041,12 +1033,8 @@ describe API::V2::Admin::Users do
 
       context 'pagination test' do
         before(:example) do
-          private_document_pending_count.times do |i|
-            create(:label, key: 'document', value: 'pending', scope: 'private')
-          end
-          public_document_pending_count.times do |i|
-            create(:label, key: 'document', value: 'pending', scope: 'public')
-          end
+          create_list(:label, private_document_pending_count, key: 'document', value: 'pending', scope: 'private')
+          create_list(:label, public_document_pending_count, key: 'document', value: 'pending', scope: 'public')
         end
 
         it 'returns 1st page as default, limit 2 users per page' do

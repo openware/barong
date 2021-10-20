@@ -204,7 +204,7 @@ RSpec.describe Profile, type: :model do
       let!(:profile) { create(:profile, user_id: user.id, state: 'verified') }
 
       it 'should be valid dob' do
-        profile.update(dob: Time.now)
+        profile.update(dob: Date.current)
         expect(profile.valid?).to eq true
       end
 
@@ -215,7 +215,7 @@ RSpec.describe Profile, type: :model do
       end
 
       it 'should be invalid dob format' do
-        profile.update(dob: Time.now + 3.days)
+        profile.update(dob: Date.current + 3.days)
         expect(profile.valid?).to eq false
         expect(profile.errors[:dob]).to eq ["cant be in future"]
       end

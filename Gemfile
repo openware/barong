@@ -117,6 +117,7 @@ group :test do
   gem 'shoulda-matchers', '~> 4.0.1.0'
   gem 'rails-controller-testing', '>= 1.0.5'
   gem 'database_cleaner', '~> 2.0.1'
+  gem 'rspec-retry'
 end
 
 group :deploy do
