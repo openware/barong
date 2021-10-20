@@ -96,11 +96,17 @@ module API::V2
           phone = current_user.phones.find_by_number(phone_number)
 
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
-          error!({ errors: ['resource.phone.code_sent_too_fast'] }, 400) if Time.now - phone.updated_at < 30.seconds
 
-          error!({ errors: ['resource.phone.too_many_retries'] }, 400) if phone.retries < Barong::App.config.phone_max_retries
+          if Time.now - phone.updated_at < Barong::App.config.phone_code_min_delay.seconds
+            error!({ errors: ['resource.phone.code_sent_too_fast'] }, 400)
+          end
+
+          if phone.retries < Barong::App.config.phone_max_retries
+            error!({ errors: ['resource.phone.too_many_retries'] }, 400)
+          end
 
           Barong::App.config.twilio_provider.send_confirmation(phone, declared_params[:channel])
+
           phone.increment!(:retries)
           { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end

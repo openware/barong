@@ -81,7 +81,7 @@ describe 'Api::V2::Resources::Phones' do
           end
         end
 
-        context 'when phone is already exists' do
+        context 'when phone already exists' do
           let!(:phone) do
             create(:phone, validated_at: validated_at)
           end
@@ -142,6 +142,7 @@ describe 'Api::V2::Resources::Phones' do
             do_request
             expect_body.to eq(message: 'Code was sent successfully via sms')
             expect_status.to eq 201
+            expect(Phone.find_by_number(phone_number).retries).to eq(0)
           end
 
           it 'creates a phone and send code via call channel' do
@@ -216,7 +217,7 @@ describe 'Api::V2::Resources::Phones' do
         end
       end
 
-      context 'when phone is already exists and verified' do
+      context 'when phone already exists and verified' do
         let!(:phone) do
           create(:phone, validated_at: 1.minutes.ago)
         end
@@ -289,8 +290,8 @@ describe 'Api::V2::Resources::Phones' do
 
   context 'With Twilio SMS Sender service' do
     let(:phone_number) { phone.number }
-    let(:do_request) do
-      post '/api/v2/resource/phones', params: params, headers: auth_header
+    def do_request(p = params)
+      post '/api/v2/resource/phones', params: p, headers: auth_header
     end
     let(:params) { { phone_number: phone_number, channel: 'sms' } }
     let(:verification_code) { '12345' }
@@ -343,6 +344,22 @@ describe 'Api::V2::Resources::Phones' do
           expect(mock_sms.messages.last.body).to start_with('Following code: ')
           expect(mock_sms.messages.last.body).to end_with(' should be used for phone confirmation')
         end
+
+        it 'bans the user if too many unverified phones are created' do
+          3.times do
+            number = build(:phone).number
+            do_request(phone_number: number, channel: 'sms')
+            expect_body.to eq(message: 'Code was sent successfully via sms')
+            expect_status.to eq 201
+            expect(mock_sms.messages.last.to).to eq "+#{number}"
+          end
+          number = build(:phone).number
+          do_request(phone_number: number, channel: 'sms')
+
+          expect_body.to eq(errors: ['resource.phone.too_many_unverified'])
+          expect_status.to eq 400
+          expect(User.find(test_user.id).state).to eq('banned')
+        end
       end
 
       context 'when phone is valid' do
@@ -360,7 +377,7 @@ describe 'Api::V2::Resources::Phones' do
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           code_after_create = Phone.last.code
-          # Phone.last initilazes phone
+          # Phone.last initializes phone
           code_after_initialize = Phone.last.code
           expect(code_after_create).to eq code_after_initialize
         end
@@ -431,7 +448,7 @@ describe 'Api::V2::Resources::Phones' do
         let!(:phone) { create(:phone) }
         let(:phone_number) { phone.number }
 
-        it 'rendens an error' do
+        it 'renders an error' do
           do_request
           expect_body.to eq(errors: ['resource.phone.doesnt_exist'])
           expect_status.to eq 404
