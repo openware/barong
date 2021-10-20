@@ -281,7 +281,7 @@ describe 'Api::V2::Resources::Phones' do
             else
               expect_body.to eq(errors: ['resource.phone.too_many_retries'])
               expect_status.to eq 400
-              expect(test_user.state).to eq('banned')
+              expect(User.find(test_user.id).state).to eq('banned')
             end
           end
         end
