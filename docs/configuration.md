@@ -74,6 +74,9 @@ More details in [twilio configuration](#twilio-configuration)
 | ---------- | ------ |-------------------------|---------------------------------- |
 | `barong_phone_verification` | mock | `twilio_verify` , `twilio_sms` , `mock` | sms send policy, switcher between twilio services and stub (mock) |
 | `phone_max_unverified` | 3 | - | Maximum of unverfied phone numbers per user |
+| `phone_code_min_delay` | 30 | - | Minimum seconds for a user to wait before sending a new code |
+| `phone_max_send_retries` | 5 | - | Maximum retry count for sending a SMS |
+| `phone_max_verify_retries` | 5 | - | Maximum retry count for verifying a code |
 | `barong_twilio_phone_number`  | +15005550000 | any twilio valid number or twilio string name | Twilio sms sender number/name |
 | `barong_twilio_account_sid` | - | any string value | twilio account sid, required by configuration |
 | `barong_twilio_auth_token` | - | any string value | twilio auth token, required by configuration |

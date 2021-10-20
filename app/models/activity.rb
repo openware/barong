@@ -30,7 +30,7 @@ class Activity < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20210407094208
+# Schema version: 20210325133233
 #
 # Table name: activities
 #

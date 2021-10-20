@@ -53,7 +53,7 @@ describe 'Api::V2::Resources::Phones' do
     end
 
     describe 'POST /api/v2/resource/phones' do
-      let(:do_request) do
+      def do_request
         post '/api/v2/resource/phones', params: params, headers: auth_header
       end
       let(:phone_number) { nil }
@@ -142,7 +142,7 @@ describe 'Api::V2::Resources::Phones' do
             do_request
             expect_body.to eq(message: 'Code was sent successfully via sms')
             expect_status.to eq 201
-            expect(Phone.find_by_number(phone_number).retries).to eq(0)
+            expect(Phone.find_by_number(phone_number).retries_send).to eq(0)
           end
 
           it 'creates a phone and send code via call channel' do
@@ -185,9 +185,10 @@ describe 'Api::V2::Resources::Phones' do
     end
 
     describe 'POST /api/v2/resource/phones/verify' do
-      let(:do_request) do
+      def do_request
         post '/api/v2/resource/phones/verify', params: params, headers: auth_header
       end
+
       let(:params) do
         {
           phone_number: phone_number,
@@ -248,7 +249,7 @@ describe 'Api::V2::Resources::Phones' do
         let!(:phone) { create(:phone) }
         let(:phone_number) { phone.number }
 
-        it 'rendens an error' do
+        it 'renders an error' do
           allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
@@ -261,12 +262,28 @@ describe 'Api::V2::Resources::Phones' do
         let!(:phone) { create(:phone, user: test_user) }
         let(:phone_number) { phone.number }
 
-        it 'rendens an error' do
+        it 'renders an error' do
           allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(false)
 
           do_request
           expect_body.to eq(errors: ["resource.phone.verification_invalid"])
           expect_status.to eq 404
+        end
+
+        it 'bans user after too much retries' do
+          allow(Barong::App.config.twilio_provider).to receive(:verify_code?).and_return(false)
+
+          10.times do |i|
+            do_request
+            if i != 9
+              expect_body.to eq(errors: ['resource.phone.verification_invalid'])
+              expect_status.to eq 404
+            else
+              expect_body.to eq(errors: ['resource.phone.too_many_retries'])
+              expect_status.to eq 400
+              expect(test_user.state).to eq('banned')
+            end
+          end
         end
       end
 
@@ -290,8 +307,12 @@ describe 'Api::V2::Resources::Phones' do
 
   context 'With Twilio SMS Sender service' do
     let(:phone_number) { phone.number }
-    def do_request(p = params)
+    def do_request_new(p = params)
       post '/api/v2/resource/phones', params: p, headers: auth_header
+    end
+
+    def do_request_send_code(p = params)
+      post '/api/v2/resource/phones/send_code', params: p, headers: auth_header
     end
     let(:params) { { phone_number: phone_number, channel: 'sms' } }
     let(:verification_code) { '12345' }
@@ -307,14 +328,14 @@ describe 'Api::V2::Resources::Phones' do
         let(:phone_number) { build(:phone).number }
 
         it 'assigns a phone to account and send sms' do
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
         end
 
         it 'sends a default sms content' do
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.body).to start_with('Your verification code for Barong: ')
@@ -322,7 +343,7 @@ describe 'Api::V2::Resources::Phones' do
 
         it 'sends a custom message with content before code' do
           allow(Barong::App.config).to receive(:sms_content_template).and_return('Please confirm your phone with the following code: {{code}}')
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.body).to start_with('Please confirm your phone with the following code: ')
@@ -330,7 +351,7 @@ describe 'Api::V2::Resources::Phones' do
 
         it 'sends a custom message with content after code' do
           allow(Barong::App.config).to receive(:sms_content_template).and_return('{{code}} - this is your confirmation code')
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.body).to end_with(' - this is your confirmation code')
@@ -338,7 +359,7 @@ describe 'Api::V2::Resources::Phones' do
 
         it 'sends a custom message with code in the midle of the content' do
           allow(Barong::App.config).to receive(:sms_content_template).and_return('Following code: {{code}} should be used for phone confirmation')
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.body).to start_with('Following code: ')
@@ -348,32 +369,68 @@ describe 'Api::V2::Resources::Phones' do
         it 'bans the user if too many unverified phones are created' do
           3.times do
             number = build(:phone).number
-            do_request(phone_number: number, channel: 'sms')
+            do_request_new(phone_number: number, channel: 'sms')
             expect_body.to eq(message: 'Code was sent successfully via sms')
             expect_status.to eq 201
             expect(mock_sms.messages.last.to).to eq "+#{number}"
           end
           number = build(:phone).number
-          do_request(phone_number: number, channel: 'sms')
+          do_request_new(phone_number: number, channel: 'sms')
 
           expect_body.to eq(errors: ['resource.phone.too_many_unverified'])
           expect_status.to eq 400
           expect(User.find(test_user.id).state).to eq('banned')
         end
+
+        it 'sends a new code, not too fast' do
+          do_request_new
+          expect_body.to eq(message: 'Code was sent successfully via sms')
+          expect_status.to eq 201
+          expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
+
+          do_request_send_code
+          expect_body.to eq(errors: ['resource.phone.code_sent_too_fast'])
+          expect_status.to eq 400
+
+          Phone.last.update(updated_at: Time.now - 31.seconds)
+          do_request_send_code
+          expect_body.to eq(message: 'Code was sent successfully via sms')
+          expect_status.to eq 201
+        end
+
+        it 'sends a new code, not too many times' do
+          do_request_new
+          expect_body.to eq(message: 'Code was sent successfully via sms')
+          expect_status.to eq 201
+          expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
+
+          5.times do
+            Phone.find_by_number(phone_number).update_attribute(:updated_at, Time.now - 32.seconds)
+            do_request_send_code
+            expect_body.to eq(message: 'Code was sent successfully via sms')
+            expect_status.to eq 201
+          end
+
+          Phone.find_by_number(phone_number).update_attribute(:updated_at, Time.now - 32.seconds)
+          do_request_send_code
+          expect_body.to eq(errors: ['resource.phone.too_many_retries'])
+          expect_status.to eq 400
+        end
+
       end
 
       context 'when phone is valid' do
         let(:phone_number) { build(:phone).number }
 
         it 'creates a phone and send sms' do
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           expect(mock_sms.messages.last.to).to eq "+#{phone_number}"
         end
 
         it 'doesnt change code in DB on phone initialize' do
-          do_request
+          do_request_new
           expect_body.to eq(message: 'Code was sent successfully via sms')
           expect_status.to eq 201
           code_after_create = Phone.last.code

@@ -101,13 +101,13 @@ module API::V2
             error!({ errors: ['resource.phone.code_sent_too_fast'] }, 400)
           end
 
-          if phone.retries < Barong::App.config.phone_max_retries
+          if phone.retries_send >= Barong::App.config.phone_max_send_retries
             error!({ errors: ['resource.phone.too_many_retries'] }, 400)
           end
 
           Barong::App.config.twilio_provider.send_confirmation(phone, declared_params[:channel])
 
-          phone.increment!(:retries)
+          phone.increment!(:retries_send)
           { message: "Code was sent successfully via #{declared_params[:channel]}" }
         end
 
@@ -137,7 +137,14 @@ module API::V2
           error!({ errors: ['resource.phone.doesnt_exist'] }, 404) unless phone
 
           verification = Barong::App.config.twilio_provider.verify_code?(number: phone_number, code: declared_params[:verification_code], user: current_user)
-          error!({ errors: ['resource.phone.verification_invalid'] }, 404) unless verification
+          unless verification
+            phone.increment!(:retries_verify)
+            if phone.retries_verify >= Barong::App.config.phone_max_verify_retries
+              current_user.update(state: 'banned')
+              error!({ errors: ['resource.phone.too_many_retries'] }, 400)
+            end
+            error!({ errors: ['resource.phone.verification_invalid'] }, 404)
+          end
 
           phone.update(validated_at: Time.current)
           current_user.labels.create(key: 'phone', value: 'verified', scope: 'private')
