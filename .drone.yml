@@ -96,7 +96,7 @@ steps:
       - "integration/*"
 
 - name: Generate docs
-  image: quay.io/openware/ruby-node:2.6.5
+  image:  timbru31/ruby-node:2.7-14
   environment:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -104,6 +104,8 @@ steps:
     RAILS_MASTER_KEY:
       from_secret: rails_master_key
   commands:
+    - apt-get update
+    - apt-get install -y git
     - gem update bundler
     - bundle install
     - bundle exec bin/gendocs
