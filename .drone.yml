@@ -43,7 +43,7 @@ steps:
     VAULT_ADDR: http://vault:8200
 
 - name: Run rspec
-  image: ruby:2.6.6
+  image: ruby:2.7.4
   environment:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -58,7 +58,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 - name: Bump and tag
@@ -236,7 +236,7 @@ steps:
     VAULT_ADDR: http://vault:8200
 
 - name: Run rspec
-  image: ruby:2.6.6
+  image: ruby:2.7.4
   environment:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -251,7 +251,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:
@@ -308,7 +308,7 @@ steps:
     VAULT_ADDR: http://vault:8200
 
 - name: Run rspec
-  image: ruby:2.6.6
+  image: ruby:2.7.4
   environment:
     DATABASE_HOST: database
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
@@ -323,7 +323,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:
@@ -378,7 +378,7 @@ steps:
     VAULT_ADDR: http://vault:8200
 
 - name: Run rspec
-  image: ruby:2.6.6
+  image: ruby:2.7.4
   environment:
     DATABASE_HOST: database
     DATABASE_ADAPTER: postgresql
@@ -397,7 +397,7 @@ steps:
     - gem update bundler
     - bundle install --system
     - ./bin/init_config
-    - rake db:create db:migrate
+    - bundle exec rake db:create db:migrate
     - bundle exec rspec
 
 trigger:

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :phone do
-    number { '12345678911' }
+    number { "12345678#{rand(10)}#{rand(10)}#{rand(10)}" }
     user
   end
 end

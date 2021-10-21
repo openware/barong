@@ -8,6 +8,10 @@ Barong::App.define do |config|
 
   config.write(:twilio_provider, TwilioSmsSendService)
 
+  config.set(:phone_max_unverified, 3)
+  config.set(:phone_code_min_delay, 30)
+  config.set(:phone_max_send_retries, 5)
+  config.set(:phone_max_verify_retries, 10)
   config.set(:phone_verification, 'mock')
   config.set(:twilio_phone_number, '+15005550000')
   config.set(:twilio_account_sid, '')
