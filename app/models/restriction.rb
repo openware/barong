@@ -17,7 +17,7 @@ class Restriction < ApplicationRecord
   validates_uniqueness_of :value, scope: %i[scope category]
 
   validates :value, if: -> { scope == 'ip' },
-            format: { :with => Resolv::IPv4::Regex }
+            format: { :with => Regexp.union(Resolv::IPv4::Regex, Resolv::IPv6::Regex) }
 
   validates :value, if: -> { scope == 'ip_subnet' },
             format: { :with => SUBNET_REGEX }

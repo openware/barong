@@ -4,8 +4,12 @@ RSpec.describe Restriction, type: :model do
   context 'create' do
     it { should_not allow_value('planet').for(:scope) }
 
-    it 'valid address with ip scope' do
+    it 'valid IPv4 address with ip scope' do
       expect(Restriction.new(scope: 'ip', value: '127.0.0.1', category: 'blacklist').valid?).to be_truthy
+    end
+
+    it 'valid IPv6 address with ip scope' do
+      expect(Restriction.new(scope: 'ip', value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334', category: 'blacklist').valid?).to be_truthy
     end
 
     it 'invalid address with ip scope' do

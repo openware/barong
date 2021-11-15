@@ -24,9 +24,36 @@ describe API::V2::Identity::Users do
   end
 
   describe 'POST /api/v2/identity/users/access' do
-    context 'success' do
+    context 'success IPv4' do
       before do
         allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('192.168.0.2')
+        allow(Rails.cache).to receive(:read).and_return('active')
+      end
+
+      it 'creates a restriction in database with my ip' do
+        expect {
+          post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+        }.to change { Restriction.count }.by(1)
+
+        expect(response.status).to eq(201)
+      end
+
+      it 'works only first time' do
+        expect {
+          post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+        }.to change { Restriction.count }.by(1)
+        expect(response.status).to eq(201)
+
+        post '/api/v2/identity/users/access', params: { whitelink_token: 'testtoken' }
+
+        expect(response.status).to eq(422)
+        expect(json_body[:errors]).to include "value.taken"
+      end
+    end
+
+    context 'success IPv6' do
+      before do
+        allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('2001:0db8:85a3:0000:0000:8a2e:0370:7334')
         allow(Rails.cache).to receive(:read).and_return('active')
       end
 
