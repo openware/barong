@@ -79,20 +79,6 @@ module API::V2
         error!({ errors: ['identity.session.' + options[:error_text]] }, options[:error_code])
       end
 
-      def activity_record(options = {})
-        params = {
-          category:        'user',
-          user_id:         options[:user],
-          user_ip:         remote_ip,
-          user_ip_country: Barong::GeoIP.info(ip: remote_ip, key: :country),
-          user_agent:      request.env['HTTP_USER_AGENT'],
-          topic:           options[:topic],
-          action:          options[:action],
-          result:          options[:result],
-          data:            options[:data]
-        }
-        Activity.create(params)
-      end
 
       def token_uniq?(jti)
         error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(jti) == 'utilized'
@@ -111,13 +97,23 @@ module API::V2
         )
       end
 
+      def activity_record(options = {})
+        user_service.activity_record(options)
+      end
+
       def publish_session_create(user)
-        EventAPI.notify('system.session.create',
-                        record: {
-                          user: user.as_json_for_event_api,
-                          user_ip: remote_ip,
-                          user_agent: request.env['HTTP_USER_AGENT']
-                        })
+        user_service.publish_session_create(user: user.as_json_for_event_api)
+      end
+
+      def user_service
+        @user_service ||= UserService.new(user_service_default_options)
+      end
+
+      def user_service_default_options
+        {
+          user_ip: remote_ip,
+          user_agent: request.env['HTTP_USER_AGENT']
+        }
       end
     end
   end

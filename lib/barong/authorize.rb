@@ -17,6 +17,7 @@ module Barong
       end
     end
 
+    attr_reader :request
     # init base request info, fetch black and white lists
     def initialize(request, path)
       @request = request
@@ -39,8 +40,38 @@ module Barong
 
     def auth_owner
       auth_type = 'cookie'
+      auth_type = 'bz_cookie' if ENV.true?('USE_BZ_COOKIE')
       auth_type = 'api_key' if api_key_headers?
       @auth_owner = method("#{auth_type}_owner").call
+    end
+
+    def bz_cookie_owner
+      bz_cookies = cookies['bitzlatoId']
+
+      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookies
+
+      bz_sesison = Barong::BitzlatoSession.new(cookie: bz_cookies)
+
+      jwt_id_token = bz_sesison.id_token
+      claims = Barong::Auth0::JWT.verify(jwt_id_token).first
+      error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
+
+      user = User.find_by(email: claims['email'])
+      # If there is no user in platform and user email verified from id_token
+      # system will create user
+      if user.blank? && claims['email_verified']
+        user = User.create!(email: claims['email'], state: 'active')
+        user.labels.create!(scope: 'private', key: 'email', value: 'verified')
+      elsif claims['email_verified'] == false
+        error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
+      end
+
+      user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
+      user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+      user_service.publish_session_create(user: user.as_json_for_event_api)
+      #csrf_token = user_service.open_session(user)
+
+      user
     end
 
     # cookies validations
@@ -52,7 +83,6 @@ module Barong
 
       user = User.find_by!(uid: session[:uid])
       Rails.logger.debug "User #{user} authorization via cookies"
-
       validate_session!
 
       unless user.state.in?(%w[active pending])
@@ -206,6 +236,10 @@ module Barong
       false # default
     end
 
+    def user_agent
+      @request.env['HTTP_USER_AGENT']
+    end
+
     def remote_ip
       # default behaviour, IP from HTTP_X_FORWARDED_FOR
       ip = @request.remote_ip
@@ -286,5 +320,10 @@ module Barong
     def session
       @request.session
     end
+
+    def cookies
+      @request.cookies
+    end
+
   end
 end
