@@ -73,7 +73,9 @@ module Barong
 
       user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
       user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-      user_service.publish_session_create(user: user.as_json_for_event_api)
+
+      # Временно отключил
+      # user_service.publish_session_create(user: user.as_json_for_event_api)
       #csrf_token = user_service.open_session(user)
 
       user
