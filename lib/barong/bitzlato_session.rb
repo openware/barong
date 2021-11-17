@@ -69,6 +69,7 @@ class Barong::BitzlatoSession
   def session_data=(value)
     raise 'must be a Hash' unless value.is_a? Hash
     self.raw_session_data = value.to_json
+    @session_data = value
   end
 
   def session_data
