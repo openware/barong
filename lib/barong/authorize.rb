@@ -48,7 +48,8 @@ module Barong
     def bz_cookie_owner
       # TODO validate_csrf!
       #
-      bz_cookie = cookies[ENV.fetch('BITZLATO_COOKIE', 'bitzlatoId')]
+      # Unescaped cookie
+      bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
 
       Rails.logger.info("bz_cookie: '#{bz_cookie}'")
 

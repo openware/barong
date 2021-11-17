@@ -1,16 +1,15 @@
 require "base64"
 class Barong::BitzlatoSession
-
   PREFIX = 's'
-
+  ESCAPE_DATA = false
   P2P_SESSION_REDIS_URL = ENV.fetch('P2P_SESSION_REDIS_URL', 'redis:/127.0.0.1/0')
 
   attr_reader :session_id, :signature, :secret
 
   def self.generate_cookie(session_id, secret)
-    CGI.escape(
-      PREFIX + ':' + session_id + '.' + sign_session_id(session_id, secret)
-    )
+    value = PREFIX + ':' + session_id + '.' + sign_session_id(session_id, secret)
+    return value unless ESCAPE_DATA
+    CGI.escape value
   end
 
   def self.sign_session_id(data, secret)
@@ -60,6 +59,7 @@ class Barong::BitzlatoSession
   end
 
   def split_cookie(cookie)
-    CGI.unescape(cookie).split(/[:.]/)
+    cookie = CGI.unescape(cookie) if ESCAPE_DATA
+    cookie.split(/[:.]/)
   end
 end
