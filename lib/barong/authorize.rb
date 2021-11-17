@@ -63,10 +63,10 @@ module Barong
       user = User.find_by(email: bz_session.claims['email'])
       # If there is no user in platform and user email verified from id_token
       # system will create user
-      if user.blank? && claims['email_verified']
-        user = User.create!(email: claims['email'], state: 'active')
+      if user.blank? && bz_session.claims['email_verified']
+        user = User.create!(email: bz_session.claims['email'], state: 'active')
         user.labels.create!(scope: 'private', key: 'email', value: 'verified')
-      elsif claims['email_verified'] == false
+      elsif bz_session.claims['email_verified'] == false
         error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
       end
 
