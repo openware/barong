@@ -59,7 +59,7 @@ class Barong::BitzlatoSession
   def logout!
     return unless present?
 
-    self.session_data = session_data.merge('password' => {})
+    self.session_data = session_data.merge('passport' => {})
   end
 
   def claims
