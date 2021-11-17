@@ -46,11 +46,15 @@ module Barong
     end
 
     def bz_cookie_owner
-      bz_cookies = cookies['bitzlatoId']
+      # TODO validate_csrf!
+      #
+      bz_cookie = cookies[ENV.fetch('BITZLATO_COOKIE', 'bitzlatoId')]
 
-      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookies
+      Rails.logger.info("bz_cookie: '#{bz_cookie}'")
 
-      bz_sesison = Barong::BitzlatoSession.new(cookie: bz_cookies)
+      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie
+
+      bz_sesison = Barong::BitzlatoSession.new(cookie: bz_cookie)
 
       jwt_id_token = bz_sesison.id_token
       claims = Barong::Auth0::JWT.verify(jwt_id_token).first

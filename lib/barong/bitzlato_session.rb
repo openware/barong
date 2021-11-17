@@ -22,6 +22,7 @@ class Barong::BitzlatoSession
 
   def initialize(secret: ENV.fetch('P2P_SESSION_SECRET'), cookie: )
     @secret = secret
+    @cookie = cookie
     @_prefix, @session_id, @signature = split_cookie cookie
   end
 
@@ -45,9 +46,9 @@ class Barong::BitzlatoSession
   def session_data
     return @session_data if @session_data
 
-    raise 'Cookie is not valid' unless valid?
+    raise "Cookie is not valid (#{@cookie})" unless valid?
     raw_session_data = redis.get('sess:' + session_id)
-    raise 'No raw_session_data' if raw_session_data.blank?
+    raise "No raw_session_data (#{@cookie}" if raw_session_data.blank?
 
     @session_data = JSON.parse raw_session_data
   end
