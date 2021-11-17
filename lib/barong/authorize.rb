@@ -58,12 +58,9 @@ module Barong
       bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
 
       error!({ errors: ['authz.invalid_session'] }, 401) unless bz_session.present?
+      error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless bz_session.claims.key?('email')
 
-      jwt_id_token = bz_session.id_token
-      claims = Barong::Auth0::JWT.verify(jwt_id_token).first
-      error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
-
-      user = User.find_by(email: claims['email'])
+      user = User.find_by(email: bz_session.claims['email'])
       # If there is no user in platform and user email verified from id_token
       # system will create user
       if user.blank? && claims['email_verified']

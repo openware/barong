@@ -87,18 +87,22 @@ module API::V2
           ],
           success: { code: 200, message: 'Session was destroyed' }
         delete do
-          user = User.find_by(uid: session[:uid])
-          error!({ errors: ['identity.session.not_found'] }, 404) unless user
-
-          activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
-
           if ENV.true?('USE_BZ_COOKIE')
             bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
             bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
+            if bz_session.present? && bz_session.claims.present? && bz_session.claims.key?('email')
+              user = User.find_by(email: bz_session.claims['email'])
+            end
             bz_session.logout!
+          else
+            user = User.find_by(uid: session[:uid])
+            error!({ errors: ['identity.session.not_found'] }, 404) unless user
           end
 
-          Barong::RedisSession.delete(user.uid, session.id)
+            if user.present?
+              activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
+              Barong::RedisSession.delete(user.uid, session.id)
+            end
           session.destroy
 
           status(200)

@@ -62,6 +62,10 @@ class Barong::BitzlatoSession
     self.session_data = session_data.merge('password' => {})
   end
 
+  def claims
+    @claims ||= Barong::Auth0::JWT.verify(id_token).first
+  end
+
   def session_data=(value)
     raise 'must be a Hash' unless value.is_a? Hash
     self.raw_session_data = value.to_json
