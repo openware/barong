@@ -85,7 +85,7 @@ module Barong
       end
 
       user
-    rescue Barong::JWT::DecodeError => err
+    rescue ::JWT::DecodeError => err
       Rails.logger.error err
       error!({ errors: ['authz.invalid_session'] }, 401)
     end
