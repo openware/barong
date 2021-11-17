@@ -92,7 +92,12 @@ module API::V2
 
           activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
 
-          cookies.delete ENV.fetch('P2P_SESSION_COOKIE') if ENV.true?('USE_BZ_COOKIE')
+          if ENV.true?('USE_BZ_COOKIE')
+            bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
+            bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
+            bz_session.logout!
+          end
+
           Barong::RedisSession.delete(user.uid, session.id)
           session.destroy
 

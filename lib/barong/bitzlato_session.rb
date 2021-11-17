@@ -50,6 +50,23 @@ class Barong::BitzlatoSession
     redis.get('sess:' + session_id)
   end
 
+  def raw_session_data=(value)
+    raise 'must be a String' unless value.is_a? string
+
+    redis.set('sess:' + session_id, value)
+  end
+
+  def logout!
+    return unless present?
+
+    self.session_data = session_data.merge('password' => {})
+  end
+
+  def session_data=(value)
+    raise 'must be a Hash' unless value.is_a? Hash
+    self.raw_session_data = value.to_json
+  end
+
   def session_data
     return @session_data if @session_data
 
