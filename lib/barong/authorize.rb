@@ -53,7 +53,7 @@ module Barong
 
       Rails.logger.info("bz_cookie: '#{bz_cookie}'")
 
-      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie
+      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie.presence
 
       bz_sesison = Barong::BitzlatoSession.new(cookie: bz_cookie)
 
