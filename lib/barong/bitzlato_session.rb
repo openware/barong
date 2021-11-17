@@ -43,7 +43,7 @@ class Barong::BitzlatoSession
   end
 
   def present?
-    raw_session_data.present?
+    raw_session_data.present? && id_token.present? && user_id.present?
   end
 
   def raw_session_data

@@ -85,6 +85,8 @@ module Barong
       end
 
       user
+    rescue JWT::DecodeError
+      error!({ errors: ['authz.invalid_session'] }, 401)
     end
 
     # cookies validations
