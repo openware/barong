@@ -53,11 +53,13 @@ module Barong
 
       Rails.logger.info("bz_cookie: '#{bz_cookie}'")
 
-      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie.presence
+      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie
 
-      bz_sesison = Barong::BitzlatoSession.new(cookie: bz_cookie)
+      bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
 
-      jwt_id_token = bz_sesison.id_token
+      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_session.present?
+
+      jwt_id_token = bz_session.id_token
       claims = Barong::Auth0::JWT.verify(jwt_id_token).first
       error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless claims.key?('email')
 

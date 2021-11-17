@@ -42,11 +42,18 @@ class Barong::BitzlatoSession
     session_data.dig('passport','user','idToken')
   end
 
+  def present?
+    raw_session_data.present?
+  end
+
+  def raw_session_data
+    redis.get('sess:' + session_id)
+  end
+
   def session_data
     return @session_data if @session_data
 
     raise "Cookie is not valid (#{@cookie})" unless valid?
-    raw_session_data = redis.get('sess:' + session_id)
     raise "No raw_session_data (#{@cookie}" if raw_session_data.blank?
 
     @session_data = JSON.parse raw_session_data
