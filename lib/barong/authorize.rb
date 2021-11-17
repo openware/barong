@@ -71,12 +71,16 @@ module Barong
         error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
       end
 
-      user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
-      user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+      unless user.state.in?(%w[active pending])
+        error!({ errors: ['authz.user_is_not_activated'] }, 401)
+      end
 
-      # Временно отключил
-      # user_service.publish_session_create(user: user.as_json_for_event_api)
-      #csrf_token = user_service.open_session(user)
+      unless session[:uid] == user.uid
+        user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
+        user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
+        session[:uid] == user.uid
+        Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
+      end
 
       user
     end
@@ -331,6 +335,5 @@ module Barong
     def cookies
       @request.cookies
     end
-
   end
 end
