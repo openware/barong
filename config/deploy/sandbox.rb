@@ -2,10 +2,10 @@
 
 set :rails_env, :staging
 
-set :application, -> { 'barong-sandbox' }
+set :application, -> { 'barong' }
 set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:application)}" }
 
-server '217.182.138.99',
+server '141.94.218.39',
   user: fetch(:user),
   port: '22',
   roles: %w[app db].freeze,
