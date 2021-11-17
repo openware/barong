@@ -51,7 +51,7 @@ class Barong::BitzlatoSession
   end
 
   def raw_session_data=(value)
-    raise 'must be a String' unless value.is_a? string
+    raise 'must be a String' unless value.is_a? String
 
     redis.set('sess:' + session_id, value)
   end
