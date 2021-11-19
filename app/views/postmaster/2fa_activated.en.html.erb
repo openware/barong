@@ -1,0 +1,43 @@
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
+  <tr>
+    <td>&nbsp;</td>
+    <td class="container">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <%= image_tag @logo, alt: 'Company Logo', class: 'logo-img' %>
+          </td>
+        </tr>
+      </table>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="container">
+      <div class="content">
+        <table role="presentation" class="main">
+          <!-- START MAIN CONTENT AREA -->
+          <tr>
+            <td class="wrapper">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <br />
+                    <p>Dear user,</p>
+                    <p>
+                      You have successfully activated Two-factor authentication (2FA), Two-factor authentication (2FA) is a security method to protect the account.
+                    </p>
+                    <br />
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        <!-- END MAIN CONTENT AREA -->
+        </table>
+      </div>
+      <%= render partial: 'postmaster/footer' %>
+    </td>
+    <td>&nbsp;</td>
+  </tr>
+</table>

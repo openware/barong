@@ -2,7 +2,7 @@ require "base64"
 class Barong::BitzlatoSession
   PREFIX = 's'
   ESCAPE_DATA = false
-  P2P_SESSION_REDIS_URL = ENV.fetch('P2P_SESSION_REDIS_URL', 'redis:/127.0.0.1/0')
+  P2P_SESSION_REDIS_URL = ENV.fetch('P2P_SESSION_REDIS_URL', 'redis://127.0.0.1/0')
 
   attr_reader :session_id, :signature, :secret
 

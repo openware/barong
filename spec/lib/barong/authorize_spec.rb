@@ -13,7 +13,7 @@ describe Barong::Authorize do
     let(:request) do
       double(
         headers: {},
-        cookies: { 'bitzlatoId' => 'sess:xxx.xxxxxx'},
+        cookies: { 'sessionCookie' => 'sess:xxx.xxxxxx'},
         remote_ip: '85.140.0.148',
         env: { 'HTTP_USER_AGENT': 'blabla'}
       )
