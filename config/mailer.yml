@@ -43,13 +43,16 @@ events:
         subject: Сброс Пароля
         template_path: password_reset.ru.html.erb
 
-  - name: Label Created
+  - name: 2FA Activated
     key: label.created
+    expression:
+      and:
+        record.key: "otp"
     exchange: barong_model
     templates:
       en:
-        subject: Phone verified
-        template_path: label.en.html.erb
+        subject: "[Bitzlato Exchange] 2FA Activated"
+        template_path: 2fa_activated.en.html.erb
 
   - name: Label Updated
     key: label.updated
