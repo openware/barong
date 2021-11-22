@@ -77,7 +77,7 @@ module Barong
       unless session[:uid] == user.uid
         user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
         user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-        session[:uid] == user.uid
+        session[:uid] = user.uid
         Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
       end
 
