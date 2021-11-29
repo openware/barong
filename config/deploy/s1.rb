@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 set :rails_env, :staging
+set :disallow_pushing, false
+set :application, -> { 'barong-' + fetch(:stage).to_s }
 
 set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:application)}" }
 
-server '217.182.138.99',
+server '51.91.62.13',
   user: fetch(:user),
   port: '22',
   roles: %w[app db].freeze,
