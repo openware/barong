@@ -85,6 +85,8 @@ module Barong
     rescue ::JWT::DecodeError, ::JWT::VerificationError => err
       Rails.logger.error err
       error!({ errors: ['authz.invalid_session'] }, 401)
+    rescue ::JWT::ExpiredSignature
+      error!({ errors: ['authz.session_expired'] }, 401)
     end
 
     # cookies validations
