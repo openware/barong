@@ -19,7 +19,7 @@ end
 class Rack::Session::SessionId
   STORE_PREFIX='sess:'
   def initialize(public_id)
-    @public_id = public_id
+    @public_id = public_id.presence || 's:' + SecureRandom.hex(16).encode!(Encoding::UTF_8) + '.fake'
     @_prefix, @real_session_id, @signature = @public_id.split(/[:.]/)
   end
 
