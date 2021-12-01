@@ -26,10 +26,6 @@ describe Barong::BitzlatoSession do
     expect(subject.valid?).to be_truthy
   end
 
-  it 'returns user id' do
-    expect(subject.user_id).to eq(user_id)
-  end
-
   it 'return id token' do
     expect(subject.id_token).to eq(id_token)
   end

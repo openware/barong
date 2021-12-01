@@ -69,7 +69,7 @@ module Barong
         payload = JSON.parse(payload.keys.first)
       end
 
-      payload[:uid] || payload[:user_uid] || payload['uid'] || payload['user_uid']
+      payload[:barong_uid] || payload[:user_uid] || payload['uid'] || payload['user_uid']
     end
 
     def self.valid_json?(json)

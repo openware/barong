@@ -74,11 +74,11 @@ module Barong
         error!({ errors: ['authz.user_is_not_activated'] }, 401)
       end
 
-      unless session[:uid] == user.uid
+      unless session[:barong_uid] == user.uid
         user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
         user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-        session[:uid] = user.uid
-        Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
+        session[:barong_uid] = user.uid
+        Barong::RedisSession.update(session[:barong_uid], session.id.to_s, session[:expire_time])
       end
 
       user
@@ -93,10 +93,10 @@ module Barong
     def cookie_owner
       validate_csrf!
 
-      session[:uid] = ENV.fetch('FORCE_SESSION_UID') if ENV.key? 'FORCE_SESSION_UID'
-      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:uid]
+      session[:barong_uid] = ENV.fetch('FORCE_SESSION_UID') if ENV.key? 'FORCE_SESSION_UID'
+      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:barong_uid]
 
-      user = User.find_by!(uid: session[:uid])
+      user = User.find_by!(uid: session[:barong_uid])
       Rails.logger.debug "User #{user} authorization via cookies"
       validate_session!
 
@@ -111,13 +111,12 @@ module Barong
     end
 
     def validate_session!
-      return if ENV.true? 'DISABLE_SESSION_VALIDATION'
       unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
              Time.now.to_i < session[:expire_time] &&
              find_ip.include?(remote_ip) && ENV.false?( 'SKIP_SESSION_INVALIDATION' )
 
         # Delete session from additional redis list
-        Barong::RedisSession.delete(session[:uid], session.id.to_s)
+        Barong::RedisSession.delete(session[:barong_uid], session.id.to_s)
 
         session.destroy
 
@@ -131,7 +130,7 @@ module Barong
 
       # Update session key expiration date
       session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
-      Barong::RedisSession.update(session[:uid], session.id.to_s, session[:expire_time])
+      Barong::RedisSession.update(session[:barong_uid], session.id.to_s, session[:expire_time])
     end
 
     def find_ip
@@ -190,12 +189,12 @@ module Barong
       return unless Barong::App.config.csrf_protection && @request.env['REQUEST_METHOD'].in?(STATE_CHANGING_VERBS)
 
       unless headers['X-CSRF-Token']
-        Rails.logger.info("CSRF attack warning! Missing token for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        Rails.logger.info("CSRF attack warning! Missing token for uid: #{session[:barong_uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
         error!({ errors: ['authz.missing_csrf_token'] }, 401)
       end
 
       unless headers['X-CSRF-Token'] == session[:csrf_token]
-        Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{session[:uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
+        Rails.logger.info("CSRF attack warning! Token is not valid for uid: #{session[:barong_uid]} in request to #{@path} by #{@request.env['REQUEST_METHOD']}")
         error!({ errors: ['authz.csrf_token_mismatch'] }, 401)
       end
     end

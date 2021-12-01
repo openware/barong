@@ -17,6 +17,8 @@ gem 'fog-aws', '~> 3.5.2'
 # gcp support (google)
 # gem 'fog-google', '~> 1.9.1'
 
+gem 'redis-actionpack'
+
 gem 'kycaid'
 gem 'sidekiq', '>= 6.0.7'
 # GLI
@@ -138,3 +140,5 @@ group :deploy do
   gem 'bugsnag-capistrano', require: false
   gem 'slackistrano', require: false
 end
+
+gem "oj", "~> 3.13"

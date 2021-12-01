@@ -69,7 +69,7 @@ describe API::V2::Identity::Sessions do
       it 'Check current credentials and returns session' do
         do_request
 
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
+        expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(user.uid)
         expect_status.to eq(200)
         result = JSON.parse(response.body)
         expect(result['profiles'][0]['last_name']).to eq user.profiles.first.sub_masked_last_name
@@ -270,15 +270,15 @@ describe API::V2::Identity::Sessions do
 
       it 'Deletes session' do
         do_create_session_request
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
+        expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(user.uid)
 
         do_delete_session_request
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(nil)
+        expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(nil)
       end
 
       it "return invalid set-cookie header on #logout" do
         do_create_session_request
-        expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
+        expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(user.uid)
 
         do_delete_session_request
         expect(response.status).to eq(200)

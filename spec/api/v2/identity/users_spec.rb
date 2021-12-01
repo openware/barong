@@ -412,7 +412,7 @@ describe API::V2::Identity::Users do
       user = User.find_by(email: email)
 
       expect(user).not_to be(nil)
-      expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
+      expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(user.uid)
       expect_status.to eq(201)
 
       check_session
@@ -491,7 +491,7 @@ describe API::V2::Identity::Users do
       do_request
 
       expect(user).not_to be(nil)
-      expect(session.instance_variable_get(:@delegate)[:uid]).to eq(user.uid)
+      expect(session.instance_variable_get(:@delegate)[:barong_uid]).to eq(user.uid)
       expect_status.to eq(201)
 
       check_session

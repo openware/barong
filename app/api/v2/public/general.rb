@@ -58,6 +58,17 @@ module API::V2
           auth0_client_id: Barong::App.config.auth0_client_id
         }.compact
       end
+
+      desc 'Show my session data'
+      get '/session' do
+        { session: request.session.to_h, claims: request.session.claims }
+      end
+
+      desc 'Update session data'
+      put '/session' do
+        request.session.update params.merge updated_at: Time.zone.now.to_s
+        { session: request.session.to_h, claims: request.session.claims }
+      end
     end
   end
 end

@@ -14,7 +14,7 @@ module API::V2
         csrf_token = SecureRandom.hex(10)
         expire_time = Time.now.to_i + Barong::App.config.session_expire_time
         session.merge!(
-          "uid": user.uid,
+          "barong_uid": user.uid,
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
           "expire_time": expire_time,

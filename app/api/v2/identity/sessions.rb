@@ -95,7 +95,7 @@ module API::V2
             end
             bz_session.logout!
           else
-            user = User.find_by(uid: session[:uid])
+            user = User.find_by(uid: session[:barong_uid])
             error!({ errors: ['identity.session.not_found'] }, 404) unless user
           end
 

@@ -14,7 +14,7 @@ describe Barong::Authorize do
     let(:session_id) { 'session_id' }
     let(:request) do
       request = ActionDispatch::TestRequest.create
-      request.cookies['sessionCookie'] = Barong::BitzlatoSession.generate_cookie(session_id, secret)
+      request.cookies[ENV['P2P_SESSION_COOKIE']] = Barong::BitzlatoSession.generate_cookie(session_id, secret)
       request.session = ActionController::TestSession.new
       request.session.id = session_id
       request

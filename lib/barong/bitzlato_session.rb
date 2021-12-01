@@ -19,7 +19,7 @@ class Barong::BitzlatoSession
       .gsub(/\=+$/, '')
   end
 
-  def initialize(secret: ENV.fetch('P2P_SESSION_SECRET'), cookie: )
+  def initialize(secret: ENV.fetch('P2P_SESSION_SECRET', 'secret'), cookie: )
     @secret = secret
     @cookie = cookie
     @_prefix, @session_id, @signature = split_cookie cookie
@@ -32,18 +32,12 @@ class Barong::BitzlatoSession
       self.class.sign_session_id(@session_id, secret) == @signature
   end
 
-  # TODO проверить подпись jwt токена
-  #
-  def user_id
-    session_data.dig('passport','user','userId')
-  end
-
   def id_token
     session_data.dig('passport','user','idToken')
   end
 
   def present?
-    raw_session_data.present? && id_token.present? && user_id.present?
+    raw_session_data.present? && id_token.present?
   end
 
   def raw_session_data
