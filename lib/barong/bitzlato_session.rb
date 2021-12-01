@@ -83,6 +83,6 @@ class Barong::BitzlatoSession
 
   def split_cookie(cookie)
     cookie = CGI.unescape(cookie) if ESCAPE_DATA
-    cookie.split(/[:.]/)
+    cookie.to_s.split(/[:.]/)
   end
 end
