@@ -5,6 +5,8 @@ require 'barong/activity_logger'
 module Barong
   # AuthZ functionality
   class Authorize
+    include API::V2::Identity::Utils
+
     STATE_CHANGING_VERBS = %w[POST PUT PATCH DELETE TRACE].freeze
     # Custom Error class to support error status and message
     class AuthError < StandardError
@@ -40,44 +42,46 @@ module Barong
 
     def auth_owner
       auth_type = 'cookie'
-      auth_type = 'bz_cookie' if ENV.true?('USE_BZ_COOKIE')
       auth_type = 'api_key' if api_key_headers?
       @auth_owner = method("#{auth_type}_owner").call
     end
 
-    def bz_cookie_owner
-      # TODO validate_csrf!
-      #
-      # Unescaped cookie
-      bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
+    def cookie_owner
+      validate_csrf!
 
-      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie
+      if session.claims.present? && session.claims.key?('email')
+        error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless session.claims.key?('email')
+        user = User.find_by(email: session.claims['email'])
+        # If there is no user in platform and user email verified from id_token
+        # system will create user
+        if user.blank? && session.claims['email_verified']
+          user = User.create!(email: session.claims['email'], state: 'active')
+          user.labels.create!(scope: 'private', key: 'email', value: 'verified')
+        elsif session.claims['email_verified'] == false
+          error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
+        end
 
-      bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
-
-      error!({ errors: ['authz.invalid_session'] }, 401) unless bz_session.present?
-      error!({ errors: ['identity.session.auth0.invalid_params'] }, 401) unless bz_session.claims.key?('email')
-
-      user = User.find_by(email: bz_session.claims['email'])
-      # If there is no user in platform and user email verified from id_token
-      # system will create user
-      if user.blank? && bz_session.claims['email_verified']
-        user = User.create!(email: bz_session.claims['email'], state: 'active')
-        user.labels.create!(scope: 'private', key: 'email', value: 'verified')
-      elsif bz_session.claims['email_verified'] == false
-        error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
+        # авторизация прошла напрямую в barong, через логин-пароль
+      elsif session.key? :barong_uid
+        user = User.find_by(uid: session[:barong_uid])
+        error!({ errors: ['authz.invalid_session'] }, 401) if user.nil?
+      else
+        error!({ errors: ['authz.invalid_session'] }, 401)
       end
 
+      validate_session!
       unless user.state.in?(%w[active pending])
-        error!({ errors: ['authz.user_is_not_activated'] }, 401)
+        error!({ errors: ['authz.user_not_active'] }, 401)
       end
 
-      unless session[:barong_uid] == user.uid
+      unless user.id == session[:barong_uid]
         user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
         user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-        session[:barong_uid] = user.uid
-        Barong::RedisSession.update(session[:barong_uid], session.id.to_s, session[:expire_time])
+        open_session user
       end
+
+      validate_bitzlato_user!(user)
+      validate_permissions!(user)
 
       user
     rescue ::JWT::DecodeError, ::JWT::VerificationError => err
@@ -87,44 +91,24 @@ module Barong
       error!({ errors: ['authz.session_expired'] }, 401)
     end
 
-    # cookies validations
-    def cookie_owner
-      validate_csrf!
-
-      session[:barong_uid] = ENV.fetch('FORCE_SESSION_UID') if ENV.key? 'FORCE_SESSION_UID'
-      error!({ errors: ['authz.invalid_session'] }, 401) unless session[:barong_uid]
-
-      user = User.find_by!(uid: session[:barong_uid])
-      Rails.logger.debug "User #{user} authorization via cookies"
-      validate_session!
-
-      unless user.state.in?(%w[active pending])
-        error!({ errors: ['authz.user_not_active'] }, 401)
-      end
-
-      validate_bitzlato_user!(user)
-      validate_permissions!(user)
-
-      user # returns user(whose session is inside cookie)
-    end
-
     def validate_session!
-      unless @request.env['HTTP_USER_AGENT'] == session[:user_agent] &&
-             Time.now.to_i < session[:expire_time] &&
-             find_ip.include?(remote_ip) && ENV.false?( 'SKIP_SESSION_INVALIDATION' )
+      unless ENV.true?( 'SKIP_SESSION_INVALIDATION' )
+        unless user_agent == session[:user_agent] &&
+            Time.now.to_i < session[:expire_time] &&
+            find_ip.include?(remote_ip)
 
-        # Delete session from additional redis list
-        Barong::RedisSession.delete(session[:barong_uid], session.id.to_s)
+          # Delete session from additional redis list
+          Barong::RedisSession.delete(session[:barong_uid], session.id.to_s)
 
-        session.destroy
+          session.destroy
 
-        Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
-                           " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
-                           " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
+          Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
+                             " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
+                             " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
 
-        error!({ errors: ['authz.client_session_mismatch'] }, 401)
+          error!({ errors: ['authz.client_session_mismatch'] }, 401)
+        end
       end
-
 
       # Update session key expiration date
       session[:expire_time] = Time.now.to_i + Barong::App.config.session_expire_time
@@ -295,7 +279,7 @@ module Barong
 
     def validate_user!(user)
       unless user.state.in?(%w[active pending])
-        error!({ errors: ['authz.user_is_not_activated'] }, 401)
+        error!({ errors: ['authz.user_not_active'] }, 401)
       end
 
       if user.is_a?(User) && !user.otp

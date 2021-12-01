@@ -10,16 +10,17 @@ module API::V2
         @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
       end
 
-      def open_session(user)
-        csrf_token = SecureRandom.hex(10)
+      def open_session(user, id_token = nil)
+        csrf_token = session[:csrf_token] || SecureRandom.hex(10)
         expire_time = Time.now.to_i + Barong::App.config.session_expire_time
-        session.merge!(
+        session.update(
           "barong_uid": user.uid,
           "user_ip": remote_ip,
           "user_agent": request.env['HTTP_USER_AGENT'],
           "expire_time": expire_time,
           "csrf_token": csrf_token
         )
+        session.id_token = id_token unless id_token.nil?
 
         # Add current session key info in additional redis list
         Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)

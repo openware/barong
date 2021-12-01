@@ -87,22 +87,13 @@ module API::V2
           ],
           success: { code: 200, message: 'Session was destroyed' }
         delete do
-          if ENV.true?('USE_BZ_COOKIE')
-            bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
-            bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
-            if bz_session.present? && bz_session.claims.present? && bz_session.claims.key?('email')
-              user = User.find_by(email: bz_session.claims['email'])
-            end
-            bz_session.logout!
-          else
-            user = User.find_by(uid: session[:barong_uid])
-            error!({ errors: ['identity.session.not_found'] }, 404) unless user
-          end
+          user = User.find_by(uid: session[:barong_uid])
+          error!({ errors: ['identity.session.not_found'] }, 404) unless user
 
-            if user.present?
-              activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
-              Barong::RedisSession.delete(user.uid, session.id)
-            end
+          if user.present?
+            activity_record(user: user.id, action: 'logout', result: 'succeed', topic: 'session')
+            Barong::RedisSession.delete(user.uid, session.id)
+          end
           session.destroy
 
           status(200)
@@ -137,7 +128,7 @@ module API::V2
             end
 
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            csrf_token = open_session(user)
+            csrf_token = open_session(user, claims)
             publish_session_create(user)
 
             present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token

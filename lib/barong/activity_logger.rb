@@ -73,7 +73,7 @@ module Barong
     end
 
     def self.valid_json?(json)
-      JSON.parse(json)
+      JSON.parse(json.to_s)
       true
     rescue JSON::ParserError => e
       false

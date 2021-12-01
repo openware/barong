@@ -4,10 +4,6 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 ENV['BARONG_APP_NAME']='Barong'
 ENV['VAULT_ENABLED']='false'
-ENV['P2P_SESSION_COOKIE'] = 'barong_session'
-ENV['P2P_SESSION_SECRET'] = 'SOME_SECRET'
-ENV['USE_BZ_COOKIE'] = 'false'
-ENV['USE_P2P_SESSION_STORAGE'] = 'true'
 
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
