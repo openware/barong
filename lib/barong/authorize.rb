@@ -51,8 +51,6 @@ module Barong
       # Unescaped cookie
       bz_cookie = cookies[ENV.fetch('P2P_SESSION_COOKIE')]
 
-      Rails.logger.info("bz_cookie: '#{bz_cookie}'")
-
       error!({ errors: ['authz.invalid_session'] }, 401) unless bz_cookie
 
       bz_session = Barong::BitzlatoSession.new(cookie: bz_cookie)
