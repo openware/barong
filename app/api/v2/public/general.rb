@@ -59,15 +59,17 @@ module API::V2
         }.compact
       end
 
-      desc 'Show my session data'
-      get '/session' do
-        { session: request.session.to_h, claims: request.session.claims }
-      end
+      if ENV.true? 'DIRECT_SESSION_ACCESS'
+        desc 'Show my session data'
+        get '/session' do
+          { session: request.session.to_h, claims: request.session.claims }
+        end
 
-      desc 'Update session data'
-      put '/session' do
-        request.session.update params.merge updated_at: Time.zone.now.to_s
-        { session: request.session.to_h, claims: request.session.claims }
+        desc 'Update session data'
+        put '/session' do
+          request.session.update params.merge updated_at: Time.zone.now.to_s
+          { session: request.session.to_h, claims: request.session.claims }
+        end
       end
     end
   end
