@@ -9,4 +9,8 @@ class BitzlatoUser < BitzlatoRecord
   def self.find_by_email(email)
     by_email(email).where(email_verified: true, deleted_at: nil).take
   end
+
+  def self.find_by_claims(sub: , email: )
+    find_by_subject(sub) || find_by_email(email)
+  end
 end

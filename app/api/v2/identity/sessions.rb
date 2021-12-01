@@ -128,7 +128,9 @@ module API::V2
             end
 
             activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-            csrf_token = open_session(user, claims)
+            # TODO Создавать пользователя BitzlatoUser если его нет
+            bitzlato_user_id = BitzlatoUser.find_by_claims(claims.symbolize_keys.slice(:email, :sub)).try(:id) unless Rails.env.test?
+            csrf_token = open_session(user, params[:id_token], bitzlato_user_id)
             publish_session_create(user)
 
             present user, with: API::V2::Entities::UserWithFullInfo, csrf_token: csrf_token

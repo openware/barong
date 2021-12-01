@@ -64,9 +64,9 @@ module Barong
         # авторизация прошла напрямую в barong, через логин-пароль
       elsif session.key? :barong_uid
         user = User.find_by(uid: session[:barong_uid])
-        error!({ errors: ['authz.invalid_session'] }, 401) if user.nil?
+        error!({ errors: ['authz.invalid_session', 'no_barong_uid'] }, 401) if user.nil?
       else
-        error!({ errors: ['authz.invalid_session'] }, 401)
+        error!({ errors: ['authz.invalid_session', 'no_barong_uid_or_claims'] }, 401)
       end
 
       validate_session!
@@ -86,7 +86,7 @@ module Barong
       user
     rescue ::JWT::DecodeError, ::JWT::VerificationError => err
       Rails.logger.error err
-      error!({ errors: ['authz.invalid_session'] }, 401)
+      error!({ errors: ['authz.invalid_session', 'wrong_jwt'] }, 401)
     rescue ::JWT::ExpiredSignature
       error!({ errors: ['authz.session_expired'] }, 401)
     end

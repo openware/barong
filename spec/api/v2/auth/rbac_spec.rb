@@ -24,7 +24,7 @@ describe '/api/v2/auth functionality test' do
         it 'denies access for user with missing cookies' do
           do_protected_request
           expect(response.status).to eq(401)
-          expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
+          expect(JSON.parse(response.body).fetch('errors')).to include('authz.invalid_session')
         end
 
         it 'denies access for non-accountant user with valid cookies trying to GET accountant api' do

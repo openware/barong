@@ -1,14 +1,29 @@
 module BitzlatoSession
   def claims
-    return if id_token.nil?
+    return if id_token.nil? || id_token.is_a?(Hash) # Были такие ошибочные сессии в редисе
     @claims ||= Barong::Auth0::JWT.verify(id_token).first
-  rescue JWT::DecodeError => err
+  rescue StandardError, JWT::DecodeError => err
     report_exception err, true, id_token: id_token
     nil
   end
 
-  def id_token=(value)
-    update passport: { user: { idToken: value }}
+  def login! id_token, user_id
+    update(
+      {
+        cookie: {:originalMaxAge=>nil, :expires=>nil, :httpOnly=>true, :domain=>".bitzlato.com", :path=>"/"},
+        passport: {
+          user: {
+            userId: user_id,
+            idToken: id_token,
+            emailVerified: true,
+            # passed2fa: true,
+            complete: true,
+            # returnReferrer: '',
+            # refreshToken: '',
+          }
+        }
+      }.deep_stringify_keys
+    )
   end
 
   def id_token
@@ -21,6 +36,8 @@ class Rack::Session::SessionId
   def initialize(public_id)
     @public_id = public_id.presence || 's:' + SecureRandom.hex(16).encode!(Encoding::UTF_8) + '.fake'
     @_prefix, @real_session_id, @signature = @public_id.split(/[:.]/)
+    Rails.logger.info("Unknown cookie: '#{public_id}'") if @real_session_id.nil?
+    @real_session_id ||= SecureRandom.hex(16).encode!(Encoding::UTF_8) + '_fake'
   end
 
   # Session key for redis-storage

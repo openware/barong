@@ -134,7 +134,7 @@ describe '/api/v2/auth functionality test' do
       it 'renders error if no session or api key headers provided' do
         get auth_request
         expect(response.status).to eq(401)
-        expect(response.body).to eq("{\"errors\":[\"authz.invalid_session\"]}")
+        expect(JSON.parse(response.body).fetch('errors')).to include('authz.invalid_session')
       end
 
       it 'renders error if session belongs to non-active user' do
