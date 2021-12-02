@@ -1,123 +1,123 @@
-POST       /v2/identity/password/validate(.:format)
-GET        /v2/identity/ping(.:format)
-GET        /v2/identity/time(.:format)
-GET        /v2/identity/version(.:format)
-GET        /v2/identity/configs(.:format)
-POST       /v2/identity/sessions(.:format)
-DELETE     /v2/identity/sessions(.:format)
-POST       /v2/identity/sessions/auth0(.:format)
-POST       /v2/identity/users/access(.:format)
-POST       /v2/identity/users(.:format)
-GET        /v2/identity/users/register_geetest(.:format)
-POST       /v2/identity/users/email/generate_code(.:format)
-POST       /v2/identity/users/email/confirm_code(.:format)
-POST       /v2/identity/users/password/generate_code(.:format)
-POST       /v2/identity/users/password/confirm_code(.:format)
-POST       /v2/public/kyc(.:format)
-POST       /v2/public/password/validate(.:format)
-GET        /v2/public/ping(.:format)
-GET        /v2/public/time(.:format)
-GET        /v2/public/version(.:format)
-GET        /v2/public/configs(.:format)
-GET        /v2/public/configs/auth0(.:format)
-POST       /v2/resource/addresses(.:format)
-GET        /v2/resource/users/me(.:format)
-PUT        /v2/resource/users/me(.:format)
-DELETE     /v2/resource/users/me(.:format)
-GET        /v2/resource/users/activity/:topic(.:format)
-PUT        /v2/resource/users/password(.:format)
-GET        /v2/resource/labels(.:format)
-GET        /v2/resource/labels/:key(.:format)
-POST       /v2/resource/labels(.:format)
-PATCH      /v2/resource/labels/:key(.:format)
-DELETE     /v2/resource/labels/:key(.:format)
-GET        /v2/resource/profiles/me(.:format)
-POST       /v2/resource/profiles(.:format)
-PUT        /v2/resource/profiles(.:format)
-GET        /v2/resource/documents(.:format)
-POST       /v2/resource/documents(.:format)
-GET        /v2/resource/phones(.:format)
-POST       /v2/resource/phones(.:format)
-POST       /v2/resource/phones/send_code(.:format)
-POST       /v2/resource/phones/verify(.:format)
-POST       /v2/resource/otp/generate_qrcode(.:format)
-POST       /v2/resource/otp/enable(.:format)
-POST       /v2/resource/otp/disable(.:format)
-POST       /v2/resource/otp/verify(.:format)
-POST       /v2/resource/api_keys(.:format)
-PATCH      /v2/resource/api_keys/:kid(.:format)
-DELETE     /v2/resource/api_keys/:kid(.:format)
-GET        /v2/resource/api_keys(.:format)
-POST       /v2/resource/data_storage(.:format)
-GET        /v2/resource/service_accounts(.:format)
-GET        /v2/resource/service_accounts/api_keys(.:format)
-POST       /v2/resource/service_accounts/api_keys(.:format)
-DELETE     /v2/resource/service_accounts/api_keys/:kid(.:format)
-PUT        /v2/resource/service_accounts/api_keys/:kid(.:format)
-GET        /v2/resource/swagger_doc(.:format)
-GET        /v2/resource/swagger_doc/:name(.:format)
-GET        /v2/swagger(.:format)
-GET        /v2/swagger/:name(.:format)
-POST       /v2/management/labels/filter/users(.:format)
-POST       /v2/management/labels/list(.:format)
-POST       /v2/management/labels(.:format)
-PUT        /v2/management/labels(.:format)
-POST       /v2/management/labels/delete(.:format)
-POST       /v2/management/users/get(.:format)
-POST       /v2/management/users/list(.:format)
-POST       /v2/management/users(.:format)
-POST       /v2/management/users/update(.:format)
-POST       /v2/management/users/import(.:format)
-POST       /v2/management/profiles(.:format)
-POST       /v2/management/phones/get(.:format)
-POST       /v2/management/phones(.:format)
-POST       /v2/management/phones/delete(.:format)
-POST       /v2/management/timestamp(.:format)
-POST       /v2/management/otp/sign(.:format)
-POST       /v2/management/documents(.:format)
-POST       /v2/management/service_accounts/get(.:format)
-POST       /v2/management/service_accounts/list(.:format)
-POST       /v2/management/service_accounts/create(.:format)
-POST       /v2/management/service_accounts/update(.:format)
-POST       /v2/management/service_accounts/delete(.:format)
-POST       /v2/management/api_keys(.:format)
-POST       /v2/management/api_keys/update(.:format)
-GET        /v2/management/swagger(.:format)
-GET        /v2/management/swagger/:name(.:format)
-GET        /v2/admin/users(.:format)
-POST       /v2/admin/users/update(.:format)
-POST       /v2/admin/users/role(.:format)
-PUT        /v2/admin/users(.:format)
-GET        /v2/admin/users/documents/pending(.:format)
-GET        /v2/admin/users/labels/list(.:format)
-GET        /v2/admin/users/labels(.:format)
-POST       /v2/admin/users/labels(.:format)
-POST       /v2/admin/users/labels/update(.:format)
-PUT        /v2/admin/users/labels(.:format)
-DELETE     /v2/admin/users/labels(.:format)
-GET        /v2/admin/users/:uid(.:format)
-DELETE     /v2/admin/users/data_storage(.:format)
-POST       /v2/admin/users/comments(.:format)
-PUT        /v2/admin/users/comments(.:format)
-DELETE     /v2/admin/users/comments(.:format)
-GET        /v2/admin/api_keys(.:format)
-GET        /v2/admin/permissions(.:format)
-POST       /v2/admin/permissions(.:format)
-DELETE     /v2/admin/permissions(.:format)
-PUT        /v2/admin/permissions(.:format)
-GET        /v2/admin/activities(.:format)
-GET        /v2/admin/activities/admin(.:format)
-GET        /v2/admin/metrics(.:format)
-GET        /v2/admin/restrictions(.:format)
-POST       /v2/admin/restrictions/whitelink(.:format)
-POST       /v2/admin/restrictions(.:format)
-PUT        /v2/admin/restrictions(.:format)
-DELETE     /v2/admin/restrictions(.:format)
-GET        /v2/admin/profiles(.:format)
-PUT        /v2/admin/profiles(.:format)
-POST       /v2/admin/profiles(.:format)
-GET        /v2/admin/levels(.:format)
-GET        /v2/admin/abilities(.:format)
-GET        /v2/admin/swagger(.:format)
-GET        /v2/admin/swagger/:name(.:format)
-*          /v2/?*path(.:format)
+       POST  |  /v2/resource/data_storage(.:format)                    |    |  Create data storage                                                              
+       POST  |  /v2/management/otp/sign(.:format)                      |    |  Sign request with barong signature                                               
+       POST  |  /v2/resource/api_keys(.:format)                        |    |  Create an api key                                                                
+      PATCH  |  /v2/resource/api_keys/:kid(.:format)                   |    |  Updates an api key                                                               
+     DELETE  |  /v2/resource/api_keys/:kid(.:format)                   |    |  Delete an api key                                                                
+        GET  |  /v2/resource/api_keys(.:format)                        |    |  List all api keys for current account.                                           
+       POST  |  /v2/management/timestamp(.:format)                     |    |  Returns server time in seconds since Unix epoch.                                 
+       POST  |  /v2/resource/otp/generate_qrcode(.:format)             |    |  Generate qr code for 2FA                                                         
+       POST  |  /v2/resource/otp/enable(.:format)                      |    |  Enable 2FA                                                                       
+       POST  |  /v2/resource/otp/disable(.:format)                     |    |  Disable 2FA                                                                      
+       POST  |  /v2/resource/otp/verify(.:format)                      |    |  Verify 2FA code                                                                  
+        GET  |  /v2/admin/restrictions(.:format)                       |    |  Returns array of restrictions as a paginated collection                          
+       POST  |  /v2/admin/restrictions/whitelink(.:format)             |    |  Create whitelink                                                                 
+       POST  |  /v2/admin/restrictions(.:format)                       |    |  Create restriction                                                               
+        PUT  |  /v2/admin/restrictions(.:format)                       |    |  Update restriction                                                               
+     DELETE  |  /v2/admin/restrictions(.:format)                       |    |  Delete restriction                                                               
+        GET  |  /v2/resource/phones(.:format)                          |    |  Returns list of user's phones                                                    
+       POST  |  /v2/resource/phones(.:format)                          |    |  Add new phone                                                                    
+       POST  |  /v2/resource/phones/send_code(.:format)                |    |  Resend activation code                                                           
+       POST  |  /v2/resource/phones/verify(.:format)                   |    |  Verify a phone                                                                   
+       POST  |  /v2/identity/password/validate(.:format)               |    |  Password strength testing                                                        
+        GET  |  /v2/identity/ping(.:format)                            |    |  Test connectivity                                                                
+        GET  |  /v2/identity/time(.:format)                            |    |  Get server current unix timestamp.                                               
+        GET  |  /v2/identity/version(.:format)                         |    |  Get barong version                                                               
+        GET  |  /v2/identity/configs(.:format)                         |    |  Get barong configurations                                                        
+       POST  |  /v2/identity/sessions(.:format)                        |    |  Start a new session                                                              
+     DELETE  |  /v2/identity/sessions(.:format)                        |    |  Destroy current session                                                          
+       POST  |  /v2/identity/sessions/auth0(.:format)                  |    |  Auth0 authentication by id_token                                                 
+       POST  |  /v2/identity/users/access(.:format)                    |    |  Creates new whitelist restriction                                                
+       POST  |  /v2/identity/users(.:format)                           |    |  Creates new user                                                                 
+        GET  |  /v2/identity/users/register_geetest(.:format)          |    |  Register Geetest captcha                                                         
+       POST  |  /v2/identity/users/email/generate_code(.:format)       |    |  Send confirmations instructions                                                  
+       POST  |  /v2/identity/users/email/confirm_code(.:format)        |    |  Confirms an account                                                              
+       POST  |  /v2/identity/users/password/generate_code(.:format)    |    |  Send password reset instructions                                                 
+       POST  |  /v2/identity/users/password/confirm_code(.:format)     |    |  Sets new account password                                                        
+       POST  |  /v2/public/kyc(.:format)                               |    |  KYC callback                                                                     
+       POST  |  /v2/public/password/validate(.:format)                 |    |  Password strength testing                                                        
+        GET  |  /v2/public/ping(.:format)                              |    |  Test connectivity                                                                
+        GET  |  /v2/public/time(.:format)                              |    |  Get server current unix timestamp.                                               
+        GET  |  /v2/public/version(.:format)                           |    |  Get barong version                                                               
+        GET  |  /v2/public/configs(.:format)                           |    |  Get barong configurations                                                        
+        GET  |  /v2/public/configs/auth0(.:format)                     |    |  Get auth0 configuration                                                          
+       POST  |  /v2/resource/addresses(.:format)                       |    |  Upload a new address approval document for current user                          
+        GET  |  /v2/resource/users/me(.:format)                        |    |  Returns current user                                                             
+        PUT  |  /v2/resource/users/me(.:format)                        |    |  Updates current user data field                                                  
+     DELETE  |  /v2/resource/users/me(.:format)                        |    |  Blocks current user                                                              
+        GET  |  /v2/resource/users/activity/:topic(.:format)           |    |  Returns user activity                                                            
+        PUT  |  /v2/resource/users/password(.:format)                  |    |  Sets new account password                                                        
+        GET  |  /v2/resource/labels(.:format)                          |    |  List all labels for current user.                                                
+        GET  |  /v2/resource/labels/:key(.:format)                     |    |  Return a label by key.                                                           
+       POST  |  /v2/resource/labels(.:format)                          |    |  Create a label with 'public' scope.                                              
+      PATCH  |  /v2/resource/labels/:key(.:format)                     |    |  Update a label with 'public' scope.                                              
+     DELETE  |  /v2/resource/labels/:key(.:format)                     |    |  Delete a label  with 'public' scope.                                             
+        GET  |  /v2/resource/profiles/me(.:format)                     |    |  Return profiles of current resource owner                                        
+       POST  |  /v2/resource/profiles(.:format)                        |    |  Create a profile for current_user                                                
+        PUT  |  /v2/resource/profiles(.:format)                        |    |  Update a profile for current_user                                                
+        GET  |  /v2/resource/documents(.:format)                       |    |  Return current user documents list                                               
+       POST  |  /v2/resource/documents(.:format)                       |    |  Upload a new document for current user                                           
+        GET  |  /v2/resource/service_accounts(.:format)                |    |  List all service accounts for current user.                                      
+        GET  |  /v2/resource/service_accounts/api_keys(.:format)       |    |  List all api keys for specific service account.                                  
+       POST  |  /v2/resource/service_accounts/api_keys(.:format)       |    |  Create api key for specific service account.                                     
+     DELETE  |  /v2/resource/service_accounts/api_keys/:kid(.:format)  |    |  Delete an api key for specific service account                                   
+        PUT  |  /v2/resource/service_accounts/api_keys/:kid(.:format)  |    |  Updates an api key                                                               
+        GET  |  /v2/resource/swagger_doc(.:format)                     |    |  Swagger compatible API description                                               
+        GET  |  /v2/resource/swagger_doc/:name(.:format)               |    |  Swagger compatible API description for specific API                              
+        GET  |  /v2/swagger(.:format)                                  |    |  Swagger compatible API description                                               
+        GET  |  /v2/swagger/:name(.:format)                            |    |  Swagger compatible API description for specific API                              
+       POST  |  /v2/management/labels/filter/users(.:format)           |    |  Get all labels assigned to users                                                 
+       POST  |  /v2/management/labels/list(.:format)                   |    |  Get user collection filtered on label attributes                                 
+       POST  |  /v2/management/labels(.:format)                        |    |  Create a label with 'private' scope and assigns to users                         
+        PUT  |  /v2/management/labels(.:format)                        |    |  Update a label with 'private' scope                                              
+       POST  |  /v2/management/labels/delete(.:format)                 |    |  Delete a label with 'private' scope                                              
+       POST  |  /v2/management/users/get(.:format)                     |    |  Get users and profile information                                                
+       POST  |  /v2/management/users/list(.:format)                    |    |  Returns array of users as collection                                             
+       POST  |  /v2/management/users(.:format)                         |    |  Creates new user                                                                 
+       POST  |  /v2/management/users/update(.:format)                  |    |  Updates role and data fields of existing user                                    
+       POST  |  /v2/management/users/import(.:format)                  |    |  Imports an existing user                                                         
+       POST  |  /v2/management/profiles(.:format)                      |    |  Imports a profile for user                                                       
+       POST  |  /v2/management/phones/get(.:format)                    |    |  Get user phone numbers                                                           
+       POST  |  /v2/management/phones(.:format)                        |    |  Create phone number for user                                                     
+       POST  |  /v2/management/phones/delete(.:format)                 |    |  Delete phone number for user                                                     
+       POST  |  /v2/management/documents(.:format)                     |    |  Push documents to barong DB                                                      
+       POST  |  /v2/management/service_accounts/get(.:format)          |    |  Get specific service_account information                                         
+       POST  |  /v2/management/service_accounts/list(.:format)         |    |  Get service_accounts as a paginated collection                                   
+       POST  |  /v2/management/service_accounts/create(.:format)       |    |  Create service_account                                                           
+       POST  |  /v2/management/service_accounts/update(.:format)       |    |  Update service_account                                                           
+       POST  |  /v2/management/service_accounts/delete(.:format)       |    |  Delete specific service_account                                                  
+       POST  |  /v2/management/api_keys(.:format)                      |    |  Create an api key for service account                                            
+       POST  |  /v2/management/api_keys/update(.:format)               |    |  Updates an api key for service account                                           
+        GET  |  /v2/management/swagger(.:format)                       |    |  Swagger compatible API description                                               
+        GET  |  /v2/management/swagger/:name(.:format)                 |    |  Swagger compatible API description for specific API                              
+        GET  |  /v2/admin/users(.:format)                              |    |  Returns array of users as paginated collection                                   
+       POST  |  /v2/admin/users/update(.:format)                       |    |  Update user attributes                                                           
+       POST  |  /v2/admin/users/role(.:format)                         |    |  Update user role                                                                 
+        PUT  |  /v2/admin/users(.:format)                              |    |  Update user attributes                                                           
+        GET  |  /v2/admin/users/documents/pending(.:format)            |    |  Returns array of users with pending or replaced documents as paginated collection
+        GET  |  /v2/admin/users/labels/list(.:format)                  |    |  Returns existing labels keys and values                                          
+        GET  |  /v2/admin/users/labels(.:format)                       |    |  Returns array of users as paginated collection                                   
+       POST  |  /v2/admin/users/labels(.:format)                       |    |  Add label for user                                                               
+       POST  |  /v2/admin/users/labels/update(.:format)                |    |  Update user label value                                                          
+        PUT  |  /v2/admin/users/labels(.:format)                       |    |  Update user label scope                                                          
+     DELETE  |  /v2/admin/users/labels(.:format)                       |    |  Deletes label for user                                                           
+        GET  |  /v2/admin/users/:uid(.:format)                         |    |  Returns user info                                                                
+     DELETE  |  /v2/admin/users/data_storage(.:format)                 |    |  Deletes user's data storage record                                               
+       POST  |  /v2/admin/users/comments(.:format)                     |    |  Adds new user's comment                                                          
+        PUT  |  /v2/admin/users/comments(.:format)                     |    |  Edit user's comment                                                              
+     DELETE  |  /v2/admin/users/comments(.:format)                     |    |  Delete user's comment                                                            
+        GET  |  /v2/admin/api_keys(.:format)                           |    |  List all api keys for selected account.                                          
+        GET  |  /v2/admin/permissions(.:format)                        |    |  Returns array of permissions as paginated collection                             
+       POST  |  /v2/admin/permissions(.:format)                        |    |  Create permission                                                                
+     DELETE  |  /v2/admin/permissions(.:format)                        |    |  Deletes permission                                                               
+        PUT  |  /v2/admin/permissions(.:format)                        |    |  Update Permission                                                                
+        GET  |  /v2/admin/activities(.:format)                         |    |  Returns array of activities as paginated collection                              
+        GET  |  /v2/admin/activities/admin(.:format)                   |    |  Returns array of activities as paginated collection                              
+        GET  |  /v2/admin/metrics(.:format)                            |    |  Returns main statistic in the given time period                                  
+        GET  |  /v2/admin/profiles(.:format)                           |    |  Return all profiles                                                              
+        PUT  |  /v2/admin/profiles(.:format)                           |    |  Verify user's profile                                                            
+       POST  |  /v2/admin/profiles(.:format)                           |    |  Create a profile for user                                                        
+        GET  |  /v2/admin/levels(.:format)                             |    |  Returns array of permissions as paginated collection                             
+        GET  |  /v2/admin/abilities(.:format)                          |    |  Get all roles and admin_permissions of barong cancan.                            
+        GET  |  /v2/admin/swagger(.:format)                            |    |  Swagger compatible API description                                               
+        GET  |  /v2/admin/swagger/:name(.:format)                      |    |  Swagger compatible API description for specific API                              
+          *  |  /v2/?*path(.:format)                                   |    |                                                                                   
