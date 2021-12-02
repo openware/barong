@@ -47,6 +47,12 @@ DB=bitzlato bundle exec rake db:create db:migrate
 bundle exec rails server
 ```
 
+# Update grape_routes
+
+```
+bundle exec rails grape:save_routes
+```
+
 # Deploy with capistrano
 
 ```
