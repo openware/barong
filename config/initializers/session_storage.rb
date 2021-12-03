@@ -11,7 +11,7 @@ module BitzlatoSession
     nil
   end
 
-  def login! id_token, user_id
+  def login! id_token, user_id, email
     update(
       {
         cookie: {:originalMaxAge=>nil, :expires=>nil, :httpOnly=>true, :domain=>".bitzlato.com", :path=>"/"},
@@ -22,6 +22,7 @@ module BitzlatoSession
             emailVerified: true,
             # passed2fa: true,
             complete: true,
+            email: email,
             # returnReferrer: '',
             # refreshToken: '',
           }
