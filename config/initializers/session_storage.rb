@@ -79,6 +79,7 @@ class ActionDispatch::Session::BzRedisStore <  ActionDispatch::Session::RedisSto
 end
 
 Rails.application.config.session_store :bz_redis_store,
-  expire_after: 14.days,
+  expire_after: 4.hours,
+  domain: ENV.fetch('COOKIE_DOMAIN', '.bitzlato.com'),
   key: ENV.fetch('SESSION_KEY', '_barong_session'),
   servers: [ENV.fetch('SESSION_REDIS_URL', ENV.fetch('BARONG_REDIS_URL', 'redis://localhost:6379/1')), serializer: Oj]
