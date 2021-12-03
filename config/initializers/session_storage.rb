@@ -2,7 +2,11 @@ module BitzlatoSession
   def claims
     return if id_token.nil? || id_token.is_a?(Hash) # Были такие ошибочные сессии в редисе
     @claims ||= Barong::Auth0::JWT.verify(id_token).first
-  rescue StandardError, JWT::DecodeError => err
+
+  rescue ::JWT::DecodeError => err
+    report_exception err, false, id_token: id_token
+    nil
+  rescue StandardError => err
     report_exception err, true, id_token: id_token
     nil
   end

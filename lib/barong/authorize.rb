@@ -84,11 +84,6 @@ module Barong
       validate_permissions!(user)
 
       user
-    rescue ::JWT::DecodeError, ::JWT::VerificationError => err
-      Rails.logger.error err
-      error!({ errors: ['authz.invalid_session', 'wrong_jwt'] }, 401)
-    rescue ::JWT::ExpiredSignature
-      error!({ errors: ['authz.session_expired'] }, 401)
     end
 
     def validate_session!
