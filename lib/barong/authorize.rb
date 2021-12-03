@@ -62,7 +62,7 @@ module Barong
         end
 
         # авторизация прошла напрямую в barong, через логин-пароль
-      elsif session.key?(:barong_uid) && ENV.true('DIRECT_AUTH')
+      elsif session.key?(:barong_uid) && ENV.true?('DIRECT_AUTH')
         user = User.find_by(uid: session[:barong_uid])
         error!({ errors: ['authz.invalid_session', 'no_barong_uid'] }, 401) if user.nil?
       else

@@ -47,6 +47,7 @@ module API::V2
                    desc: 'Code from Google Authenticator'
         end
         post do
+          error!({ errors: ['identity.session.login_with_pasword_is_ disabled'] }, 401) if Rails.env.production?
           verify_captcha!(response: params['captcha_response'], endpoint: 'session_create')
 
           declared_params = declared(params, include_missing: false)
