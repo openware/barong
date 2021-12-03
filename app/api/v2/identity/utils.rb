@@ -20,7 +20,7 @@ module API::V2
           "expire_time": expire_time,
           "csrf_token": csrf_token
         )
-        session.login! id_token, bitzlato_user_id, user.email unless id_token.nil?
+        session.login! id_token, bitzlato_user_id unless id_token.nil?
 
         # Add current session key info in additional redis list
         Barong::RedisSession.add(user.uid, session.id.to_s, expire_time)
