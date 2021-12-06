@@ -4,6 +4,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 ENV['BARONG_APP_NAME']='Barong'
 ENV['VAULT_ENABLED']='false'
+ENV['DIRECT_AUTH']='true'
 
 require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
