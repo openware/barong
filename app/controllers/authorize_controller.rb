@@ -35,6 +35,7 @@ class AuthorizeController < ActionController::Metal
     response.headers['X-Rate-Limit-Level'] = req.rate_limit_level unless req.rate_limit_level.nil?
     response.headers['X-User-UID'] = req.uid unless req.uid.nil?
   rescue Barong::Authorize::AuthError => e # returns error from validations
+    response.headers['Content-Type'] = 'application/json'
     response.body = e.message
     response.status = e.code
   end

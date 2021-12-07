@@ -32,6 +32,7 @@ describe '/api/v2/auth functionality test' do
 
           get '/api/v2/auth/api/v2/accountant/documents'
 
+          expect(response.content_type).to eq('application/json')
           expect(response.status).to eq(401)
           expect(response.body).to eq("{\"errors\":[\"authz.invalid_permission\"]}")
           expect(response.headers['Authorization']).to be_nil
