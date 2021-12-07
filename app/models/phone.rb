@@ -8,6 +8,7 @@ class Phone < ApplicationRecord
 
   TWILIO_CHANNELS = %w[call sms].freeze
   DEFAULT_COUNTRY_CODE_COUNT = 2
+  MAX_PHONES_PER_USER = 20
 
   belongs_to :user
 
@@ -20,8 +21,11 @@ class Phone < ApplicationRecord
 
   before_save :save_number_index
 
+  validate :validate_phone_count
+
   scope :verified, -> { where.not(validated_at: nil) }
   scope :unverified, -> { where(validated_at: nil) }
+
 
   #FIXME: Clean code below
   class << self
@@ -49,6 +53,10 @@ class Phone < ApplicationRecord
     def find_by_number!(number)
       find_by!(number_index: SaltedCrc32.generate_hash(number))
     end
+  end
+
+  def validate_phone_count
+    errors.add(:user_id, 'reached maximum number of phones') if user.phones.count > MAX_PHONES_PER_USER
   end
 
   def sub_masked_number
@@ -90,7 +98,7 @@ class Phone < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20210325133233
+# Schema version: 20211019200925
 #
 # Table name: phones
 #
@@ -103,6 +111,8 @@ end
 #  validated_at     :datetime
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  retries_send     :integer          default(0), not null
+#  retries_verify   :integer          default(0), not null
 #
 # Indexes
 #

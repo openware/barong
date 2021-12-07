@@ -61,6 +61,18 @@ class Rack::Attack
     end
   end
 
+  throttle('password change request by user', limit: Barong::App.config.rack_attack_limit, period: 60.seconds) do |req|
+    if req.path.include?('resource/users/password') && req.put?
+      req.cookies['_barong_session'].presence
+    end
+  end
+
+  throttle('phone verification', limit: Barong::App.config.rack_attack_limit, period: 60.seconds) do |req|
+    if req.path.include?('resource/phones') && req.post?
+      req.cookies['_barong_session'].presence
+    end
+  end
+
   ### Custom Throttle Response ###
 
   # By default, Rack::Attack returns an HTTP 429 for throttled responses,
