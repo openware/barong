@@ -2,7 +2,7 @@
 
 lock '3.16'
 
-set :user, 'app'
+set :user, 'barong'
 set :application, 'barong'
 
 set :roles, %w[app db].freeze
@@ -49,13 +49,11 @@ end
 
 set :puma_init_active_record, true
 set :puma_control_app, true
-set :puma_threads, [4, 16]
 set :puma_tag, fetch(:application)
 set :puma_daemonize, false
 set :puma_preload_app, false
 set :puma_prune_bundler, true
 set :puma_init_active_record, true
-set :puma_workers, 0
 set :puma_start_task, 'systemd:puma:start'
 set :puma_extra_settings, %{
 lowlevel_error_handler do |e|
@@ -64,15 +62,11 @@ lowlevel_error_handler do |e|
 end
 }
 
-
 set :bugsnag_api_key, ENV.fetch('BUGSNAG_API_KEY')
 set :app_version, `semver`.strip
 set :assets_roles, []
-
 set :init_system, :systemd
-
-# set :systemd_sidekiq_role, :app
-# set :systemd_sidekiq_instances, -> { %i[cron_job] }
+set :systemd_mailer_role, :daemon
 
 if Gem.loaded_specs.key?('capistrano-sentry')
   before 'deploy:starting', 'sentry:validate_config'

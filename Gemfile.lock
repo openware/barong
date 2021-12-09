@@ -23,6 +23,13 @@ GIT
     secure_headers (6.3.2)
 
 GIT
+  remote: https://github.com/brandymint/capistrano-systemd-multiservice.git
+  revision: 47c98c65aa3d8f601efa4b947faf249c5abc9cab
+  specs:
+    capistrano-systemd-multiservice (0.1.0.beta12)
+      capistrano (>= 3.7.0, < 3.17.0)
+
+GIT
   remote: https://github.com/brandymint/capistrano-tasks.git
   revision: ed94c975c36a7ba41a173bddf6dba46034ca41e2
   specs:
@@ -35,13 +42,6 @@ GIT
     guard-rspec (4.7.3)
       guard (~> 2.1)
       guard-compat (~> 1.1)
-
-GIT
-  remote: https://github.com/groovenauts/capistrano-systemd-multiservice.git
-  revision: 955b99cc7588521ddc26ccd523ebba306e16fa0a
-  specs:
-    capistrano-systemd-multiservice (0.1.0.beta12)
-      capistrano (>= 3.7.0, < 3.17.0)
 
 GIT
   remote: https://github.com/rubykube/vault-rails
@@ -189,7 +189,7 @@ GEM
       mini_mime (>= 0.1.3)
     clamp (1.3.2)
     coderay (1.1.3)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.9)
     connection_pool (2.2.3)
     cookiejar (0.3.3)
     countries (3.0.1)
@@ -338,7 +338,7 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http_parser.rb (0.6.0)
-    i18n (1.8.5)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     i18n_data (0.10.0)
     image_processing (1.11.0)
