@@ -58,7 +58,7 @@ module Barong
           user = User.create!(email: session.claims['email'], state: 'active')
           user.labels.create!(scope: 'private', key: 'email', value: 'verified')
         elsif session.claims['email_verified'] == false
-          error!({ errors: ['identity.session.auth0.email_not_verified'] }, 401) unless user
+          error!({ errors: ['identity.session.auth0.email_not_verified'], email: session.claims['email'] }, 401) unless user
         end
 
         # авторизация прошла напрямую в barong, через логин-пароль
