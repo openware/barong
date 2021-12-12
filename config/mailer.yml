@@ -78,13 +78,20 @@ events:
         subject: Deposit Updated
         template_path: deposit_updated.en.html.erb
 
-  - name: Withdrawal Succeed
+  - name: Withdrawal Updated
     key: withdraw.updated
+    expression:
+      or:
+        record.aasm_state: 'succeed'
+        record.aasm_state: 'rejected'
+        record.aasm_state: 'canceled'
+        record.aasm_state: 'failed'
+        record.aasm_state: 'errored'
     exchange: peatio
     templates:
       en:
-        subject: Withdrawal Succeed
-        template_path: withdraw_succeed.en.html.erb
+        subject: Withdrawal Updated
+        template_path: withdraw_updated.en.html.erb
 
   - name: New Beneficiary
     key: beneficiary.created
