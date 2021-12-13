@@ -398,7 +398,7 @@ describe API::V2::Identity::Sessions do
         let(:payload) do
           [
             {
-            'email': 'example@barong.io',
+            'email': email,
             'email_verified': false,
             'iss': 'https://domain.name/',
             'sub': 'google-oauth2|100484476630231723',
@@ -418,12 +418,14 @@ describe API::V2::Identity::Sessions do
           allow(Barong::Auth0::JWT).to receive(:verify).and_return(payload)
         end
 
+        let(:email) { 'example@barong.io' }
+
         it 'doesnt create user and label' do
-          expect(User.find_by(email: 'example@barong.io')).to eq nil
+          expect(User.find_by(email: email)).to eq nil
           post uri, params: { id_token: 'TestToken' }
 
-          expect(User.find_by(email: 'example@barong.io')).to eq nil
-          expect_body.to eq(errors: ['identity.session.auth0.email_not_verified'])
+          expect(User.find_by(email: email)).to eq nil
+          expect_body.to eq(errors: ['identity.session.auth0.email_not_verified'], email: email)
           expect(response.status).to eq(401)
         end
       end
