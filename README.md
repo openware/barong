@@ -55,9 +55,17 @@ bundle exec rails grape:save_routes
 
 # Deploy with capistrano
 
+First time deploy
+
 ```
 bundle exec cap production deploy:check:directories puma:config systemd:puma:setup systemd:mailer:setup
 ```
+
+## Deploy mailer only
+
+```
+SERVER=$MAILER_SERVER cap production deploy
+``
 
 # Barong Levels
 
