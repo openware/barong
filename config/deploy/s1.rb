@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 set :user, 'app'
-set :systemd_mailer_role, :app
 
 set :rails_env, :staging
 set :disallow_pushing, false
@@ -12,5 +11,5 @@ set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:applicatio
 server '51.91.62.13',
   user: fetch(:user),
   port: '22',
-  roles: %w[app db].freeze,
+  roles: %w[app mailer db].freeze,
   ssh_options: { forward_agent: true }
