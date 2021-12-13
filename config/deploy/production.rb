@@ -12,7 +12,7 @@ server ENV.fetch( 'PUMA_SERVER' ),
        ssh_options: { forward_agent: true }
 
 server ENV.fetch( 'MAILER_SERVER' ),
-       user: fetch(:user),
+       user: 'app',
        port: '22',
        roles: %w[mailer].freeze,
        ssh_options: { forward_agent: true }
