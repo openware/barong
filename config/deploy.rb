@@ -66,7 +66,7 @@ set :bugsnag_api_key, ENV.fetch('BUGSNAG_API_KEY')
 set :app_version, `semver`.strip
 set :assets_roles, []
 set :init_system, :systemd
-set :systemd_mailer_role, :daemon
+set :systemd_mailer_role, :mailer
 
 if Gem.loaded_specs.key?('capistrano-sentry')
   before 'deploy:starting', 'sentry:validate_config'
