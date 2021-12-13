@@ -44,7 +44,7 @@ events:
         template_path: password_reset.ru.html.erb
 
   - name: 2FA Activated
-    key: label.created
+    key: model.label.created
     expression:
       and:
         record.key: "otp"

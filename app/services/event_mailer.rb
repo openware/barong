@@ -136,7 +136,7 @@ class EventMailer
     end
 
     if config[:expression].present? && skip_event(event, config[:expression])
-      Rails.logger.info { "Event #{obj.name} skipped" }
+      Rails.logger.warn { "Event #{obj.name} skipped" }
       return
     end
 
