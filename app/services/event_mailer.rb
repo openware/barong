@@ -7,6 +7,7 @@ class EventMailer
   Error = Class.new(StandardError)
 
   class VerificationError < Error; end
+  class SkipEvent < Error; end
 
   def initialize(events, exchanges, keychain)
     @exchanges = exchanges
@@ -117,10 +118,10 @@ class EventMailer
     raise VerificationError, "Failed to verify signature from #{signer}." \
       unless result[:verified].include?(signer.to_sym)
 
-    config = @events.select do |event|
+    config = @events.find do |event|
       event[:key] == delivery_info[:routing_key] &&
         event[:exchange] == exchange_id
-    end.first
+    end.presence || raise("No config found for #{delivery_info}")
 
     event = result[:payload].fetch(:event)
     obj   = JSON.parse(event.to_json, object_class: OpenStruct)
@@ -128,16 +129,16 @@ class EventMailer
     user  = User.includes(:profiles).find_by(uid: obj.record.user.uid)
     language = user.language.downcase.to_sym
     Rails.logger.info { "User #{user.email} has '#{language}' email language" }
-    template_config = config[:templates].transform_keys(&:downcase)
+    template_config = config.fetch( :templates ).transform_keys(&:downcase)
 
     unless template_config.keys.include?(language)
       Rails.logger.error { "Language #{language} is not supported. Skipping." }
-      return
+      raise SkipEvent
     end
 
     if config[:expression].present? && skip_event(event, config[:expression])
       Rails.logger.warn { "Event #{obj.name} skipped" }
-      return
+      raise SkipEvent
     end
 
     params = {
@@ -155,17 +156,19 @@ class EventMailer
     # Acknowledges a message
     # Acknowledged message is completely removed from the queue
     @bunny_channel.ack(delivery_info.delivery_tag)
+
+  rescue SkipEvent => e
+    @bunny_channel.ack(delivery_info.delivery_tag)
+  rescue JWT::ExpiredSignature, JWT::VerificationError, VerificationError => e
+    report_exception e
+    # Acknowledges a message
+    @bunny_channel.ack(delivery_info.delivery_tag)
   rescue StandardError => e
     report_exception e
 
-    if e.is_a?(JWT::ExpiredSignature) || e.is_a?(JWT::VerificationError) || e.is_a?(VerificationError)
-      # Acknowledges a message
-      @bunny_channel.ack(delivery_info.delivery_tag)
-    else
-      # Rejects a message
-      # A rejected message dropped by RabbitMQ and goes to dead letter exchange queue
-      @bunny_channel.reject(delivery_info.delivery_tag)
-    end
+    # Rejects a message
+    # A rejected message dropped by RabbitMQ and goes to dead letter exchange queue
+    @bunny_channel.reject(delivery_info.delivery_tag)
 
     unlisten if db_connection_error?(e)
   end
