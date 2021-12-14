@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['2.7.4']
+        ruby-version: ['2.7.5']
     services:
       # Label used to access the service container
       redis:
