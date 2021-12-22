@@ -29,7 +29,7 @@ class AuthorizeController < ActionController::Metal
     return access_error!('authz.permission_denied', 401) if req.under_path_rules?('block')
 
     response.status = 200
-    return if req.under_path_rules?('pass') # check if request is whitelisted
+    return if request.env['REQUEST_METHOD'] == "OPTIONS" || req.under_path_rules?('pass') # check if request is whitelisted
 
     response.headers['Authorization'] = req.auth # sets bearer token
   rescue Barong::Authorize::AuthError => e # returns error from validations
