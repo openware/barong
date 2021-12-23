@@ -6,6 +6,17 @@
 Barong is a authentication service for microservice architectures using JWT standard.
 It's developped and maintained by [Openware](https://www.openware.com) team.
 
+- [Barong](#barong)
+- [Overview](#overview)
+- [Development](#development)
+- [Update grape_routes](#update-grape_routes)
+- [Deploy with capistrano](#deploy-with-capistrano)
+  - [Deploy mailer only](#deploy-mailer-only)
+- [Environment variables](#environment-variables)
+- [Barong Levels](#barong-levels)
+- [Useful links to documentation](#useful-links-to-documentation)
+- [License](#license)
+
 # Overview
 
 It includes the following features:
@@ -65,7 +76,43 @@ bundle exec cap production deploy:check:directories puma:config systemd:puma:set
 
 ```
 SERVER=$MAILER_SERVER cap production deploy
-``
+```
+# Environment variables
+<details>
+  <summary>Variables list</summary>
+
+- **BARONG_REDIS_URL** - *url of redis server with port (example: 'redis://localhost:6379/1')*
+- **BITZLATO_DATABASE_URL** - *(example: postgres://dbuser:dbpass@serverip:5432/dbname?pool=poolsize)*
+- **BUGSNAG_API_KEY** - *Notifier API key from [bugsnag](https://www.bugsnag.com) (example: QWE1234567890)*
+- **COOKIE_DOMAIN** - *Common domain for auth (example: .domain.com)*
+- **DATABASE_COLLATION** - *(example: )*
+- **DATABASE_HOST** - *(example: 192.168.1.1)*
+- **DATABASE_NAME** - *(example: postgres)*
+- **DATABASE_PASS** - *(example: postgres)*
+- **DATABASE_PORT** - *(example: postgres)*
+- **DATABASE_USER** - *(example: postgres)*
+- **DIRECT_AUTH** - *(example: )*
+- **DIRECT_SESSION_ACCESS** - *(example: )*
+- **EVENT_API_RABBITMQ_URL** - *[Rabbit](https://www.rabbitmq.com/uri-spec.html) connection string (example: amqp://user:pass@host:10000/vhost)*
+- **JWT_PRIVATE_KEY** - *[JWT](https://jwt.io/introduction)*
+- **JWT_PRIVATE_KEY_PATH** - *[JWT](https://jwt.io/introduction)*
+- **JWT_PUBLIC_KEY** - *[JWT](https://jwt.io/introduction)*
+- **PEATIO_JWT_PUBLIC_KEY** - *[JWT](https://jwt.io/introduction)*
+- **PORT** - *Specifies the port that Puma will listen on to receive requests (example: 3000)*
+- **RAILS_MASTER_KEY** - *Master key (example: )*
+- **RAILS_MAX_THREADS** - *Maximum number of threads for Puma (example: 5)*
+- **RAILS_MIN_THREADS** - *Minimum number of threads for Puma (example: 1)*
+- **RAILS_SERVE_STATIC_FILES** - *Set to serve static files from the /public folder (example: enabled)*
+- **SECRET_KEY_BASE** - *[Key for encryption](https://github.com/openware/barong/pull/1150) on profile, phone and document models*
+- **SESSION_KEY** - 
+- **SESSION_SECRET** - *Something for Redis*
+- **SKIP_SESSION_INVALIDATION** - *(example: )*
+- **SLACKISTRANO_CHANNEL** - *[Slack](https://www.rubydoc.info/gems/slackistrano) channel to send deploy notification*
+- **SLACKISTRANO_WEBHOOK** - *[Slack](https://www.rubydoc.info/gems/slackistrano) webhook to send deploy notification*
+- **USE_BITZLATO_AUTHORIZATION** - 
+- **VAULT_ENABLED** - *Set Barong to encrypt data with [Vault](https://www.vaultproject.io) (example: true)*
+- **WEB_CONCURRENCY** - *Number of worker processes(example: 3)*
+</details>
 
 # Barong Levels
 
