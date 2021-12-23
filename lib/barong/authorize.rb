@@ -74,12 +74,7 @@ module Barong
         error!({ errors: ['authz.user_not_active'] }, 401)
       end
 
-      unless user.id == session[:barong_uid]
-        user_service = UserService.new(user_ip: remote_ip, user_agent: user_agent)
-        user_service.activity_record(user: user.id, action: 'login', result: 'succeed', topic: 'session')
-        open_session user
-      end
-
+      open_session(user) unless user.id == session[:barong_uid]
       validate_bitzlato_user!(user)
       validate_permissions!(user)
 
