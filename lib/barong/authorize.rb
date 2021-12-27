@@ -173,7 +173,13 @@ module Barong
       # Caches Permission.all result to optimize
       permissions = Rails.cache.fetch('permissions', expires_in: 5.minutes) { Permission.all.to_ary }
 
-      permissions.select! { |a| a.role == user.role && ( a.verb == @request.env['REQUEST_METHOD'] || a.verb == 'ALL' ) && @path.starts_with?(a.path) }
+      permissions.select! do |permission|
+        (!permission.respond_to?(:domain) || permission.domain == request_domain) &&
+        permission.role == user.role &&
+          ( permission.verb == @request.env['REQUEST_METHOD'] || permission.verb == 'ALL' ) &&
+          @path.starts_with?(permission.path)
+      end
+
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 
       if permissions.blank? || actions.include?('DROP') || !actions.include?('ACCEPT')
@@ -186,6 +192,11 @@ module Barong
         topic = permissions.select { |a| a.action == 'AUDIT' }[0].topic
         log_activity(user.id, 'succeed', topic) if user.is_a?(User)
       end
+    end
+
+    def request_domain
+      @request_domain ||= DomainHost.find_by(host: @request.env['HTTP_HOST'] || @request.env["SERVER_ADDR"]).try(:domain) ||
+        ENV.fetch('UNKNOWN_PERMISSION_DOMAIN', DomainHost::DEFAULT_DOMAIN)
     end
 
     def log_activity(user_id, result, topic = nil)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_08_121749) do
+ActiveRecord::Schema.define(version: 2021_12_27_130101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,12 @@ ActiveRecord::Schema.define(version: 2021_10_08_121749) do
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
+  create_table "domain_hosts", force: :cascade do |t|
+    t.string "domain", null: false
+    t.string "host", null: false
+    t.index ["host"], name: "index_domain_hosts_on_host", unique: true
+  end
+
   create_table "labels", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "key", null: false
@@ -109,6 +115,7 @@ ActiveRecord::Schema.define(version: 2021_10_08_121749) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "topic"
+    t.string "domain", default: "default", null: false
     t.index ["role", "action", "verb", "path"], name: "permission_uniqueness", unique: true
     t.index ["topic"], name: "index_permissions_on_topic"
   end
