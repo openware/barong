@@ -257,12 +257,14 @@ module Barong
     end
 
     def bearer
-      if use_sys_jwk?
-        owner= auth_owner
+      Rails.logger.warn("request_domain = #{request_domain}")
+      if use_sys_jwk
+        Rails.logger.warn("Use sys jwk")
+        owner = auth_owner
         raise "Wrong auth_owner type (#{owner.class})" unless owner.is_a? User
         raise "No bitzlato user for #{owner.as_payload}" unless owner.bitzlato_user.present?
         sys_codec.
-          encode(auth_owner.bitzlato_user.as_payload)
+          encode(owner.bitzlato_user.as_payload)
       else
         codec.
           encode(auth_owner.as_payload)
