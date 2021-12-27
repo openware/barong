@@ -175,7 +175,7 @@ module Barong
       permissions = Rails.cache.fetch('permissions', expires_in: 5.minutes) { Permission.all.to_ary }
 
       permissions.select! do |permission|
-        (!permission.respond_to?(:domain) || permission.domain == request_domain) &&
+        (permission.domain == request_domain) &&
           (permission.role == Permission::ANY_ROLE || permission.role == user.role) &&
           (permission.verb == @request.env['REQUEST_METHOD'] || permission.verb == 'ALL' ) &&
           (permission.path == Permission::ANY_PATH || @path.starts_with?(permission.path))
@@ -196,7 +196,7 @@ module Barong
     end
 
     def request_domain
-      @request_domain ||= DomainHost.find_by(host: @request.env['HTTP_HOST'] || @request.env["SERVER_ADDR"]).try(:domain) ||
+      @request_domain ||= DomainHost.find_by(host: @request.env['HTTP_HOST'] || @request.env['SERVER_ADDR']).try(:domain) ||
         ENV.fetch('UNKNOWN_PERMISSION_DOMAIN', DomainHost::DEFAULT_DOMAIN)
     end
 
@@ -258,11 +258,11 @@ module Barong
 
     def bearer
       if use_sys_jwk?
-        owner= auth_owner
+        owner = auth_owner
         raise "Wrong auth_owner type (#{owner.class})" unless owner.is_a? User
         raise "No bitzlato user for #{owner.as_payload}" unless owner.bitzlato_user.present?
         sys_codec.
-          encode(auth_owner.bitzlato_user.as_payload)
+          encode(owner.bitzlato_user.as_payload)
       else
         codec.
           encode(auth_owner.as_payload)
