@@ -92,7 +92,7 @@ module Barong
 
           session.destroy
 
-          Rails.logger.debug("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
+          Rails.logger.warn("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
                              " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
                              " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
 
