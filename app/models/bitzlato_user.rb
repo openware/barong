@@ -13,4 +13,17 @@ class BitzlatoUser < BitzlatoRecord
   def self.find_by_claims(sub: , email: )
     find_by_subject(sub) || find_by_email(email)
   end
+
+  # Posible values are:
+  #
+  # tgid:
+  # uid:
+  # email:
+  # nickname:
+  # email_verified:
+  # locale:
+  #
+  def as_payload
+    as_json(only: %i[uid])
+  end
 end
