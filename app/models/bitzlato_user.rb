@@ -24,6 +24,6 @@ class BitzlatoUser < BitzlatoRecord
   # locale:
   #
   def as_payload
-    as_json(only: %i[uid])
+    { uid: id }
   end
 end
