@@ -196,7 +196,7 @@ module Barong
     end
 
     def request_domain
-      @request_domain ||= DomainHost.find_by(host: @request.env['HTTP_HOST'] || @request.env["SERVER_ADDR"]).try(:domain) ||
+      @request_domain ||= DomainHost.find_by(host: @request.env['HTTP_HOST'] || @request.env['SERVER_ADDR']).try(:domain) ||
         ENV.fetch('UNKNOWN_PERMISSION_DOMAIN', DomainHost::DEFAULT_DOMAIN)
     end
 
@@ -257,7 +257,7 @@ module Barong
     end
 
     def bearer
-      Rails.logger.warn("request_domain = #{request_domain}")
+      Rails.logger.warn("request_domain = #{request_domain}, path = #{path}, #{@request.env['HTTP_HOST']}, #{@request.env['SERVER_ADDR']}")
       if use_sys_jwk
         Rails.logger.warn("Use sys jwk")
         owner = auth_owner
