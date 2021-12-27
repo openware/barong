@@ -175,7 +175,7 @@ module Barong
       permissions = Rails.cache.fetch('permissions', expires_in: 5.minutes) { Permission.all.to_ary }
 
       permissions.select! do |permission|
-        (!permission.respond_to?(:domain) || permission.domain == request_domain) &&
+        (permission.domain == request_domain) &&
           (permission.role == Permission::ANY_ROLE || permission.role == user.role) &&
           (permission.verb == @request.env['REQUEST_METHOD'] || permission.verb == 'ALL' ) &&
           (permission.path == Permission::ANY_PATH || @path.starts_with?(permission.path))
