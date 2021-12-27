@@ -175,9 +175,9 @@ module Barong
 
       permissions.select! do |permission|
         (!permission.respond_to?(:domain) || permission.domain == request_domain) &&
-        permission.role == user.role &&
-          ( permission.verb == @request.env['REQUEST_METHOD'] || permission.verb == 'ALL' ) &&
-          @path.starts_with?(permission.path)
+          (permission.role == Permission::ANY_ROLE || permission.role == user.role) &&
+          (permission.verb == @request.env['REQUEST_METHOD'] || permission.verb == 'ALL' ) &&
+          (permission.path == Permission::ANY_PATH || @path.starts_with?(permission.path))
       end
 
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
@@ -258,6 +258,7 @@ module Barong
 
     # fetch authz rules from yml
     def lists
+      # TODO domains
       YAML.safe_load(
         ERB.new(
           File.read(

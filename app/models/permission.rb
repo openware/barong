@@ -2,8 +2,11 @@
 
 # Permissions model for RBAC
 class Permission < ApplicationRecord
+  ANY_PATH='*'
+  ANY_ROLE='*'
+
   validates :role, :verb, :action, :path, presence: true
-  validates :action, uniqueness: { scope: [:role, :verb, :path] }
+  validates :action, uniqueness: { scope: [:role, :verb, :path, :domain] }
 
   before_validation :upcase_action_verb
 

@@ -10,13 +10,14 @@ class AuthorizeController < ActionController::Metal
   def authorize
     @restrictions = Rails.cache.fetch('restrictions', expires_in: 5.minutes) { fetch_restrictions }
 
+    path = params[:path].to_s
     # whitelink path
-    unless params[:path] == 'api/v2/barong/identity/users/access'
+    unless path == 'api/v2/barong/identity/users/access'
       Restriction::CATEGORIES.each do |category|
         restriction = first_matched_restriction(category)
         if restriction && category.in?(%w[blacklist maintenance])
           return deny_access(category, restriction)
-        elsif restriction && category == 'blocklogin' && params[:path] == 'api/v2/barong/identity/sessions'
+        elsif restriction && category == 'blocklogin' && path == 'api/v2/barong/identity/sessions'
           return deny_access(category, restriction)
         elsif restriction && category == 'whitelist'
           break
@@ -24,7 +25,7 @@ class AuthorizeController < ActionController::Metal
       end
     end
 
-    req = Barong::Authorize.new(request, params[:path]) # initialize params of request
+    req = Barong::Authorize.new(request, path) # initialize params of request
     # checks if request is blacklisted
     return access_error!('authz.permission_denied', 401) if req.under_path_rules?('block')
 
