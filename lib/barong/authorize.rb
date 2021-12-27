@@ -48,6 +48,7 @@ module Barong
     end
 
     def cookie_owner
+      Rails.logger.warn('p2p cookie_owner' + @path) if @path.include? 'p2p'
       validate_csrf!
 
       if session.claims.present? && session.claims.key?('email')
@@ -69,13 +70,16 @@ module Barong
       else
         error!({ errors: ['authz.invalid_session', 'no_barong_uid_or_claims'] }, 401)
       end
+      Rails.logger.warn('p2p validate_session' + @path) if @path.include? 'p2p'
 
       validate_session!
       unless user.state.in?(%w[active pending])
         error!({ errors: ['authz.user_not_active'] }, 401)
       end
 
+      Rails.logger.warn('p2p open_session' + @path) if @path.include? 'p2p'
       open_session(user) unless user.id == session[:barong_uid]
+      Rails.logger.warn('p2p bitzlato_user' + @path) if @path.include? 'p2p'
       validate_bitzlato_user!(user)
       validate_permissions!(user)
 
@@ -171,6 +175,7 @@ module Barong
     end
 
     def validate_permissions!(user)
+      Rails.logger.warn('p2p validate_permissions' + @path) if @path.include? 'p2p'
       # Caches Permission.all result to optimize
       permissions = Rails.cache.fetch('permissions', expires_in: 5.minutes) { Permission.all.to_ary }
 
