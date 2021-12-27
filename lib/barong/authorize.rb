@@ -181,10 +181,11 @@ module Barong
           (permission.path == Permission::ANY_PATH || @path.starts_with?(permission.path))
       end
 
+      Rails.logger.warn('p2p: '+permissions.pluck(:id).join(',')) if request_domain == 'p2p'
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 
       if permissions.blank? || actions.include?('DROP') || !actions.include?('ACCEPT')
-        Rails.logger.debug("auth.invalid_permission: permissions.blank?=#{permissions.blank?}, actions.include?('DROP')=#{actions.include?('DROP')}, !actions.include?('ACCEPT')=#{!actions.include?('ACCEPT')}")
+        Rails.logger.warn("auth.invalid_permission: permissions.blank?=#{permissions.blank?}, actions.include?('DROP')=#{actions.include?('DROP')}, !actions.include?('ACCEPT')=#{!actions.include?('ACCEPT')}")
         log_activity(user.id, 'denied') if user.is_a?(User)
         error!({ errors: ['authz.invalid_permission'] }, 401)
       end
