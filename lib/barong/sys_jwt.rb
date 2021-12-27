@@ -4,7 +4,7 @@ module Barong
     EXPIRE = 10
 
     def initialize(jwk: JSON.parse(ENV.fetch('P2P_API_SYS_JWK')))
-      @jwk = JWT::JWK.import jwk
+      @jwk = ::JWT::JWK.import jwk
     end
 
     # tgid:
@@ -15,7 +15,7 @@ module Barong
     # locale:
 
     def encode(payload)
-      JWT.encode merge_claims(payload), @jwk.keypair, ALGO
+      ::JWT.encode merge_claims(payload), @jwk.keypair, ALGO
     end
 
     def merge_claims(payload)
