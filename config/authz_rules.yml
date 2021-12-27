@@ -4,7 +4,7 @@
 #
 rules:
   pass:
-    - api/p2p
+    - api/p2p/public
     - api/v2/barong/public
     - api/v2/barong/identity
     - api/v2/peatio/public

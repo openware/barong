@@ -346,7 +346,7 @@ GEM
       ruby-vips (>= 2.0.17, < 3)
     ipaddress (0.8.3)
     json (2.5.1)
-    jwt (2.2.3)
+    jwt (2.3.0)
     jwt-multisig (1.0.4)
       activesupport (>= 4.0)
       jwt (~> 2.2)
@@ -615,7 +615,7 @@ DEPENDENCIES
   guard
   guard-rspec!
   hiredis (~> 0.6.1)
-  jwt (~> 2.2)
+  jwt (~> 2.3.0)
   jwt-multisig (~> 1.0, >= 1.0.4)
   kaminari (>= 1.2.1)
   kycaid

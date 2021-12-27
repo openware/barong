@@ -8,7 +8,7 @@ Rails.application.configure do
   config.log_formatter = Rails.env.production? || Rails.env.staging? ? JSONLogFormatter.new : Logger::Formatter.new
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :remote_ip, :request_id, -> request { request.headers['Authorization'] } ] if Rails.env.production? || Rails.env.staging?
+  config.log_tags = [ :host, :remote_ip, :request_id ] if Rails.env.production? || Rails.env.staging?
 
   # In non-test environments logging always goes to STDOUT since this is the most appropriate way
   # to get logs in Docker environment.
