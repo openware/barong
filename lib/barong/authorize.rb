@@ -257,7 +257,7 @@ module Barong
     end
 
     def bearer
-      Rails.logger.warn("request_domain = #{request_domain}, path = #{path}, #{@request.env['HTTP_HOST']}, #{@request.env['SERVER_ADDR']}")
+      Rails.logger.warn("request_domain = #{request_domain}, path = #{@path}, #{@request.env['HTTP_HOST']}, #{@request.env['SERVER_ADDR']}")
       if use_sys_jwk?
         Rails.logger.warn("Use sys jwk")
         owner = auth_owner
