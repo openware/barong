@@ -39,6 +39,10 @@ class User < ApplicationRecord
     [uid, email].join(':')
   end
 
+  def bitzlato_user
+    @bitzlato_user ||= BitzlatoUser.find_by_email(email)
+  end
+
   def downcase_username
     username.downcase! unless username.nil?
   end

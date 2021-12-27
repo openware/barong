@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'barong/activity_logger'
+require 'barong/sys_jwt'
 
 module Barong
   # AuthZ functionality
@@ -37,7 +38,7 @@ module Barong
 
     # main: switch between cookie and api key logic, return bearer token
     def auth
-      'Bearer ' + codec.encode(auth_owner.as_payload) # encoded user info
+      'Bearer ' + bearer
     end
 
     def auth_owner
@@ -146,8 +147,8 @@ module Barong
 
     def validate_bitzlato_user!(user)
       return unless ENV.true? 'USE_BITZLATO_AUTHORIZATION'
-      bitzlato_user = BitzlatoUser.find_by_email(user.email)
-      # TODO make asyn request to https://bitzlato.com/api/p2p/whoami
+      bitzlato_user = user.bitzlato_user
+      # TODO make asyn request to https://bitzlato.com/api/p2p/whoami to generate user
       return if bitzlato_user.nil?
       if bitzlato_user.user_profile.try(&:blocked_by_admin?)
         Rails.logger.warn("Bitzlato user #{bitzlato_user.real_email} is blocked by admin")
@@ -251,9 +252,22 @@ module Barong
 
     private
 
-    # encode helper method
-    def codec
-      @_codec ||= Barong::JWT.new(key: Barong::App.config.keystore.private_key)
+    def use_sys_jwk?
+      request_domain == ENV.fetch('SYS_JWK_DOMAIN', 'p2p')
+    end
+
+    def bearer
+      if use_sys_jwk?
+        owner= auth_owner
+        raise "Wrong auth_owner type (#{owner.class})" unless owner.is_a? User
+        raise "No bitzlato user for #{owner.as_payload}" unless owner.bitzlato_user.present?
+        Barong::SysJWT.new.
+          encode(auth_owner.bitzlato_user.as_payload)
+      else
+        Barong::JWT.
+          new(key: Barong::App.config.keystore.private_key).
+          encode(auth_owner.as_payload)
+      end
     end
 
     # fetch authz rules from yml
