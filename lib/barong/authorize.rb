@@ -94,8 +94,8 @@ module Barong
           session.destroy
 
           Rails.logger.warn("Session mismatch! Valid session is: { agent: #{session[:user_agent]}," \
-                             " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
-                             " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
+                            " expire_time: #{session[:expire_time]}, ip: #{session[:user_ip]} }," \
+                            " but request contains: { agent: #{@request.env['HTTP_USER_AGENT']}, ip: #{remote_ip} }")
 
           error!({ errors: ['authz.client_session_mismatch'] }, 401)
         end
@@ -261,13 +261,21 @@ module Barong
         owner= auth_owner
         raise "Wrong auth_owner type (#{owner.class})" unless owner.is_a? User
         raise "No bitzlato user for #{owner.as_payload}" unless owner.bitzlato_user.present?
-        Barong::SysJWT.new.
+        sys_codec.
           encode(auth_owner.bitzlato_user.as_payload)
       else
-        Barong::JWT.
-          new(key: Barong::App.config.keystore.private_key).
+        codec.
           encode(auth_owner.as_payload)
       end
+    end
+
+    def sys_codec
+      @sys_codec ||= Barong::SysJWT.new
+    end
+
+    def codec
+      @codec ||= Barong::JWT.
+        new(key: Barong::App.config.keystore.private_key)
     end
 
     # fetch authz rules from yml
@@ -285,8 +293,8 @@ module Barong
     # checks if api key headers are present in request
     def api_key_headers?
       return false if headers['X-Auth-Apikey'].nil? &&
-                      headers['X-Auth-Nonce'].nil? &&
-                      headers['X-Auth-Signature'].nil?
+        headers['X-Auth-Nonce'].nil? &&
+        headers['X-Auth-Signature'].nil?
       @api_key_headers = [headers['X-Auth-Apikey'], headers['X-Auth-Nonce'], headers['X-Auth-Signature']]
       validate_headers?
     end
