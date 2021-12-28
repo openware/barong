@@ -14,7 +14,7 @@ rules:
     - api/v2/finex/public
     # whaler
     - assets
-    - api/v1/swagger_doc
+    - api/private/v1/swagger_doc
   block:
     - api/v2/barong/management
     - api/v2/peatio/management
