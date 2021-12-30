@@ -8,7 +8,7 @@ set :application, -> { 'barong-' + fetch(:stage).to_s }
 
 set :deploy_to, -> { "/home/#{fetch(:user)}/#{fetch(:stage)}/#{fetch(:application)}" }
 
-server '51.91.62.13',
+server ENV.fetch('STAGING_SERVER'),
   user: fetch(:user),
   port: '22',
   roles: %w[app mailer db].freeze,
