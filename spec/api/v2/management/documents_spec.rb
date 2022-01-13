@@ -59,7 +59,7 @@ describe API::V2::Management::Documents, type: :request do
         file_ext: '.jpg',
         doc_expire: '3020-01-22',
         doc_number: 'AA1234BB',
-        upload: Base64.strict_encode64(File.open('spec/fixturesdocuments_test.jpg').read)
+        upload: Base64.strict_encode64(File.open(file_fixture 'documents_test.jpg').read)
       }
     end
 
