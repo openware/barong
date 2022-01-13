@@ -4,11 +4,12 @@ require 'spec_helper'
 
 describe 'Documents API test' do
   include_context 'bearer authentication'
+  include ActionDispatch::TestProcess::FixtureFile
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
   end
-  let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+  let!(:image) { fixture_file_upload('documents_test.jpg', 'image/jpg') }
 
   describe 'POST /api/v2/resource/documents/' do
     let(:params) do
@@ -38,7 +39,7 @@ describe 'Documents API test' do
                                              doc_type: 'Passport',
                                              doc_expire: '3020-01-22',
                                              doc_number: 'AA1234BB',
-                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
+                                             upload: [fixture_file_upload('documents_test.jpg', 'image/jpg')]
                                            }
       end
 
@@ -52,7 +53,7 @@ describe 'Documents API test' do
                                              doc_type: 'Passport',
                                              doc_expire: '3020-01-22',
                                              doc_number: 'AA1234BB',
-                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
+                                             upload: [fixture_file_upload('documents_test.jpg', 'image/jpg')]
                                            }
       end
 
@@ -67,8 +68,8 @@ describe 'Documents API test' do
                                            doc_expire: '3020-01-22',
                                            doc_number: 'AA1234BB',
                                            upload: [
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(201)
@@ -82,9 +83,9 @@ describe 'Documents API test' do
                                            doc_expire: '3020-01-22',
                                            doc_number: 'AA1234BB',
                                            upload: [
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(201)
@@ -98,17 +99,17 @@ describe 'Documents API test' do
                                            doc_expire: '3020-01-22',
                                            doc_number: 'AA1234BB',
                                            upload: [
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(400)
@@ -126,7 +127,7 @@ describe 'Documents API test' do
       expect(test_user.labels.find_by(key: :document)).to eq(nil)
       post '/api/v2/resource/documents', headers: auth_header,
                                          params: params.merge({ doc_category: 'selfie',
-                                                                upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')],
+                                                                upload: [fixture_file_upload('documents_test.jpg', 'image/jpg')],
                                                                 identificator: test_user.documents.last.identificator })
       expect(test_user.labels.find_by(key: :document).value).to eq('pending')
     end
@@ -142,7 +143,7 @@ describe 'Documents API test' do
       expect(test_user.labels.find_by(key: :document).value).to eq('verified')
       post '/api/v2/resource/documents', headers: auth_header,
                                          params: params.merge({ doc_category: 'selfie',
-                                                                upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')],
+                                                                upload: [fixture_file_upload('documents_test.jpg', 'image/jpg')],
                                                                 identificator: test_user.documents.last.identificator })
       expect(test_user.labels.find_by(key: :document).value).to eq('pending')
     end
