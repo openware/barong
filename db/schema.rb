@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_27_142528) do
+ActiveRecord::Schema.define(version: 2022_01_17_191130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(version: 2021_12_27_142528) do
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "state", limit: 2, default: 0
+    t.integer "state", limit: 2, default: 0, null: false
     t.string "applicant_id"
     t.string "author"
     t.string "first_name_encrypted", limit: 1024
