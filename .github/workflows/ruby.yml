@@ -16,9 +16,6 @@ on:
 jobs:
   test:
     env:
-      # REDIS_HOST: redis
-      # The default Redis port
-      # REDIS_PORT: 6379
       RAILS_ENV: test
       DATABASE_HOST: 127.0.0.1
       DATABASE_USER: postgres
