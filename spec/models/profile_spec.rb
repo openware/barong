@@ -29,7 +29,7 @@ RSpec.describe Profile, type: :model do
     end
     let!(:user) { create(:user) }
 
-    subject { Profile.create(params.merge(user: user)) }
+    subject { Profile.create!(params.merge(user: user)) }
 
     context 'empty params' do
       let!(:params) { {} }
