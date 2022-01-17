@@ -1,3 +1,25 @@
+# Bitzlato database
+#
+bitzlato_default: &bitzlato_default
+  adapter: postgresql
+  encoding: utf8
+  schema_search_path: p2p,public
+  <% if ENV.key?('DATABASE_COLLATION') %>
+  collation: <%= ENV.fetch('DATABASE_COLLATION', 'C') %>
+  <% end %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 8).to_i * ENV.fetch("WEB_CONCURRENCY", 1).to_i %>
+  <% if ENV.key?('DATABASE_HOST') %>
+  host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
+  <% end %>
+  port: <%= ENV.fetch('DATABASE_PORT', 5432) %>
+  <% if ENV.key?('DATABASE_USER') %>
+  username: <%= ENV.fetch('DATABASE_USER', `whoami`.chomp) %>
+  <% end %>
+  <% if ENV.key?('DATABASE_PASS') %>
+  password: <%= ENV['DATABASE_PASS'] %>
+  <% end %>
+  migrations_paths: db/migrate_bitzlato
+
 # Peatio database
 #
 default: &default
@@ -20,54 +42,33 @@ default: &default
   <% end %>
 
 development:
-  <<: *default
-  database: barong_development
+  primary:
+    <<: *default
+    database: barong_development
+  bitzlato:
+    <<: *bitzlato_default
+    database: <%= ENV.fetch('BITZLATO_DB_NAME', 'bitzlato_development') %>
 
 test:
-  <<: *default
-  database: barong_test
+  primary:
+    <<: *default
+    database: barong_test
+  bitzlato:
+    <<: *bitzlato_default
+    database: bitzlato_test
 
 staging:
-  <<: *default
-  database: <%= ENV.fetch('DATABASE_NAME', 'barong_staging') %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch('DATABASE_NAME', 'barong_staging') %>
+  bitzlato:
+    <<: *bitzlato_default
+    url: <%= ENV['BITZLATO_DATABASE_URL'] %>
 
 production:
-  <<: *default
-  database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
-
-# Bitzlato database
-#
-bitzlato_default: &bitzlato_default
-  adapter: postgresql
-  encoding: utf8
-  schema_search_path: p2p,public
-  <% if ENV.key?('DATABASE_COLLATION') %>
-  collation: <%= ENV.fetch('DATABASE_COLLATION', 'C') %>
-  <% end %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 8).to_i * ENV.fetch("WEB_CONCURRENCY", 1).to_i %>
-  <% if ENV.key?('DATABASE_HOST') %>
-  host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
-  <% end %>
-  port: <%= ENV.fetch('DATABASE_PORT', 5432) %>
-  <% if ENV.key?('DATABASE_USER') %>
-  username: <%= ENV.fetch('DATABASE_USER', `whoami`.chomp) %>
-  <% end %>
-  <% if ENV.key?('DATABASE_PASS') %>
-  password: <%= ENV['DATABASE_PASS'] %>
-  <% end %>
-
-bitzlato_development:
-  <<: *bitzlato_default
-  database: <%= ENV.fetch('BITZLATO_DB_NAME', 'bitzlato_development') %>
-
-bitzlato_test:
-  <<: *bitzlato_default
-  database: bitzlato_test
-
-bitzlato_staging:
-  <<: *bitzlato_default
-  url: <%= ENV['BITZLATO_DATABASE_URL'] %>
-
-bitzlato_production:
-  <<: *bitzlato_default
-  url: <%= ENV['BITZLATO_DATABASE_URL'] %>
+  primary:
+    <<: *default
+    database: <%= ENV.fetch('DATABASE_NAME', 'barong_production') %>
+  bitzlato:
+    <<: *bitzlato_default
+    url: <%= ENV['BITZLATO_DATABASE_URL'] %>

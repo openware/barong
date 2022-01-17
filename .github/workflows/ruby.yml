@@ -97,6 +97,6 @@ jobs:
     - name: Initialize vault
       run: ./bin/init_vault
     - name: Setup database
-      run: bundle exec rake db:create db:migrate db:schema:load
+      run: bundle exec rake db:create db:migrate
     - name: Run specs
       run: bundle exec rake

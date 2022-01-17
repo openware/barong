@@ -166,6 +166,7 @@ class User < ApplicationRecord
   def as_json_for_event_api
     {
       uid: uid,
+      p2p_uid: bitzlato_user.try(:id),
       username: username,
       email: email,
       role: role,
