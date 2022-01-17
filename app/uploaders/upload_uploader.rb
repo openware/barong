@@ -16,7 +16,7 @@ class UploadUploader < CarrierWave::Uploader::Base
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-  def extension_whitelist
+  def extension_allowlist
     Barong::App.config.upload_extension_whitelist
   end
 

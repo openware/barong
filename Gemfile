@@ -6,7 +6,7 @@ ruby '2.7.5'
 gem 'aliyun-sdk',  '~> 0.7.0'
 gem 'api-pagination', '~> 4.8.2'
 
-gem 'env-tweaks', '~> 1.0.0'
+gem 'env-tweaks'
 
 # storage related gems
 gem 'carrierwave', '~> 2.1', '>= 2.1.0'
@@ -31,14 +31,9 @@ gem 'cancancan', '~> 2.3.0'
 
 gem 'hiredis', '~> 0.6.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
+gem 'rails', '~> 6.1'
 # Use Puma as the app server
 gem 'puma', '>= 3.12.6'
-
-# We don't need it now
-#
-# gem 'mini_racer'
-# gem 'uglifier', '>= 1.3.0'
 
 gem 'maxmind-db', '~> 1.0'
 
@@ -89,12 +84,10 @@ gem "semver2", "~> 3.4"
 gem 'dotenv'
 gem "sd_notify", "~> 0.1.1"
 
-gem 'multiverse'
-
 group :development, :test do
   # Call 'byebug' or 'binding.pry' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'factory_bot_rails', '~> 4.11', '>= 4.11.1'
+  gem 'factory_bot_rails'
   gem 'faker',              '~> 2.1'
 end
 
@@ -103,7 +96,6 @@ group :development do
   gem 'grape_on_rails_routes', '~> 0.3.2'
   gem 'web-console', '>= 3.7.0'
   gem 'listen',       '>= 3.0.5', '< 3.2'
-  gem 'annotate', '~> 2.7', '>= 2.7.5'
   gem 'rspec'
   gem 'guard'
   gem 'guard-rspec', github: 'caspark/guard-rspec' # Use from github to remove rspec < 4.0 dependencies
@@ -117,9 +109,9 @@ group :test do
   gem 'capybara', '>= 3.29.0'
   # gem 'selenium-webdriver'
   # gem 'chromedriver-helper'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
+  gem 'rspec-rails'
   gem 'shoulda-matchers', '~> 4.0.1.0'
-  gem 'rails-controller-testing', '>= 1.0.5'
+  gem 'rails-controller-testing'
   gem 'database_cleaner', '~> 2.0.1'
   gem 'rspec-retry'
 end

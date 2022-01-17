@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 describe API::V2::Management::Documents, type: :request do
+  include ActionDispatch::TestProcess::FixtureFile
   before do
     defaults_for_management_api_v2_security_configuration!
     management_api_v2_security_configuration.merge! \
@@ -27,7 +28,7 @@ describe API::V2::Management::Documents, type: :request do
         scope: :write_documents
       }
     end
-    let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+    let!(:image) { fixture_file_upload('documents_test.jpg', 'image/jpg') }
     let(:signers) { %i[alex jeff] }
     let(:params) do
       {
@@ -58,7 +59,7 @@ describe API::V2::Management::Documents, type: :request do
         file_ext: '.jpg',
         doc_expire: '3020-01-22',
         doc_number: 'AA1234BB',
-        upload: Base64.strict_encode64(File.open('spec/fixtures/files/documents_test.jpg').read)
+        upload: Base64.strict_encode64(File.open(file_fixture 'documents_test.jpg').read)
       }
     end
 

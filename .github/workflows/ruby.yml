@@ -16,9 +16,6 @@ on:
 jobs:
   test:
     env:
-      # REDIS_HOST: redis
-      # The default Redis port
-      # REDIS_PORT: 6379
       RAILS_ENV: test
       DATABASE_HOST: 127.0.0.1
       DATABASE_USER: postgres
@@ -100,8 +97,6 @@ jobs:
     - name: Initialize vault
       run: ./bin/init_vault
     - name: Setup database
-      run: bundle exec rake db:create db:migrate
-    - name: Seed database
-      run: bundle exec rake db:seed
+      run: bundle exec rake db:create db:migrate db:schema:load
     - name: Run specs
       run: bundle exec rake

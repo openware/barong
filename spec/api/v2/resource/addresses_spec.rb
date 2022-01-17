@@ -4,11 +4,13 @@ require 'spec_helper'
 
 describe 'Addresses API test' do
   include_context 'bearer authentication'
+  include ActionDispatch::TestProcess::FixtureFile
+
   let!(:create_member_permission) do
     create :permission,
            role: 'member'
   end
-  let!(:image) { fixture_file_upload('/files/documents_test.jpg', 'image/jpg') }
+  let!(:image) { fixture_file_upload('documents_test.jpg', 'image/jpg') }
   before do
     allow(Barong::App.config).to receive_messages(required_docs_expire: false)
   end
@@ -36,7 +38,7 @@ describe 'Addresses API test' do
                                              address: 'Yaroslaviv Val 15',
                                              city: 'Kiev',
                                              postcode: '101010',
-                                             upload: [fixture_file_upload('/files/documents_test.jpg', 'image/jpg')]
+                                             upload: [fixture_file_upload('documents_test.jpg', 'image/jpg')]
                                            }
       end
 
@@ -51,8 +53,8 @@ describe 'Addresses API test' do
                                            city: 'Kiev',
                                            postcode: '101010',
                                            upload: [
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                            fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg')
                                            ]
                                          }
       expect(response.status).to eq(201)
@@ -67,9 +69,9 @@ describe 'Addresses API test' do
                                            city: 'Kiev',
                                            postcode: '101010',
                                            upload: [
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg'),
-                                             fixture_file_upload('/files/documents_test.jpg', 'image/jpg')
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg'),
+                                             fixture_file_upload('documents_test.jpg', 'image/jpg')
                                           ]
                                          }
       expect(response.status).to eq(201)

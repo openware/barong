@@ -29,7 +29,7 @@ RSpec.describe Profile, type: :model do
     end
     let!(:user) { create(:user) }
 
-    subject { Profile.create(params.merge(user: user)) }
+    subject { Profile.create!(params.merge(user: user)) }
 
     context 'empty params' do
       let!(:params) { {} }
@@ -73,6 +73,7 @@ RSpec.describe Profile, type: :model do
         it { expect(subject.city.present?).to be_truthy }
         it { expect(subject.country.present?).to be_truthy }
         it { expect(subject.metadata.nil?).to be_truthy }
+        it { expect(subject).to be_persisted }
         it { expect(subject.state).to eq('drafted') }
         it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end

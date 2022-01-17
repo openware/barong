@@ -45,8 +45,9 @@ module API
               error!({ errors: ['admin.profiles.superadmin_change'] }, 422)
             end
 
-            if Barong::App.config.profile_double_verification && target_profile.author \
-               && target_profile.author == current_user.uid && !BarongConfig.list['profile_verification_roles']&.include?(current_user.role)
+            if Barong::App.config.profile_double_verification && target_profile.author ||
+                target_profile.author == current_user.uid ||
+               !BarongConfig.list['profile_verification_roles']&.include?(current_user.role)
               error!({ errors: ['admin.profiles.second_admin_approval'] }, 422)
             end
 
