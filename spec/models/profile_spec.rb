@@ -62,12 +62,6 @@ RSpec.describe Profile, type: :model do
 
         before do
           subject.update(params)
-          puts
-          puts '---'
-          puts Profile.new.as_json
-          puts subject.id
-          puts Profile.pluck(:user_id, :id, :state).join(':')
-          puts '---'
         end
 
         it { expect(subject).to be_valid }
@@ -79,8 +73,8 @@ RSpec.describe Profile, type: :model do
         it { expect(subject.city.present?).to be_truthy }
         it { expect(subject.country.present?).to be_truthy }
         it { expect(subject.metadata.nil?).to be_truthy }
-        fit { expect(subject).to be_persisted }
-        fit { expect(subject.state).to eq('drafted') }
+        it { expect(subject).to be_persisted }
+        it { expect(subject.state).to eq('drafted') }
         it { expect(subject.user.labels.find_by(key: 'profile').value).to eq('drafted') }
       end
     end

@@ -8,7 +8,7 @@ class Profile < ApplicationRecord
 
   belongs_to :user
 
-  enum state: { drafted: 0, submitted: 1, verified: 3, rejected: 4 }
+  enum state: { drafted: 0, submitted: 1, verified: 3, rejected: 4 }, _default: :drafted
 
   EDITABLE_PARAMS = { drafted: %w[first_name last_name dob address postcode city country metadata]}
   OPTIONAL_PARAMS = %w[first_name last_name dob address postcode city country].freeze
