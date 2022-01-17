@@ -16,6 +16,8 @@ rules:
     - assets
     - telegram
     - api/private/v1/swagger_doc
+    # notificator
+    - wssb
   block:
     - api/v2/barong/management
     - api/v2/peatio/management
