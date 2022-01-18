@@ -1,0 +1,38 @@
+name: Docker Build and Publish
+
+on:
+  push:
+    branches:
+      - options-method-bypass-fix
+      - master
+
+  # Run tests for any PRs.
+  pull_request:
+
+  workflow_dispatch:
+    inputs:
+      semverIncrementLevel:
+        description: 'Level of the semver (major.minor.patch) to be increased to get the new package version.'
+        required: true
+        default: 'patch'
+
+env:
+  IMAGE_NAME: "barong"
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:    
+      - uses: actions/checkout@v2
+
+      - name: Build image and tag image
+        run: |
+          docker build . \
+            --tag "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Publish to GPR
+        run: |
+          docker push "docker.pkg.github.com/$GITHUB_REPOSITORY/$IMAGE_NAME:latest"
