@@ -1,6 +1,7 @@
 # encoding: UTF-8
 # frozen_string_literal: true
 
+require 'barong/json_log_formatter'
 Rails.application.configure do
   # Available levels (verbosity goes from high to less): debug, info, warn, error, fatal.
   # Default level for production is warn, otherwise – debug.
