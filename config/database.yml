@@ -40,6 +40,7 @@ default: &default
   <% if ENV.key?('DATABASE_PASS') %>
   password: <%= ENV['DATABASE_PASS'] %>
   <% end %>
+  migrations_paths: db/migrate_primary
 
 development:
   primary:
