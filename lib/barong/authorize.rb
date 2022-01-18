@@ -184,7 +184,7 @@ module Barong
       actions = permissions.blank? ? [] : permissions.pluck(:action).uniq
 
       if permissions.blank? || actions.include?('DROP') || !actions.include?('ACCEPT')
-        Rails.logger.debug("auth.invalid_permission: permissions.blank?=#{permissions.blank?}, actions.include?('DROP')=#{actions.include?('DROP')}, !actions.include?('ACCEPT')=#{!actions.include?('ACCEPT')}")
+        Rails.logger.warn("auth.invalid_permission: user.role=#{user.role}, permissions.blank?=#{permissions.blank?}, actions.include?('DROP')=#{actions.include?('DROP')}, !actions.include?('ACCEPT')=#{!actions.include?('ACCEPT')}")
         log_activity(user.id, 'denied') if user.is_a?(User)
         error!({ errors: ['authz.invalid_permission'] }, 401)
       end
