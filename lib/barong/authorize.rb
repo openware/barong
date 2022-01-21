@@ -269,13 +269,21 @@ module Barong
 
           if session.claims.present? && session.claims.key?('email') && session.claims.key?('subject')
             Rails.logger.warn "Create bitzlato user with claims #{session.claims}"
-            BitzlatoUser.create!(
-              real_email: session.claims.fetch('email'),
-              subject: session.claims.fetch('subject'),
-              email_verified: true,
-              chat_enabled: true,
-              email_auth_enabled: true
-            )
+            BitzlatoUser.transaction do
+              bitzlato_user = BitzlatoUser.create!(
+                real_email: session.claims.fetch('email'),
+                subject: session.claims.fetch('subject'),
+                email_verified: true,
+                chat_enabled: true,
+                email_auth_enabled: true
+              )
+              bitzlato_user.
+                create_user_profile!(lang: 'en',
+                                     currency: 'USD',
+                                     cryptocurrency: 'BTC',
+                                     rating: 0.0,
+                                     generated_name: SecureRandom.hex(12))
+            end
           else
             Rails.logger.error "No session claims for new bitlato user #{session.claims}"
             raise "No session claims for new bitlato user #{session.claims}"
