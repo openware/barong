@@ -261,8 +261,25 @@ module Barong
         owner = auth_owner
         raise "Wrong auth_owner type (#{owner.class})" unless owner.is_a? User
         unless owner.bitzlato_user.present?
-          Rails.logger.error "No bitzlato user for #{owner.as_payload}"
-          raise "No bitzlato user for #{owner.as_payload}"
+
+          if Rails.env.production?
+            Rails.logger.error "No bitzlato user for #{owner.as_payload}"
+            raise "No bitzlato user for #{owner.as_payload}"
+          end
+
+          if session.claims.present? && session.claims.key?('email') && session.claims.key?('subject')
+            Rails.logger.warn "Create bitzlato user with claims #{session.claims}"
+            BitzlatoUser.create!(
+              real_email: session.claims.fetch('email'),
+              subject: session.claims.fetch('subject'),
+              email_verified: true,
+              chat_enabled: true,
+              email_auth_enabled: true
+            )
+          else
+            Rails.logger.error "No session claims for new bitlato user #{session.claims}"
+            raise "No session claims for new bitlato user #{session.claims}"
+          end
         end
         sys_codec.
           encode(owner.bitzlato_user.as_payload)
