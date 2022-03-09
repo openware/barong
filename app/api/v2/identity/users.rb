@@ -264,7 +264,7 @@ module API::V2
             end
 
             # remove latest token id cache record
-            Rails.cache.delete("reset_password_#{params[:email]}")
+            Rails.cache.delete("reset_password_#{payload[:email]}")
             # invalidate token used
             Rails.cache.write(payload[:jti], 'utilized', expires_in: Barong::App.config.jwt_expire_time.seconds)
 
