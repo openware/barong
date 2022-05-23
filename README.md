@@ -22,7 +22,7 @@ It includes the following features:
 # Development
 
 Prerequisites:
-- Ruby version: `2.6.6`
+- Ruby version: `2.7.4`
 - Bundler preinstalled
 - MySQL preinstalled
 
