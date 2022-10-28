@@ -67,7 +67,7 @@ Barong::App.define do |config|
   config.set(:mgn_api_keys_user, 'false', type: :bool)
   config.set(:mgn_api_keys_sa, 'false', type: :bool)
   config.set(:tls_enabled, 'true', type: :bool)
-  config.set(:auth_methods, 'password', type: :array)
+  config.set(:auth_methods, 'password,auth0', type: :array)
 
   # Password configuration  -----------------------------------------------
   # https://www.openware.com/sdk/docs/barong/configuration.html#password-configuration
@@ -129,6 +129,7 @@ Barong::App.define do |config|
   # Auth0 configuration -----------------------------------------------
   config.set(:auth0_domain, '')
   config.set(:auth0_client_id, '')
+  config.set(:auth0_audience, '')
 end
 
 # KYCAID configuring

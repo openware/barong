@@ -10,7 +10,7 @@ module Barong
                      algorithms: 'RS256',
                      iss:        "https://#{Barong::App.config.auth0_domain}/",
                      verify_iss: true,
-                     aud:        Barong::App.config.auth0_client_id,
+                     aud:        Barong::App.config.auth0_audience,
                      verify_aud: true
         ) do |header|
           jwks_hash[header['kid']]

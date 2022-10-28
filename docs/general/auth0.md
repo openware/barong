@@ -9,7 +9,7 @@ You will need some details about that application to communicate with Auth0. You
 
 ![Settings](../images/auth0_settings.png)
 
-You should put `auth0_domain` from the Domain field and `auth0_client_id` from the Client ID field
+You should put `auth0_domain` from the Domain field, `auth0_client_id` from the Client ID field and `auth0_audience` from the Audience field
 
 For a single page application better to use authorization code flow with proof key for code exchange.
 

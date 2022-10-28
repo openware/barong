@@ -55,7 +55,8 @@ module API::V2
       get '/configs/auth0' do
         {
           auth0_domain: Barong::App.config.auth0_domain,
-          auth0_client_id: Barong::App.config.auth0_client_id
+          auth0_client_id: Barong::App.config.auth0_client_id,
+          auth0_audience: Barong::App.config.auth0_audience
         }.compact
       end
 

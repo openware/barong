@@ -112,6 +112,7 @@ More details in [twilio configuration](#twilio-configuration)
 | ---------- | :------: |:------: |---------------------------------- |
 |`auth0_domain`| - | any string value | auth0 Domain name (without https://) |
 |`auth0_client_id`| - | any string value | the client_id of your auth0 application |
+|`auth0_audience`| - | any string value | the audience of your auth0 application |
 
 ### SMTP configuration
 | Env name | Default value | Possible values | Description |

@@ -193,6 +193,34 @@ module API::V2
 
           present public_address, with: API::V2::Entities::PublicAddress, csrf_token: csrf_token
         end
+
+
+        desc 'Signin a user from Auth0 login custom flow',
+             failure: [
+               { code: 400, message: 'Required params are empty' },
+               { code: 404, message: 'Record is not found' }
+             ]
+        params do
+          requires :email
+          requires :password
+          requires :code
+        end
+        post '/auth0/signin' do
+          error!({ errors: ['identity.session.endpoint_not_enabled'] }, 422) unless Barong::App.config.auth_methods.include?('password')
+          
+          declared_params = declared(params, include_missing: false)
+          error!({ errors: ['identity.session.endpoint_not_allowed'] }, 405) unless Barong::App.config.auth0_client_id == declared_params[:code]
+
+          user = get_user(declared_params[:email])
+
+          unless user.authenticate(declared_params[:password])
+            login_error!(reason: 'Invalid Email or Password', error_code: 401, user: user.id,
+                         action: 'login', result: 'failed', error_text: 'invalid_params')
+          end
+
+          present user, with: API::V2::Entities::UserWithFullInfo
+          return status 200
+        end
       end
     end
   end
