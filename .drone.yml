@@ -1,6 +1,7 @@
 ---
 kind: pipeline
-name: "Mysql 5.7"
+type: docker
+name: MySQL 5.7 Test
 
 services:
 - name: database
@@ -16,14 +17,14 @@ services:
     - 5672
 
 - name: vault
-  image: vault:0.11.4
+  image: vault:1.12.3
   ports:
     - 8200
   environment:
     SKIP_SETCAP: 1
-    BARONG_VAULT_TOKEN: changeme
+    VAULT_TOKEN: changeme
     VAULT_DEV_ROOT_TOKEN_ID: changeme
-    BARONG_VAULT_ADDRESS: http://vault:8200
+    VAULT_ADDR: http://vault:8200
 
 - name: redis
   image: redis:4.0
@@ -31,8 +32,13 @@ services:
     - 6379
 
 steps:
+- name: wait-for-services
+  image: jwilder/dockerize
+  commands:
+  - dockerize -wait tcp://database:3306 -wait tcp://rabbitmq:5672 -timeout 1m -wait tcp://vault:8200 -timeout 1m
+
 - name: Configure Vault
-  image: vault:0.11.4
+  image: vault:1.12.3
   commands:
     - vault secrets disable secret
     - vault secrets enable -path=secret -version=1 kv
@@ -135,19 +141,6 @@ steps:
       - "fix/*"
       - "integration/*"
 
-- name: Redeploy on master.devkube.com
-  image: rubykube/microkube:0.2.0
-  environment:
-    WEBHOOK_JWT_SECRET:
-      from_secret: devkube_webhook_secret
-  commands:
-    - export latest_image=quay.io/openware/barong:$(cat .tags)
-    - cd /home/app
-    - bundle exec rake payload:send[barong,$latest_image,http://master.devkube.com:1337]
-  when:
-    branch:
-      - master
-
 - name: Push and Notify
   image: quay.io/openware/sdk-citools:2.6.7
   environment:
@@ -192,80 +185,10 @@ trigger:
 image_pull_secrets:
 - dockerconfigjson
 
-
 ---
 kind: pipeline
-name: "MariaDB 10.3"
-
-services:
-- name: database
-  image: mariadb:10.3
-  ports:
-    - 3306
-  environment:
-    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-
-- name: rabbitmq
-  image: rabbitmq:3.8.9
-  ports:
-    - 5672
-
-- name: vault
-  image: vault:0.11.4
-  ports:
-    - 8200
-  environment:
-    SKIP_SETCAP: 1
-    BARONG_VAULT_TOKEN: changeme
-    VAULT_DEV_ROOT_TOKEN_ID: changeme
-    BARONG_VAULT_ADDRESS: http://vault:8200
-
-- name: redis
-  image: redis:4.0
-  ports:
-    - 6379
-
-steps:
-- name: Configure Vault
-  image: vault:0.11.4
-  commands:
-    - vault secrets disable secret
-    - vault secrets enable -path=secret -version=1 kv
-    - vault secrets enable totp
-  environment:
-    VAULT_TOKEN: changeme
-    VAULT_DEV_ROOT_TOKEN_ID: changeme
-    VAULT_ADDR: http://vault:8200
-
-- name: Run rspec
-  image: ruby:2.7.4
-  environment:
-    DATABASE_HOST: database
-    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
-    BARONG_VAULT_ADDRESS: http://vault:8200
-    BARONG_VAULT_TOKEN: changeme
-    RAILS_ENV: test
-    REDIS_URL: redis://redis:6379
-    BARONG_REDIS_URL: redis://redis:6379
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
-  commands:
-    - gem update bundler
-    - bundle install --system
-    - ./bin/init_config
-    - bundle exec rake db:create db:migrate
-    - bundle exec rspec
-
-trigger:
-  event:
-    - push
-  branch:
-    - "compatibility/*"
-    - "*-stable"
-
----
-kind: pipeline
-name: "MySQL 8.0"
+type: docker
+name: MySQL 8.0 Test
 
 services:
 - name: database
@@ -313,80 +236,6 @@ steps:
   image: ruby:2.7.4
   environment:
     DATABASE_HOST: database
-    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
-    BARONG_VAULT_ADDRESS: http://vault:8200
-    BARONG_VAULT_TOKEN: changeme
-    RAILS_ENV: test
-    REDIS_URL: redis://redis:6379
-    BARONG_REDIS_URL: redis://redis:6379
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
-  commands:
-    - gem update bundler
-    - bundle install --system
-    - ./bin/init_config
-    - bundle exec rake db:create db:migrate
-    - bundle exec rspec
-
-trigger:
-  event:
-    - push
-  branch:
-    - "compatibility/*"
-    - "*-stable"
-
----
-kind: pipeline
-name: "PostgreSQL 13.0"
-
-services:
-- name: database
-  image: postgres:13.0
-  ports:
-    - 5432
-  environment:
-    POSTGRES_PASSWORD: changeme
-
-- name: rabbitmq
-  image: rabbitmq:3.8.9
-  ports:
-    - 5672
-
-- name: vault
-  image: vault:0.11.4
-  ports:
-    - 8200
-  environment:
-    SKIP_SETCAP: 1
-    BARONG_VAULT_TOKEN: changeme
-    VAULT_DEV_ROOT_TOKEN_ID: changeme
-    BARONG_VAULT_ADDRESS: http://vault:8200
-
-- name: redis
-  image: redis:4.0
-  ports:
-    - 6379
-
-steps:
-- name: Configure Vault
-  image: vault:0.11.4
-  commands:
-    - vault secrets disable secret
-    - vault secrets enable -path=secret -version=1 kv
-    - vault secrets enable totp
-  environment:
-    VAULT_TOKEN: changeme
-    VAULT_DEV_ROOT_TOKEN_ID: changeme
-    VAULT_ADDR: http://vault:8200
-
-- name: Run rspec
-  image: ruby:2.7.4
-  environment:
-    DATABASE_HOST: database
-    DATABASE_ADAPTER: postgresql
-    DATABASE_PORT: "5432"
-    DATABASE_PASS: changeme
-    DATABASE_USER: postgres
     BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
     BARONG_VAULT_ADDRESS: http://vault:8200
     BARONG_VAULT_TOKEN: changeme
