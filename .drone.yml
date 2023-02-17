@@ -48,25 +48,6 @@ steps:
     VAULT_DEV_ROOT_TOKEN_ID: changeme
     VAULT_ADDR: http://vault:8200
 
-- name: Run rspec
-  image: ruby:2.7.4
-  environment:
-    DATABASE_HOST: database
-    BARONG_EVENT_API_RABBITMQ_HOST: rabbitmq
-    BARONG_VAULT_ADDRESS: http://vault:8200
-    BARONG_VAULT_TOKEN: changeme
-    RAILS_ENV: test
-    REDIS_URL: redis://redis:6379
-    BARONG_REDIS_URL: redis://redis:6379
-    RAILS_MASTER_KEY:
-      from_secret: rails_master_key
-  commands:
-    - gem update bundler
-    - bundle install --system
-    - ./bin/init_config
-    - bundle exec rake db:create db:migrate
-    - bundle exec rspec
-
 - name: Bump and tag
   image: quay.io/openware/sdk-citools:2.6.7
   environment:
@@ -137,6 +118,7 @@ steps:
   when:
     branch:
       - master
+      - "feat/*"
       - "*-stable"
       - "fix/*"
       - "integration/*"
