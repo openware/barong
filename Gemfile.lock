@@ -314,7 +314,8 @@ GEM
     pry-rails (0.3.9)
       pry (>= 0.10.4)
     public_suffix (4.0.5)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -487,7 +488,7 @@ DEPENDENCIES
   phonelib (~> 0.6.45)
   pry-byebug
   pry-rails
-  puma (~> 3.12, >= 3.12.6)
+  puma (~> 4.3)
   rack-cors (~> 1.0.2)
   rails (~> 5.2.4, >= 5.2.4.4)
   rails-controller-testing (>= 1.0.5)
