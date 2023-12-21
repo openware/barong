@@ -108,7 +108,8 @@ module API::V2
             success: { code: 201, message: 'Generated verification code' },
             failure: [
               { code: 400, message: 'Required params are missing' },
-              { code: 422, message: 'Validation errors' }
+              { code: 422, message: 'Validation errors' },
+              { code: 404, message: 'User doesn\'t exist'}
             ]
           params do
             requires :email,
@@ -125,7 +126,7 @@ module API::V2
             current_user = User.find_by_email(params[:email])
 
             if current_user.nil? || current_user.active?
-              return status 201
+              return status 404
             end
 
             publish_confirmation(current_user, Barong::App.config.domain)
@@ -194,7 +195,7 @@ module API::V2
 
             current_user = User.find_by_email(params[:email])
 
-            return status 201 if current_user.nil?
+            return status 404 if current_user.nil?
 
             reset_token = SecureRandom.hex(10)
             token = codec.encode(sub: 'reset', email: params[:email], uid: current_user.uid, reset_token: reset_token)
